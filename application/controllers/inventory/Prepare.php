@@ -6,7 +6,7 @@ class Prepare extends PS_Controller
   public $menu_code = 'ICODPR';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'PICKPACK';
-	public $title = 'จัดสินค้า';
+	public $title = 'Pick List';
   public $filter;
   public function __construct()
   {
@@ -57,7 +57,7 @@ class Prepare extends PS_Controller
 		$orders   = $this->prepare_model->get_data($filter, $perpage, $this->uri->segment($segment), 3);
 
     $filter['orders'] = $orders;
-    
+
 		$this->pagination->initialize($init);
     $this->load->view('inventory/prepare/prepare_list', $filter);
   }
@@ -68,6 +68,7 @@ class Prepare extends PS_Controller
 
   public function view_process()
   {
+    $this->title = "Picking List";
     $this->load->helper('channels');
     $this->load->helper('payment_method');
     $this->load->helper('warehouse');
@@ -114,6 +115,7 @@ class Prepare extends PS_Controller
 
   public function process($code)
   {
+    $this->title = "Picking";
     $this->load->model('masters/customers_model');
     $this->load->model('masters/channels_model');
     $state = $this->orders_model->get_state($code);
@@ -126,7 +128,7 @@ class Prepare extends PS_Controller
         $arr = array(
           'order_code' => $code,
           'state' => 4,
-          'update_user' => get_cookie('uname')
+          'update_user' => $this->_user->uname
         );
         $this->order_state_model->add_state($arr);
       }
@@ -211,7 +213,7 @@ class Prepare extends PS_Controller
               if( $bQty < $qty)
               {
                 $sc = FALSE;
-                $message = "สินค้าเกิน กรุณาคืนสินค้าแล้วจัดสินค้าใหม่อีกครั้ง";
+                $message = "Order quantity exceeded.";
               }
               else
               {
@@ -220,7 +222,7 @@ class Prepare extends PS_Controller
                 if($stock < $qty)
                 {
                   $sc = FALSE;
-                  $message = "สินค้าไม่เพียงพอ กรุณากำหนดจำนวนสินค้าใหม่";
+                  $message = "Quantity falls into negative inventory.";
                 }
                 else
                 {
@@ -232,7 +234,7 @@ class Prepare extends PS_Controller
                   if($this->db->trans_status() === FALSE)
                   {
                     $sc = FALSE;
-                    $message = 'ทำรายการไม่สำเร็จ';
+                    $message = 'Update data failed.';
                   }
 
                   if($sc === TRUE)
@@ -251,25 +253,25 @@ class Prepare extends PS_Controller
             else
             {
               $sc = FALSE;
-              $message = 'สินค้าไม่ตรงกับออเดอร์';
+              $message = 'The product does not match the order.';
             }
           }
           else
           {
             $sc = FALSE;
-            $message = 'สินค้าไม่นับสต็อก ไม่จำเป็นต้องจัดสินค้านี้';
+            $message = 'Item is not counted in stock. There is no need to pick this product.';
           }
         }
         else
         {
           $sc = FALSE;
-          $message = 'บาร์โค้ดไม่ถูกต้อง กรุณาตรวจสอบ';
+          $message = 'Invalid barcode, please check.';
         }
       }
       else
       {
         $sc = FALSE;
-        $message = 'สถานะออเดอร์ถูกเปลี่ยน ไม่สามารถจัดสินค้าต่อได้';
+        $message = 'Order status changed Unable to continue picking';
       }
     }
 
@@ -297,7 +299,7 @@ class Prepare extends PS_Controller
   {
     if($is_count == 1)
     {
-      $sc = 'ไม่พบข้อมูล';
+      $sc = 'Not found';
       $buffer = $this->prepare_model->get_prepared_from_zone($order_code, $item_code);
       if(!empty($buffer))
       {
@@ -310,7 +312,7 @@ class Prepare extends PS_Controller
     }
     else
     {
-      $sc = 'ไม่นับสต็อก';
+      $sc = 'Not inventroy items';
     }
 
   	return $sc;
@@ -321,7 +323,7 @@ class Prepare extends PS_Controller
 
   public function get_stock_in_zone($item_code, $warehouse = NULL)
   {
-    $sc = "ไม่มีสินค้า";
+    $sc = "Empty stock";
     $this->load->model('stock/stock_model');
     $stock = $this->stock_model->get_stock_in_zone($item_code, $warehouse);
     if(!empty($stock))
@@ -333,13 +335,13 @@ class Prepare extends PS_Controller
         $qty = $rs->qty - $prepared;
         if($qty > 0)
         {
-          $sc .= $rs->name.' : '.($rs->qty - $prepared).'<br/>';
+          $sc .= (empty($rs->name) ? $rs->code : $rs->name).' : '.($rs->qty - $prepared).'<br/>';
         }
 
       }
     }
 
-    return empty($sc) ? 'ไม่พบสินค้า' : $sc;
+    return empty($sc) ? 'Empty stock' : $sc;
   }
 
 
@@ -405,7 +407,7 @@ class Prepare extends PS_Controller
       $arr = array(
         'order_code' => $code,
         'state' => 5,
-        'update_user' => get_cookie('uname')
+        'update_user' => $this->_user->uname
       );
 
       //--- add state event
@@ -416,7 +418,7 @@ class Prepare extends PS_Controller
       if($this->db->trans_status() === FALSE)
       {
         $sc = FALSE;
-        $message = "ปิดออเดอร์ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง";
+        $message = "Close pick list failed, please try again";
       }
 
     }
@@ -443,7 +445,7 @@ class Prepare extends PS_Controller
       $arr = array(
         'order_code' => $code,
         'state' => 3,
-        'update_user' => get_cookie('uname')
+        'update_user' => $this->_user->uname
       );
 
       $this->orders_model->change_state($code, 3);

@@ -80,7 +80,7 @@ class Adjust extends PS_Controller
           'bookcode' => getConfig('BOOK_CODE_ADJUST'),
           'reference' => get_null(trim($this->input->post('reference'))),
           'date_add' => $date_add,
-          'user' => get_cookie('uname'),
+          'user' => $this->_user->uname,
           'remark' => get_null(trim($this->input->post('remark')))
         );
 
@@ -535,7 +535,7 @@ class Adjust extends PS_Controller
           //--- do approve
           if($sc === TRUE)
           {
-            $user = get_cookie('uname');
+            $user = $this->_user->uname;
 
             if(!$this->adjust_model->do_approve($code, $user))
             {
@@ -679,7 +679,7 @@ class Adjust extends PS_Controller
             //--- 3. un_approve
             if($sc === TRUE)
             {
-              if(! $this->adjust_model->un_approve($code, get_cookie('uname')))
+              if(! $this->adjust_model->un_approve($code, $this->_user->uname))
               {
                 $sc = FALSE;
                 $this->error = "ยกเลิกการอนุมัติไม่สำเร็จ";
@@ -690,7 +690,7 @@ class Adjust extends PS_Controller
             //--- 4. write approve logs
             if($sc === TRUE)
             {
-              $this->approve_logs_model->add($code, 0, get_cookie('uname'));
+              $this->approve_logs_model->add($code, 0, $this->_user->uname);
             }
 
             if($sc === TRUE)

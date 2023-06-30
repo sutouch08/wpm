@@ -579,7 +579,7 @@ class Return_consignment extends PS_Controller
         'zone_code' => $zone_code,
         'gp' => $gp,
         'remark' => $remark,
-        'update_user' => get_cookie('uname')
+        'update_user' => $this->_user->uname
       );
 
       if($this->return_consignment_model->update($code, $arr) === FALSE)

@@ -237,13 +237,29 @@ function add_vat($amount, $vat = NULL)
 }
 
 
-
-function set_error($message)
+function set_error($key, $name = "data")
 {
-  $CI =& get_instance();
-  $CI->session->set_flashdata('error', $message);
+	$error = array(
+		'insert' => "Insert {$name} failed.",
+		'update' => "Update {$name} failed.",
+		'delete' => "Delete {$name} failed.",
+		'permission' => "You don't have permission to perform this operation.",
+		'required' => "Missing required parameter.",
+		'exists' => "'{$name}' already exists.",
+		'notfound' => "No data found",
+		'transection' => "Delete failed because completed transection exists OR link to another module."
+	);
+
+	$ci =& get_instance();
+
+	$ci->error = ( ! empty($error[$key]) ? $error[$key] : ( ! empty($name) ? $name : "Unknow error."));
 }
 
+function set_error_message($message)
+{
+	$CI =& get_instance();
+  $CI->session->set_flashdata('error', $message);
+}
 
 function set_message($message)
 {
@@ -280,10 +296,10 @@ function pagination_config( $base_url, $total_rows = 0, $perpage = 20, $segment 
 {
     $rows = get_rows();
     $input_rows  = '<p class="pull-right pagination hidden-xs">';
-    $input_rows .= 'ทั้งหมด '.number($total_rows).' รายการ | แสดง';
+    $input_rows .= 'Results '.number($total_rows).' rows | Show';
     $input_rows .= '<input type="number" name="set_rows" id="set_rows" class="input-mini text-center margin-left-15 margin-right-10" value="'.$rows.'" />';
-    $input_rows .= 'ต่อหน้า ';
-    $input_rows .= '<buton class="btn btn-success btn-xs" type="button" onClick="set_rows()">แสดง</button>';
+    $input_rows .= 'rows/page ';
+    $input_rows .= '<buton class="btn btn-success btn-xs" type="button" onClick="set_rows()">Set rows</button>';
     $input_rows .= '</p>';
 
 		$config['full_tag_open'] 		= '<nav><ul class="pagination">';

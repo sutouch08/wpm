@@ -22,7 +22,7 @@ class User_pwd extends PS_Controller
 
 	public function index()
 	{
-    $code = get_cookie('uname');
+    $code = $this->_user->uname;
     if(!empty($code))
     {
       $user = $this->user_model->get($code);

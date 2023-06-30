@@ -40,34 +40,49 @@ $("#toDate").datepicker({
 
 function deletePack(id, order, product) {
 	swal({
-		title: "คุณแน่ใจ ?",
-		text: "ต้องการลบ " + order + "/"+product+" หรือไม่ ?",
+		title: "Are you sure ?",
+		text: "Are you really want to delete this record ?<br/>This process cannot be undone",
 		type: "warning",
+    html: true,
 		showCancelButton: true,
 		confirmButtonColor: "#DD6B55",
-		confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
-		closeOnConfirm: false
-		}, function(){
+		confirmButtonText: 'Delete',
+		cancelButtonText: 'Cancel',
+		closeOnConfirm: true
+		}, function() {
+
+      load_in();
+
 			$.ajax({
 				url: BASE_URL + 'inventory/pack/delete_row',
 				type:"POST",
-        cache:"false",
+        cache:false,
 				data:{
 					'id' : id
 				},
-				success: function(rs){
-					var rs = $.trim(rs);
-					if( rs == 'success' ){
-						swal({
-							title: 'Deleted',
-							type: 'success',
-							timer: 1000 });
+				success: function(rs) {
+          load_out();
 
-						$('#row-'+id).remove();
-						reIndex();
-					}else{
-						swal("Error !", rs , "error");
+					var rs = $.trim(rs);
+					if( rs == 'success') {
+            setTimeout(() => {
+              swal({
+                title: 'Deleted',
+                type: 'success',
+                timer: 1000 });
+
+                $('#row-'+id).remove();
+                reIndex();
+            }, 200);
+					}
+          else {
+						setTimeout(()=> {
+              swal({
+                title:'Error!',
+                text:rs,
+                type:'error'
+              });
+            }, 200);
 					}
 				}
 			});

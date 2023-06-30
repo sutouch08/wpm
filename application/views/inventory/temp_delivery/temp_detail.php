@@ -11,8 +11,8 @@
       <thead>
         <tr>
           <th class="width-5 text-center">No.</th>
-          <th class="width-20">รหัสสินค้า</th>
-          <th class="">ชื่อสินค้า</th>
+          <th class="width-20">SKU</th>
+          <th class="">Description</th>
           <th class="width-20">Bin location</th>
           <th class="width-10 text-right">Order Qty</th>
           <th class="width-10 text-right">Bin Qty</th>

@@ -6,7 +6,7 @@ class Consign_tr extends PS_Controller
   public $menu_code = 'SOCCTR';
 	public $menu_group_code = 'SO';
   public $menu_sub_group_code = 'ORDER';
-	public $title = 'ฝากขาย(โอนคลัง)';
+	public $title = 'Consignment Transfer';
   public $filter;
   public $role = 'N';
 	public $isAPI;
@@ -226,6 +226,8 @@ class Consign_tr extends PS_Controller
 			$gp = $this->input->post('gp');
 			$unit = $this->input->post('unit');
 			$gp = $unit == '%' ? $gp.'%' : $gp;
+      $DocCur = $this->input->post('doc_currency');
+      $DocRate = $this->input->post('doc_rate');
 
       if(!empty($zone))
       {
@@ -234,9 +236,11 @@ class Consign_tr extends PS_Controller
           'code' => $code,
           'role' => $role,
           'bookcode' => $book_code,
+          'DocCur' => $DocCur,
+          'DocRate' => $DocRate,
           'customer_code' => $this->input->post('customerCode'),
           'gp' => $gp,
-          'user' => get_cookie('uname'),
+          'user' => $this->_user->uname,
           'remark' => $this->input->post('remark'),
           'zone_code' => $zone,
           'warehouse_code' => $wh->code,
@@ -248,7 +252,7 @@ class Consign_tr extends PS_Controller
           $arr = array(
             'order_code' => $code,
             'state' => 1,
-            'update_user' => get_cookie('uname')
+            'update_user' => $this->_user->uname
           );
 
           $this->order_state_model->add_state($arr);
@@ -257,20 +261,20 @@ class Consign_tr extends PS_Controller
         }
         else
         {
-          set_error('เพิ่มเอกสารไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+          set_error_message('Failed to add document Please try again.');
           redirect($this->home.'/add_new');
         }
       }
       else
       {
-        set_error('ไม่พบโซนฝากขาย');
+        set_error_message('Invalid consignment location');
         redirect($this->home.'/add_new');
       }
 
     }
     else
     {
-      set_error('ไม่พบข้อมูลลูกค้า กรุณาตรวจสอบ');
+      set_error_message('Customer information not found, please check.');
       redirect($this->home.'/add_new');
     }
   }
@@ -356,39 +360,90 @@ class Consign_tr extends PS_Controller
       $code = $this->input->post('order_code');
       $zone = $this->input->post('zone_code');
       $wh = $this->warehouse_model->get($this->input->post('warehouse'));
-      if(!empty($code))
+      $DocCur = $this->input->post('DocCur');
+      $DocRate = $this->input->post('DocRate');
+
+      if( ! empty($code))
       {
-        $ds = array(
-          'customer_code' => $this->input->post('customer_code'),
-          'gp' => $this->input->post('gp'),
-          'date_add' => db_date($this->input->post('date_add')),
-          'remark' => $this->input->post('remark'),
-          'zone_code' => $zone,
-					'warehouse_code' => $wh->code,
-					'is_wms' => $wh->is_wms,
-					'id_address' => NULL,
-					'id_sender' => NULL
-        );
+        $order = $this->orders_model->get($code);
 
-        $rs = $this->orders_model->update($code, $ds);
+        if( ! empty($order))
+        {
+          $ds = array(
+            'DocCur' => $DocCur,
+            'DocRate' => $DocRate,
+            'customer_code' => $this->input->post('customer_code'),
+            'gp' => $this->input->post('gp'),
+            'date_add' => db_date($this->input->post('date_add')),
+            'remark' => $this->input->post('remark'),
+            'zone_code' => $zone,
+            'warehouse_code' => $wh->code,
+            'is_wms' => $wh->is_wms,
+            'id_address' => NULL,
+            'id_sender' => NULL
+          );
 
-        if($rs !== TRUE)
+          if( ! $this->orders_model->update($code, $ds))
+          {
+            $sc = FALSE;
+            $message = 'Update failed';
+          }
+
+          if($sc === TRUE)
+          {
+            if($order->DocCur != $DocCur OR $order->DocRate != $DocRate)
+            {
+              $details = $this->orders_model->get_order_details($code);
+
+              if( ! empty($details))
+              {
+                foreach($details as $detail)
+                {
+                  //--- convert price
+                  $oldRate = $order->DocRate;
+                  $cost =  convertPrice($detail->cost, $DocRate, $oldRate);
+                  $price = convertPrice($detail->price, $DocRate, $oldRate);
+                  $full_amount = $detail->total_amount + $detail->discount_amount;
+                  $discount = $detail->discount_amount / $full_amount;
+                  $total_amount = $detail->qty * $price;
+                  $total_discount = ($detail->qty * $price) * $discount;
+                  $line_total = $total_amount - $total_discount;
+                  $total_frgn = $total_amount / $DocRate;
+
+                  $arr = array(
+                    'cost' => $cost,
+                    'price' => $price,
+                    'currency' => $DocCur,
+                    'rate' => $DocRate,
+                    'discount_amount' => $total_discount,
+                    'total_amount' => $line_total,
+                    'totalFrgn' => $total_frgn
+                  );
+
+                  $this->orders_model->update_detail($detail->id, $arr);
+                }
+              }
+            }
+          }
+
+        }
+        else
         {
           $sc = FALSE;
-          $message = 'ปรับปรุงข้อมูลไม่สำเร็จ';
+          $message = "Invalid order code";
         }
       }
       else
       {
         $sc = FALSE;
-        $message = 'ไม่พบโซน';
+        $message = 'Invalid consignment location';
       }
 
     }
     else
     {
       $sc = FALSE;
-      $message = 'ไม่พบเลขที่เอกสาร';
+      $message = 'Document not found';
     }
 
     echo $sc === TRUE ? 'success' : $message;
@@ -414,7 +469,7 @@ class Consign_tr extends PS_Controller
       {
         $diff = $credit_used - $credit_balance;
         $sc = FALSE;
-        $message = 'เครดิตคงเหลือไม่พอ (ขาด : '.number($diff, 2).')';
+        $message = 'Insufficient credit balance (need more : '.number($diff, 2).')';
       }
     }
 
@@ -474,7 +529,7 @@ class Consign_tr extends PS_Controller
       if($rs === FALSE)
       {
         $sc = FALSE;
-        $message = 'บันทึกออเดอร์ไม่สำเร็จ';
+        $message = 'Save failed';
       }
     }
 

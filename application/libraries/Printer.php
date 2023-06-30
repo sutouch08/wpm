@@ -83,7 +83,7 @@ public function doc_header($pageTitle = 'print pages')
 	$header .= "	<div style='width:100%;  text-align:center; margin-top:15px; font-size:12px;'><span><strong>Loading....</strong></span></div>";
 	$header .= "	</div></div></div></div></div> "; // modal fade;
 	$header .= "	<div class='hidden-print' style='margin-top:10px; padding-bottom:10px; padding-right:5mm; width:200mm; margin-left:auto; margin-right:auto; text-align:right'>";
-	$header .= "	<button class='btn btn-primary' onclick='print()'><i class='fa fa-print'></i>&nbspพิมพ์</button>";
+	$header .= "	<button class='btn btn-primary' onclick='print()'>Print</button>";
 	$header .= "	</div><div style='width:100%'>";
 
 	return $header;
@@ -289,7 +289,7 @@ public function top_page()
 	$top = "";
 	$top .= "<div style='width:".$this->content_width."mm; height:".$this->row_height."mm; margin:auto; margin-bottom:2mm;'>"; //// top start
 	$top .= "<div style='width:80%; line-height:".$this->row_height."mm; float:left'><".$this->title_size." style='margin:0px;'>".$this->title."</".$this->title_size."></div>";
-	$top .= "<div style='width:20%; line-height:".$this->row_height."mm; float:left; text-align:right;'><span style='position:relative; bottom: 0mm;'>หน้า ".$this->current_page."/".$this->total_page."</span></div>";
+	$top .= "<div style='width:20%; line-height:".$this->row_height."mm; float:left; text-align:right;'><span style='position:relative; bottom: 0mm;'>Page ".$this->current_page."/".$this->total_page."</span></div>";
 	$top .= "</div>"; /// top end;
 	if( $this->header_rows )
 	{

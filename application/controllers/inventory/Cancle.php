@@ -6,7 +6,7 @@ class Cancle extends PS_Controller
   public $menu_code = 'ICCKCN';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'CHECK';
-	public $title = 'ตรวจสอบ CANCLE ZONE';
+	public $title = 'Cancel History';
   public $filter;
   public $error;
   public function __construct()
@@ -60,14 +60,16 @@ class Cancle extends PS_Controller
       if(! $this->stock_model->update_stock_zone($rs->zone_code, $rs->product_code, $rs->qty))
       {
         $sc = FALSE;
-        $this->error = 'เพิ่มสต็อกกลับโซนเดิมไม่สำเร็จ';
+        $this->error = 'Roll back stock item failed';
+        //$this->error = 'เพิ่มสต็อกกลับโซนเดิมไม่สำเร็จ';
       }
 
       //--- delete cancle row
       if(! $this->cancle_model->delete($id))
       {
         $sc = FALSE;
-        $this->error = 'ลบรายการไม่สำเร็จ';
+        set_error('delete');
+        //$this->error = 'ลบรายการไม่สำเร็จ';
       }
 
       if($sc === TRUE)

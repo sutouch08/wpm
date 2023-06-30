@@ -28,7 +28,7 @@ $canCancleShipped = ($cn->can_add + $cn->can_edit + $cn->can_delete) > 0 ? TRUE 
 			<div class="col-lg-6 col-lg-offset-6 col-md-6 col-md-offset-6 col-sm-6 col-sm-offset-6 col-xs-12 padding-5 bottom-btn" id="rc-div" style="z-index:100;">
 				<?php if($order->is_wms && $order->wms_export == 1) : ?>
 					<?php if($order->state == 9 && $order->is_cancled == 1) : ?>
-						<button type="button" class="btn btn-xs btn-info pull-right margin-left-5" onclick="print_wms_return_request()">พิมพ์ RC-WO</button>
+						<button type="button" class="btn btn-xs btn-info pull-right margin-left-5" onclick="print_wms_return_request()">Print RC-WO</button>
 					<?php endif; ?>
 					<?php if($canCancleShipped && ($order->state == 7 OR $order->state == 8)) : ?>
 						<button type="button" class="btn btn-xs btn-danger pull-right margin-left-5" onclick="cancle_shipped_order()">RC-WO</button>
@@ -41,13 +41,13 @@ $canCancleShipped = ($cn->can_add + $cn->can_edit + $cn->can_delete) > 0 ? TRUE 
 			</div>
     	<ul class="nav nav-tabs" role="tablist">
         <li class="active">
-        	<a href="#state" aria-expanded="true" aria-controls="state" role="tab" data-toggle="tab">สถานะ</a>
+        	<a href="#state" aria-expanded="true" aria-controls="state" role="tab" data-toggle="tab">Status</a>
         </li>
       	<li>
-          <a href="#address" aria-expanded="false" aria-controls="address" role="tab" data-toggle="tab">ที่อยู่</a>
+          <a href="#address" aria-expanded="false" aria-controls="address" role="tab" data-toggle="tab">Shipping address</a>
         </li>
 				<li>
-          <a href="#sender" aria-expanded="false" aria-controls="sender" role="tab" data-toggle="tab">ผู้จัดส่ง</a>
+          <a href="#sender" aria-expanded="false" aria-controls="sender" role="tab" data-toggle="tab">Shipper</a>
         </li>
       </ul>
 
@@ -58,20 +58,20 @@ $canCancleShipped = ($cn->can_add + $cn->can_edit + $cn->can_delete) > 0 ? TRUE 
           <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="table-responsive" style="max-height:250px; overflow:auto;">
-              <table class="table table-bordered" style="min-width:900px; margin-bottom:0px; border-collapse:collapse; border:0;">
+              <table class="table table-striped" style="min-width:900px; margin-bottom:0px; border-collapse:collapse; border:0;">
                 <thead>
                   <tr style="background-color:white;">
-                    <th colspan="6" align="center">ที่อยู่สำหรับจัดส่ง
+                    <th colspan="6" align="center">
+                      <button type="button" class="btn btn-info btn-xs" onClick="addNewAddress()"> Add new</button>
                       <p class="pull-right top-p">
-                        <button type="button" class="btn btn-info btn-xs" onClick="addNewAddress()"> เพิ่มที่อยู่ใหม่</button>
                       </p>
                     </th>
                   </tr>
                   <tr style="font-size:12px; background-color:white;">
-                    <th class="fix-width-120">ชื่อเรียก</th>
-                    <th class="fix-width-150">ผู้รับ</th>
-                    <th class="min-width-250">ที่อยู่</th>
-                    <th class="fix-width-150">โทรศัพท์</th>
+                    <th class="fix-width-120">Alias</th>
+                    <th class="fix-width-150">Consignee</th>
+                    <th class="min-width-250">Address</th>
+                    <th class="fix-width-150">Phone number</th>
                     <th class="fix-width-120"></td>
                   </tr>
                 </thead>
@@ -111,7 +111,7 @@ $canCancleShipped = ($cn->can_add + $cn->can_edit + $cn->can_delete) > 0 ? TRUE 
 
           <?php 	endforeach; ?>
           <?php else : ?>
-                  <tr><td colspan="6" align="center">ไม่พบที่อยู่</td></tr>
+                  <tr><td colspan="6" align="center">Address not found</td></tr>
           <?php endif; ?>
                 </tbody>
               </table>
@@ -127,16 +127,16 @@ $canCancleShipped = ($cn->can_add + $cn->can_edit + $cn->can_delete) > 0 ? TRUE 
         <div class="row" style="padding:15px;">
 					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
             <div class="row">
-              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-3-harf padding-5 text-right">เลือกผู้จัดส่ง :</div>
+              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-3-harf padding-5 text-right">Shipper :</div>
               <div class="col-lg-4 col-md-5 col-sm-5 col-xs-5 padding-5">
                 <select class="form-control input-sm" id="id_sender">
-                  <option value="">เลือก</option>
+                  <option value="">select</option>
                   <?php echo select_common_sender($order->customer_code, $order->id_sender); //--- sender helper?>
                 </select>
               </div>
               <div class="col-lg-2 col-md-3 col-sm-3 col-xs-3 padding-5">
                 <?php if(($order->is_wms == 0) OR ($order->is_wms == 1 && $order->state < 3) OR $order->id_sender == NULL) : ?>
-                <button type="button" class="btn btn-xs btn-success btn-block" onclick="setSender()">บันทึก</button>
+                <button type="button" class="btn btn-xs btn-success btn-block" onclick="setSender()">Save</button>
                 <?php endif; ?>
               </div>
             </div>
@@ -147,13 +147,13 @@ $canCancleShipped = ($cn->can_add + $cn->can_edit + $cn->can_delete) > 0 ? TRUE 
           <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 padding-5">
             <div class="row">
               <div class="col-lg-3 col-md-4 col-sm-4 col-xs-3-harf padding-5 text-right">Tracking No :</div>
-              <div class="col-lg-4 col-md-5 col-sm-5 col-xs-5 padding-5">
+              <div class="col-lg-4 col-md-5 col-sm-6 col-xs-5 padding-5">
                 <input type="text" class="form-control input-sm" id="tracking" value="<?php echo $order->shipping_code; ?>">
                 <input type="hidden" id="trackingNo" value="<?php echo $order->shipping_code; ?>">
               </div>
-              <div class="col-lg-2 col-md-3 col-sm-3 col-xs-3 padding-5">
+              <div class="col-lg-2 col-md-3 col-sm-2 col-xs-3 padding-5">
                 <?php if(($order->is_wms == 0) OR ($order->is_wms == 1 && $order->state < 3) OR $order->shipping_code == NULL) : ?>
-                <button type="button" class="btn btn-xs btn-success btn-block" onclick="update_tracking()">บันทึก</button>
+                <button type="button" class="btn btn-xs btn-success btn-block" onclick="update_tracking()">Save</button>
                 <?php endif; ?>
               </div>
             </div>
@@ -172,7 +172,7 @@ $canCancleShipped = ($cn->can_add + $cn->can_edit + $cn->can_delete) > 0 ? TRUE 
    <div class="modal-content">
        <div class="modal-header">
        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-       <h4 class="modal-title">เหตุผลในการยกเลิก</h4>
+       <h4 class="modal-title">Reason for cancellation</h4>
       </div>
       <div class="modal-body">
         <div class="row">
@@ -180,7 +180,7 @@ $canCancleShipped = ($cn->can_add + $cn->can_edit + $cn->can_delete) > 0 ? TRUE 
             <input type="text" class="form-control input-sm" id="cancle-shipped-reason" value=""/>
           </div>
           <div class="col-sm-3">
-            <button type="button" class="btn btn-sm btn-info" onclick="cancle_order_shipped()">ตกลง</button>
+            <button type="button" class="btn btn-sm btn-info" onclick="cancle_order_shipped()">Submit</button>
           </div>
         </div>
 
@@ -229,13 +229,13 @@ function update_wms_status() {
 
 function cancle_shipped_order() {
 	swal({
-		title: "ยกเลิกออเดอร์ ?",
-		text: "ออเดอร์นี้ถูกจัดส่งแล้ว หากคุณต้องการยกเลิกคุณต้องประสานงานกับคลัง Pioneer เพื่อรับสินค้ากลับเข้าคลังด้วย <br/> ต้องการยกเลิกหรือไม่ ?",
+		title: "Cancellation ?",
+		text: "This document has been delivered. Please confirm if you wish to cancel. Do you want to cancel ?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#DD6B55",
-		confirmButtonText: "ยืนยัน",
-		cancelButtonText: "ยกเลิก",
+		confirmButtonText: "Yes",
+		cancelButtonText: "No",
 		html:true,
 		closeOnConfirm: true,
 		}, function(){

@@ -3,6 +3,17 @@ $('#date').datepicker({
 });
 
 
+async function updateDocRate() {
+  let date = $('#date').val();
+  let currency = $('#doc_currency').val();
+  let rate = await getCurrencyRate(currency, date);
+  $('#doc_rate').val(rate);
+}
+
+$('#date').change(function() {
+  updateDocRate();
+})
+
 
 
 //---- เปลี่ยนสถานะออเดอร์  เป็นบันทึกแล้ว
@@ -134,10 +145,7 @@ function zoneInit(customer_code, edit)
     }
   });
 
-
 }
-
-
 
 
 function add(){
@@ -161,34 +169,34 @@ function addOrder(){
   var gp = $('#gp').val();
 
   if(customer_code.length == 0 || customer_name.length == 0){
-    swal('ชื่อลูกค้าไม่ถูกต้อง');
+    swal('Invalid customer');
     return false;
   }
 
   if(!isDate(date_add))
   {
-    swal('วันที่ไม่ถูกต้อง');
+    swal('Invalid date');
     return false;
   }
 
   if(zone_code.length == 0 || zone_name.length == 0)
   {
-    swal('โซนไม่ถูกต้อง');
+    swal('Invalid location');
     return false;
   }
 
   if(warehouse.length == 0){
-    swal('กรุณาเลือกคลัง');
+    swal('Please select warehouse');
     return false;
   }
 
   if(gp === "") {
     swal({
       title:'Oops!',
-      text:"กรุณากำหนด GP หากไม่มี GP ให้ระบุเป็น 0",
+      text:"Please assign GP, if no GP, specify 0.",
       type:'warning'
     });
-    
+
     return false;
   }
 
@@ -293,13 +301,13 @@ function updateDetailTable(){
 
 function removeDetail(id, name){
 	swal({
-		title: "คุณแน่ใจ ?",
-		text: "ต้องการลบ '" + name + "' หรือไม่ ?",
+		title: "Are you sure ?",
+		text: "Do you really want to delete '" + name + "'?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#DD6B55",
-		confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
 		}, function(){
 			$.ajax({
@@ -446,24 +454,24 @@ function validUpdate(){
 
 	//---- ตรวจสอบวันที่
 	if( ! isDate(date_add) ){
-		swal("วันที่ไม่ถูกต้อง");
+		swal("Invalid date");
 		return false;
 	}
 
 	//--- ตรวจสอบลูกค้า
 	if( customer_code.length == 0 || customer_name == "" ){
-		swal("ชื่อลูกค้าไม่ถูกต้อง");
+		swal("Invalid customer");
 		return false;
 	}
 
   if(zone_code == '' || zone_name.length == 0)
   {
-    swal('โซนไม่ถูกต้อง');
+    swal('Invalid location');
     return false;
   }
 
   if(warehouse.length == 0){
-    swal('กรุณาเลือกคลัง');
+    swal('Please select warehouse');
     return false;
   }
 
@@ -482,6 +490,8 @@ function updateOrder(){
   var gp = $('#gp').val();
   var warehouse = $('#warehouse').val();
 	var remark = $("#remark").val();
+  let currency = $('#doc_currency').val();
+  let rate = $('#doc_rate').val();
 
 	load_in();
 
@@ -496,7 +506,9 @@ function updateOrder(){
       "gp" : gp,
   		"remark" : remark,
       "zone_code" : zone_code,
-      "warehouse" : warehouse
+      "warehouse" : warehouse,
+      "DocCur" : currency,
+      "DocRate" : rate
     },
 		success: function(rs){
 			load_out();
@@ -539,23 +551,23 @@ function changeState(){
 		if(is_wms) {
 
 			if(state == 3 && id_address == "") {
-				swal("กรุณาระบุที่อยู่จัดส่ง");
+				swal("Please specify delivery address.");
 				return false;
 			}
 
 			if(state == 3 && id_sender == "") {
-				swal("กรุณาระบุผู้จัดส่ง");
+				swal("Please specify the shipper.");
 				return false;
 			}
 
 			if($('#sender option:selected').data('tracking') == 1) {
 				if(trackingNo != tracking) {
-					swal("กรุณากดบันทึก Tracking No");
+					swal("Please save Tracking No");
 					return false;
 				}
 
 				if(trackingNo.length === 0) {
-					swal("กรุณาระบุ Tracking No");
+					swal("Please specify Tracking No");
 					return false;
 				}
 			}
@@ -701,10 +713,10 @@ function validateOrder(){
 
   if(arr.length == 2){
     if(arr[0] !== prefix){
-      swal('Prefix ต้องเป็น '+prefix);
+      swal('Prefix must be '+prefix);
       return false;
     }else if(arr[1].length != (4 + runNo)){
-      swal('Run Number ไม่ถูกต้อง');
+      swal('Run Number is not valid');
       return false;
     }else{
       $.ajax({
@@ -726,7 +738,7 @@ function validateOrder(){
     }
 
   }else{
-    swal('เลขที่เอกสารไม่ถูกต้อง');
+    swal('Invalid document number');
     return false;
   }
 }
@@ -775,12 +787,12 @@ function approve()
 		var id_sender = $('#id_sender').val();
 
 		if(id_address == "") {
-			swal("กรุณาระบุที่อยู่จัดส่ง");
+			swal("Please specify the shipping address.");
 			return false;
 		}
 
 		if(id_sender == "") {
-			swal("กรุณาระบุผู้จัดส่ง");
+			swal("Please specify the shipper.");
 			return false;
 		}
 	}
@@ -824,7 +836,6 @@ function unapprove()
         //change_state();
         swal({
           title:'Success',
-          text:'ยกเลิกการอนุมัติแล้ว',
           type:'success',
           timer:1000
         });

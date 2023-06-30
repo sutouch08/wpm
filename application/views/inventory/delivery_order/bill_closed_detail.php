@@ -1,83 +1,51 @@
 <input type="hidden" id="order_code" value="<?php echo $order->code; ?>" />
 <input type="hidden" id="customer_code" value="<?php echo $order->customer_code; ?>" />
 <input type="hidden" id="customer_ref" value="<?php echo $order->customer_ref; ?>" />
-<div class="row">
-  <div class="col-sm-2 padding-5 first">
-    <?php if(!empty($order->reference)) : ?>
-      <label class="font-size-12 blod">
-        <?php echo $order->code.' ['.$order->reference.']';  ?>
-      </label>
-    <?php else : ?>
-    <label class="font-size-14 blod">
-      <?php echo $order->code; ?>
-    </label>
-    <?php endif; ?>
-  </div>
 
-  <?php if($order->role == 'C' OR $order->role == 'N') : ?>
-  <div class="col-sm-4 padding-5">
-    <label class="font-size-12 blod">ลูกค้า : <?php echo empty($order->customer_ref) ? $order->customer_name : $order->customer_ref; ?></label>
-  </div>
-  <?php else : ?>
-    <div class="col-sm-6 padding-5">
-      <label class="font-size-14 blod">
-        <?php if($order->role == 'L' OR $order->role == 'U' OR $order->role == 'R') : ?>
-          ผู้เบิก : <?php echo $order->empName; ?>
-          <?php if(!empty($order->user_ref)) : ?>
-            &nbsp;&nbsp;[ผู้สั่งงาน : <?php echo $order->user_ref; ?>]
-          <?php endif; ?>
-        <?php else: ?>
-        ลูกค้า : <?php echo empty($order->customer_ref) ? $order->customer_name : $order->customer_ref; ?>
-      <?php endif; ?>
-      </label>
-    </div>
-  <?php endif; ?>
+<?php
+	if($order->role == 'N' OR $order->role == 'C')
+	{
+		$this->load->view('inventory/delivery_order/consign_header');
+	}
+	elseif($order->role == 'S')
+	{
+		$this->load->view('inventory/delivery_order/sales_header');
+	}
+	elseif($order->role == 'U' OR $order->role == 'P' OR $order->role == 'Q' OR $order->role == 'T')
+	{
+		$this->load->view('inventory/delivery_order/other_header');
+	}
+	elseif($order->role == 'L')
+	{
+		$this->load->view('inventory/delivery_order/lend_header');
+	}
+ ?>
 
-  <?php if($order->role == 'C' OR $order->role == 'N') : ?>
-    <div class="col-sm-4 padding-5">
-      <label class="font-size-2 blod">โซน : <?php echo $order->zone_name; ?></label>
-    </div>
-    <div class="col-sm-2 padding-5 last text-right">
-      <label class="font-size-14 blod">พนักงาน : <?php echo $order->user; ?></label>
-    </div>
-  <?php else : ?>
-  <div class="col-sm-4 padding-5 last text-right">
-    <label class="font-size-14 blod">พนักงาน : <?php echo $order->user; ?></label>
-  </div>
-  <?php endif; ?>
-
-  <?php if( $order->remark != '') : ?>
-    <div class="col-sm-12">
-      <label class="font-size-14 blod">หมายเหตุ :</label>
-      <?php echo $order->remark; ?>
-    </div>
-  <?php endif; ?>
-</div>
 <hr/>
 
 <div class="row">
   <div class="col-sm-12 text-right">
-    <button type="button" class="btn btn-sm btn-info" onclick="printAddress()"><i class="fa fa-print"></i> ใบนำส่ง</button>
-    <button type="button" class="btn btn-sm btn-primary" onclick="printOrder()"><i class="fa fa-print"></i> Packing List </button>
-    <button type="button" class="btn btn-sm btn-success" onclick="printOrderBarcode()"><i class="fa fa-print"></i> Packing List (barcode)</button>
-    <button type="button" class="btn btn-sm btn-warning" onclick="showBoxList()"><i class="fa fa-print"></i> Packing List (ปะหน้ากล่อง)</button>
+    <button type="button" class="btn btn-sm btn-info top-btn" onclick="printAddress()"><i class="fa fa-print"></i> Delivery Slip</button>
+    <button type="button" class="btn btn-sm btn-primary top-btn" onclick="printOrder()"><i class="fa fa-print"></i> Packing List </button>
+    <button type="button" class="btn btn-sm btn-success top-btn" onclick="printOrderBarcode()"><i class="fa fa-print"></i> Packing List (barcode)</button>
+    <button type="button" class="btn btn-sm btn-warning top-btn" onclick="showBoxList()"><i class="fa fa-print"></i> Packing List (Box)</button>
   </div>
 </div>
 <hr/>
 
 <div class="row">
-  <div class="col-sm-12">
-    <table class="table table-bordered">
+  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5 table-responsive">
+    <table class="table table-bordered" style="min-width:940px;">
       <thead>
         <tr class="font-size-12">
-          <th class="width-5 text-center">ลำดับ</th>
-          <th class="width-35 text-center">สินค้า</th>
-          <th class="width-10 text-center">ราคา</th>
-          <th class="width-10 text-center">ออเดอร์</th>
-          <th class="width-10 text-center">จัด</th>
-          <th class="width-10 text-center">ตรวจ</th>
-          <th class="width-10 text-center">ส่วนลด</th>
-          <th class="width-10 text-center">มูลค่า</th>
+          <th class="fix-width-40 text-center">#</th>
+          <th class="fix-width-250 text-center">Items</th>
+          <th class="fix-width-150 text-center">Price</th>
+          <th class="fix-width-100 text-center">Ordered</th>
+          <th class="fix-width-100 text-center">Picked</th>
+          <th class="fix-width-100 text-center">Packed</th>
+          <th class="fix-width-100 text-center">Discount</th>
+          <th class="fix-width-100 text-center">Amount</th>
         </tr>
       </thead>
       <tbody>
@@ -104,7 +72,7 @@
 
             <!--- ราคาสินค้า  --->
             <td class="text-center">
-              <?php echo number($rs->price, 2); ?>
+              <?php echo number($rs->price, 2); ?>&nbsp; <?php echo $rs->currency; ?>
             </td>
 
             <!---   จำนวนที่สั่ง  --->
@@ -129,6 +97,7 @@
 
             <td class="text-right">
               <?php echo $rs->is_count == 0 ? number($rs->final_price * $rs->order_qty) : number( $rs->final_price * $rs->qc , 2); ?>
+              &nbsp; <?php echo $rs->currency; ?>
             </td>
 
           </tr>
@@ -144,7 +113,7 @@
 <?php   endforeach; ?>
         <tr class="font-size-12">
           <td colspan="3" class="text-right font-size-14">
-            รวม
+            Total
           </td>
 
           <td class="text-center">
@@ -160,47 +129,47 @@
           </td>
 
           <td class="text-center">
-            ส่วนลดท้ายบิล
+            Bill discount
           </td>
 
           <td class="text-right">
-            <?php echo number($order->bDiscAmount, 2); ?>
+            <?php echo number($order->bDiscAmount, 2); ?>&nbsp; <?php echo $order->DocCur; ?>
           </td>
         </tr>
 
 
         <tr>
           <td colspan="3" rowspan="3">
-            หมายเหตุ : <?php echo $order->remark; ?>
+            Remark : <?php echo $order->remark; ?>
           </td>
           <td colspan="3" class="blod">
-            ราคารวม
+            Total amount
           </td>
           <td colspan="2" class="text-right">
-            <?php echo number($totalPrice, 2); ?>
+            <?php echo number($totalPrice, 2); ?>&nbsp; <?php echo $order->DocCur; ?>
           </td>
         </tr>
 
         <tr>
           <td colspan="3">
-            ส่วนลดรวม
+            Total discount
           </td>
           <td colspan="2" class="text-right">
-            <?php echo number($totalDiscount + $order->bDiscAmount, 2); ?>
+            <?php echo number($totalDiscount + $order->bDiscAmount, 2); ?>&nbsp; <?php echo $order->DocCur; ?>
           </td>
         </tr>
 
         <tr>
           <td colspan="3" class="blod">
-            ยอดเงินสุทธิ
+            Net amount
           </td>
           <td colspan="2" class="text-right">
-            <?php echo number($totalPrice - ($totalDiscount + $order->bDiscAmount), 2); ?>
+            <?php echo number($totalPrice - ($totalDiscount + $order->bDiscAmount), 2); ?>&nbsp; <?php echo $order->DocCur; ?>
           </td>
         </tr>
 
 <?php else : ?>
-      <tr><td colspan="8" class="text-center"><h4>ไม่พบรายการ</h4></td></tr>
+      <tr><td colspan="8" class="text-center"><h4>No data</h4></td></tr>
 <?php endif; ?>
       </tbody>
     </table>
@@ -219,7 +188,7 @@
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-sm btn-primary" onclick="printSelectAddress()"><i class="fa fa-print"></i> พิมพ์</button>
+        <button type="button" class="btn btn-sm btn-primary" onclick="printSelectAddress()"><i class="fa fa-print"></i> Print</button>
       </div>
     </div>
   </div>

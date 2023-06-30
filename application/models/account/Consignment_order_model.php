@@ -200,7 +200,7 @@ class Consignment_order_model extends CI_Model
     ->select('order_sold.discount_label')
     ->from('order_sold')
     ->join('orders', 'order_sold.reference = orders.code', 'left')
-    ->where_in('order_sold.role', array('C', 'N'))
+    ->where_in('order_sold.role', array('C'))
     ->where('orders.zone_code', $zone_code)
     ->where('order_sold.product_code', $product_code)
     ->order_by('orders.date_add', 'DESC')

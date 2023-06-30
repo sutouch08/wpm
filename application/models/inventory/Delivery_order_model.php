@@ -192,7 +192,7 @@ class Delivery_order_model extends CI_Model
     public function get_billed_detail($code)
     {
       $qr = "SELECT o.product_code, o.product_name, o.qty AS order_qty, o.is_count, ";
-      $qr .= "o.price, o.discount1, o.discount2, o.discount3, ";
+      $qr .= "o.price, o.currency, o.rate, o.discount1, o.discount2, o.discount3, ";
       $qr .= "(o.discount_amount / o.qty) AS discount_amount, ";
       $qr .= "(o.total_amount/o.qty) AS final_price, ";
       $qr .= "(SELECT SUM(qty) FROM prepare WHERE order_code = '{$code}' AND product_code = o.product_code) AS prepared, ";
@@ -219,7 +219,7 @@ class Delivery_order_model extends CI_Model
     public function get_bill_detail($code)
     {
       $qr = "SELECT o.id, o.style_code, o.product_code, o.product_name, o.qty AS order_qty, ";
-      $qr .= "o.cost, o.price, o.discount1, o.discount2, o.discount3, ";
+      $qr .= "o.cost, o.price, o.currency, o.rate, o.discount1, o.discount2, o.discount3, ";
       $qr .= "o.id_rule, ru.id_policy, o.is_count, ";
       $qr .= "(o.discount_amount / o.qty) AS discount_amount, ";
       $qr .= "(o.total_amount/o.qty) AS final_price, ";
@@ -242,7 +242,7 @@ class Delivery_order_model extends CI_Model
     public function get_non_count_bill_detail($code)
     {
       $qr  = "SELECT o.product_code, o.product_name, o.style_code, o.qty, ";
-      $qr .= "o.cost, o.price, o.discount1, o.discount2, o.discount3, ";
+      $qr .= "o.cost, o.price, o.currency, o.rate, o.discount1, o.discount2, o.discount3, ";
       $qr .= "o.id_rule, ru.id_policy, o.is_count, ";
       $qr .= "(o.discount_amount / o.qty) AS discount_amount, ";
       $qr .= "(o.total_amount/o.qty) AS final_price ";

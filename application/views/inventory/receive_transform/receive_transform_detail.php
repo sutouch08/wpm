@@ -16,19 +16,21 @@
 	</div>
   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
     <p class="pull-right top-p">
-			<button type="button" class="btn btn-xs btn-warning top-btn" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
-      <button type="button" class="btn btn-xs btn-info top-btn" onclick="printReceived()"><i class="fa fa-print"></i> พิมพ์</button>
+			<button type="button" class="btn btn-xs btn-warning top-btn" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
+			<?php if($doc->status != 2 && $doc->status != 0) : ?>
+      <button type="button" class="btn btn-xs btn-info top-btn" onclick="printReceived()"><i class="fa fa-print"></i> Print</button>
+			<?php endif; ?>
 			<?php if($doc->status == 4 && ($doc->uname == $this->_user->uname OR $canAccept)) : ?>
-				<button type="button" class="btn btn-xs btn-success top-btn" onclick="accept()">ยืนยันการรับสินค้า</button>
+				<button type="button" class="btn btn-xs btn-success top-btn" onclick="accept()">Confirm acceptance</button>
 			<?php endif; ?>
 			<?php if($doc->status == 1) : ?>
-			<button type="button" class="btn btn-xs btn-success top-btn" onclick="doExport()"><i class="fa fa-send"></i> ส่งข้อมูลไป SAP</button>
+			<button type="button" class="btn btn-xs btn-success top-btn" onclick="doExport()"><i class="fa fa-send"></i> Send to SAP</button>
 			<?php endif; ?>
 			<?php if($this->isAPI && $doc->status == 3 && $doc->is_wms == 1) : ?>
 				<button type="button" class="btn btn-xs btn-success top-btn" onclick="sendToWms()"><i class="fa fa-send"></i> Send to WMS</button>
 			<?php endif; ?>
 			<?php if($this->pm->can_delete && $doc->status != 2 && ($doc->status == 0 OR $doc->status == 1 OR $this->_SuperAdmin)) : ?>
-        <button type="button" class="btn btn-xs btn-danger top-btn" onclick="goDelete('<?php echo $doc->code; ?>')"><i class="fa fa-exclamation-triangle"></i> ยกเลิก</button>
+        <button type="button" class="btn btn-xs btn-danger top-btn" onclick="goDelete('<?php echo $doc->code; ?>')"><i class="fa fa-exclamation-triangle"></i> Cancel</button>
       <?php endif; ?>
     </p>
   </div>
@@ -37,62 +39,63 @@
 
 <div class="row">
   <div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-4 padding-5">
-  	<label>เลขที่เอกสาร</label>
+  	<label>Document No</label>
     <input type="text" class="form-control input-sm text-center" value="<?php echo $doc->code; ?>" disabled />
   </div>
 	<div class="col-lg-1 col-md-1-harf col-sm-2 col-xs-4 padding-5">
-    <label>วันที่</label>
+    <label>Date</label>
     <input type="text" class="form-control input-sm text-center" name="date_add" id="dateAdd" value="<?php echo thai_date($doc->date_add); ?>" disabled />
   </div>
 
 	<div class="col-lg-1-harf col-md-1-harf col-sm-2-harf col-xs-4 padding-5">
-    <label>ใบเบิก</label>
+    <label>Transform No</label>
     <input type="text" class="form-control input-sm text-center" value="<?php echo $doc->order_code; ?>" disabled />
   </div>
 
   <div class="col-lg-1-harf col-md-1-harf col-sm-2-harf col-xs-6 padding-5">
-  	<label>ใบส่งสินค้า</label>
+  	<label>Invoice No</label>
     <input type="text" class="form-control input-sm text-center" value="<?php echo $doc->invoice_code; ?>" disabled/>
   </div>
   <div class="col-lg-1-harf col-md-1-harf col-sm-3 col-xs-6 padding-5">
-    <label>รหัสโซน</label>
+    <label>Bin location</label>
     <input type="text" class="form-control input-sm text-center" value="<?php echo $doc->zone_code; ?>" disabled />
   </div>
   <div class="col-lg-5 col-md-4-harf col-sm-8 col-xs-12 padding-5">
-  	<label>ชื่อโซน</label>
+  	<label class="not-show">Location</label>
     <input type="text" class="form-control input-sm" value="<?php echo $doc->zone_name; ?>" disabled/>
   </div>
-	<div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-6 padding-5">
+
+	<div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-6 padding-5 hide">
 		<label>ช่องทางการรับ</label>
 		<select class="form-control input-sm header-box" name="is_wms" id="is_wms" disabled>
-			<option value="0" <?php echo is_selected('0', $doc->is_wms); ?>>Warrix</option>
 			<option value="1" <?php echo is_selected('1', $doc->is_wms); ?>>WMS</option>
+			<option value="0" <?php echo is_selected('0', $doc->is_wms); ?>>Warrix</option>
 		</select>
 	</div>
 
 	<div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-6 padding-5">
-		<label>สถานะ</label>
+		<label>Status</label>
 		<select class="form-control input-sm header-box" name="status" id="status" disabled>
-			<option value="0" <?php echo is_selected('0', $doc->status); ?>>ยังไม่บันทึก</option>
-			<option value="1" <?php echo is_selected('1', $doc->status); ?>>บันทึกแล้ว</option>
-			<option value="2" <?php echo is_selected('2', $doc->status); ?>>ยกเลิก</option>
+			<option value="0" <?php echo is_selected('0', $doc->status); ?>>Draft</option>
+			<option value="1" <?php echo is_selected('1', $doc->status); ?>>Saved</option>
+			<option value="2" <?php echo is_selected('2', $doc->status); ?>>Cancelled</option>
 			<option value="3" <?php echo is_selected('3', $doc->status); ?>>WMS Process</option>
-			<option value="4" <?php echo is_selected('4', $doc->status); ?>>รอยืนยัน</option>
+			<option value="4" <?php echo is_selected('4', $doc->status); ?>>Waiting for acceptance</option>
 		</select>
 	</div>
 
 <?php if($doc->status == 2) : ?>
   <div class="col-lg-5 col-md-5 col-sm-8 col-xs-6 padding-5">
-		<label>หมายเหตุ</label>
+		<label>Reamrk</label>
 		<input type="text" class="form-control input-sm" value="<?php echo $doc->remark; ?>" disabled />
 	</div>
 	<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 padding-5">
-		<label>หมายเหตุในการยกเลิก</label>
+		<label>Cancelled reason</label>
 		<input type="text" class="form-control input-sm" value="<?php echo $doc->cancle_reason; ?>" disabled />
 	</div>
 <?php elseif($doc->status == 1) : ?>
 	<div class="col-lg-7-harf col-md-7-harf col-sm-10 col-xs-8 padding-5">
-		<label>หมายเหตุ</label>
+		<label>Remark</label>
 		<input type="text" class="form-control input-sm" value="<?php echo $doc->remark; ?>" disabled />
 	</div>
 	<div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-4 padding-5">
@@ -101,7 +104,7 @@
 	</div>
 <?php else : ?>
 	<div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 padding-5">
-		<label>หมายเหตุ</label>
+		<label>Remark</label>
 		<input type="text" class="form-control input-sm" value="<?php echo $doc->remark; ?>" disabled />
 	</div>
 <?php endif; ?>
@@ -129,7 +132,7 @@ else
 	if($doc->status == 4)
 	{
 		$this->load->view('accept_watermark');
-	}	
+	}
 }
 ?>
 <hr class="margin-top-15 margin-bottom-15"/>
@@ -138,13 +141,13 @@ else
 		<table class="table table-striped table-bordered" style="min-width:1000px;">
       <thead>
       	<tr class="font-size-12">
-        	<th class="fix-width-40 text-center">ลำดับ</th>
-          <th class="fix-width-150 text-center">รหัสสินค้า</th>
-          <th class="min-width-250">ชื่อสินค้า</th>
-					<th class="fix-width-100 text-right">ต้นทุน</th>
-          <th class="fix-width-100 text-right">จำนวน</th>
-					<th class="fix-width-100 text-right">จำนวนรับ</th>
-					<th class="fix-width-120 text-right">มูลค่า</th>
+        	<th class="fix-width-40 text-center">#</th>
+          <th class="fix-width-150 text-center">Item code</th>
+          <th class="min-width-250">Description</th>
+					<th class="fix-width-100 text-right">Cost</th>
+          <th class="fix-width-100 text-right">Qty</th>
+					<th class="fix-width-100 text-right">Received Qty</th>
+					<th class="fix-width-120 text-right">Amount</th>
         </tr>
       </thead>
       <tbody>
@@ -170,7 +173,7 @@ else
 						<?php $total_amount += $rs->amount; ?>
           <?php endforeach; ?>
           <tr>
-            <td colspan="4" class="text-right"><strong>รวม</strong></td>
+            <td colspan="4" class="text-right"><strong>Total</strong></td>
             <td class="text-right"><strong><?php echo number($total_qty, 2); ?></strong></td>
 						<td class="text-right"><strong><?php echo number($total_receive, 2); ?></strong></td>
 						<td class="text-right"><strong><?php echo number($total_amount, 2); ?></strong></td>
@@ -184,9 +187,9 @@ else
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5">
 		<?php if($doc->must_accept == 1 && $doc->is_accept == 1) : ?>
-			<span class="green display-block">ยืนยันการรับโดย : <?php echo $doc->accept_by; ?></span>
-			<span class="green display-block">วัน-เวลา : <?php echo thai_date($doc->accept_on, TRUE); ?></span>
-			<span class="green display-block">หมายเหตุ : <?php echo $doc->accept_remark; ?></span>
+			<span class="green display-block">Accepted by : <?php echo $doc->accept_by; ?></span>
+			<span class="green display-block">Acceptd at : <?php echo thai_date($doc->accept_on, TRUE); ?></span>
+			<span class="green display-block">Notes : <?php echo $doc->accept_remark; ?></span>
 		<?php endif; ?>
 	</div>
 </div>

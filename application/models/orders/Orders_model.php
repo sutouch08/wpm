@@ -1090,6 +1090,16 @@ class Orders_model extends CI_Model
     return $rs->row()->amount;
   }
 
+  public function get_bill_total_amount_fc($code)
+  {
+    $rs = $this->db
+    ->select_sum('totalFrgn', 'amount')
+    ->where('reference', $code)
+    ->get('order_sold');
+
+    return $rs->row()->amount;
+  }
+
 
 
   public function get_order_total_qty($code)
@@ -1173,7 +1183,7 @@ class Orders_model extends CI_Model
     $rs = $this->db->select_sum('qty')
     ->where('order_code', $order_code)
     ->where('style_code', $style_code)
-    ->get('order_detils');
+    ->get('order_details');
 
     return $rs->row()->qty;
   }

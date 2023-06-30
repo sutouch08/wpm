@@ -1,9 +1,9 @@
 <?php
-$paid		= $order->is_paid == 1 ? 'จ่ายแล้ว' : 'รอชำระเงิน';
+$paid		= $order->is_paid == 1 ? 'Paid' : 'Waiting for payment';
 
 /*********  Sender  ***********/
 $sender	 = '<div class="col-sm-12" style="font-size:14px; font-weight: bold; border:solid 2px #ccc; border-radius:10px; padding:10px;">';
-$sender	.=  '<span style="display:block; font-size: 20px; font-weight:bold; padding-bottom:10px; border-bottom:solid 2px #ccc; margin-bottom:15px;">ผู้ส่ง</span>';
+$sender	.=  '<span style="display:block; font-size: 20px; font-weight:bold; padding-bottom:10px; border-bottom:solid 2px #ccc; margin-bottom:15px;">Sender</span>';
 $sender	.=  '<span style="display:block;">'.$cName.'</span>';
 $sender	.=  '<span style="width:70%; display:block;">'.$cAddress.' '.$cPostCode.'</span>';
 $sender	.= '</div>';
@@ -11,14 +11,14 @@ $sender	.= '</div>';
 
 /*********** Receiver  **********/
 $receiver	 = '<div class="col-sm-12" style="font-size:24px; border:solid 2px #ccc; border-radius:10px; padding:10px;">';
-$receiver	.=  '<span style="display:block; font-size: 20px; font-weight:bold; padding-bottom:10px; border-bottom:solid 2px #ccc; margin-bottom:15px;">ผู้รับ &nbsp; |  &nbsp; ';
-$receiver	.=  '<span style="font-size:16px; font-weight:500">โทร. '.$cusPhone.'</span></span>';
+$receiver	.=  '<span style="display:block; font-size: 20px; font-weight:bold; padding-bottom:10px; border-bottom:solid 2px #ccc; margin-bottom:15px;">Receiver &nbsp; |  &nbsp; ';
+$receiver	.=  '<span style="font-size:16px; font-weight:500">Tel. '.$cusPhone.'</span></span>';
 $receiver	.=  '<span style="display:block;">'.$cusName.'</span>';
 $receiver	.=  '<span style="display:block;">'.$cusAdr1.'</span>';
 $receiver	.=  '<span style="display:block;">'.$cusAdr2.'</span>';
 //$receiver	.=  '<span style="display:block;">'.$cusDistr.'</span>';
 $receiver	.=  '<span style="display:block;">'.$cusProv.'</span>';
-$receiver	.=  '<span style="display:block; margin-top:15px;">รหัสไปรษณีย์  <span style="font-size:30px;">'.$cusPostCode.'</span></span>';
+$receiver	.=  '<span style="display:block; margin-top:15px;">Post code  <span style="font-size:30px;">'.$cusPostCode.'</span></span>';
 $receiver	.= '</div>';
 /********** / Receiver ***********/
 
@@ -37,8 +37,8 @@ if(!empty($details))
   $leftCol	.= 			'<span style="font-size:12px; display:block;">'.$cAddress.' '.$cPostCode.'</span>';
   $leftCol	.= 		'</div>';
   $leftCol	.= 		'<div class="col-sm-12" style="margin-top:50px;">';
-  $leftCol	.= 			'<span style="font-size:12px; font-weight:bold; display:block;">ชื่อ - ที่อยู่จัดส่งลูกค้า</span>';
-  $leftCol 	.=			'<span style="font-size:12px; display:block;">รหัสลูกค้า : '.$cusCode.'</span>';
+  $leftCol	.= 			'<span style="font-size:12px; font-weight:bold; display:block;">Consignee - Shipping address</span>';
+  $leftCol 	.=			'<span style="font-size:12px; display:block;">Customer code : '.$cusCode.'</span>';
   $leftCol 	.=			'<span style="font-size:12px; display:block;">'.$cusName.'</span>';
   $leftCol	.=			'<span style="font-size:12px; display:bolck;">'.$cusAdr1.' '.$cusAdr2.' '.$cusProv.' '.$cusPostCode.'</span>';
   $leftCol	.= 		'</div>';
@@ -50,13 +50,13 @@ if(!empty($details))
   //----------- Right column ------------//
   $rightCol	.=	'<div class="row">';
   $rightCol	.= 	'<div class="col-sm-12">';
-  $rightCol	.= 		'<p class="pull-right" style="font-size:16px;"><strong>ใบเสร็จ / ใบส่งของ</strong></p>';
+  $rightCol	.= 		'<p class="pull-right" style="font-size:16px;"><strong>Receipt / Delivery slip</strong></p>';
   $rightCol	.=	'</div>';
   $rightCol	.= 	'<div class="col-sm-12" style="margin-top:30px; font-size:12px;">';
-  $rightCol	.= 		'<p style="float:left; width:20%;">เลขที่บิล</p><p style="float:left; width:35%;">'.$order->code.'</p>';
-  $rightCol	.= 		'<p style="float:left; width:45%; text-align:right;">สถานะ <span style="padding-left:15px;">'.$paid.'</span></p>';
-  $rightCol	.= 		'<p style="float:left; width:20%;">วันที่สั่งซื้อ</p><p style="float:left; width:35%;">'.thai_short_text_date($order->date_add, TRUE).'</p>';
-  $rightCol	.= 		'<p style="float:left; width:45%; text-align:right;">จำนวน<span style="padding-left:10px; padding-right:10px;">';
+  $rightCol	.= 		'<p style="float:left; width:20%;">No.</p><p style="float:left; width:35%;">'.$order->code.'</p>';
+  $rightCol	.= 		'<p style="float:left; width:45%; text-align:right;">Status <span style="padding-left:15px;">'.$paid.'</span></p>';
+  $rightCol	.= 		'<p style="float:left; width:20%;">Order date</p><p style="float:left; width:35%;">'.thai_short_text_date($order->date_add, TRUE).'</p>';
+  $rightCol	.= 		'<p style="float:left; width:45%; text-align:right;">Qty<span style="padding-left:10px; padding-right:10px;">';
   $rightCol .=      number($order->total_qty);
   $rightCol .=      '</span>Pcs.</p>';
   $rightCol	.=	'</div>';
@@ -64,11 +64,11 @@ if(!empty($details))
   $rightCol	.= 	'<div class="col-sm-12" style="font-size:12px;">';
   $rightCol	.= 	  '<table class="table table-bordered">';
   $rightCol	.= 			'<tr style="font-size:12px">';
-  $rightCol	.=				'<td align="center" width="10%">ลำดับ</td>';
-  $rightCol	.=				'<td width="30%">สินค้า</td>';
-  $rightCol	.=				'<td width="15%" align="center">ราคา</td>';
-  $rightCol	.=				'<td width="15%" align="center">จำนวน</td>';
-  $rightCol	.=				'<td width="20%" align="right">มูลค่า</td>';
+  $rightCol	.=				'<td align="center" width="10%">No</td>';
+  $rightCol	.=				'<td width="30%">Items</td>';
+  $rightCol	.=				'<td width="15%" align="center">Price</td>';
+  $rightCol	.=				'<td width="15%" align="center">Qty</td>';
+  $rightCol	.=				'<td width="20%" align="right">Amount</td>';
   $rightCol	.=			'</tr>';
 
 
@@ -111,32 +111,32 @@ if(!empty($details))
   $rowSpan = $order->service_fee > 0 ? 5 : 4;
 
   $rightCol	.= '<tr style="font-size:10px;">';
-  $rightCol .=  '<td colspan="3" rowspan="'.$rowSpan.'"> หมายเหตุ : '.$order->remark.'</td>';
-  $rightCol .=  '<td align="right">สินค้า</td>';
+  $rightCol .=  '<td colspan="3" rowspan="'.$rowSpan.'"> Remark : '.$order->remark.'</td>';
+  $rightCol .=  '<td align="right">Items</td>';
   $rightCol .=  '<td align="right">'.number_format($totalAmount, 2).'</td>';
   $rightCol .= '</tr>';
 
   $rightCol	.= '<tr style="font-size:10px;">';
-  $rightCol .=  '<td align="right">ส่วนลด</td>';
+  $rightCol .=  '<td align="right">Discount</td>';
   $rightCol .=  '<td align="right">'.number_format($totalDisc, 2).'</td>';
   $rightCol .= '</tr>';
 
   $rightCol	.= '<tr style="font-size:10px;">';
-  $rightCol .=  '<td align="right">ค่าจัดส่ง</td>';
+  $rightCol .=  '<td align="right">Shipping fee</td>';
   $rightCol .=  '<td align="right">'.number_format($shipping_fee, 2).'</td>';
   $rightCol .= '</tr>';
 
   if( $order->service_fee > 0)
   {
     $rightCol	.= '<tr style="font-size:10px;">';
-    $rightCol .=  '<td align="right">ค่าบริการอืนๆ</td>';
+    $rightCol .=  '<td align="right">Other fee</td>';
     $rightCol .=  '<td align="right">'.number_format($service_fee, 2).'</td>';
     $rightCol .= '</tr>';
   }
 
 
   $rightCol	.= '<tr style="font-size:10px;">';
-  $rightCol .=  '<td align="right">รวมสุทธิ</td>';
+  $rightCol .=  '<td align="right">Net Amount</td>';
   $rightCol .=  '<td align="right">'.number_format(($totalAmount - $totalDisc) + $shipping_fee + $service_fee, 2).'</td>';
   $rightCol .= '</tr>';
 

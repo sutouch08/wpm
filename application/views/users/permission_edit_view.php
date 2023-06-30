@@ -40,28 +40,40 @@
 				<tr class="font-size-14" style="background-color:#428bca73;">
 					<td class="middle"><?php echo $groups['group_name']; ?></td>
 					<td class="middle text-center">
-						<input id="view-group-<?php echo $g_code; ?>" type="checkbox" class="ace" onchange="groupViewCheck($(this), '<?php echo $g_code; ?>')" />
-						<span class="lbl">  ดู</span>
+						<label>
+							<input id="view-group-<?php echo $g_code; ?>" type="checkbox" class="ace" onchange="groupViewCheck($(this), '<?php echo $g_code; ?>')" />
+							<span class="lbl">  ดู</span>
+						</label>
 					</td>
 					<td class="middle text-center">
+						<label>
 						<input id="add-group-<?php echo $g_code; ?>" type="checkbox" class="ace" onchange="groupAddCheck($(this), '<?php echo $g_code; ?>' )">
 						<span class="lbl">  เพิ่ม</span>
+						</label>
 					</td>
 					<td class="middle text-center">
+						<label>
 						<input id="edit-group-<?php echo $g_code; ?>" type="checkbox" class="ace" onchange="groupEditCheck($(this), '<?php echo $g_code; ?>' )">
 						<span class="lbl"> แก้ไข</span>
+						</label>
 					</td>
 					<td class="middle text-center">
+						<label>
 						<input id="delete-group-<?php echo $g_code; ?>" type="checkbox" class="ace" onchange="groupDeleteCheck($(this), '<?php echo $g_code; ?>' )">
 						<span class="lbl"> ลบ</span>
+						</label>
 					</td>
 					<td class="middle text-center">
+						<label>
 						<input id="approve-group-<?php echo $g_code; ?>" type="checkbox" class="ace" onchange="groupApproveCheck($(this), '<?php echo $g_code; ?>' )">
 						<span class="lbl"> อนุมัติ</span>
+						</label>
 					</td>
 					<td class="middle text-center">
+						<label>
 						<input id="all-group-<?php echo $g_code; ?>" type="checkbox" class="ace" onchange="groupAllCheck($(this), '<?php echo $g_code; ?>' )">
 						<span class="lbl">  ทั้งหมด</span>
+						</label>
 					</td>
 
 				</tr>

@@ -1,127 +1,30 @@
 
 <input type="hidden" id="order_code" value="<?php echo $order->code; ?>" />
-<div class="row">
-	<div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-6 padding-5">
-    	<label>เลขที่เอกสาร</label>
-      <input type="text" class="form-control input-sm text-center" value="<?php echo $order->code; ?>" disabled />
-    </div>
-		<?php if($order->role == 'S') : ?>
-		<div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-6 padding-5">
-			<label>อ้างอิง</label>
-		  <input type="text" class="form-control input-sm text-center edit" name="reference" id="reference" value="<?php echo $order->reference; ?>" disabled />
-		</div>
-		<?php endif; ?>
-    <div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
-    	<label>วันที่</label>
-			<input type="text" class="form-control input-sm text-center edit" name="date" id="date" value="<?php echo thai_date($order->date_add); ?>" disabled readonly />
-    </div>
+<?php
+if($order->role == 'N' OR $order->role == 'C')
+{
+	$this->load->view('inventory/delivery_order/consign_header');
+}
+elseif($order->role == 'S')
+{
+	$this->load->view('inventory/delivery_order/sales_header');
+}
+elseif($order->role == 'U' OR $order->role == 'P' OR $order->role == 'Q' OR $order->role == 'T')
+{
+	$this->load->view('inventory/delivery_order/other_header');
+}
+elseif($order->role == 'L')
+{
+	$this->load->view('inventory/delivery_order/lend_header');
+}
+ ?>
 
-		<?php if($order->role == 'S' OR $order->role == 'C' OR $order->role == 'N') : ?>
-			<?php if($order->role == 'S') : ?>
-				<div class="col-lg-1 col-md-1-harf col-sm-2 col-xs-6 padding-5">
-					<label>รหัสลูกค้า</label>
-					<input type="text" class="form-control input-sm text-center edit" id="customer_code" name="customer_code" value="<?php echo $order->customer_code; ?>" disabled />
-				</div>
-
-		    <div class="col-lg-4 col-md-5 col-sm-4-harf col-xs-12 padding-5">
-		    	<label>ลูกค้า[ในระบบ]</label>
-					<input type="text" class="form-control input-sm edit" id="customer" name="customer" value="<?php echo $order->customer_name; ?>" required disabled />
-		    </div>
-		    <div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-6 padding-5">
-		    	<label>ลูกค้า[ออนไลน์]</label>
-		      <input type="text" class="form-control input-sm edit" id="customer_ref" name="customer_ref" value="<?php echo str_replace('"', '&quot;',$order->customer_ref); ?>" disabled />
-		    </div>
-
-		    <div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-6 padding-5">
-		    	<label>ช่องทางขาย</label>
-					<input type="text" class="form-control input-sm" value="<?php echo $order->channels_name; ?>" disabled/>
-		    </div>
-		    <div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-6 padding-5">
-		    	<label>การชำระเงิน</label>
-					<input type="text" class="form-control input-sm" value="<?php echo $order->payment_name; ?>" disabled />
-		    </div>
-			<?php endif; ?>
-
-			<?php if($order->role == 'C' OR $order->role == 'N') : ?>
-				<div class="col-lg-1 col-md-2 col-sm-2 col-xs-4 padding-5">
-					<label>รหัสลูกค้า</label>
-					<input type="text" class="form-control input-sm text-center edit" id="customer_code" name="customer_code" value="<?php echo $order->customer_code; ?>" disabled />
-				</div>
-
-		    <div class="col-lg-4 col-md-6-harf col-sm-6-harf col-xs-8 padding-5">
-		    	<label>ลูกค้า[ในระบบ]</label>
-					<input type="text" class="form-control input-sm edit" id="customer" name="customer" value="<?php echo $order->customer_name; ?>" required disabled />
-		    </div>
-				<div class="col-lg-4-harf col-md-9 col-sm-9 col-xs-12 padding-5">
-					<label>โซนฝากขาย</label>
-					<input type="text" class="form-control input-sm" value="<?php echo $order->zone_name; ?>" disabled />
-				</div>
-			<?php endif; ?>
-		<?php endif; ?>
-
-		<?php if($order->role == 'L' OR $order->role == 'U' OR $order->role == 'P' OR $order->role == 'Q' OR $order->role == 'T') : ?>
-				<?php if($order->role != 'L') : ?>
-				<div class="col-lg-1 col-md-1-harf col-sm-2 col-xs-4 padding-5">
-					<label>รหัสลูกค้า</label>
-					<input type="text" class="form-control input-sm text-center edit" id="customer_code" name="customer_code" value="<?php echo $order->customer_code; ?>" disabled />
-				</div>
-		    <div class="col-lg-4 col-md-5 col-sm-4-harf col-xs-8 padding-5">
-		    	<label>ลูกค้า[ในระบบ]</label>
-					<input type="text" class="form-control input-sm edit" id="customer" name="customer" value="<?php echo $order->customer_name; ?>" required disabled />
-		    </div>
-				<div class="col-lg-2-harf col-md-2 col-sm-2 col-xs-6 padding-5">
-				 	<label>ผู้เบิก</label>
-					<input type="text" class="form-control input-sm edit" value="<?php echo $order->user_ref; ?>" disabled />
-				</div>
-			<?php else : ?>
-				<div class="col-lg-2-harf col-md-2 col-sm-2 col-xs-6 padding-5">
-				 	<label>ผู้เบิก</label>
-					<input type="text" class="form-control input-sm edit" value="<?php echo $order->empName; ?>" disabled />
-				</div>
-				<div class="col-lg-2-harf col-md-2 col-sm-2 col-xs-6 padding-5">
-				 	<label>ผู้รับ</label>
-					<input type="text" class="form-control input-sm" value="<?php echo $order->user_ref; ?>" disabled />
-				</div>
-				<div class="col-lg-4-harf col-md-4-harf col-sm-4-harf col-xs-6 padding-5">
-					<label>โซนยืมสินค้า</label>
-					<input type="text" class="form-control input-sm" value="<?php echo $order->zone_name; ?>" disabled />
-				</div>
-
-			<?php endif; ?>
-		<?php endif; ?>
-
-
-
-		<div class="col-lg-2 col-md-4 col-sm-3 col-xs-6 padding-5">
-			<label>คลัง</label>
-	    <input type="text" class="form-control input-sm" value="<?php echo $order->warehouse_name; ?>" disabled />
-	  </div>
-
-		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-		 	<label>สร้างโดย</label>
-		  <input type="text" class="form-control input-sm" value="<?php echo $order->user; ?>" disabled />
-		</div>
-
-		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-		 	<label>แก้ไขโดย</label>
-		  <input type="text" class="form-control input-sm" value="<?php echo $order->update_user; ?>" disabled />
-		</div>
-		<div class="col-lg-1 col-md-1-harf col-sm-2 col-xs-6 padding-5">
-		 	<label>วันที่จัดส่ง</label>
-		  <input type="text" class="form-control input-sm text-center" id="ship-date" value="<?php echo thai_date($order->shipped_date, FALSE); ?>" disabled />
-		</div>
-		<div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-6 padding-5">
-			<label class="display-block not-show">x</label>
-			<button type="button" class="btn btn-xs btn-warning btn-block" id="btn-edit-ship-date" onclick="activeShipDate()">เปลี่ยนวันที่จัดส่ง</button>
-			<button type="button" class="btn btn-xs btn-success btn-block hide" id="btn-update-ship-date" onclick="updateShipDate()">Update</button>
-		</div>
-</div>
 <hr class="margin-top-15"/>
 
 <div class="row">
   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5 text-right">
     <?php if( $this->pm->can_edit || $this->pm->can_add ) : ?>
-      <button type="button" class="btn btn-sm btn-primary" id="btn-confirm-order" onclick="confirmOrder()">เปิดบิลและตัดสต็อก</button>
+      <button type="button" class="btn btn-sm btn-primary" id="btn-confirm-order" onclick="confirmOrder()">Delivery confirm</button>
     <?php endif; ?>
   </div>
 </div>
@@ -132,14 +35,14 @@
     <table class="table table-bordered" style="min-width:800px;">
       <thead>
         <tr class="font-size-12">
-          <th class="width-5 text-center">ลำดับ</th>
-          <th class="width-35 text-center">สินค้า</th>
-          <th class="width-10 text-center">ราคา</th>
-          <th class="width-10 text-center">ออเดอร์</th>
-          <th class="width-10 text-center">จัด</th>
-          <th class="width-10 text-center">ตรวจ</th>
-          <th class="width-10 text-center">ส่วนลด</th>
-          <th class="width-10 text-center">มูลค่า</th>
+          <th class="width-5 text-center">#</th>
+          <th class="width-35 text-center">Items</th>
+          <th class="width-10 text-center">Price</th>
+          <th class="width-10 text-center">Ordered</th>
+          <th class="width-10 text-center">Picked</th>
+          <th class="width-10 text-center">Packed</th>
+          <th class="width-10 text-center">Disc.</th>
+          <th class="width-10 text-center">Amount</th>
         </tr>
       </thead>
       <tbody>
@@ -191,6 +94,7 @@
 
           <td class="text-right">
             <?php echo $rs->is_count == 0 ? number($rs->final_price * $rs->order_qty) : number( $rs->final_price * $rs->qc , 2); ?>
+						&nbsp; <?php echo $rs->currency; ?>
           </td>
 
         </tr>
@@ -206,7 +110,7 @@
 <?php   endforeach; ?>
         <tr class="font-size-12">
           <td colspan="3" class="text-right font-size-14">
-            รวม
+            Total
           </td>
 
           <td class="text-center">
@@ -222,47 +126,47 @@
           </td>
 
           <td class="text-center">
-            ส่วนลดท้ายบิล
+            Bill Discount
           </td>
 
           <td class="text-right">
-            <?php echo number($order->bDiscAmount, 2); ?>
+            <?php echo number($order->bDiscAmount, 2); ?>&nbsp; <?php echo $order->DocCur; ?>
           </td>
         </tr>
 
 
         <tr>
           <td colspan="3" rowspan="3">
-            หมายเหตุ : <?php echo $order->remark; ?>
+            Remark : <?php echo $order->remark; ?>
           </td>
           <td colspan="3" class="blod">
-            ราคารวม
+            Total Amount
           </td>
           <td colspan="2" class="text-right">
-            <?php echo number($totalPrice, 2); ?>
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="3">
-            ส่วนลดรวม
-          </td>
-          <td colspan="2" class="text-right">
-            <?php echo number($totalDiscount + $order->bDiscAmount, 2); ?>
+            <?php echo number($totalPrice, 2); ?>&nbsp; <?php echo $order->DocCur; ?>
           </td>
         </tr>
 
         <tr>
           <td colspan="3" class="blod">
-            ยอดเงินสุทธิ
+            Total Discount
           </td>
           <td colspan="2" class="text-right">
-            <?php echo number($totalPrice - ($totalDiscount + $order->bDiscAmount), 2); ?>
+            <?php echo number($totalDiscount + $order->bDiscAmount, 2); ?>&nbsp; <?php echo $order->DocCur; ?>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3" class="blod">
+            Net Amount
+          </td>
+          <td colspan="2" class="text-right">
+            <?php echo number($totalPrice - ($totalDiscount + $order->bDiscAmount), 2); ?>&nbsp; <?php echo $order->DocCur; ?>
           </td>
         </tr>
 
 <?php else : ?>
-      <tr><td colspan="8" class="text-center"><h4>ไม่พบรายการ</h4></td></tr>
+      <tr><td colspan="8" class="text-center"><h4>No Data</h4></td></tr>
 <?php endif; ?>
       </tbody>
     </table>

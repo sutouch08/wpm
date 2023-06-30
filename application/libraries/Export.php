@@ -22,8 +22,6 @@ class Export
   }
 
 
-
-
   //--- ODLN  DLN1
   public function export_order($code)
   {
@@ -39,6 +37,7 @@ class Export
     $order = $this->ci->orders_model->get($code);
     $cust = $this->ci->customers_model->get($order->customer_code);
     $total_amount = $this->ci->orders_model->get_bill_total_amount($code);
+    $totalFC = $this->ci->orders_model->get_bill_total_amount_fc($code);
 
     $service_wh = getConfig('SERVICE_WAREHOUSE');
     $U_WhsCode = NULL;
@@ -68,14 +67,13 @@ class Export
           if($this->ci->delivery_order_model->drop_middle_exits_data($rows->DocEntry) === FALSE)
           {
             $sc = FALSE;
-            $this->error = "ลบรายการที่ค้างใน Temp ไม่สำเร็จ";
+            $this->error = "Failed to delete item in Temp";
           }
         }
       }
 
       if($sc === TRUE)
       {
-        $currency = getConfig('CURRENCY');
         $vat_rate = getConfig('SALE_VAT_RATE');
         $vat_code = getConfig('SALE_VAT_CODE');
 				$date_add = getConfig('ORDER_SOLD_DATE') == 'D' ? $order->date_add : (empty($order->shipped_date) ? now() : $order->shipped_date);
@@ -87,13 +85,10 @@ class Export
           'DocDueDate' => sap_date($date_add,TRUE), //--- วันที่เอกสาร
           'CardCode' => $order->customer_code, //--- รหัสลูกค้า
           'CardName' => $cust->name, //--- ชื่อลูกค้า
-          'DiscPrcnt' => $order->bDiscText,
-          'DiscSum' => $order->bDiscAmount,
-          'DiscSumFC' => $order->bDiscAmount,
-          'DocCur' => $currency,
-          'DocRate' => 1.000000,
+          'DocCur' => $order->DocCur,
+          'DocRate' => $order->DocRate,
           'DocTotal' => $total_amount,
-          'DocTotalFC' => $total_amount,
+          'DocTotalFC' => $totalFC,
           'GroupNum' => $cust->GroupNum,
           'SlpCode' => $cust->sale_code,
           'ToWhsCode' => NULL,
@@ -116,6 +111,7 @@ class Export
         if($docEntry !== FALSE)
         {
           $details = $this->ci->delivery_order_model->get_sold_details($code);
+
           if(!empty($details))
           {
             $line = 0;
@@ -133,11 +129,11 @@ class Export
                 'UnitMsr' => $this->ci->products_model->get_unit_code($rs->product_code),
                 'PriceBefDi' => $rs->price,  //---มูลค่าต่อหน่วยก่อนภาษี/ก่อนส่วนลด
                 'LineTotal' => $rs->total_amount,
-                'Currency' => $currency,
-                'Rate' => 1.000000,
+                'Currency' => $rs->currency,
+                'Rate' => $rs->rate,
                 'DiscPrcnt' => discountAmountToPercent($rs->discount_amount, $rs->qty, $rs->price), ///--- discount_helper
-                'Price' => remove_vat($rs->price), //--- ราคา
-                'TotalFrgn' => $rs->total_amount, //--- จำนวนเงินรวม By Line (Currency)
+                'Price' => remove_vat($rs->price, $vat_rate), //--- ราคา
+                'TotalFrgn' => $rs->totalFrgn, //--- จำนวนเงินรวม By Line (Currency)
                 'WhsCode' => ($rs->is_count == 1 ? $rs->warehouse_code : $service_wh),
                 'BinCode' => $rs->zone_code,
                 'TaxStatus' => 'Y',
@@ -145,7 +141,7 @@ class Export
                 'VatGroup' => $vat_code,
                 'PriceAfVat' => $rs->sell,
                 'GTotal' => round($rs->total_amount, 2),
-                'VatSum' => get_vat_amount($rs->total_amount), //---- tool_helper
+                'VatSum' => get_vat_amount($rs->total_amount, $vat_rate), //---- tool_helper
                 'TaxType' => 'Y', //--- คิดภาษีหรือไม่
                 'F_E_Commerce' => 'A', //--- A = Add , U = Update
                 'F_E_CommerceDate' => sap_date(now(), TRUE),
@@ -159,13 +155,13 @@ class Export
           else
           {
             $sc = FALSE;
-            $this->error = "ไม่พบรายการขาย";
+            $this->error = "No entry found";
           }
         }
         else
         {
           $sc = FALSE;
-          $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+          $this->error = "Insert Temp failed";
         }
 
         if($sc === TRUE)
@@ -188,7 +184,7 @@ class Export
     else
     {
       $sc = FALSE;
-      $this->error = "เอกสารถูกนำเข้า SAP แล้ว หากต้องการเปลี่ยนแปลงกรุณายกเลิกเอกสารใน SAP ก่อน";
+      $this->error = "This document has already been imported to SAP. Please cancel the document in SAP before making changes.";
     }
 
     $this->set_exported($code, $sc);
@@ -214,6 +210,7 @@ class Export
     $order = $this->ci->consign_order_model->get($code);
     $cust = $this->ci->customers_model->get($order->customer_code);
     $total_amount = $this->ci->orders_model->get_bill_total_amount($code);
+    $totalFC = $this->ci->orders_model->get_bill_total_amount_fc($code);
 
     $service_wh = getConfig('SERVICE_WAREHOUSE');
 
@@ -229,7 +226,7 @@ class Export
           if($this->ci->delivery_order_model->drop_middle_exits_data($rows->DocEntry) === FALSE)
           {
             $sc = FALSE;
-            $this->error = "ลบรายการที่ค้างใน Temp ไม่สำเร็จ";
+            $this->error = "Failed to delete item in Temp";
           }
         }
 
@@ -237,7 +234,6 @@ class Export
 
       if($sc === TRUE)
       {
-        $currency = getConfig('CURRENCY');
         $vat_rate = getConfig('SALE_VAT_RATE');
         $vat_code = getConfig('SALE_VAT_CODE');
 				$date_add = $order->date_add;
@@ -249,10 +245,10 @@ class Export
           'DocDueDate' => sap_date($date_add,TRUE), //--- วันที่เอกสาร
           'CardCode' => $order->customer_code, //--- รหัสลูกค้า
           'CardName' => $cust->name, //--- ชื่อลูกค้า
-          'DocCur' => $currency,
-          'DocRate' => 1.000000,
+          'DocCur' => $order->DocCur,
+          'DocRate' => $order->DocRate,
           'DocTotal' => $total_amount,
-          'DocTotalFC' => $total_amount,
+          'DocTotalFC' => $totalFC,
           'GroupNum' => $cust->GroupNum,
           'SlpCode' => $cust->sale_code,
           'ToWhsCode' => NULL,
@@ -289,11 +285,11 @@ class Export
                 'UnitMsr' => $this->ci->products_model->get_unit_code($rs->product_code),
                 'PriceBefDi' => $rs->price,  //---มูลค่าต่อหน่วยก่อนภาษี/ก่อนส่วนลด
                 'LineTotal' => $rs->total_amount,
-                'Currency' => $currency,
-                'Rate' => 1.000000,
+                'Currency' => $rs->currency,
+                'Rate' => $rs->rate,
                 'DiscPrcnt' => discountAmountToPercent($rs->discount_amount, $rs->qty, $rs->price), ///--- discount_helper
-                'Price' => remove_vat($rs->price), //--- ราคา
-                'TotalFrgn' => $rs->total_amount, //--- จำนวนเงินรวม By Line (Currency)
+                'Price' => remove_vat($rs->price, $vat_rate), //--- ราคา
+                'TotalFrgn' => $rs->totalFrgn, //--- จำนวนเงินรวม By Line (Currency)
                 'WhsCode' => ($rs->is_count == 1 ? $rs->warehouse_code : $service_wh),
                 'BinCode' => $rs->zone_code,
                 'TaxStatus' => 'Y',
@@ -301,7 +297,7 @@ class Export
                 'VatGroup' => $vat_code,
                 'PriceAfVat' => $rs->sell,
                 'GTotal' => round($rs->total_amount, 2),
-                'VatSum' => get_vat_amount($rs->total_amount), //---- tool_helper
+                'VatSum' => get_vat_amount($rs->total_amount, $vat_rate), //---- tool_helper
                 'TaxType' => 'Y', //--- คิดภาษีหรือไม่
                 'F_E_Commerce' => 'A', //--- A = Add , U = Update
                 'F_E_CommerceDate' => sap_date(now(), TRUE),
@@ -315,13 +311,13 @@ class Export
           else
           {
             $sc = FALSE;
-            $this->error = "ไม่พบรายการขาย";
+            $this->error = "No entry found";
           }
         }
         else
         {
           $sc = FALSE;
-          $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+          $this->error = "Failed to add document";
         }
 
         if($sc === TRUE)
@@ -337,7 +333,7 @@ class Export
     else
     {
       $sc = FALSE;
-      $this->error = "เอกสารถูกนำเข้า SAP แล้ว หากต้องการเปลี่ยนแปลงกรุณายกเลิกเอกสารใน SAP ก่อน";
+      $this->error = "This document has already been imported to SAP. Please cancel the document in SAP before making changes.";
     }
 
     $this->set_exported($code, $sc);
@@ -390,7 +386,7 @@ class Export
               if($this->ci->transfer_model->drop_middle_exits_data($rows->DocEntry) === FALSE)
               {
                 $sc = FALSE;
-                $this->error = "ลบรายที่ค้างใน temp ไม่สำเร็จ";
+                $this->error = "Failed to delete item in Temp";
               }
             }
 
@@ -398,11 +394,11 @@ class Export
 
           if($sc === TRUE)
           {
-            $currency = getConfig('CURRENCY');
             $vat_rate = getConfig('SALE_VAT_RATE');
             $vat_code = getConfig('SALE_VAT_CODE');
 						$date_add = getConfig('ORDER_SOLD_DATE') == 'D' ? $doc->date_add : (empty($doc->shipped_date) ? now() : $doc->shipped_date);
             $total_amount = $this->ci->orders_model->get_bill_total_amount($code);
+            $totalFC = $this->ci->orders_model->get_bill_total_amount_fc($code);
 
             $ds = array(
               'U_ECOMNO' => $doc->code,
@@ -413,15 +409,15 @@ class Export
               'CardCode' => $cust->code,
               'CardName' => $cust->name,
               'VatPercent' => $vat_rate,
-              'VatSum' => round(get_vat_amount($total_amount), 6),
-              'VatSumFc' => round(get_vat_amount($total_amount), 6),
+              'VatSum' => round(get_vat_amount($total_amount, $vat_rate), 6),
+              'VatSumFc' => round(get_vat_amount($totalFC, $vat_rate), 6),
               'DiscPrcnt' => 0.000000,
               'DiscSum' => 0.000000,
               'DiscSumFC' => 0.000000,
-              'DocCur' => $currency,
-              'DocRate' => 1,
-              'DocTotal' => remove_vat($total_amount),
-              'DocTotalFC' => remove_vat($total_amount),
+              'DocCur' => $doc->DocCur,
+              'DocRate' => $doc->DocRate,
+              'DocTotal' => remove_vat($total_amount, $vat_rate),
+              'DocTotalFC' => remove_vat($totalFC, $vat_rate),
               'Filler' => empty($zone) ? NULL : $zone->warehouse_code,
               'ToWhsCode' => empty($zone) ? NULL : $zone->warehouse_code,
               'Comments' => limitText($doc->remark, 250),
@@ -458,12 +454,12 @@ class Export
                     'PriceBefDi' => round($rs->price,2),
                     'LineTotal' => round($rs->total_amount,2),
                     'ShipDate' => $date_add,
-                    'Currency' => $currency,
-                    'Rate' => 1,
+                    'Currency' => $rs->currency,
+                    'Rate' => $rs->rate,
                     //--- คำนวณส่วนลดจากยอดเงินกลับมาเป็น % (เพราะบางทีมีส่วนลดหลายชั้น)
                     'DiscPrcnt' => discountAmountToPercent($rs->discount_amount, $rs->qty, $rs->price), ///--- discount_helper
-                    'Price' => round(remove_vat($rs->price),2),
-                    'TotalFrgn' => round($rs->total_amount,2),
+                    'Price' => round(remove_vat($rs->price, $vat_rate),2),
+                    'TotalFrgn' => round($rs->totalFrgn,2),
                     'FromWhsCod' => $rs->warehouse_code,
                     'WhsCode' => empty($zone) ? NULL : $zone->warehouse_code,
                     'FisrtBin' => $doc->zone_code, //-- โซนปลายทาง
@@ -473,7 +469,7 @@ class Export
                     'VatPrcnt' => $vat_rate,
                     'VatGroup' => $vat_code,
                     'PriceAfVAT' => round($rs->sell,2),
-                    'VatSum' => round(get_vat_amount($rs->total_amount),2),
+                    'VatSum' => round(get_vat_amount($rs->total_amount, $vat_rate),2),
                     'GTotal' => round($rs->total_amount, 2),
                     'TaxType' => 'Y',
                     'F_E_Commerce' => 'A',
@@ -483,7 +479,7 @@ class Export
                   if( ! $this->ci->transfer_model->add_sap_transfer_detail($arr))
                   {
                     $sc = FALSE;
-                    $this->error = 'เพิ่มรายการไม่สำเร็จ';
+                    $this->error = 'Failed to add item';
                   }
 
                   $line++;
@@ -492,13 +488,13 @@ class Export
               else
               {
                 $sc = FALSE;
-                $this->error = "ไม่พบรายการสินค้า";
+                $this->error = "No entry found.";
               }
             }
             else
             {
               $sc = FALSE;
-              $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+              $this->error = "Failed to add document";
             }
 
             if($sc === TRUE)
@@ -514,19 +510,19 @@ class Export
         else
         {
           $sc = FALSE;
-          $this->error = "สถานะเอกสารไม่ถูกต้อง";
+          $this->error = "Invalid document status";
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "เอกสารถูกนำเข้า SAP แล้ว หากต้องการเปลี่ยนแปลงกรุณายกเลิกเอกสารใน SAP ก่อน";
+        $this->error = "This document has already been imported to SAP. Please cancel the document in SAP before making changes.";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเอกสาร {$code}";
+      $this->error = "Document not found {$code}";
     }
 
     $this->set_exported($code, $sc);
@@ -579,18 +575,18 @@ public function export_transfer_draft($code)
             if($this->ci->transfer_model->drop_middle_transfer_draft($rows->DocEntry) === FALSE)
             {
               $sc = FALSE;
-              $this->error = "ลบรายการที่ค้างใน temp ไม่สำเร็จ";
+              $this->error = "Failed to delete item in Temp";
             }
           }
         }
 
         if($sc === TRUE)
         {
-          $currency = getConfig('CURRENCY');
           $vat_rate = getConfig('SALE_VAT_RATE');
           $vat_code = getConfig('SALE_VAT_CODE');
 					$date_add = getConfig('ORDER_SOLD_DATE') == 'D' ? $doc->date_add : (empty($doc->shipped_date) ? now() : $doc->shipped_date);
           $total_amount = $this->ci->orders_model->get_bill_total_amount($code);
+          $totalFC = $this->ci->orders_model->get_bill_total_amount_fc($code);
           $ds = array(
             'U_ECOMNO' => $doc->code,
             'DocType' => 'I',
@@ -600,15 +596,15 @@ public function export_transfer_draft($code)
             'CardCode' => $cust->code,
             'CardName' => $cust->name,
             'VatPercent' => $vat_rate,
-            'VatSum' => round(get_vat_amount($total_amount), 6),
-            'VatSumFc' => round(get_vat_amount($total_amount), 6),
+            'VatSum' => round(get_vat_amount($total_amount, $vat_rate), 6),
+            'VatSumFc' => round(get_vat_amount($totalFC, $vat_rate), 6),
             'DiscPrcnt' => 0.000000,
             'DiscSum' => 0.000000,
             'DiscSumFC' => 0.000000,
-            'DocCur' => $currency,
-            'DocRate' => 1,
-            'DocTotal' => remove_vat($total_amount),
-            'DocTotalFC' => remove_vat($total_amount),
+            'DocCur' => $doc->DocCur,
+            'DocRate' => $doc->DocRate,
+            'DocTotal' => remove_vat($total_amount, $vat_rate),
+            'DocTotalFC' => remove_vat($totalFC, $vat_rate),
             'Filler' => empty($zone) ? NULL : $zone->warehouse_code,
             'ToWhsCode' => empty($zone) ? NULL : $zone->warehouse_code,
             'Comments' => limitText($doc->remark, 250),
@@ -644,12 +640,12 @@ public function export_transfer_draft($code)
                   'PriceBefDi' => round($rs->price,2),
                   'LineTotal' => round($rs->total_amount,2),
                   'ShipDate' => $date_add,
-                  'Currency' => $currency,
-                  'Rate' => 1,
+                  'Currency' => $rs->currency,
+                  'Rate' => $rs->rate,
                   //--- คำนวณส่วนลดจากยอดเงินกลับมาเป็น % (เพราะบางทีมีส่วนลดหลายชั้น)
                   'DiscPrcnt' => discountAmountToPercent($rs->discount_amount, $rs->qty, $rs->price), ///--- discount_helper
-                  'Price' => round(remove_vat($rs->price),2),
-                  'TotalFrgn' => round($rs->total_amount,2),
+                  'Price' => round(remove_vat($rs->price, $vat_rate),2),
+                  'TotalFrgn' => round($rs->totalFrgn,2),
                   'FromWhsCod' => $rs->warehouse_code,
                   'WhsCode' => empty($zone) ? NULL : $zone->warehouse_code,
                   'FisrtBin' => $doc->zone_code, //-- โซนปลายทาง
@@ -659,7 +655,7 @@ public function export_transfer_draft($code)
                   'VatPrcnt' => $vat_rate,
                   'VatGroup' => $vat_code,
                   'PriceAfVAT' => round($rs->sell,2),
-                  'VatSum' => round(get_vat_amount($rs->total_amount),2),
+                  'VatSum' => round(get_vat_amount($rs->total_amount, $vat_rate),2),
                   'GTotal' => round($rs->total_amount, 2),
                   'TaxType' => 'Y',
                   'F_E_Commerce' => 'A',
@@ -669,7 +665,7 @@ public function export_transfer_draft($code)
                 if( ! $this->ci->transfer_model->add_sap_transfer_draft_detail($arr))
                 {
                   $sc = FALSE;
-                  $this->error = 'เพิ่มรายการไม่สำเร็จ';
+                  $this->error = 'Failed to add item';
                 }
 
                 $line++;
@@ -678,13 +674,13 @@ public function export_transfer_draft($code)
             else
             {
               $sc = FALSE;
-              $this->error = "ไม่พบรายการสินค้า";
+              $this->error = "No entry found.";
             }
           }
           else
           {
             $sc = FALSE;
-            $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+            $this->error = "Failed to add document";
           }
 
           if($sc === TRUE)
@@ -701,19 +697,19 @@ public function export_transfer_draft($code)
       else
       {
         $sc = FALSE;
-        $this->error = "สถานะเอกสารไม่ถูกต้อง";
+        $this->error = "Invalid document status";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "เอกสารถูกนำเข้า SAP แล้ว หากต้องการเปลี่ยนแปลงกรุณายกเลิกเอกสารใน SAP ก่อน";
+      $this->error = "This document has already been imported to SAP. Please cancel the document in SAP before making changes.";
     }
   }
   else
   {
     $sc = FALSE;
-    $this->error = "ไม่พบเอกสาร {$code}";
+    $this->error = "Document not found {$code}";
   }
 
   $this->set_exported($code, $sc);
@@ -748,7 +744,7 @@ public function export_transfer($code)
             if($this->ci->transfer_model->drop_middle_exits_data($rows->DocEntry) === FALSE)
             {
               $sc = FALSE;
-              $this->error = "ลบรายที่ค้างใน temp ไม่สำเร็จ";
+              $this->error = "Failed to delete item in Temp";
             }
           }
         }
@@ -839,10 +835,10 @@ public function export_transfer($code)
                     if( ! $this->ci->transfer_model->add_sap_transfer_detail($arr))
                     {
                       $sc = FALSE;
-                      $this->error = 'เพิ่มรายการไม่สำเร็จ';
+                      $this->error = 'Failed to add item';
                     }
 
-                    $line++;                    
+                    $line++;
                   }
 								}
 								else
@@ -882,7 +878,7 @@ public function export_transfer($code)
 									if( ! $this->ci->transfer_model->add_sap_transfer_detail($arr))
 	                {
 	                  $sc = FALSE;
-	                  $this->error = 'เพิ่มรายการไม่สำเร็จ';
+	                  $this->error = 'Failed to add item';
 	                }
 
 	                $line++;
@@ -892,13 +888,13 @@ public function export_transfer($code)
             else
             {
               $sc = FALSE;
-              $this->error = "ไม่พบรายการสินค้า";
+              $this->error = "No entry found.";
             }
           }
           else
           {
             $sc = FALSE;
-            $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+            $this->error = "Failed to add document";
           }
 
           if($sc === TRUE)
@@ -915,20 +911,20 @@ public function export_transfer($code)
       else
       {
         $sc = FALSE;
-        $this->error = "สถานะเอกสารไม่ถูกต้อง";
+        $this->error = "Invalid document status";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "เอกสารถูกนำเข้า SAP แล้ว หากต้องการเปลี่ยนแปลงกรุณายกเลิกเอกสารใน SAP ก่อน";
+      $this->error = "This document has already been imported to SAP. Please cancel the document in SAP before making changes.";
     }
 
   }
   else
   {
     $sc = FALSE;
-    $this->error = "ไม่พบเอกสาร {$code}";
+    $this->error = "Document not found {$code}";
   }
 
   return $sc;
@@ -959,7 +955,7 @@ public function export_move($code)
             if($this->ci->move_model->drop_middle_exits_data($rows->DocEntry) === FALSE)
             {
               $sc = FALSE;
-              $this->error = "ลบรายที่ค้างใน temp ไม่สำเร็จ";
+              $this->error = "Failed to delete item in Temp";
             }
           }
         }
@@ -1043,7 +1039,7 @@ public function export_move($code)
                 if( ! $this->ci->move_model->add_sap_move_detail($arr))
                 {
                   $sc = FALSE;
-                  $this->error = 'เพิ่มรายการไม่สำเร็จ';
+                  $this->error = 'Failed to add item';
                 }
 
                 $line++;
@@ -1058,13 +1054,13 @@ public function export_move($code)
             else
             {
               $sc = FALSE;
-              $this->error = "ไม่พบรายการสินค้า";
+              $this->error = "No entry found.";
             }
           }
           else
           {
             $sc = FALSE;
-            $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+            $this->error = "Failed to add document";
           }
 
           if($sc === TRUE)
@@ -1080,20 +1076,20 @@ public function export_move($code)
       else
       {
         $sc = FALSE;
-        $this->error = "สถานะเอกสารไม่ถูกต้อง";
+        $this->error = "Invalid document status";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "เอกสารถูกนำเข้า SAP แล้ว หากต้องการเปลี่ยนแปลงกรุณายกเลิกเอกสารใน SAP ก่อน";
+      $this->error = "This document has already been imported to SAP. Please cancel the document in SAP before making changes.";
     }
 
   }
   else
   {
     $sc = FALSE;
-    $this->error = "ไม่พบเอกสาร {$code}";
+    $this->error = "Document not found {$code}";
   }
 
   return $sc;
@@ -1129,7 +1125,7 @@ public function export_transform($code)
             if($this->ci->transfer_model->drop_middle_exits_data($rows->DocEntry) === FALSE)
             {
               $sc = FALSE;
-              $this->error = "ลบรายที่ค้างใน temp ไม่สำเร็จ";
+              $this->error = "Failed to delete item in Temp";
             }
           }
         }
@@ -1142,6 +1138,7 @@ public function export_transform($code)
           $vat_code = getConfig('SALE_VAT_CODE');
 					$date_add = getConfig('ORDER_SOLD_DATE') == 'D' ? $doc->date_add : (empty($doc->shipped_date) ? now() : $doc->shipped_date);
           $total_amount = $this->ci->orders_model->get_bill_total_amount($code);
+          $totalFC = $this->ci->orders_model->get_bill_total_amount_fc($code);
 
           $ds = array(
             'U_ECOMNO' => $doc->code,
@@ -1152,15 +1149,15 @@ public function export_transform($code)
             'CardCode' => $cust->code,
             'CardName' => $cust->name,
             'VatPercent' => $vat_rate,
-            'VatSum' => get_vat_amount($total_amount),
-            'VatSumFc' => get_vat_amount($total_amount),
+            'VatSum' => get_vat_amount($total_amount, $vat_rate),
+            'VatSumFc' => get_vat_amount($totalFC, $vat_rate),
             'DiscPrcnt' => 0.000000,
             'DiscSum' => 0.000000,
             'DiscSumFC' => 0.000000,
-            'DocCur' => $currency,
-            'DocRate' => 1,
-            'DocTotal' => remove_vat($total_amount),
-            'DocTotalFC' => remove_vat($total_amount),
+            'DocCur' => $doc->DocCur,
+            'DocRate' => $doc->DocRate,
+            'DocTotal' => remove_vat($total_amount, $vat_rate),
+            'DocTotalFC' => remove_vat($totalFC, $vat_rate),
             'Filler' => $doc->warehouse_code,
             'ToWhsCode' => $transform_warehouse,
             'Comments' => limitText($doc->remark, 250),
@@ -1194,12 +1191,12 @@ public function export_transform($code)
                   'PriceBefDi' => round($rs->price,2),
                   'LineTotal' => round($rs->total_amount,2),
                   'ShipDate' => $date_add,
-                  'Currency' => $currency,
-                  'Rate' => 1,
+                  'Currency' => $rs->currency,
+                  'Rate' => $rs->rate,
                   //--- คำนวณส่วนลดจากยอดเงินกลับมาเป็น % (เพราะบางทีมีส่วนลดหลายชั้น)
                   'DiscPrcnt' => discountAmountToPercent($rs->discount_amount, $rs->qty, $rs->price), ///--- discount_helper
-                  'Price' => round(remove_vat($rs->price),2),
-                  'TotalFrgn' => round($rs->total_amount,2),
+                  'Price' => round(remove_vat($rs->price, $vat_rate),2),
+                  'TotalFrgn' => round($rs->totalFrgn,2),
                   'FromWhsCod' => $rs->warehouse_code,
                   'WhsCode' => $transform_warehouse,
                   'FisrtBin' => $doc->zone_code, //--- zone ปลายทาง
@@ -1209,7 +1206,7 @@ public function export_transform($code)
                   'VatPrcnt' => $vat_rate,
                   'VatGroup' => $vat_code,
                   'PriceAfVAT' => round($rs->sell, 2),
-                  'VatSum' => round(get_vat_amount($rs->total_amount),2),
+                  'VatSum' => round(get_vat_amount($rs->total_amount, $vat_rate),2),
                   'GTotal' => round($rs->total_amount, 2),
                   'TaxType' => 'Y',
                   'F_E_Commerce' => 'A',
@@ -1219,7 +1216,7 @@ public function export_transform($code)
                 if( ! $this->ci->transfer_model->add_sap_transfer_detail($arr))
                 {
                   $sc = FALSE;
-                  $this->error = 'เพิ่มรายการไม่สำเร็จ';
+                  $this->error = 'Failed to add item';
                 }
 
                 $line++;
@@ -1228,13 +1225,13 @@ public function export_transform($code)
             else
             {
               $sc = FALSE;
-              $this->error = "ไม่พบรายการสินค้า";
+              $this->error = "No entry found.";
             }
           }
           else
           {
             $sc = FALSE;
-            $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+            $this->error = "Failed to add document";
           }
 
           if($sc === TRUE)
@@ -1251,20 +1248,20 @@ public function export_transform($code)
       else
       {
         $sc = FALSE;
-        $this->error = "สถานะเอกสารไม่ถูกต้อง";
+        $this->error = "Invalid document status";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "เอกสารถูกนำเข้า SAP แล้ว หากต้องการเปลี่ยนแปลงกรุณายกเลิกเอกสารใน SAP ก่อน";
+      $this->error = "This document has already been imported to SAP. Please cancel the document in SAP before making changes.";
     }
 
   }
   else
   {
     $sc = FALSE;
-    $this->error = "ไม่พบเอกสาร {$code}";
+    $this->error = "Document not found {$code}";
   }
 
   $this->set_exported($code, $sc);
@@ -1299,7 +1296,7 @@ public function export_receive($code)
             if($this->ci->receive_po_model->drop_sap_received($rows->DocEntry) === FALSE)
             {
               $sc = FALSE;
-              $this->error = "ลบรายการที่ค้างใน Temp ไม่สำเร็จ";
+              $this->error = "Failed to delete item in Temp";
             }
           }
         }
@@ -1307,10 +1304,11 @@ public function export_receive($code)
         //--- หลังจากเคลียร์รายการค้างออกหมดแล้ว
         if($sc === TRUE)
         {
-          $currency = $doc->currency;
-					$rate = $doc->rate;
+          $currency = $doc->DocCur;
+					$rate = $doc->DocRate;
           //--- get Currency, VatGroup And VatPrcnt From SAP => POR1
           $po_data = $this->ci->receive_po_model->get_po_data($doc->po_code);
+
           if(!empty($po_data))
           {
             $vat_code = $po_data->VatGroup;
@@ -1322,11 +1320,13 @@ public function export_receive($code)
             $vat_code = getConfig('PURCHASE_VAT_CODE');
             $vat_rate = getConfig('PURCHASE_VAT_RATE');
             $currency = getConfig('CURRENCY');
+            $rate = 1;
           }
 
 					$date_add = getConfig('ORDER_SOLD_DATE') == 'D' ? $doc->date_add : (empty($doc->shipped_date) ? now() : $doc->shipped_date);
 
           $total_amount = $this->ci->receive_po_model->get_sum_amount($code);
+          $total_amount_fc = $this->ci->receive_po_model->get_sum_amount_fc($code);
 
           $ds = array(
             'U_ECOMNO' => $doc->code,
@@ -1339,14 +1339,14 @@ public function export_receive($code)
             'NumAtCard' => $doc->invoice_code,
             'VatPercent' => $vat_rate,
             'VatSum' => get_vat_amount($total_amount, $vat_rate),
-            'VatSumFc' => get_vat_amount($total_amount, $vat_rate),
+            'VatSumFc' => get_vat_amount($total_amount_fc, $vat_rate),
             'DiscPrcnt' => 0.000000,
             'DiscSum' => 0.000000,
             'DiscSumFC' => 0.000000,
             'DocCur' => $currency,
             'DocRate' => $rate,
             'DocTotal' => remove_vat($total_amount * $rate, $vat_rate),
-            'DocTotalFC' => remove_vat($total_amount, $vat_rate),
+            'DocTotalFC' => remove_vat($total_amount_fc, $vat_rate),
             'ToWhsCode' => $doc->warehouse_code,
             'Comments' => limitText($doc->remark, 250),
             'F_E_Commerce' => 'A',
@@ -1385,7 +1385,7 @@ public function export_receive($code)
                     'Currency' => $rs->currency,
                     'Rate' => $rs->rate,
                     'Price' => remove_vat($rs->price, $rs->vatRate),
-                    'TotalFrgn' => remove_vat($rs->amount, $rs->vatRate),
+                    'TotalFrgn' => remove_vat($rs->totalFrgn, $rs->vatRate),
                     'WhsCode' => $doc->warehouse_code,
                     'FisrtBin' => $doc->zone_code,
                     'BaseRef' => $doc->po_code,
@@ -1402,7 +1402,7 @@ public function export_receive($code)
                   if( ! $this->ci->receive_po_model->add_sap_receive_po_detail($arr))
                   {
                     $sc = FALSE;
-                    $this->error = 'เพิ่มรายการไม่สำเร็จ';
+                    $this->error = 'Failed to add item';
                   }
 
                   $line++;
@@ -1412,13 +1412,13 @@ public function export_receive($code)
             else
             {
               $sc = FALSE;
-              $this->error = "ไม่พบรายการสินค้า";
+              $this->error = "No entry found.";
             }
           }
           else
           {
             $sc = FALSE;
-            $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+            $this->error = "Failed to add document";
           }
 
           if($sc === TRUE)
@@ -1434,19 +1434,19 @@ public function export_receive($code)
       else
       {
         $sc = FALSE;
-        $this->error = "สถานะเอกสารไม่ถูกต้อง";
+        $this->error = "Invalid document status";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "เอกสารถูกนำเข้า SAP แล้ว หากต้องการเปลี่ยนแปลงกรุณายกเลิกเอกสารใน SAP ก่อน";
+      $this->error = "This document has already been imported to SAP. Please cancel the document in SAP before making changes.";
     }
   }
   else
   {
     $sc = FALSE;
-    $this->error = "ไม่พบเอกสาร {$code}";
+    $this->error = "Document not found {$code}";
   }
 
   return $sc;
@@ -1479,7 +1479,7 @@ public function export_receive_transform($code)
             if($this->ci->receive_transform_model->drop_middle_exits_data($rows->DocEntry) === FALSE)
             {
               $sc = FALSE;
-              $this->error = "ลบรายการที่ค้างใน temp ไม่สำเร็จ";
+              $this->error = "Failed to delete item in Temp";
             }
           }
         }
@@ -1498,9 +1498,9 @@ public function export_receive_transform($code)
             'CANCELED' => 'N',
             'DocDate' => $date_add,
             'DocDueDate' => $date_add,
-            'DocCur' => $currency,
-            'DocRate' => 1,
-            'DocTotal' => remove_vat($total_amount),
+            'DocCur' => $doc->DocCur,
+            'DocRate' => $doc->DocRate,
+            'DocTotal' => remove_vat($total_amount, $vat_rate),
             'Comments' => limitText($doc->remark, 250),
 						'U_PDNO' => $doc->order_code,
             'F_E_Commerce' => 'A',
@@ -1534,8 +1534,8 @@ public function export_receive_transform($code)
                     'PriceBefDi' => round($rs->price,2),
                     'LineTotal' => round($rs->amount, 2),
                     'ShipDate' => $date_add,
-                    'Currency' => $currency,
-                    'Rate' => 1,
+                    'Currency' => $rs->currency,
+                    'Rate' => $rs->rate,
                     'Price' => round(remove_vat($rs->price), 2),
                     'TotalFrgn' => round($rs->amount, 2),
                     'WhsCode' => $doc->warehouse_code,
@@ -1555,7 +1555,7 @@ public function export_receive_transform($code)
                   if( ! $this->ci->receive_transform_model->add_sap_receive_transform_detail($arr))
                   {
                     $sc = FALSE;
-                    $this->error = 'เพิ่มรายการไม่สำเร็จ';
+                    $this->error = 'Failed to add item';
                   }
 
                   $line++;
@@ -1565,13 +1565,13 @@ public function export_receive_transform($code)
             else
             {
               $sc = FALSE;
-              $this->error = "ไม่พบรายการสินค้า";
+              $this->error = "No entry found.";
             }
           }
           else
           {
             $sc = FALSE;
-            $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+            $this->error = "Failed to add document";
           }
 
           if($sc === TRUE)
@@ -1588,19 +1588,19 @@ public function export_receive_transform($code)
       else
       {
         $sc = FALSE;
-        $this->error = "สถานะเอกสารไม่ถูกต้อง";
+        $this->error = "Invalid document status";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "เอกสารถูกนำเข้า SAP แล้ว หากต้องการเปลี่ยนแปลงกรุณายกเลิกเอกสารใน SAP ก่อน";
+      $this->error = "This document has already been imported to SAP. Please cancel the document in SAP before making changes.";
     }
   }
   else
   {
     $sc = FALSE;
-    $this->error = "ไม่พบเอกสาร {$code}";
+    $this->error = "Document not found {$code}";
   }
 
   return $sc;
@@ -1634,7 +1634,7 @@ public function export_return($code)
             if($this->ci->return_order_model->drop_middle_exits_data($rows->DocEntry) === FALSE)
             {
               $sc = FALSE;
-              $this->error = "ลบรายการที่ค้างใน temp ไม่สำเร็จ";
+              $this->error = "Failed to delete item in Temp";
             }
           }
         }
@@ -1655,8 +1655,8 @@ public function export_return($code)
             'CardCode' => $cust->code,
             'CardName' => $cust->name,
             'VatSum' => $this->ci->return_order_model->get_total_return_vat($code),
-            'DocCur' => $currency,
-            'DocRate' => 1,
+            'DocCur' => $doc->DocCur,
+            'DocRate' => $doc->DocRate,
             'DocTotal' => $total_amount,
             'DocTotalFC' => $total_amount,
             'Comments' => limitText($doc->remark, 250),
@@ -1697,10 +1697,10 @@ public function export_return($code)
 	                  'PriceBefDi' => remove_vat($rs->price),
 	                  'LineTotal' => remove_vat($rs->amount),
 	                  'ShipDate' => $date_add,
-	                  'Currency' => $currency,
-	                  'Rate' => 1,
+	                  'Currency' => $rs->currency,
+	                  'Rate' => $rs->rate,
 	                  'DiscPrcnt' => $rs->discount_percent,
-	                  'Price' => remove_vat($rs->price),
+	                  'Price' => remove_vat($rs->price, $vat_rate),
 	                  'TotalFrgn' => remove_vat($rs->amount),
 	                  'WhsCode' => $doc->warehouse_code,
 	                  'BinCode' => $doc->zone_code,
@@ -1719,7 +1719,7 @@ public function export_return($code)
 	                if( ! $this->ci->return_order_model->add_sap_return_detail($arr))
 	                {
 	                  $sc = FALSE;
-	                  $this->error = 'เพิ่มรายการไม่สำเร็จ';
+	                  $this->error = 'Failed to add item';
 	                }
 
 	                $line++;
@@ -1730,13 +1730,13 @@ public function export_return($code)
             else
             {
               $sc = FALSE;
-              $this->error = "ไม่พบรายการรับคืน";
+              $this->error = "No entry found.";
             }
           }
           else
           {
             $sc = FALSE;
-            $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+            $this->error = "Failed to add document";
           }
 
 
@@ -1755,20 +1755,20 @@ public function export_return($code)
       else
       {
         $sc = FALSE;
-        $this->error = "{$code} ยังไม่ได้รับการอนุมัติ";
+        $this->error = "{$code} not yet approved.";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "เอกสารถูกนำเข้า SAP แล้ว หากต้องการเปลี่ยนแปลงกรุณายกเลิกเอกสารใน SAP ก่อน";
+      $this->error = "This document has already been imported to SAP. Please cancel the document in SAP before making changes.";
     }
 
   }
   else
   {
     $sc = FALSE;
-    $this->error = "ไม่พบเอกสาร {$code}";
+    $this->error = "Document not found {$code}";
   }
 
   return $sc;
@@ -1802,7 +1802,7 @@ public function export_return_consignment($code)
             if($this->ci->return_consignment_model->drop_middle_exits_data($rows->DocEntry) === FALSE)
             {
               $sc = FALSE;
-              $this->error = "ลบรายการที่ค้างใน temp ไม่สำเร็จ";
+              $this->error = "Failed to delete item in Temp";
             }
           }
         }
@@ -1824,8 +1824,8 @@ public function export_return_consignment($code)
             'CardCode' => $cust->code,
             'CardName' => $cust->name,
             'VatSum' => $this->ci->return_consignment_model->get_total_return_vat($code),
-            'DocCur' => $currency,
-            'DocRate' => 1,
+            'DocCur' => $doc->DocCur,
+            'DocRate' => $doc->DocRate,
             'DocTotal' => $total_amount,
             'DocTotalFC' => $total_amount,
             'Comments' => limitText($doc->remark, 250),
@@ -1866,10 +1866,10 @@ public function export_return_consignment($code)
 	                  'PriceBefDi' => remove_vat($rs->price),
 	                  'LineTotal' => remove_vat($rs->amount),
 	                  'ShipDate' => $date_add,
-	                  'Currency' => $currency,
-	                  'Rate' => 1,
+	                  'Currency' => $rs->currency,
+	                  'Rate' => $rs->rate,
 	                  'DiscPrcnt' => $rs->discount_percent,
-	                  'Price' => remove_vat($rs->price),
+	                  'Price' => remove_vat($rs->price, $vat_rate),
 	                  'TotalFrgn' => remove_vat($rs->amount),
 	                  'WhsCode' => $doc->warehouse_code,
 	                  'BinCode' => $doc->zone_code,
@@ -1888,7 +1888,7 @@ public function export_return_consignment($code)
 	                if( ! $this->ci->return_consignment_model->add_sap_return_detail($arr))
 	                {
 	                  $sc = FALSE;
-	                  $this->error = 'เพิ่มรายการไม่สำเร็จ';
+	                  $this->error = 'Failed to add item';
 	                }
 
 	                $line++;
@@ -1898,13 +1898,13 @@ public function export_return_consignment($code)
             else
             {
               $sc = FALSE;
-              $this->error = "ไม่พบรายการรับคืน";
+              $this->error = "No entry found.";
             }
           }
           else
           {
             $sc = FALSE;
-            $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+            $this->error = "Failed to add document";
           }
 
 
@@ -1923,20 +1923,20 @@ public function export_return_consignment($code)
       else
       {
         $sc = FALSE;
-        $this->error = "{$code} ยังไม่ได้รับการอนุมัติ";
+        $this->error = "{$code} not yet approved.";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "เอกสารถูกนำเข้า SAP แล้ว หากต้องการเปลี่ยนแปลงกรุณายกเลิกเอกสารใน SAP ก่อน";
+      $this->error = "This document has already been imported to SAP. Please cancel the document in SAP before making changes.";
     }
 
   }
   else
   {
     $sc = FALSE;
-    $this->error = "ไม่พบเอกสาร {$code}";
+    $this->error = "Document not found {$code}";
   }
 
   return $sc;
@@ -1971,7 +1971,7 @@ public function export_return_lend($code)
             if($this->ci->transfer_model->drop_middle_exits_data($rows->DocEntry) === FALSE)
             {
               $sc = FALSE;
-              $this->error = "ลบรายการที่ค้างใน temp ไม่สำเร็จ";
+              $this->error = "Failed to delete item in Temp";
             }
           }
         }
@@ -1993,15 +1993,15 @@ public function export_return_lend($code)
             'CardCode' => NULL,
             'CardName' => NULL,
             'VatPercent' => $vat_rate,
-            'VatSum' => round(get_vat_amount($total_amount), 6),
-            'VatSumFc' => round(get_vat_amount($total_amount), 6),
+            'VatSum' => round(get_vat_amount($total_amount, $vat_rate), 6),
+            'VatSumFc' => round(get_vat_amount($totalFC, $vat_rate), 6),
             'DiscPrcnt' => 0.000000,
             'DiscSum' => 0.000000,
             'DiscSumFC' => 0.000000,
-            'DocCur' => $currency,
-            'DocRate' => 1,
-            'DocTotal' => remove_vat($total_amount),
-            'DocTotalFC' => remove_vat($total_amount),
+            'DocCur' => $doc->DocCur,
+            'DocRate' => $doc->DocRate,
+            'DocTotal' => remove_vat($total_amount, $vat_rate),
+            'DocTotalFC' => remove_vat($totalFC, $vat_rate),
             'Filler' => $doc->from_warehouse,
             'ToWhsCode' => $doc->to_warehouse,
             'Comments' => limitText($doc->remark, 250),
@@ -2039,8 +2039,8 @@ public function export_return_lend($code)
                     'PriceBefDi' => round(remove_vat($rs->price),6),
                     'LineTotal' => round(remove_vat($rs->amount),6),
                     'ShipDate' => $date_add,
-                    'Currency' => $currency,
-                    'Rate' => 1,
+                    'Currency' => $rs->currency,
+                    'Rate' => $rs->rate,
                     //--- คำนวณส่วนลดจากยอดเงินกลับมาเป็น % (เพราะบางทีมีส่วนลดหลายชั้น)
                     'DiscPrcnt' => 0.000000, ///--- discount_helper
                     'Price' => round(remove_vat($rs->price),6),
@@ -2062,7 +2062,7 @@ public function export_return_lend($code)
                   if( ! $this->ci->transfer_model->add_sap_transfer_detail($arr))
                   {
                     $sc = FALSE;
-                    $this->error = 'เพิ่มรายการไม่สำเร็จ';
+                    $this->error = 'Failed to add item';
                   }
 
                   $line++;
@@ -2072,13 +2072,13 @@ public function export_return_lend($code)
             else
             {
               $sc = FALSE;
-              $this->error = "ไม่พบรายการสินค้า";
+              $this->error = "No entry found.";
             }
           }
           else
           {
             $sc = FALSE;
-            $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+            $this->error = "Failed to add document";
           }
 
           if($sc === TRUE)
@@ -2095,19 +2095,19 @@ public function export_return_lend($code)
       else
       {
         $sc = FALSE;
-        $this->error = "สถานะเอกสารไม่ถูกต้อง";
+        $this->error = "Invalid document status";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "เอกสารถูกนำเข้า SAP แล้ว หากต้องการเปลี่ยนแปลงกรุณายกเลิกเอกสารใน SAP ก่อน";
+      $this->error = "This document has already been imported to SAP. Please cancel the document in SAP before making changes.";
     }
   }
   else
   {
     $sc = FALSE;
-    $this->error = "ไม่พบเอกสาร {$code}";
+    $this->error = "Document not found {$code}";
   }
 
   return $sc;
@@ -2139,7 +2139,7 @@ public function export_consignment_order($code)
           if($this->ci->consignment_order_model->drop_middle_exits_data($rows->DocEntry) === FALSE)
           {
             $sc = FALSE;
-            $this->error = "ลบรายการที่ค้างใน Temp ไม่สำเร็จ";
+            $this->error = "Failed to delete item in Temp";
           }
         }
       }
@@ -2162,7 +2162,7 @@ public function export_consignment_order($code)
           'DocDueDate' => sap_date($date_add,TRUE), //--- วันที่เอกสาร
           'CardCode' => $doc->customer_code, //--- รหัสลูกค้า
           'CardName' => $doc->customer_name, //--- ชื่อลูกค้า
-          'DocCur' => $currency,
+          'DocCur' => $doc->DocCur,
           'DocRate' => 1.000000,
           'DocTotal' => round($doc_total, 2),
           'DocTotalFC' => $doc_total,
@@ -2196,10 +2196,10 @@ public function export_consignment_order($code)
                 'UnitMsr' => $this->ci->products_model->get_unit_code($rs->product_code),
                 'PriceBefDi' => $rs->price,  //---มูลค่าต่อหน่วยก่อนภาษี/ก่อนส่วนลด
                 'LineTotal' => $rs->amount,
-                'Currency' => $currency,
+                'Currency' => $rs->currency,
                 'Rate' => 1.000000,
                 'DiscPrcnt' => discountAmountToPercent($rs->discount_amount, $rs->qty, $rs->price), ///--- discount_helper
-                'Price' => remove_vat($rs->price), //--- ราคา
+                'Price' => remove_vat($rs->price, $vat_rate), //--- ราคา
                 'TotalFrgn' => $rs->amount, //--- จำนวนเงินรวม By Line (Currency)
                 'WhsCode' => $doc->warehouse_code,
                 'BinCode' => $doc->zone_code,
@@ -2221,13 +2221,13 @@ public function export_consignment_order($code)
           else
           {
             $sc = FALSE;
-            $this->error = "ไม่พบรายการสินค้า";
+            $this->error = "No entry found.";
           }
         }
         else
         {
           $sc = FALSE;
-          $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+          $this->error = "Failed to add document";
         }
 
         if($sc === TRUE)
@@ -2244,13 +2244,13 @@ public function export_consignment_order($code)
     else
     {
       $sc = FALSE;
-      $this->error = "เอกสารถูกนำเข้า SAP แล้ว หากต้องการเปลี่ยนแปลงกรุณายกเลิกเอกสารใน SAP ก่อน";
+      $this->error = "This document has already been imported to SAP. Please cancel the document in SAP before making changes.";
     }
   }
   else
   {
     $sc = FALSE;
-    $this->error = "ไม่พบเลขที่เอกสาร";
+    $this->error = "Document number not found.";
   }
 
   return $sc;
@@ -2281,7 +2281,7 @@ public function export_transform_goods_issue($code)
           if($this->ci->adjust_transform_model->drop_middle_issue_data($rows->DocEntry) === FALSE)
           {
             $sc = FALSE;
-            $this->error = "ลบรายการที่ค้างใน Temp ไม่สำเร็จ";
+            $this->error = "Failed to delete item in Temp";
           }
         }
       }
@@ -2356,7 +2356,7 @@ public function export_transform_goods_issue($code)
           else
           {
             $sc = FALSE;
-            $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+            $this->error = "Failed to add document";
           }
 
           if($sc === TRUE)
@@ -2375,13 +2375,13 @@ public function export_transform_goods_issue($code)
     else
     {
       $sc = FALSE;
-      $this->error = "เอกสาร Goods Issue ถูกนำเข้า SAP แล้วไม่อนุญาติให้แก้ไข";
+      $this->error = "Goods Issue documents imported to SAP cannot be edited.";
     }
   }
   else
   {
     $sc = FALSE;
-    $this->error = "ไม่พบเลขที่เอกสาร หรือ สถานะเอกสารไม่ถูกต้อง";
+    $this->error = "Document number not found or Invalid document status";
   }
 
   return $sc;
@@ -2409,7 +2409,7 @@ public function export_adjust_goods_issue($code)
           if($this->ci->adjust_model->drop_middle_issue_data($rows->DocEntry) === FALSE)
           {
             $sc = FALSE;
-            $this->error = "ลบรายการที่ค้างใน Temp ไม่สำเร็จ";
+            $this->error = "Failed to delete item in Temp";
           }
         }
       }
@@ -2483,7 +2483,7 @@ public function export_adjust_goods_issue($code)
           else
           {
             $sc = FALSE;
-            $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+            $this->error = "Failed to add document";
           }
 
           if($sc === TRUE)
@@ -2502,13 +2502,13 @@ public function export_adjust_goods_issue($code)
     else
     {
       $sc = FALSE;
-      $this->error = "เอกสาร Goods Issue ถูกนำเข้า SAP แล้วไม่อนุญาติให้แก้ไข";
+      $this->error = "Goods Issue documents imported to SAP cannot be edited.";
     }
   }
   else
   {
     $sc = FALSE;
-    $this->error = "ไม่พบเลขที่เอกสาร หรือ สถานะเอกสารไม่ถูกต้อง";
+    $this->error = "Document number not found or Invalid document status";
   }
 
   return $sc;
@@ -2538,7 +2538,7 @@ public function export_adjust_goods_receive($code)
           if($this->ci->adjust_model->drop_middle_receive_data($rows->DocEntry) === FALSE)
           {
             $sc = FALSE;
-            $this->error = "ลบรายการที่ค้างใน temp ไม่สำเร็จ";
+            $this->error = "Failed to delete item in Temp";
           }
         }
       }
@@ -2565,8 +2565,8 @@ public function export_adjust_goods_receive($code)
             'CANCELED' => 'N',
             'DocDate' => $date_add,
             'DocDueDate' => $date_add,
-            'DocCur' => $currency,
-            'DocRate' => 1,
+            'DocCur' => $doc->DocCur,
+            'DocRate' => $doc->DocRate,
             'DocTotal' => remove_vat($doc_total),
             'Comments' => limitText($doc->remark, 250),
             'F_E_Commerce' => 'A',
@@ -2600,8 +2600,8 @@ public function export_adjust_goods_receive($code)
                 'PriceBefDi' => round($rs->cost,2),
                 'LineTotal' => round($amount, 2),
                 'ShipDate' => $date_add,
-                'Currency' => $currency,
-                'Rate' => 1,
+                'Currency' => $rs->currency,
+                'Rate' => $rs->rate,
                 'Price' => round(remove_vat($rs->cost), 2),
                 'TotalFrgn' => round($amount, 2),
                 'WhsCode' => $rs->warehouse_code,
@@ -2620,7 +2620,7 @@ public function export_adjust_goods_receive($code)
               if( ! $this->ci->adjust_model->add_sap_goods_receive_row($arr))
               {
                 $sc = FALSE;
-                $this->error = 'เพิ่มรายการไม่สำเร็จ';
+                $this->error = 'Failed to add item';
               }
 
               $line++;
@@ -2631,7 +2631,7 @@ public function export_adjust_goods_receive($code)
           else
           {
             $sc = FALSE;
-            $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+            $this->error = "Failed to add document";
           }
 
           if($sc === TRUE)
@@ -2650,13 +2650,13 @@ public function export_adjust_goods_receive($code)
     else
     {
       $sc = FALSE;
-      $this->error = "เอกสาร Goods Receive ถูกนำเข้า SAP แล้วไม่อนุญาติให้แก้ไข";
+      $this->error = "Goods Receive document has been imported to SAP and cannot be edit.";
     }
   }
   else
   {
     $sc = FALSE;
-    $this->error = "ไม่พบเลขที่เอกสาร หรือ สถานะเอกสารไม่ถูกต้อง";
+    $this->error = "Document number not found or Invalid document status";
   }
 
   return $sc;
@@ -2686,7 +2686,7 @@ public function export_adjust_consignment_goods_issue($code)
           if($this->ci->adjust_consignment_model->drop_middle_issue_data($rows->DocEntry) === FALSE)
           {
             $sc = FALSE;
-            $this->error = "ลบรายการที่ค้างใน Temp ไม่สำเร็จ";
+            $this->error = "Failed to delete item in Temp";
           }
         }
       }
@@ -2760,7 +2760,7 @@ public function export_adjust_consignment_goods_issue($code)
           else
           {
             $sc = FALSE;
-            $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+            $this->error = "Failed to add document";
           }
 
           if($sc === TRUE)
@@ -2779,13 +2779,13 @@ public function export_adjust_consignment_goods_issue($code)
     else
     {
       $sc = FALSE;
-      $this->error = "เอกสาร Goods Issue ถูกนำเข้า SAP แล้วไม่อนุญาติให้แก้ไข";
+      $this->error = "Goods Issue documents imported to SAP cannot be edited.";
     }
   }
   else
   {
     $sc = FALSE;
-    $this->error = "ไม่พบเลขที่เอกสาร หรือ สถานะเอกสารไม่ถูกต้อง";
+    $this->error = "Document number not found or Invalid document status";
   }
 
   return $sc;
@@ -2816,7 +2816,7 @@ public function export_adjust_consignment_goods_receive($code)
           if($this->ci->adjust_consignment_model->drop_middle_receive_data($rows->DocEntry) === FALSE)
           {
             $sc = FALSE;
-            $this->error = "ลบรายการที่ค้างใน temp ไม่สำเร็จ";
+            $this->error = "Failed to delete item in Temp";
           }
         }
       }
@@ -2843,8 +2843,8 @@ public function export_adjust_consignment_goods_receive($code)
             'CANCELED' => 'N',
             'DocDate' => $date_add,
             'DocDueDate' => $date_add,
-            'DocCur' => $currency,
-            'DocRate' => 1,
+            'DocCur' => $doc->DocCur,
+            'DocRate' => $doc->DocRate,
             'DocTotal' => remove_vat($doc_total),
             'Comments' => limitText($doc->remark, 250),
             'F_E_Commerce' => 'A',
@@ -2878,8 +2878,8 @@ public function export_adjust_consignment_goods_receive($code)
                 'PriceBefDi' => round($rs->cost,2),
                 'LineTotal' => round($amount, 2),
                 'ShipDate' => $date_add,
-                'Currency' => $currency,
-                'Rate' => 1,
+                'Currency' => $rs->currency,
+                'Rate' => $rs->rate,
                 'Price' => round(remove_vat($rs->cost), 2),
                 'TotalFrgn' => round($amount, 2),
                 'WhsCode' => $rs->warehouse_code,
@@ -2898,7 +2898,7 @@ public function export_adjust_consignment_goods_receive($code)
               if( ! $this->ci->adjust_consignment_model->add_sap_goods_receive_row($arr))
               {
                 $sc = FALSE;
-                $this->error = 'เพิ่มรายการไม่สำเร็จ';
+                $this->error = 'Failed to add item';
               }
 
               $line++;
@@ -2909,7 +2909,7 @@ public function export_adjust_consignment_goods_receive($code)
           else
           {
             $sc = FALSE;
-            $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+            $this->error = "Failed to add document";
           }
 
           if($sc === TRUE)
@@ -2928,13 +2928,13 @@ public function export_adjust_consignment_goods_receive($code)
     else
     {
       $sc = FALSE;
-      $this->error = "เอกสาร Goods Receive ถูกนำเข้า SAP แล้วไม่อนุญาติให้แก้ไข";
+      $this->error = "Goods Receive document has been imported to SAP and cannot be edit.";
     }
   }
   else
   {
     $sc = FALSE;
-    $this->error = "ไม่พบเลขที่เอกสาร หรือ สถานะเอกสารไม่ถูกต้อง";
+    $this->error = "Document number not found or Invalid document status";
   }
 
   return $sc;

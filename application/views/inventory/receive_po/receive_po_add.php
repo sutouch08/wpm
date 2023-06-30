@@ -14,7 +14,7 @@
 	</div>
   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 padding-5">
     <p class="pull-right top-p">
-			<button type="button" class="btn btn-xs btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+			<button type="button" class="btn btn-xs btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
     </p>
   </div>
 </div>
@@ -23,7 +23,7 @@
 <form id="addForm" action="<?php echo $this->home.'/add'; ?>" method="post">
 <div class="row">
     <div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-4 padding-5">
-    	<label>เลขที่เอกสาร</label>
+    	<label>Document No.</label>
 			<?php if($manual_code == 1) : ?>
 				<input type="text" class="form-control input-sm" name="code" id="code" value="" required />
 			<?php else : ?>
@@ -31,27 +31,27 @@
 			<?php endif; ?>
     </div>
 		<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-    	<label>วันที่</label>
+    	<label>Date</label>
       <input type="text" class="form-control input-sm text-center" name="date_add" id="dateAdd" value="<?php echo date('d-m-Y'); ?>" readonly/>
     </div>
-		<div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-4 padding-5">
-			<label>ช่องทางการรับ</label>
-			<select class="form-control input-sm" name="is_wms" id="is_wms">
-				<option value="1">WMS</option>
-				<option value="0">Warrix</option>
+		<div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-4 padding-5 hide">
+			<label>WMS</label>
+			<select class="form-control input-sm" name="is_wms" id="is_wms" disabled>
+				<option value="0">No</option>
+				<option value="1">Yes</option>
 			</select>
 		</div>
     <div class="col-lg-6-harf col-md-6 col-sm-5 col-xs-8 padding-5">
-    	<label>หมายเหตุ</label>
-        <input type="text" class="form-control input-sm" name="remark" id="remark" placeholder="ระบุหมายเหตุเอกสาร (ถ้ามี)" />
+    	<label>Remark</label>
+        <input type="text" class="form-control input-sm" name="remark" id="remark" placeholder="" />
     </div>
 		<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
 			<label class="display-block not-show">save</label>
 			<?php if($this->pm->can_add) : ?>
 				<?php if($manual_code == 1) : ?>
-							<button type="button" class="btn btn-xs btn-success btn-block" onclick="validateOrder()"><i class="fa fa-plus"></i> เพิ่ม</button>
+							<button type="button" class="btn btn-xs btn-success btn-block" onclick="validateOrder()"><i class="fa fa-plus"></i> Add</button>
 				<?php else : ?>
-							<button type="button" class="btn btn-xs btn-success btn-block" onclick="addNew()"><i class="fa fa-plus"></i> เพิ่ม</button>
+							<button type="button" class="btn btn-xs btn-success btn-block" onclick="addNew()"><i class="fa fa-plus"></i> Add</button>
 				<?php endif; ?>
 			<?php	endif; ?>
 		</div>

@@ -55,29 +55,29 @@ function update() {
 		clear_error($('#name'), $('#name-error'));
 	}
 
-	if(data.style.length === 0) {
-		set_error($('#style'), $('#style-error'), "required");
-		error++;
-	}
-	else {
-		clear_error($('#style'), $('#style-error'));
-	}
-
-	if(data.color.length === 0) {
-		set_error($('#color'), $('#color-error'), "required");
-		error++;
-	}
-	else {
-		clear_error($('#color'), $('#color-error'));
-	}
-
-	if(data.size.length === 0) {
-		set_error($('#size'), $('#size-error'), "required");
-		error++;
-	}
-	else {
-		clear_error($('#size'), $('#size-error'));
-	}
+	// if(data.style.length === 0) {
+	// 	set_error($('#style'), $('#style-error'), "required");
+	// 	error++;
+	// }
+	// else {
+	// 	clear_error($('#style'), $('#style-error'));
+	// }
+  //
+	// if(data.color.length === 0) {
+	// 	set_error($('#color'), $('#color-error'), "required");
+	// 	error++;
+	// }
+	// else {
+	// 	clear_error($('#color'), $('#color-error'));
+	// }
+  //
+	// if(data.size.length === 0) {
+	// 	set_error($('#size'), $('#size-error'), "required");
+	// 	error++;
+	// }
+	// else {
+	// 	clear_error($('#size'), $('#size-error'));
+	// }
 
 	if(data.unit_code.length === 0) {
 		set_error($('#unit_code'), $('#unit-error'), "required");
@@ -87,13 +87,13 @@ function update() {
 		clear_error($('#unit_code'), $('#unit-error'));
 	}
 
-	if(data.main_group_code.length === 0) {
-		set_error($('#mainGroup'), $('#mainGroup-error'), "required");
-		error++;
-	}
-	else {
-		clear_error($('#mainGroup'), $('#mainGroup-error'));
-	}
+	// if(data.main_group_code.length === 0) {
+	// 	set_error($('#mainGroup'), $('#mainGroup-error'), "required");
+	// 	error++;
+	// }
+	// else {
+	// 	clear_error($('#mainGroup'), $('#mainGroup-error'));
+	// }
 
 	if(error > 0) {
 		return false;
@@ -272,10 +272,10 @@ function getSearch(){
 }
 
 
-function sendToWms(code) {
+function sendToSap(code) {
 	load_in();
 	$.ajax({
-		url:BASE_URL + 'masters/items/send_to_wms',
+		url:BASE_URL + 'masters/items/send_to_sap',
 		type:'POST',
 		cache:false,
 		data:{

@@ -7,13 +7,13 @@ function paymentLabel($order_code, $isExists, $isPaid)
     if( $isPaid == 1 )
 		{
 			$sc .= '<button type="button" class="btn btn-sm btn-success" onClick="viewPaymentDetail()">';
-			$sc .= 'จ่ายเงินแล้ว | ดูรายละเอียด';
+			$sc .= 'Paid | View detail';
 			$sc .= '</button>';
 		}
 		else
 		{
 			$sc .= '<button type="button" class="btn btn-sm btn-primary" onClick="viewPaymentDetail()">';
-			$sc .= 'แจ้งชำระแล้ว | ดูรายละเอียด';
+			$sc .= 'Payment uploaded | View detail';
 			$sc .= '</button>';
 		}
 	}
@@ -68,7 +68,7 @@ function get_summary($order, $details, $banks)
 	$discount = 0;
 	$totalAmount = 0;
 
-	$orderTxt = '<div>สรุปการสั่งซื้อ</div>';
+	$orderTxt = '<div>Order Summary</div>';
 	$orderTxt .= '<div>Order No : '.$order->code.'</div>';
 	$orderTxt .= '<div style="width:100%; border-bottom:solid 1px #CCC;">&nbsp;</div>';
 
@@ -83,72 +83,95 @@ function get_summary($order, $details, $banks)
 	}
 
 	$orderTxt .= "<br/>";
-	$orderTxt .= 'ค่าสินค้ารวม'.getSpace(number( $orderAmount, 2), 24).'<br/><br/>';
+	$orderTxt .= 'Total Amount'.getSpace(number( $orderAmount, 2), 24).'<br/><br/>';
 
 	if( ($discount + $order->bDiscAmount) > 0 )
 	{
-		$orderTxt .= 'ส่วนลดรวม'.getSpace('- '.number( ($discount + $order->bDiscAmount), 2), 27).'<br/>';
+		$orderTxt .= 'Total Discount'.getSpace('- '.number( ($discount + $order->bDiscAmount), 2), 27).'<br/>';
 		$orderTxt .= '<br/>';
 	}
 
 
 
 	$payAmount = $orderAmount - ($discount + $order->bDiscAmount);
-	$orderTxt .= 'ยอดชำระ' . getSpace(number( $payAmount, 2), 29).'<br/>';
+	$orderTxt .= 'Net Amount' . getSpace(number( $payAmount, 2), 29).'<br/>';
 
 
 	$orderTxt .= '====================<br/><br/>';
 
 	if(!empty($banks))
 	{
-		$orderTxt .= 'สามารถชำระได้ที่ <br/>';
+		$orderTxt .= 'Payment can be made at <br/>';
 		$orderTxt .= '<br/>';
 		foreach($banks as $rs)
 		{
 			$orderTxt .= '- '.$rs->bank_name.'<br/>';
-			$orderTxt .= '&nbsp;&nbsp;&nbsp;&nbsp;สาขา '.$rs->branch.'<br/>';
-			$orderTxt .= '&nbsp;&nbsp;&nbsp;&nbsp;ชื่อบัญชี '.$rs->acc_name.'<br/>';
-			$orderTxt .= '&nbsp;&nbsp;&nbsp;&nbsp;เลขที่บัญชี '.$rs->acc_no.'<br/>';
+			$orderTxt .= '&nbsp;&nbsp;&nbsp;&nbsp;Branch '.$rs->branch.'<br/>';
+			$orderTxt .= '&nbsp;&nbsp;&nbsp;&nbsp;Account Name '.$rs->acc_name.'<br/>';
+			$orderTxt .= '&nbsp;&nbsp;&nbsp;&nbsp;Account Number '.$rs->acc_no.'<br/>';
 			$orderTxt .= '--------------------<br/>';
 		}
 	}
 
 	$orderTxt .= "<br/>";
-	$orderTxt .= '** หากต้องการใบกำกับภาษี รบกวนแจ้งขอใบกำกับภาษีภายใน 5 วันทำการ';
+	$orderTxt .= '** If you want a tax invoice Please request a tax invoice within 5 working days.';
 
 	return $orderTxt;
 }
 
 
+// function select_order_role($role = '')
+// {
+// 	$sc = '';
+// 	$CI =& get_instance();
+// 	$rs = $CI->db->query("SELECT * FROM order_role");
+// 	if($rs->num_rows() > 0)
+// 	{
+// 		foreach($rs->result() as $rd)
+// 		{
+// 			$sc .= '<option value="'.$rd->code.'" '.is_selected($role, $rd->code).'>'.$rd->name.'</option>';
+// 		}
+// 	}
+//
+// 	return $sc;
+// }
+
 function select_order_role($role = '')
 {
 	$sc = '';
-	$CI =& get_instance();
-	$rs = $CI->db->query("SELECT * FROM order_role");
-	if($rs->num_rows() > 0)
+
+	$ds = array(
+		'C' => 'Consignment (IV)',
+		'N' => 'Consignment (TR)',
+		'L'	=> 'Lend',
+		'P'	=> 'Sponsor',
+		'S'	=> 'Sale Order',
+		'T'	=> 'Transform',
+		'U'	=> 'Support'
+	);
+
+	foreach($ds as $key => $value)
 	{
-		foreach($rs->result() as $rd)
-		{
-			$sc .= '<option value="'.$rd->code.'" '.is_selected($role, $rd->code).'>'.$rd->name.'</option>';
-		}
+		$sc .= '<option value="'.$key.'" '.is_selected($role, $key).'>'.$value.'</option>';
 	}
 
 	return $sc;
 }
 
 
+
 function role_name($role)
 {
 	$ds = array(
-		'C' => 'ฝากขาย',
-		'L'	=> 'ยิม',
-		'M'	=> 'ตัดยอดฝากขาย',
-		'N' => 'ฝากขายโอนคลัง',
-		'P'	=> 'สปอนเซอร์',
-		'R'	=> 'เบิก',
-		'S'	=> 'ขาย',
-		'T'	=> 'แปรสภาพ',
-		'U'	=> 'อภินันท์',
+		'C' => 'Consignment (IV)',
+		'N' => 'Consignment (TR)',
+		'L'	=> 'Lend',
+		'M'	=> 'Consignment Sold (TR)',
+		'D' => 'Consignment Sold (IV)',
+		'P'	=> 'Sponsor',
+		'S'	=> 'Sale Order',
+		'T'	=> 'Transform',
+		'U'	=> 'Support',
 	);
 
 	return isset($ds[$role]) ? $ds[$role] : NULL;

@@ -49,15 +49,16 @@ $btn_can_group_no = $can_group == 'N' ? 'btn-primary' : '';
 
 
 		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4 padding-5">
-			<span class="form-control left-label text-right">ส่วนลด 1</span>
+			<span class="form-control left-label text-right">Discount 1</span>
 		</div>
 		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4">
-			<div class="btn-group width-100">
+			<div class="btn-group width-100 input-group">
 				<input type="number" class="form-control input-sm text-center" id="txt-discount" value="<?php echo $rule->item_disc; ?>" <?php echo $ac_disc; ?> />
+				<span class="input-group-addon">%</span>
 			</div>
 		</div>
-		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4">
-			<div class="btn-group width-100">
+		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4 hide">
+			<div class="btn-group width-100 hide">
 				<button type="button" class="btn btn-sm width-50 <?php echo $btn_unit_p; ?>" id="btn-pUnit" onclick="toggleUnit('P')" <?php echo $ac_disc; ?>>%</button>
 				<button type="button" class="btn btn-sm width-50 <?php echo $btn_unit_a; ?>" id="btn-aUnit" onclick="toggleUnit('A')" <?php echo $ac_disc; ?>>THB</button>
 			</div>
@@ -66,15 +67,16 @@ $btn_can_group_no = $can_group == 'N' ? 'btn-primary' : '';
 
 
 		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4 padding-5">
-			<span class="form-control left-label text-right">ส่วนลด 2</span>
+			<span class="form-control left-label text-right">Discount 2</span>
 		</div>
 		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4">
-			<div class="btn-group width-100">
+			<div class="btn-group width-100 input-group">
 				<input type="number" class="form-control input-sm text-center" id="txt-discount2" value="<?php echo $rule->item_disc_2; ?>" <?php echo $ac_disc2; ?> />
+				<span class="input-group-addon">%</span>
 			</div>
 		</div>
-		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4">
-			<div class="btn-group width-100">
+		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4 hide">
+			<div class="btn-group width-100 hide">
 				<button type="button" class="btn btn-sm width-50 <?php echo $btn_unit_p2; ?>" id="btn-pUnit2" onclick="toggleUnit2('P')" <?php echo $ac_disc2; ?>>%</button>
 				<button type="button" class="btn btn-sm width-50 <?php echo $btn_unit_a2; ?>" id="btn-aUnit2" onclick="toggleUnit2('A')" <?php echo $ac_disc2; ?>>THB</button>
 			</div>
@@ -83,14 +85,15 @@ $btn_can_group_no = $can_group == 'N' ? 'btn-primary' : '';
 
 
 		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4 padding-5">
-			<span class="form-control left-label text-right">ส่วนลด 3</span>
+			<span class="form-control left-label text-right">Discount 3</span>
 		</div>
 		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4">
-			<div class="btn-group width-100">
+			<div class="btn-group width-100 input-group">
 				<input type="number" class="form-control input-sm text-center" id="txt-discount3" value="<?php echo $rule->item_disc_3; ?>" <?php echo $ac_disc3; ?> />
+				<span class="input-group-addon">%</span>
 			</div>
 		</div>
-		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4">
+		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4 hide">
 			<div class="btn-group width-100">
 				<button type="button" class="btn btn-sm width-50 <?php echo $btn_unit_p3; ?>" id="btn-pUnit3" onclick="toggleUnit3('P')" <?php echo $ac_disc3; ?>>%</button>
 				<button type="button" class="btn btn-sm width-50 <?php echo $btn_unit_a3; ?>" id="btn-aUnit3" onclick="toggleUnit3('A')" <?php echo $ac_disc3; ?>>THB</button>
@@ -100,7 +103,7 @@ $btn_can_group_no = $can_group == 'N' ? 'btn-primary' : '';
 
 
 		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4 padding-5">
-			<span class="form-control left-label text-right">จำนวนขั้นต่ำ</span>
+			<span class="form-control left-label text-right">Min Qty.</span>
 		</div>
 		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4">
 			<div class="btn-group width-100">
@@ -111,7 +114,7 @@ $btn_can_group_no = $can_group == 'N' ? 'btn-primary' : '';
 
 
 		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4 padding-5">
-			<span class="form-control left-label text-right">มูลค่าขั้นต่ำ</span>
+			<span class="form-control left-label text-right">Min Amount</span>
 		</div>
 		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4">
 			<div class="btn-group width-100">
@@ -120,8 +123,9 @@ $btn_can_group_no = $can_group == 'N' ? 'btn-primary' : '';
 		</div>
 		<div class="divider-hidden"></div>
 
+<!--
 		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4 padding-5">
-			<span class="form-control left-label text-right">รวมยอดได้</span>
+			<span class="form-control left-label text-right">Can group</span>
 		</div>
 		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4">
 			<div class="btn-group width-100">
@@ -129,6 +133,7 @@ $btn_can_group_no = $can_group == 'N' ? 'btn-primary' : '';
 				<button type="button" class="btn btn-sm width-50 <?php echo $btn_can_group_no; ?>" id="btn-cangroup-no" onclick="toggleCanGroup('N')">NO</button>
 			</div>
 		</div>
+	-->
 		<div class="divider-hidden"></div>
 		<div class="divider-hidden"></div>
 		<div class="divider-hidden"></div>
@@ -139,9 +144,9 @@ $btn_can_group_no = $can_group == 'N' ? 'btn-primary' : '';
 	</div>
 
 		<input type="hidden" id="set_price" value="<?php echo $set_price; ?>" />
-		<input type="hidden" id="disc_unit" value="<?php echo $unit; ?>" />
-		<input type="hidden" id="disc_unit2" value="<?php echo $unit2; ?>" />
-		<input type="hidden" id="disc_unit3" value="<?php echo $unit3; ?>" />
-		<input type="hidden" id="can_group" value="<?php echo $can_group; ?>" />
+		<input type="hidden" id="disc_unit" value="P" />
+		<input type="hidden" id="disc_unit2" value="P" />
+		<input type="hidden" id="disc_unit3" value="P" />
+		<input type="hidden" id="can_group" value="N" />
 
 </div><!--- Tab-pane --->

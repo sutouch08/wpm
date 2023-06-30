@@ -104,17 +104,14 @@ class Auto_complete extends CI_Controller
   {
     $txt = $_REQUEST['term'];
     $sc = array();
-    $rs = $this->db
-    ->select('code, name')
-    ->where('CardType', 'C')
-		->where('active', 1)
-    ->group_start()
-    ->like('code', $txt)
-    ->or_like('name', $txt)
-    ->or_like('old_code', $txt)
-    ->group_end()
-    ->limit(20)
-    ->get('customers');
+    $this->db->select('code, name')->where('CardType', 'C')->where('active', 1);
+
+    if($txt !== '*')
+    {
+      $this->db->group_start()->like('code', $txt)->or_like('name', $txt)->or_like('old_code', $txt)->group_end();
+    }
+
+    $rs = $this->db->limit(20)->get('customers');
 
     if($rs->num_rows() > 0)
     {
@@ -501,7 +498,7 @@ public function get_prepare_item_code()
     }
     else
     {
-      $sc[] = 'ไม่พบรายการ';
+      $sc[] = 'not found';
     }
 
     echo json_encode($sc);
@@ -554,7 +551,7 @@ public function get_prepare_item_code()
     }
     else
     {
-      $sc[] = 'ไม่พบรายการ';
+      $sc[] = 'not found';
     }
 
     echo json_encode($sc);
@@ -669,7 +666,7 @@ public function get_prepare_item_code()
     }
     else
     {
-      $sc[] = "กรุณาระบุผู้ยืม";
+      $sc[] = "Please specify the borrower";
     }
 
     echo json_encode($sc);
@@ -705,7 +702,7 @@ public function get_prepare_item_code()
     }
     else
     {
-      $sc[] = 'ไม่พบรายการ';
+      $sc[] = 'not found';
     }
 
     echo json_encode($sc);
@@ -738,7 +735,7 @@ public function get_prepare_item_code()
     }
     else
     {
-      $sc[] = 'ไม่พบรายการ';
+      $sc[] = 'not found';
     }
 
     echo json_encode($sc);
@@ -769,7 +766,7 @@ public function get_prepare_item_code()
     }
     else
     {
-      $sc[] = 'ไม่พบรายการ';
+      $sc[] = 'not found';
     }
 
     echo json_encode($sc);
@@ -799,7 +796,7 @@ public function get_prepare_item_code()
     }
     else
     {
-      $sc[] = 'ไม่พบรายการ';
+      $sc[] = 'not found';
     }
 
     echo json_encode($sc);
@@ -842,7 +839,7 @@ public function get_prepare_item_code()
   {
     if($customer_code == '')
     {
-      echo json_encode(array('เลือกลูกค้าก่อน'));
+      echo json_encode(array('Please specify customer'));
     }
     else
     {
@@ -878,7 +875,7 @@ public function get_prepare_item_code()
       }
       else
       {
-        echo json_encode(array('ไม่พบโซน'));
+        echo json_encode(array('not found'));
       }
     }
   }
@@ -922,7 +919,7 @@ public function get_prepare_item_code()
     }
     else
     {
-      echo json_encode(array('ไม่พบโซน'));
+      echo json_encode(array('not found'));
     }
 
   }
@@ -932,7 +929,7 @@ public function get_prepare_item_code()
   {
     if(empty($customer_code))
     {
-      echo json_encode(array('เลือกลูกค้าก่อน'));
+      echo json_encode(array('Please specify customer'));
     }
     else
     {
@@ -970,7 +967,7 @@ public function get_prepare_item_code()
       }
       else
       {
-        echo json_encode(array('ไม่พบโซน'));
+        echo json_encode(array('not found'));
       }
     }
   }
@@ -1087,7 +1084,7 @@ public function get_prepare_item_code()
     }
     else
     {
-      $sc[] = "not_fount";
+      $sc[] = "not found";
     }
 
     echo json_encode($sc);
@@ -1115,7 +1112,7 @@ public function get_prepare_item_code()
     }
     else
     {
-      $sc[] = "not_found";
+      $sc[] = "not found";
     }
 
     echo json_encode($sc);

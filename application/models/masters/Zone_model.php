@@ -510,10 +510,10 @@ class Zone_model extends CI_Model
     $rs = $this->db->select_max('last_sync')->get('zone');
     if($rs->num_rows() === 1)
     {
-      return $rs->row()->last_sync === NULL ? date('2019-01-01 00:00:00') : db_date($rs->row()->last_sync);
+      return $rs->row()->last_sync === NULL ? now() : db_date($rs->row()->last_sync);
     }
 
-    return date('2019-01-01 00:00:00');
+    return now();
   }
 
 

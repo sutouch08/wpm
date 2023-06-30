@@ -10,11 +10,11 @@
     <div class="tabable">
     	<ul class="nav nav-tabs" role="tablist">
         <li class="active">
-        	<a href="#state" aria-expanded="true" aria-controls="state" role="tab" data-toggle="tab">สถานะ</a>
+        	<a href="#state" aria-expanded="true" aria-controls="state" role="tab" data-toggle="tab">Status</a>
         </li>
   <?php if( $order->is_term == 0 ) : ?>
       	<li role="presentation">
-          <a href="#address" aria-expanded="false" aria-controls="address" role="tab" data-toggle="tab">ที่อยู่</a>
+          <a href="#address" aria-expanded="false" aria-controls="address" role="tab" data-toggle="tab">Shipping</a>
         </li>
   <?php endif; ?>
       </ul>
@@ -28,18 +28,18 @@
               <table class='table table-bordered' style="margin-bottom:0px;">
                 <thead>
                   <tr>
-                    <td colspan="6" align="center">ที่อยู่สำหรับจัดส่ง
+                    <td colspan="6" align="center">Shipping address
                       <p class="pull-right top-p">
-                        <button type="button" class="btn btn-info btn-xs" onClick="addNewAddress()"> เพิ่มที่อยู่ใหม่</button>
+                        <button type="button" class="btn btn-info btn-xs" onClick="addNewAddress()"> Add new address</button>
                       </p>
                     </td>
                   </tr>
                   <tr style="font-size:12px;">
-                    <td align="center" width="10%">ชื่อเรียก</td>
-                    <td width="12%">ผู้รับ</td>
-                    <td width="35%">ที่อยู่</td>
-                    <td width="15%">อีเมล์</td>
-                    <td width="15%">โทรศัพท์</td>
+                    <td align="center" width="10%">Alias</td>
+                    <td width="12%">consignee</td>
+                    <td width="35%">Address</td>
+                    <td width="15%">Email</td>
+                    <td width="15%">Phone</td>
                     <td ></td>
                   </tr>
                 </thead>
@@ -69,7 +69,7 @@
                   </tr>
           <?php 	endforeach; ?>
           <?php else : ?>
-                  <tr><td colspan="6" align="center">ไม่พบที่อยู่</td></tr>
+                  <tr><td colspan="6" align="center">Address not found</td></tr>
           <?php endif; ?>
                 </tbody>
               </table>

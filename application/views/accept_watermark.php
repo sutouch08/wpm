@@ -14,18 +14,18 @@
 
   @media (min-width: 992px) and (max-width: 1199px){
     .cancleWatermark {
-      font-size:120px !important;
+      font-size:100px !important;
     }
   }
 
   @media (min-width: 1200px) {
     .cancleWatermark {
-      font-size:150px !important;
+      font-size:100px !important;
     }
   }
 
 </style>
 
 <div style="width:100vw; height:0px; position:fixed; top:40vh; left:0; line-height:0px; color:orange; text-align:center; z-index:100; opacity:0.1;">
-    <span class="cancleWatermark">รอยืนยัน</span>
+    <span class="cancleWatermark">Waiting <br/><br/><br/>acception</span>
 </div>

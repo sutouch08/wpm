@@ -17,7 +17,8 @@ class Sync_items extends CI_Controller
     _check_login();
 		$this->pm = new stdClass();
 		$this->pm->can_view = 1;
-
+    $this->isViewer = FALSE;
+    $this->notibars = 0;
     $this->ms = $this->load->database('ms', TRUE); //--- SAP database
     //$this->mc = $this->load->database('mc', TRUE); //--- Temp Database
     $this->date = date('Y-d-m H:i:s');
@@ -175,7 +176,8 @@ class Sync_items extends CI_Controller
 
   public function get_item_last_date()
   {
-    echo sap_date($this->products_model->get_items_last_sync());
+    echo '2020-01-01 00:00:00';
+    //echo sap_date($this->products_model->get_items_last_sync());
   }
 
 

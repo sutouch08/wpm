@@ -6,22 +6,22 @@ if(empty($order->has_payment) && !$order->is_paid && !$order->is_expired && !$or
 		<?php if( $allowEditDisc && ($order->role == 'S' OR $order->role == 'C') OR $order->role == 'N') : ?>
     	<button type="button" class="btn btn-xs btn-warning" id="btn-edit-discount" onclick="showDiscountBox()">
 				<?php if($order->role == 'C' OR $order->role == 'N') : ?>
-					แก้ไข GP
+					Edit GP
 				<?php else : ?>
-					แก้ไขส่วนลด
+					Edit discount
 				<?php endif; ?>
 			</button>
       <button type="button" class="btn btn-xs btn-primary hide" id="btn-update-discount" onClick="getApprove('discount')">
 				<?php if( $order->role == 'C' OR $order->role == 'N') : ?>
-					บันทึก GP
+					Save GP
 				<?php else : ?>
-					บันทึกส่วนลด
+					Save discount
 				<?php endif; ?>
 			</button>
 		<?php endif; ?>
 		<?php if($allowEditPrice) : ?>
-      <button type="button" class="btn btn-xs btn-warning" id="btn-edit-price" onClick="showPriceBox()">แก้ไขราคา</button>
-      <button type="button" class="btn btn-xs btn-primary hide" id="btn-update-price" onClick="getApprove('price')">บันทึกราคา</button>
+      <button type="button" class="btn btn-xs btn-warning" id="btn-edit-price" onClick="showPriceBox()">Edit price</button>
+      <button type="button" class="btn btn-xs btn-primary hide" id="btn-update-price" onClick="getApprove('price')">Save price</button>
 		<?php endif; ?>
     </div>
 </div>

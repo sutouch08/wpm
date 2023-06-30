@@ -11,9 +11,9 @@ $hide = $order->status == 1 ? 'hide' : '';
     </div>
     <div class="col-sm-6 col-xs-6 padding-5">
     	<p class="pull-right top-p">
-        	<button type="button" class="btn btn-sm btn-warning" onClick="editOrder('<?php echo $order->code; ?>')"><i class="fa fa-arrow-left"></i> กลับ</button>
+        	<button type="button" class="btn btn-sm btn-warning" onClick="editOrder('<?php echo $order->code; ?>')"><i class="fa fa-arrow-left"></i> Back</button>
       <?php if($this->pm->can_add OR $this->pm->can_edit) : ?>
-          <button type="button" class="btn btn-sm btn-success <?php echo $hide; ?>" id="btn-save-order" onclick="saveOrder()"><i class="fa fa-save"></i> บันทึก</button>
+          <button type="button" class="btn btn-sm btn-success <?php echo $hide; ?>" id="btn-save-order" onclick="saveOrder()"><i class="fa fa-save"></i> Save</button>
       <?php endif; ?>
         </p>
     </div>
@@ -47,10 +47,10 @@ $hide = $order->status == 1 ? 'hide' : '';
 
   <div class="col-lg-2-harf col-md-2 col-sm-1-harf col-xs-6 padding-5">
     <button type="button" class="btn btn-xs btn-info pull-right hidden-xs" onclick="update_gp()">
-      <i class="fa fa-refresh"></i> อัพเดต GP
+      <i class="fa fa-refresh"></i> Update GP
     </button>
     <button type="button" class="btn btn-xs btn-info btn-block visible-xs" onclick="update_gp()">
-      <i class="fa fa-refresh"></i> อัพเดต GP
+      <i class="fa fa-refresh"></i> Update GP
     </button>
   </div>
 
@@ -89,12 +89,12 @@ $hide = $order->status == 1 ? 'hide' : '';
 
 <form id="orderForm">
 <div class="modal fade" id="orderGrid" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog" id="modal" style="max-width:95%;">
+	<div class="modal-dialog" id="modal" style="min-width:300px; max-width:90vw;">
 		<div class="modal-content">
   			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="modalTitle">title</h4>
-        <center><span style="color: red;">ใน ( ) = ยอดคงเหลือทั้งหมด   ไม่มีวงเล็บ = สั่งได้ทันที</span></center>
+				<h4 class="modal-title text-center" id="modalTitle">title</h4>
+        <center><span style="color: red;">In ( ) = total balance | without parenthesis = available</span></center>
 			 </div>
 			 <div class="modal-body">
          <div class="row">
@@ -104,8 +104,8 @@ $hide = $order->status == 1 ? 'hide' : '';
          </div>
        </div>
 			 <div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
-				<button type="button" class="btn btn-primary" onClick="addToOrder()" >เพิ่มในรายการ</button>
+				<button type="button" class="btn btn-default btn-100" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary btn-100" onClick="addToOrder()" >Add</button>
 			 </div>
 		</div>
 	</div>

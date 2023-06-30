@@ -1,17 +1,18 @@
 
 <div class="row">
   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5 table-responsive">
-    <table class="table table-striped border-1">
+    <table class="table table-striped border-1" style="min-width:940px;">
       <thead>
         <tr class="font-size-12">
-          <th class="width-5 text-center">ลำดับ</th>
-          <th class="width-10">บาร์โค้ด</th>
-          <th class="width-40" style="min-width:200px;">สินค้า</th>
-          <th class="width-10 text-right"style="min-width:90px;">ราคา</th>
-          <th class="width-10 text-right"style="min-width:90px;">ส่วนลด</th>
-          <th class="width-10 text-right">จำนวน</th>
-          <th class="width-10 text-right">มูลค่า</th>
-          <th class="width-5"></th>
+          <th class="fix-width-40 text-center">#</th>
+          <th class="fix-width-100">Barcode</th>
+          <th class="fix-width-350">Items</th>
+          <th class="fix-width-80 text-right">Price</th>
+          <th class="fix-width-100 text-right">Disc.</th>
+          <th class="fix-width-80 text-right">Qty</th>
+          <th class="fix-width-100 text-right">Amount</th>
+          <th class="fix-width-40"></th>
+          <th class="fix-width-50"></th>
         </tr>
       </thead>
       <tbody id="detail-table">
@@ -24,10 +25,10 @@
           <td class="middle text-center no">
             <?php echo $no; ?>
           </td>
-          <td class="middle text-center">
+          <td class="middle">
             <?php echo $rs->barcode; ?>
           </td>
-          <td class="middle hide-text">
+          <td class="middle">
             <?php echo inputRow($rs->product_code.' : '.$rs->product_name, 'border:0px; background-color:transparent;'); ?>
           </td>
           <td class="middle text-right">
@@ -44,6 +45,7 @@
           <td class="middle text-right amount" id="amount-<?php echo $rs->id; ?>">
             <?php echo number($rs->amount, 2); ?>
           </td>
+          <td class="middle text-center"><?php echo $rs->currency; ?></td>
           <td class="middle text-center">
           <?php if($rs->status == 0 && ($this->pm->can_edit OR $this->pm->can_delete)) : ?>
             <button type="button" class="btn btn-minier btn-danger" onclick="deleteRow('<?php echo $rs->id; ?>', '<?php echo $rs->product_code; ?>')">
@@ -61,14 +63,16 @@
         <td colspan="5" class="middle text-right"><strong>รวม</strong></td>
         <td id="total-qty" class="middle text-right"><?php echo number($totalQty); ?></td>
         <td id="total-amount" class="middle text-right"><?php echo number($totalAmount,2); ?></td>
+        <td class="text-center"><?php echo $doc->DocCur; ?></td>
         <td></td>
       </tr>
 
 <?php else : ?>
   <tr id="total-row">
-    <td colspan="5" class="middle text-right"><strong>รวม</strong></td>
+    <td colspan="5" class="middle text-right"><strong>Total</strong></td>
     <td id="total-qty" class="middle text-right">0</td>
     <td id="total-amount" class="middle text-right">0</td>
+    <td class="text-center"><?php echo $doc->DocCur; ?></td>
     <td></td>
   </tr>
 <?php endif; ?>
@@ -93,6 +97,7 @@
   </td>
   <td class="middle text-right qty" id="qty-{{id}}">{{qty}}</td>
   <td class="middle text-right amount" id="amount-{{id}}">{{amount}}</td>
+  <td class="middle text-center">{{currency}}</td>
   <td class="middle text-center">
     <button type="button" class="btn btn-xs btn-danger" onclick="deleteRow('{{id}}', '{{product}}')">
       <i class="fa fa-trash"></i>
@@ -110,6 +115,7 @@
   <td class="middle text-right disc" id="disc-{{id}}">{{discount}}</td>
   <td class="middle text-right qty" id="qty-{{id}}">{{qty}}</td>
   <td class="middle text-right amount" id="amount-{{id}}">{{amount}}</td>
+  <td class="middle text-center">{{currency}}</td>
   <td class="middle text-center">
     <button type="button" class="btn btn-xs btn-danger" onclick="deleteRow('{{id}}', '{{product}}')">
       <i class="fa fa-trash"></i>
@@ -124,6 +130,7 @@
     <td colspan="5" class="middle text-right"><strong>รวม</strong></td>
     <td id="total-qty" class="middle text-center">{{ total_qty }}</td>
     <td id="total-amount" colspan="2" class="middle text-center">{{ total_amount }}</td>
+    <td class="middle text-center">{{currency}}</td>
   </tr>
   {{else}}
   <tr class="font-size-12 rox" id="row-{{id}}">
@@ -140,6 +147,7 @@
       <input type="number" class="form-control input-xs text-center qty" min="0" id="qty-{{id}}" value="{{qty}}" onKeyup="reCal('{{id}}')" onChange="reCal('{{id}}')" />
     </td>
     <td class="middle text-right amount" id="amount-{{id}}">{{ amount }}</td>
+    <td class="middle text-center">{{currency}}</td>
     <td class="middle text-center">
       <button type="button" class="btn btn-xs btn-danger" onclick="deleteRow('{{id}}', '{{product}}')"><i class="fa fa-trash"></i></button>
     </td>

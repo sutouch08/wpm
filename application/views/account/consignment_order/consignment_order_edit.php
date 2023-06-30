@@ -33,44 +33,56 @@
 <hr class=""/>
 <form id="addForm" method="post" action="<?php echo $this->home; ?>/update">
 	<div class="row">
-	  <div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-4 padding-5">
-	    <label>เลขที่เอกสาร</label>
+		<div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-4 padding-5">
+	    <label>Documrnt No</label>
 	    <input type="text" class="form-control input-sm text-center" value="<?php echo $doc->code; ?>" disabled />
 	  </div>
 
-	  <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-	    <label>วันที่</label>
+		<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
+	    <label>Date</label>
 	    <input type="text" class="form-control input-sm text-center edit" name="date_add" id="date" value="<?php echo thai_date($doc->date_add); ?>" readonly disabled />
 	  </div>
-		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-4 padding-5">
-			<label>รหัสลูกค้า</label>
+		<div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-4 padding-5">
+			<label>Customer</label>
 			<input type="text" class="form-control input-sm text-center edit" name="customerCode" id="customerCode" value="<?php echo $doc->customer_code; ?>" disabled>
 		</div>
-	  <div class="col-lg-7 col-md-6-harf col-sm-6-harf col-xs-12 padding-5">
-	    <label>ลูกค้า[ในระบบ]</label>
+		<div class="col-lg-6 col-md-6-harf col-sm-6-harf col-xs-12 padding-5">
+	    <label class="not-show">ลูกค้า</label>
 	    <input type="text" class="form-control input-sm" name="customer edit" id="customer" value="<?php echo $doc->customer_name; ?>" disabled />
 	  </div>
 
-		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-4 padding-5">
-			<label>รหัสโซน</label>
+		<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-3 padding-5">
+	    <label>Currency</label>
+			<select class="form-control input-sm edit" name="doc_currency" id="doc_currency" onchange="updateDocRate()" disabled>
+				<?php echo select_currency($doc->DocCur); ?>
+			</select>
+	  </div>
+
+		<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-3 padding-5">
+	    <label>Rate</label>
+			<input type="number" class="form-control input-sm text-center edit" name="doc_rate" id="doc_rate" value="<?php echo $doc->DocRate; ?>" disabled />
+	  </div>
+
+		<div class="col-lg-2 col-md-2-harf col-sm-3 col-xs-6 padding-5">
+			<label>Bin location</label>
 			<input type="text" class="form-control input-sm text-center edit" id="zone_code" name="zone_code" value="<?php echo $doc->zone_code; ?>" disabled />
 		</div>
 
-		<div class="col-lg-5 col-md-4-harf col-sm-4-harf col-xs-8 padding-5">
-	    <label>โซน[ฝากขาย]</label>
+		<div class="col-lg-4 col-md-6-harf col-sm-6 col-xs-12 padding-5">
+	    <label class="not-show">โซน[ฝากขาย]</label>
 			<input type="text" class="form-control input-sm edit" name="zone" id="zone" value="<?php echo $doc->zone_name; ?>" disabled />
 	  </div>
 
-		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-9 padding-5">
-			<label>หมายเหตุ</label>
+		<div class="col-lg-5 col-md-10-harf col-sm-10-harf col-xs-9 padding-5">
+	    <label>Remark</label>
 			<input type="text" class="form-control input-sm edit" name="remark" id="remark" value="<?php echo $doc->remark; ?>" disabled />
 		</div>
 
 	<?php if($this->pm->can_edit) : ?>
 	  <div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-3 padding-5">
 	    <label class="display-block not-show">Submit</label>
-	    <button type="button" class="btn btn-xs btn-warning btn-block" id="btn-edit" onclick="getEdit()"></i class="fa fa-pencil"></i> แก้ไข</button>
-	    <button type="button" class="btn btn-xs btn-success btn-block hide" id="btn-update" onclick="update()"><i class="fa fa-save"></i> บันทึก</button>
+	    <button type="button" class="btn btn-xs btn-warning btn-block" id="btn-edit" onclick="getEdit()"></i class="fa fa-pencil"></i> Edit</button>
+	    <button type="button" class="btn btn-xs btn-success btn-block hide" id="btn-update" onclick="update()"><i class="fa fa-save"></i> Save</button>
 	  </div>
 	<?php endif; ?>
 	</div>

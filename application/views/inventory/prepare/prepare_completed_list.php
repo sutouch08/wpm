@@ -4,14 +4,13 @@
   <div class="col-sm-12">
     <table class="table table-striped border-1">
       <thead>
-        <tr><td colspan="6" align="center">รายการที่ครบแล้ว</td></tr>
         <tr>
-          <th class="width-15 middle text-center">บาร์โค้ด</th>
-          <th class="width-50 middle text-center">สินค้า</th>
-          <th class="width-5 middle text-center">จำนวน</th>
-          <th class="width-5 middle text-center">จัดแล้ว</th>
-          <th class="width-5 middle text-center">คงเหลือ</th>
-          <th class="text-right">จัดจากโซน</th>
+          <th class="fix-width-150 middle">Barcode</th>
+          <th class="min-width-200 middle">Item Code</th>
+          <th class="fix-width-100 middle text-center">Order Qty</th>
+          <th class="fix-width-100 middle text-center">Picked Qty</th>
+          <th class="fix-width-100 middle text-center">Balance Qty</th>
+          <th class="fix-width-150 text-right">Location</th>
         </tr>
       </thead>
       <tbody id="complete-table">
@@ -45,7 +44,7 @@
           data-content="<?php echo $rs->from_zone; ?>"
           data-original-title=""
           title="">
-          จากโซน
+          Location
         </button>
         <span class="zoneLabel <?php echo $showZone; ?>" style="display:inline-block;">
             <?php echo $rs->from_zone; ?>

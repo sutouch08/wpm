@@ -9,7 +9,7 @@ class Tool_model extends CI_Model
   public function get_currency()
   {
     $rs = $this->ms
-    ->select('CurrCode AS code')
+    ->select('CurrCode AS code, DocCurrCod AS name')
     ->get('OCRN');
 
     if($rs->num_rows() > 0)

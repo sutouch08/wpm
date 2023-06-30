@@ -42,6 +42,8 @@ $('#item-code').autocomplete({
 function getItemByCode(){
   var code = $.trim($('#item-code').val());
   var zone_code = $('#zone_code').val();
+  var rate = $('#doc_rate').val();
+
   if(code.length > 0)
   {
     $.ajax({
@@ -50,7 +52,8 @@ function getItemByCode(){
       cache:'false',
       data:{
         'code' : code,
-        'zone_code' : zone_code
+        'zone_code' : zone_code,
+        'rate' : rate
       },
       success:function(rs){
         var rs = $.trim(rs);
@@ -208,17 +211,17 @@ function addToDetail(){
   var count_stock = $('#count_stock').val();
 
   if(qty <= 0){
-    swal('จำนวนไม่ถูกต้อง');
+    swal('Invlid qty');
     return false;
   }
 
   if(qty > stock && auz == 0 && count_stock == 1){
-    swal('ยอดในโซนไม่พอตัด');
+    swal('The balance in the zone is not enough.');
     return false;
   }
 
   if(product_code == ''){
-    swal('สินค้าไม่ถูกต้อง');
+    swal('Invalid product code');
     return false;
   }
 
@@ -505,11 +508,6 @@ function updateDiscount(){
 }
 
 
-function getStockGrid(){
-
-}
-
-
 // JavaScript Document
 function getProductGrid(){
 	var pdCode 	= $("#pd-box").val();
@@ -529,23 +527,15 @@ function getProductGrid(){
 			},
 			success: function(rs){
 				load_out();
-				var rs = rs.split(' | ');
-				if( rs.length == 4 ){
-					var grid = rs[0];
-					var width = rs[1];
-					var pdCode = rs[2];
-					var style = rs[3];
-					if(grid == 'notfound'){
-						swal("ไม่พบสินค้า");
-						return false;
-					}
-					$("#modal").css("width", width +"px");
-					$("#modalTitle").html(pdCode);
-					$("#id_style").val(style);
-					$("#modalBody").html(grid);
-					$("#orderGrid").modal('show');
-				}else{
-					swal("สินค้าไม่ถูกต้อง");
+        if(isJson(rs)) {
+					let ds = $.parseJSON(rs);
+					$('#modal').css('width', ds.tableWidth + 'px');
+					$('#modalTitle').html(ds.styleCode + ' | ' + ds.styleOldCode);
+					$('#modalBody').html(ds.table);
+					$('#orderGrid').modal('show');
+				}
+				else {
+					swal(rs);
 				}
 			}
 		});

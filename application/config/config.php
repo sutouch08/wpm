@@ -23,8 +23,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$doc_folder = 'wms';
-$config['base_url'] = '/wms/';
+$doc_folder = 'wpm';
+$config['base_url'] = '/wpm/';
 $config['image_path'] = 'images/';
 $config['upload_path'] = 'upload/';
 $config['image_file_path'] = $_SERVER['DOCUMENT_ROOT'] ."/{$doc_folder}/images/";
@@ -407,7 +407,7 @@ $config['sess_regenerate_destroy'] = FALSE;
 */
 $config['cookie_prefix']	= '';
 $config['cookie_domain']	= '';
-$config['cookie_path']		= '/wms';
+$config['cookie_path']		= '/wpm';
 $config['cookie_secure']	= FALSE;
 $config['cookie_httponly'] 	= FALSE;
 

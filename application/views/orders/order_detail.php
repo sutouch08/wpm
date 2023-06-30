@@ -9,20 +9,20 @@
 			<table class="table table-striped border-1" style="border-collapse:inherit; margin-bottom:0px;">
         <thead>
         	<tr class="font-size-12">
-            	<th class="width-5 text-center">No.</th>
+            	<th class="width-5 text-center">#.</th>
                 <th class="width-5 text-center"></th>
-                <th class="width-15">รหัสสินค้า</th>
-                <th class="width-25">ชื่อสินค้า</th>
-                <th class="width-10 text-center" style="min-width:100px;">ราคา</th>
-                <th class="width-10 text-center">จำนวน</th>
+                <th class="width-15">SKU</th>
+                <th class="width-25">Desc.</th>
+                <th class="width-10 text-center" style="min-width:100px;">Price</th>
+                <th class="width-10 text-center">Qty.</th>
                 <th class="width-15 text-center" style="min-width:100px;">
 									<?php if( $order->role == 'C' ) : ?>
-										GP
+										GP (%)
 									<?php else : ?>
-										ส่วนลด
+										Discount (%)
 									<?php endif; ?>
 									</th>
-                <th class="width-10 text-right">มูลค่า</th>
+                <th class="width-10 text-right">Amount</th>
                 <th class="width-5 text-center"></th>
             </tr>
         </thead>
@@ -103,36 +103,35 @@
           <?php   endforeach; ?>
           <?php else : ?>
             <tr>
-              <td colspan="10" class="text-center"><h4>ไม่พบรายการ</h4></td>
+              <td colspan="10" class="text-center"><h4>No item found</h4></td>
             </tr>
           <?php endif; ?>
 
 <?php 	$netAmount = ( $total_amount - $order->bDiscAmount ) + $order->shipping_fee + $order->service_fee;	?>
 			<tr class="font-size-12">
             	<td colspan="6" rowspan="4" style="white-space:normal;">
-								หมายเหตุ :
+								Remark :
             		<?php echo $order->remark; ?>
             	</td>
-              <td style="border-left:solid 1px #CCC;"><b>จำนวนรวม</b></td>
+              <td style="border-left:solid 1px #CCC;"><b>Total Qty.</b></td>
               <td class="text-right"><b><?php echo number($total_qty); ?></b></td>
               <td class="text-center"><b>Pcs.</b></td>
             </tr>
            <tr class="font-size-12">
-                <td style="border-left:solid 1px #CCC;"><b>มูลค่ารวม</b></td>
+                <td style="border-left:solid 1px #CCC;"><b>Total Amount</b></td>
                 <td class="text-right" id="total-td" style="font-weight:bold;"><?php echo number($order_amount, 2); ?></td>
-                <td class="text-center"><b>THB.</b></td>
+                <td class="text-center"><b><?php echo $order->DocCur; ?></b></td>
             </tr>
             <tr class="font-size-12">
-                <td style="border-left:solid 1px #CCC;"><b>ส่วนลดรวม</b></td>
+                <td style="border-left:solid 1px #CCC;"><b>Total Disc.</b></td>
                 <td class="text-right" id="discount-td" style="font-weight:bold;"><?php echo number($total_discount, 2); ?></td>
-                <td class="text-center"><b>THB.</b></td>
+                <td class="text-center"><b><?php echo $order->DocCur; ?></b></td>
             </tr>
             <tr class="font-size-12">
-                <td style="border-left:solid 1px #CCC;"><b>สุทธิ</b></td>
+                <td style="border-left:solid 1px #CCC;"><b>Net Amount</b></td>
                 <td class="text-right" style="font-weight:bold;" id="netAmount-td"><?php echo number( $netAmount, 2); ?></td>
-                <td class="text-center"><b>THB.</b></td>
+                <td class="text-center"><b><?php echo $order->DocCur; ?></b></td>
             </tr>
-
         	</tbody>
         </table>
     </div>
@@ -145,27 +144,27 @@
 	{{#if @last}}
     <tr class="font-size-12">
     	<td colspan="6" rowspan="4"></td>
-      <td style="border-left:solid 1px #CCC;"><b>จำนวนรวม</b></td>
+      <td style="border-left:solid 1px #CCC;"><b>Total Qty.</b></td>
       <td class="text-right"><b>{{ total_qty }}</b></td>
       <td class="text-center"><b>Pcs.</b></td>
     </tr>
 
     <tr class="font-size-12">
-      <td style="border-left:solid 1px #CCC;"><b>มูลค่ารวม</b></td>
+      <td style="border-left:solid 1px #CCC;"><b>Total Amount</b></td>
       <td class="text-right"><b>{{ order_amount }}</b></td>
-      <td class="text-center"><b>THB.</b></td>
+      <td class="text-center"><b><?php echo $order->DocCur; ?></b></td>
     </tr>
 
     <tr class="font-size-12">
-      <td style="border-left:solid 1px #CCC;"><b>ส่วนลดรวม</b></td>
+      <td style="border-left:solid 1px #CCC;"><b>Total Disc.</b></td>
       <td class="text-right"><b>{{ total_discount }}</b></td>
-      <td class="text-center"><b>THB.</b></td>
+      <td class="text-center"><b><?php echo $order->DocCur; ?></b></td>
     </tr>
 
     <tr class="font-size-12">
-      <td style="border-left:solid 1px #CCC;"><b>สุทธิ</b></td>
+      <td style="border-left:solid 1px #CCC;"><b>Net Amount</b></td>
       <td class="text-right"><b>{{ net_amount }}</b></td>
-      <td class="text-center"><b>THB.</b></td>
+      <td class="text-center"><b><?php echo $order->DocCur; ?></b></td>
     </tr>
 	{{else}}
         <tr class="font-size-10" id="row_{{ id }}">
@@ -191,6 +190,6 @@
 
 <script id="nodata-template" type="text/x-handlebars-template">
 	<tr>
-      <td colspan="11" class="text-center"><h4>ไม่พบรายการ</h4></td>
+      <td colspan="11" class="text-center"><h4>No item found</h4></td>
   </tr>
 </script>

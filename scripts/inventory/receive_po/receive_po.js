@@ -3,13 +3,14 @@ var HOME = BASE_URL + 'inventory/receive_po/';
 
 function goDelete(code){
 	swal({
-		title: "คุณแน่ใจ ?",
-		text: "ต้องการยกเลิก '"+code+"' หรือไม่ ?",
+		title: "Are you sure ?",
+		text: "Do you really want to cancel this document ?<br/>This process cannot be undone.",
 		type: "warning",
+		html:true,
 		showCancelButton: true,
 		confirmButtonColor: "#DD6B55",
-		confirmButtonText: 'ใช่, ฉันต้องการ',
-		cancelButtonText: 'ไม่ใช่',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: true
 		}, function(){
 			$('#cancle-code').val(code);
@@ -93,20 +94,20 @@ function addNew()
 	let reqRemark = $('#required_remark').val();
 
   if(!isDate(date_add)) {
-    swal('วันที่ไม่ถูกต้อง');
+    swal('Invalid date');
     return false;
   }
 
-	if(reqRemark == 1 && remark.length < 10) {
-		swal({
-			title:'ข้อผิดพลาด',
-			text:'กรุณาใส่หมายเหตุ (ความยาวอย่างน้อย 10 ตัวอักษร)',
-			type:'warning'
-		});
+	// if(reqRemark == 1 && remark.length < 10) {
+	// 	swal({
+	// 		title:'Required',
+	// 		text:'กรุณาใส่หมายเหตุ (ความยาวอย่างน้อย 10 ตัวอักษร)',
+	// 		type:'warning'
+	// 	});
+	//
+	// 	return false;
+	// }
 
-		return false;
-	}
-	
 	load_in();
 
 	$.ajax({

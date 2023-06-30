@@ -6,7 +6,7 @@ class Transform extends PS_Controller
   public $menu_code = 'ICTRFM';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'REQUEST';
-	public $title = 'เบิกแปรสภาพ(ขาย)';
+	public $title = 'Transform for sell';
   public $filter;
   public $role = 'T';
   public $isClosed = FALSE;
@@ -158,7 +158,7 @@ class Transform extends PS_Controller
         'role' => $role,
         'bookcode' => $book_code,
         'customer_code' => $this->input->post('customerCode'),
-        'user' => get_cookie('uname'),
+        'user' => $this->_user->uname,
         'remark' => $this->input->post('remark'),
         'user_ref' => $this->input->post('empName'),
         'zone_code' => $zone_code,
@@ -173,7 +173,7 @@ class Transform extends PS_Controller
         $arr = array(
           'order_code' => $code,
           'state' => 1,
-          'update_user' => get_cookie('uname')
+          'update_user' => $this->_user->uname
         );
 
         $this->order_state_model->add_state($arr);
@@ -182,13 +182,13 @@ class Transform extends PS_Controller
       }
       else
       {
-        set_error('เพิ่มเอกสารไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+        set_error('Failed to add document Please try again.');
         redirect($this->home.'/add_new');
       }
     }
     else
     {
-      set_error('ไม่พบข้อมูลลูกค้า กรุณาตรวจสอบ');
+      set_error('No customer found, please check.');
       redirect($this->home.'/add_new');
     }
   }
@@ -284,13 +284,13 @@ class Transform extends PS_Controller
       if($rs === FALSE)
       {
         $sc = FALSE;
-        $message = 'ปรับปรุงข้อมูลไม่สำเร็จ';
+        $message = 'Failed to update information.';
       }
     }
     else
     {
       $sc = FALSE;
-      $message = 'ไม่พบเลขที่เอกสาร';
+      $message = 'Document number not found';
     }
 
     echo $sc === TRUE ? 'success' : $message;
@@ -399,7 +399,7 @@ class Transform extends PS_Controller
       if($rs === FALSE)
       {
         $sc = FALSE;
-        $message = 'บันทึกออเดอร์ไม่สำเร็จ';
+        $message = 'Failed to save document.';
       }
     }
 
@@ -446,12 +446,12 @@ class Transform extends PS_Controller
       }
       else
       {
-        $sc = 'ทำรายการไม่สำเร็จ';
+        $sc = 'Failed to complete the transaction.';
       }
     }
     else
     {
-      $sc = 'ไม่พบข้อมูลสินค้า';
+      $sc = 'Product not found.';
     }
     echo $sc;
   }
@@ -477,12 +477,12 @@ class Transform extends PS_Controller
       }
       else
       {
-        $sc = 'ทำรายการไม่สำเร็จ';
+        $sc = 'Failed to complete the transaction';
       }
     }
     else
     {
-      $sc = 'ไม่พบข้อมูลสินค้า';
+      $sc = 'Product not found.';
     }
 
     echo $sc;
@@ -501,7 +501,7 @@ class Transform extends PS_Controller
     }
     else
     {
-      echo 'ลบการเชื่อมโยงสินค้าไม่สำเร็จ';
+      echo 'Failed to remove product link.';
     }
   }
 
@@ -615,7 +615,7 @@ class Transform extends PS_Controller
     $code = $this->input->post('order_code');
     $option = $this->input->post('option');
     $rs = $this->orders_model->set_never_expire($code, $option);
-    echo $rs === TRUE ? 'success' : 'ทำรายการไม่สำเร็จ';
+    echo $rs === TRUE ? 'success' : 'Failed to complete the transaction';
   }
 
 
@@ -623,7 +623,7 @@ class Transform extends PS_Controller
   {
     $code = $this->input->post('order_code');
     $rs = $this->orders_model->un_expired($code);
-    echo $rs === TRUE ? 'success' : 'ทำรายการไม่สำเร็จ';
+    echo $rs === TRUE ? 'success' : 'Failed to complete the transaction';
   }
 
 

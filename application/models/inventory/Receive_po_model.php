@@ -326,6 +326,14 @@ class Receive_po_model extends CI_Model
   }
 
 
+  public function get_sum_amount_fc($code)
+  {
+    $rs = $this->db->select_sum('totalFrgn')->where('receive_code', $code)->get('receive_product_detail');
+
+    return $rs->row()->totalFrgn === NULL ? 0.00 : $rs->row()->totalFrgn;
+  }
+
+
 	public function get_po_currency($code)
 	{
 		$rs = $this->ms

@@ -24,13 +24,13 @@ function goEdit(code)
 //--- delete all data and cancle document
 function getDelete(code){
 	swal({
-		title: "คุณแน่ใจ ?",
-		text: "ต้องการยกเลิก '"+code+"' หรือไม่ ?",
+		title: "Are you sure ?",
+		text: "Do you really want to delete '"+code+"'?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#DD6B55",
-		confirmButtonText: 'ใช่, ฉันต้องการ',
-		cancelButtonText: 'ไม่ใช่',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: true
 		}, function(){
       $('#cancle-code').val(code);

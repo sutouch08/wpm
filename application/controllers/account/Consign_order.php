@@ -5,7 +5,7 @@ class Consign_order extends PS_Controller
   public $menu_code = 'ACCSOD';
 	public $menu_group_code = 'AC';
   public $menu_sub_group_code = '';
-	public $title = 'ตัดยอดฝากขาย(แท้)';
+	public $title = 'Consignment (WM)';
   public $filter;
   public $error = "";
   public function __construct()
@@ -72,7 +72,7 @@ class Consign_order extends PS_Controller
     $exists = $this->consign_order_model->is_exists($code, $old_code);
     if($exists)
     {
-      echo 'เลขที่เอกสารซ้ำ';
+      echo 'Duplicated Document Number';
     }
     else
     {
@@ -89,7 +89,11 @@ class Consign_order extends PS_Controller
       {
         $date_add = db_date($this->input->post('date_add'), TRUE);
         $zone = $this->zone_model->get($this->input->post('zone_code'));
+        $DocCur = $this->input->post('doc_currency');
+        $DocRate = $this->input->post('doc_rate');
+
         $isManual = getConfig('MANUAL_DOC_CODE');
+
         if($isManual == 1 && !empty($this->input->post('code')))
         {
           $code = $this->input->post('code');
@@ -104,6 +108,8 @@ class Consign_order extends PS_Controller
         $arr = array(
           'code' => $code,
           'bookcode' => $bookcode,
+          'DocCur' => $DocCur,
+          'DocRate' => $DocRate,
           'customer_code' => $this->input->post('customerCode'),
           'customer_name' => $this->input->post('customer'),
           'zone_code' => $zone->code,
@@ -111,25 +117,25 @@ class Consign_order extends PS_Controller
           'warehouse_code' => $zone->warehouse_code,
           'remark' => $this->input->post('remark'),
           'date_add' => $date_add,
-          'user' => get_cookie('uname')
+          'user' => $this->_user->uname
         );
 
         if(! $this->consign_order_model->add($arr))
         {
           $sc = FALSE;
-          set_error("เพิ่มเอกสารไม่สำเร็จ");
+          set_error("Add Document Failed");
         }
       }
       else
       {
         $sc = FALSE;
-        set_error('ไม่พบข้อมูล/ข้อมูลไม่ครบถ้วน');
+        set_error('Form data not found');
       }
     }
     else
     {
       $sc = FALSE;
-      set_error('คุณไม่มีสิทธิ์ในการเพิ่มเอกสาร');
+      set_error('permission');
     }
 
     if($sc === TRUE)
@@ -138,6 +144,8 @@ class Consign_order extends PS_Controller
     }
     else
     {
+      set_error_message($this->error);
+
       redirect($this->home.'/add_new');
     }
 
@@ -150,6 +158,7 @@ class Consign_order extends PS_Controller
     $this->load->helper('print');
     $doc = $this->consign_order_model->get($code);
     $details = $this->consign_order_model->get_details($code);
+
     if(!empty($details))
     {
       foreach($details as $rs)
@@ -157,6 +166,7 @@ class Consign_order extends PS_Controller
         $rs->barcode = $this->products_model->get_barcode($rs->product_code);
       }
     }
+
     $gb_auz = getConfig('ALLOW_UNDER_ZERO');
     $wh_auz = $this->warehouse_model->is_auz($doc->warehouse_code);
     $auz = $gb_auz == 1 ? 1 : ($wh_auz === TRUE ? 1 : 0);
@@ -177,38 +187,91 @@ class Consign_order extends PS_Controller
     $code = $this->input->post('code');
     $date_add = db_date($this->input->post('date_add'), TRUE);
     $zone = $this->zone_model->get($this->input->post('zone_code'));
+    $doc_currency = $this->input->post('doc_currency');
+    $doc_rate = $this->input->post('doc_rate');
 
     if($code)
     {
       if($this->pm->can_edit)
       {
-        $arr = array(
-          'customer_code' => $this->input->post('customerCode'),
-          'customer_name' => $this->input->post('customer'),
-          'zone_code' => $zone->code,
-          'zone_name' => $zone->name,
-          'warehouse_code' => $zone->warehouse_code,
-          'remark' => get_null(trim($this->input->post('remark'))),
-          'date_add' => $date_add,
-          'user' => get_cookie('uname')
-        );
+        $doc = $this->consign_order_model->get($code);
 
-        if(! $this->consign_order_model->update($code, $arr))
+        if( ! empty($doc))
         {
-          $sc = FALSE;
-          $this->error = "ปรับปรุงข้อมูลไม่สำเร็จ";
+          $this->db->trans_begin();
+
+          $arr = array(
+            'DocCur' => $doc_currency,
+            'DocRate' => $doc_rate,
+            'customer_code' => $this->input->post('customerCode'),
+            'customer_name' => $this->input->post('customer'),
+            'zone_code' => $zone->code,
+            'zone_name' => $zone->name,
+            'warehouse_code' => $zone->warehouse_code,
+            'remark' => get_null(trim($this->input->post('remark'))),
+            'date_add' => $date_add,
+            'user' => $this->_user->uname
+          );
+
+          if(! $this->consign_order_model->update($code, $arr))
+          {
+            $sc = FALSE;
+            $this->error = "Update failed";
+          }
+
+          if($sc === TRUE && ($doc->DocRate != $doc_rate))
+          {
+            $details = $this->consign_order_model->get_details($code);
+
+            if( ! empty($details))
+            {
+              foreach($details as $rs)
+              {
+                if($sc === FALSE)
+                {
+                  break;
+                }
+
+                $amount = convertPrice($rs->amount, $doc_rate, $rs->rate);
+                $arr = array(
+                  'currency' => $doc_currency,
+                  'rate' => $doc_rate,
+                  'cost' => $rs->cost,
+                  'price' => convertPrice($rs->price, $doc_rate, $rs->rate),
+                  'discount_amount' => convertPrice($rs->discount_amount, $doc_rate, $rs->rate),
+                  'amount' => $amount,
+                  'totalFrgn' => convertFC($amount, $doc_rate, $rs->rate)
+                );
+
+                if( ! $this->consign_order_model->update_detail($rs->id, $arr))
+                {
+                  $sc = FALSE;
+                  $this->error = "Update transection entries failed";
+                }
+              }
+            }
+          }
+
+          if($sc === TRUE)
+          {
+            $this->db->trans_commit();
+          }
+          else
+          {
+            $this->db->trans_rollback();
+          }
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "คุณไม่มีสิทธิ์แก้ไขข้อมูล";
+        set_error('permission');
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสาร";
+      $this->error = "Document number not found";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -231,7 +294,7 @@ class Consign_order extends PS_Controller
 	      if($doc->status == 1)
 	      {
 	        $sc = FALSE;
-	        $this->error = "คุณต้องยกเลิกการบันทึกก่อนยกเลิกเอกสาร";
+	        $this->error = "You must cancel the save before canceling the document.";
 	      }
 	      else
 	      {
@@ -246,7 +309,7 @@ class Consign_order extends PS_Controller
 	        if(! $this->consign_order_model->drop_details($code))
 	        {
 	          $sc = FALSE;
-	          $this->error = "ลบรายการไม่สำเร็จ";
+	          $this->error = "Delete items failed.";
 	        }
 	        else
 	        {
@@ -258,7 +321,7 @@ class Consign_order extends PS_Controller
 	          if(! $this->consign_order_model->update($code, $arr))
 	          {
 	            $sc = FALSE;
-	            $this->error = "เปลี่ยนสถานะเอกสารไม่สำเร็จ";
+	            $this->error = "Failed to change document status";
 	          }
 	        }
 
@@ -283,7 +346,7 @@ class Consign_order extends PS_Controller
 			          if($this->delivery_order_model->drop_middle_exits_data($rows->DocEntry) === FALSE)
 			          {
 			            $sc = FALSE;
-			            $this->error = "ลบรายการที่ค้างใน Temp ไม่สำเร็จ";
+			            $this->error = "Failed to delete SAP Temp";
 			          }
 			        }
 			      }
@@ -294,14 +357,14 @@ class Consign_order extends PS_Controller
 			else
 			{
 				$sc = FALSE;
-				$this->error = "เอกสารเข้า SAP แล้วไม่อนุญาติให้แก้ไข";
+				$this->error = "Documents in SAP are not allowed to be edited.";
 			}
 
     }
     else
     {
       $sc = FALSE;
-      $this->error = "คุณไม่มีสิทธิ์ยกเลิกเอกสาร";
+      $this->error = "You do not have the right to cancel the document.";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -354,6 +417,7 @@ class Consign_order extends PS_Controller
         $discount = $disc['discount_amount'];
         $amount = ($price - $discount) * $qty;
 
+
         $gb_auz = getConfig('ALLOW_UNDER_ZERO');
         $wh_auz = $this->warehouse_model->is_auz($doc->warehouse_code);
         $auz = $gb_auz == 1 ? TRUE : $wh_auz;
@@ -376,12 +440,15 @@ class Consign_order extends PS_Controller
               'style_code' => $item->style_code,
               'product_code' => $item->code,
               'product_name' => $item->name,
+              'currency' => $doc->DocCur,
+              'rate' => $doc->DocRate,
               'cost' => $item->cost,
               'price' => $price,
               'qty' => $qty,
               'discount' => discountLabel($disc['discount1'], $disc['discount2'], $disc['discount3']),
               'discount_amount' => $discount * $qty,
               'amount' => $amount,
+              'totalFrgn' => convertFC($amount, $doc->DocRate, 1),
               'ref_code' => $doc->ref_code,
               'input_type' => $input_type
             );
@@ -391,14 +458,14 @@ class Consign_order extends PS_Controller
             if($id === FALSE )
             {
               $sc = FALSE;
-              $this->error = "เพิ่มรายการไม่สำเร็จ";
+              $this->error = "Failed to add item";
             }
 
           }
           else
           {
             $sc = FALSE;
-            $this->error = "<span>{$item->code} ยอดในโซนไม่พอตัด  ในโซน: {$stock} ยอดตัด : {$sum_qty} </span><br/>";
+            $this->error = "<span>{$item->code} is not enough stock in this location.  Instock: {$stock} Qty : {$sum_qty} </span><br/>";
           }
 
         }
@@ -408,13 +475,16 @@ class Consign_order extends PS_Controller
           //--- ถ้าจำนวนที่ยังไม่บันทึก รวมกับจำนวนใหม่ไม่เกินยอดในโซน หรือ คลังสามารถติดลบได้
           $id = $detail->id;
           $new_qty = $qty + $detail->qty;
+          $amount = ($price - $discount) * $new_qty;
+
           if($sum_qty <= $stock OR $auz === TRUE)
           {
             //--- add new row
             $arr = array(
               'qty' => $new_qty,
               'discount_amount' => $discount * $new_qty,
-              'amount' => ($price - $discount) * $new_qty
+              'amount' => $amount,
+              'totalFrgn' => $doc->DocRate > 0 ? $amount/$doc->DocRate : 0
             );
 
             if(! $this->consign_order_model->update_detail($id, $arr))
@@ -427,7 +497,7 @@ class Consign_order extends PS_Controller
           else
           {
             $sc = FALSE;
-            $this->error = "<span>{$item->code} ยอดในโซนไม่พอตัด  ในโซน: {$stock} ยอดตัด : {$sum_qty} </span><br/>";
+            $this->error = "<span>{$item->code} is not enough stock in this location.  Instock: {$stock} Qty : {$sum_qty} </span><br/>";
           }
         }
       }
@@ -453,132 +523,13 @@ class Consign_order extends PS_Controller
         'price' => round($rs->price,2),
         'qty' => $rs->qty,
         'discount' => $rs->discount,
-        'amount' => $rs->amount
+        'amount' => $rs->amount,
+        'currency' => $rs->currency
       );
     }
 
     echo $sc === TRUE ? json_encode($ds) : $this->error;
   }
-
-
-
-  //---- add or update detail row by key in
-  public function add_details($code)
-  {
-    $sc = TRUE;
-    $data = $this->input->post('data');
-
-    if(!empty($data))
-    {
-      $doc = $this->consign_order_model->get($code);
-      if(!empty($doc))
-      {
-        $this->load->model('stock/stock_model');
-        $gb_auz = getConfig('ALLOW_UNDER_ZERO');
-        $wh_auz = $this->warehouse_model->is_auz($doc->warehouse_code);
-        $auz = $gb_auz == 1 ? TRUE : $wh_auz;
-        $discLabel = $this->input->post('discount');
-
-        foreach($data as $rs)
-        {
-          $product_code = $rs['code']; //-- รหัสสินค้า
-          $qty = $rs['qty'];
-          $item = $this->products_model->get($product_code);
-          $price = $item->price;
-          $disc = parse_discount_text($discLabel, $price);
-          $discount = $disc['discount_amount'];
-          $amount = ($price - $discount) * $qty;
-          $input_type = 1;  //--- 1 = key in , 2 = load diff, 3 = excel
-          $stock = $item->count_stock == 1 ? $this->stock_model->get_stock_zone($doc->zone_code, $item->code) : 10000000;
-          $c_qty = $item->count_stock == 1 ? $this->consign_order_model->get_unsave_qty($code, $item->code, $price, $discLabel, $input_type) : 0;
-          $detail = $this->consign_order_model->get_exists_detail($code, $product_code, $price, $discLabel, $input_type);
-          $sum_qty = $qty + $c_qty;
-          $id;
-
-          if(empty($detail))
-          {
-            //--- ถ้าจำนวนที่ยังไม่บันทึก รวมกับจำนวนใหม่ไม่เกินยอดในโซน หรือ คลังสามารถติดลบได้
-            if($sum_qty <= $stock OR $auz === TRUE)
-            {
-              //--- add new row
-              $arr = array(
-                'consign_code' => $code,
-                'style_code' => $item->style_code,
-                'product_code' => $item->code,
-                'product_name' => $item->name,
-                'cost' => $item->cost,
-                'price' => $price,
-                'qty' => $qty,
-                'discount' => discountLabel($disc['discount1'], $disc['discount2'], $disc['discount3']),
-                'discount_amount' => $discount * $qty,
-                'amount' => $amount,
-                'ref_code' => $doc->ref_code,
-                'input_type' => $input_type
-              );
-
-              $id = $this->consign_order_model->add_detail($arr); //-- return id if success
-
-              if($id === FALSE )
-              {
-                $sc = FALSE;
-                $this->error = "เพิ่มรายการไม่สำเร็จ";
-              }
-
-            }
-            else
-            {
-              $sc = FALSE;
-              $this->error .= "<span>{$item->code} ยอดในโซนไม่พอตัด  ในโซน: {$stock} ยอดตัด : {$sum_qty} </span><br/>";
-            }
-          }
-          else
-          {
-            //-- update new rows
-            //--- ถ้าจำนวนที่ยังไม่บันทึก รวมกับจำนวนใหม่ไม่เกินยอดในโซน หรือ คลังสามารถติดลบได้
-            $id = $detail->id;
-            $new_qty = $qty + $detail->qty;
-            if($sum_qty <= $stock OR $auz === TRUE)
-            {
-              //--- add new row
-              $arr = array(
-                'qty' => $new_qty,
-                'discount_amount' => $discount * $new_qty,
-                'amount' => ($price - $discount) * $new_qty
-              );
-
-              if(! $this->consign_order_model->update_detail($id, $arr))
-              {
-                $sc = FALSE;
-                $this->error = "ปรับปรุงรายการไม่สำเร็จ";
-              }
-
-            }
-            else
-            {
-              $sc = FALSE;
-              $this->error .= "<span>{$item->code} ยอดในโซนไม่พอตัด  ในโซน: {$stock} ยอดตัด : {$sum_qty} </span><br/>";
-            }
-          }
-        }
-
-      }
-      else
-      {
-        $sc = FALSE;
-        $this->error = "เลขที่เอกสารไม่ถูกต้อง";
-      }
-    }
-    else
-    {
-      $sc = FALSE;
-      $this->error = "ไม่พบข้อมูล";
-    }
-
-
-    echo $sc === TRUE ? 'success' : $this->error;
-  }
-
-
 
 
 
@@ -604,7 +555,6 @@ class Consign_order extends PS_Controller
         //--- check stock and update status each row
         foreach($details as $rs)
         {
-
           //--- get item info
           $item = $this->products_model->get($rs->product_code);
 
@@ -612,36 +562,40 @@ class Consign_order extends PS_Controller
           {
             $stock = $item->count_stock == 1 ?$this->stock_model->get_stock_zone($doc->zone_code, $item->code) : 1000000;
             $all_qty = $this->consign_order_model->get_sum_order_qty($doc->code, $item->code);
+
             if($all_qty <= $stock OR $auz)
             {
-              $final_price = $rs->amount/$rs->qty;
+              $total_cost = $rs->cost * $rs->qty;
               //--- ข้อมูลสำหรับบันทึกยอดขาย
               $arr = array(
-                      'reference' => $doc->code,
-                      'role'   => $doc->role, ///--- ตัดยอดฝากขาย(shop)
-                      'product_code'  => $rs->product_code,
-                      'product_name'  => $rs->product_name,
-                      'product_style' => $rs->style_code,
-                      'cost'  => $rs->cost,
-                      'price'  => $rs->price,
-                      'sell'  => $final_price,
-                      'qty'   => $rs->qty,
-                      'discount_label'  => $rs->discount,
-                      'discount_amount' => $rs->discount_amount,
-                      'total_amount'   => $rs->amount,
-                      'total_cost'   => $rs->cost * $rs->qty,
-                      'margin'  =>  ($final_price * $rs->qty) - ($rs->cost * $rs->qty),
-                      'id_policy'   => NULL,
-                      'id_rule'     => NULL,
-                      'customer_code' => $doc->customer_code,
-                      'customer_ref' => NULL,
-                      'sale_code'   => NULL,
-                      'user' => $doc->user,
-                      'date_add'  => $doc->date_add,
-                      'zone_code' => $doc->zone_code,
-                      'warehouse_code'  => $doc->warehouse_code,
-                      'update_user' => get_cookie('uname'),
-                      'budget_code' => NULL
+                'reference' => $doc->code,
+                'role'   => $doc->role, ///--- ตัดยอดฝากขาย(shop)
+                'product_code'  => $rs->product_code,
+                'product_name'  => $rs->product_name,
+                'product_style' => $rs->style_code,
+                'currency' => $rs->currency,
+                'rate' => $rs->rate,
+                'cost'  => $rs->cost,
+                'price'  => $rs->price,
+                'sell'  => $rs->amount/$rs->qty,
+                'qty'   => $rs->qty,
+                'discount_label'  => $rs->discount,
+                'discount_amount' => $rs->discount_amount,
+                'total_amount'   => $rs->amount,
+                'total_cost'   => $total_cost,
+                'totalFrgn' => $rs->totalFrgn,
+                'margin'  =>  $rs->totalFrgn > 0 ? $rs->totalFrgn - $total_cost : $rs->amount - $total_cost,
+                'id_policy'   => NULL,
+                'id_rule'     => NULL,
+                'customer_code' => $doc->customer_code,
+                'customer_ref' => NULL,
+                'sale_code'   => NULL,
+                'user' => $doc->user,
+                'date_add'  => $doc->date_add,
+                'zone_code' => $doc->zone_code,
+                'warehouse_code'  => $doc->warehouse_code,
+                'update_user' => $this->_user->uname,
+                'budget_code' => NULL
               );
 
               //--- 1.บันทึกขาย
@@ -679,7 +633,7 @@ class Consign_order extends PS_Controller
             else
             {
               $sc = FALSE;
-              $this->error .= "<span>{$item->code} ยอดในโซนไม่พอตัด  ในโซน: {$stock} ยอดตัด : {$all_qty} </span><br/>";
+              $this->error .= "<span>{$item->code} is not enough stock in this location.  Instock: {$stock} qty : {$all_qty} </span><br/>";
             }
           }
           else
@@ -975,12 +929,15 @@ class Consign_order extends PS_Controller
                           'style_code' => $item->style_code,
                           'product_code' => $item->code,
                           'product_name' => $item->name,
+                          'currency' => $doc->DocCur,
+                          'rate' => $doc->DocRate,
                           'cost' => $item->cost,
                           'price' => $price,
                           'qty' => $qty,
                           'discount' => discountLabel($disc['discount1'], $disc['discount2'], $disc['discount3']),
                           'discount_amount' => $discount * $qty,
                           'amount' => $amount,
+                          'totalFrgn' => convertFC($amount, $doc->DocRate),
                           'ref_code' => NULL,
                           'input_type' => $input_type
                         );
@@ -997,7 +954,7 @@ class Consign_order extends PS_Controller
                       else
                       {
                         $sc = FALSE;
-                        $this->error .= "<span>ยอดในโซนไม่พอตัด {$item->code} : {$diff} </span><br/>";
+                        $this->error .= "<span>Not enough stock in this location. {$item->code} : {$diff} </span><br/>";
                       }
                     }
                     else
@@ -1005,25 +962,29 @@ class Consign_order extends PS_Controller
                       //-- update new rows
                       //--- ถ้าจำนวนที่ยังไม่บันทึก รวมกับจำนวนใหม่ไม่เกินยอดในโซน หรือ คลังสามารถติดลบได้
                       $new_qty = $qty + $c_qty;
+
                       if($new_qty <= $stock OR $auz === TRUE)
                       {
                         //--- add new row
+                        $amount = ($price - $discount) * $new_qty;
+
                         $arr = array(
                           'qty' => $new_qty,
                           'discount_amount' => $discount * $new_qty,
-                          'amount' => ($price - $discount) * $new_qty
+                          'amount' => $amount,
+                          'totalFrgn' => convertFC($amount, $doc->DocRate, 1)
                         );
 
                         if(! $this->consign_order_model->update_detail($detail->id, $arr))
                         {
                           $sc = FALSE;
-                          $this->error = "ปรับปรุงรายการไม่สำเร็จ";
+                          $this->error = "Udate item failed.";
                         }
                       }
                       else
                       {
                         $sc = FALSE;
-                        $this->error .= "<span>ยอดในโซนไม่พอตัด {$item->code} : {$diff} </span><br/>";
+                        $this->error .= "<span>Not enough stock in this location. {$item->code} : {$diff} </span><br/>";
                       }
                     } //--- end if empty detail
                   }
@@ -1036,7 +997,7 @@ class Consign_order extends PS_Controller
                 else
                 {
                   $sc = FALSE;
-                  $this->error .= "รหัสสินค้าไม่ถูกต้อง : {$product_code}";
+                  $this->error .= "Invalid product code : {$product_code}";
                 } //--- end if $item
               }
 
@@ -1103,18 +1064,22 @@ class Consign_order extends PS_Controller
       $check_code = $this->input->post('check_code');
       $input_type = 2; //---- load diff
       $details = $this->consign_check_model->get_diff_details($check_code);
-      if(!empty($details))
+
+      if( ! empty($details))
       {
         $this->db->trans_start();
         $this->consign_order_model->update_ref_code($code, $check_code);
+
         foreach($details as $rs)
         {
           $item = $this->products_model->get($rs->product_code);
+          $price = convertPrice($item->price, $doc->DocRate, 1);
           $discLabel = $this->consign_order_model->get_item_gp($item->code, $doc->zone_code);
-          $disc = parse_discount_text($discLabel, $item->price);
+          $disc = parse_discount_text($discLabel, $price);
           $discount = $disc['discount_amount'];
-          $amount = ($item->price - $discount) * $rs->diff;
-          $detail = $this->consign_order_model->get_exists_detail($code, $item->code, $item->price, $discLabel, $input_type);
+          $amount = ($price - $discount) * $rs->diff;
+          $detail = $this->consign_order_model->get_exists_detail($code, $item->code, $price, $discLabel, $input_type);
+
           if(empty($detail))
           {
             //--- add new row
@@ -1123,12 +1088,15 @@ class Consign_order extends PS_Controller
               'style_code' => $item->style_code,
               'product_code' => $item->code,
               'product_name' => $item->name,
+              'currency' => $doc->DocCur,
+              'rate' => $doc->DocRate,
               'cost' => $item->cost,
-              'price' => $item->price,
+              'price' => $price,
               'qty' => $rs->diff,
               'discount' => $discLabel,
               'discount_amount' => $discount * $rs->diff,
               'amount' => $amount,
+              'totalFrgn' => convertFC($amount, $doc->DocRate),
               'ref_code' => $check_code,
               'input_type' => $input_type
             );
@@ -1141,11 +1109,15 @@ class Consign_order extends PS_Controller
             //-- update new rows
             //--- ถ้าจำนวนที่ยังไม่บันทึก รวมกับจำนวนใหม่ไม่เกินยอดในโซน หรือ คลังสามารถติดลบได้
             $new_qty = $rs->diff + $detail->qty;
+            $new_discount_amount = $discount * $new_qty;
+            $new_amount = ($price - $discount) * $new_qty;
+            $totalFrgn = convertFC($new_amount, $doc->DocRate);
             //--- add new row
             $arr = array(
               'qty' => $new_qty,
-              'discount_amount' => $discount * $new_qty,
-              'amount' => ($item->price - $discount) * $new_qty
+              'discount_amount' => $new_discount_amount,
+              'amount' => $new_amount,
+              'totalFrgn' => $totalFrgn
             );
 
             $this->consign_order_model->update_detail($detail->id, $arr);
@@ -1159,14 +1131,14 @@ class Consign_order extends PS_Controller
 
       if($this->db->trans_status() === FALSE)
       {
-        $this->error = "เพิ่มรายการไม่สำเร็จ";
+        $this->error = "Add items failed";
         $sc = FALSE;
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสารกระทบยอด";
+      $this->error = "Reconciliation document number not found";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -1203,21 +1175,21 @@ class Consign_order extends PS_Controller
         if($this->db->trans_status() === FALSE)
         {
           $sc = FALSE;
-          $this->error = "ลบรายการไม่สำเร็จ";
+          $this->error = "Delete entries failed";
         }
 
       }
       else
       {
         $sc = FALSE;
-        $this->error = "ไม่สามารถลบได้เนื่องจากรายการถูกบันทึกแล้ว";
+        $this->error = "Cannot be deleted because the entry has been saved.";
       }
 
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสารกระทบยอด";
+      $this->error = "Reconciliation document number not found";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -1229,20 +1201,23 @@ class Consign_order extends PS_Controller
   public function update_price($code)
   {
     $price_list = $this->input->post('price');
+
     if(! empty($price_list))
     {
       foreach($price_list as $id => $price)
       {
         $detail = $this->consign_order_model->get_detail($id);
-        if(!empty($detail))
+
+        if( ! empty($detail))
         {
           $disc = parse_discount_text($detail->discount, $price);
           $discount = $disc['discount_amount']; //-- discount amount per pcs
-
+          $amount = ($price - $discount) * $detail->qty;
           $arr = array(
             'price' => $price,
             'discount_amount' => $discount * $detail->qty,
-            'amount' => ($price - $discount) * $detail->qty
+            'amount' => $amount,
+            'totalFrgn' => convertFC($amount, $detail->rate)
           );
 
           $this->consign_order_model->update_detail($id, $arr);
@@ -1258,20 +1233,24 @@ class Consign_order extends PS_Controller
   public function update_discount($code)
   {
     $dis_list = $this->input->post('disc');
-    if(!empty($dis_list))
+
+    if( ! empty($dis_list))
     {
       foreach($dis_list as $id => $discLabel)
       {
         $detail = $this->consign_order_model->get_detail($id);
-        if(!empty($detail))
+
+        if( ! empty($detail))
         {
           $disc = parse_discount_text($discLabel, $detail->price);
           $discount = $disc['discount_amount'];
+          $amount = ($detail->price - $discount) * $detail->qty;
 
           $arr = array(
             'discount' => discountLabel($disc['discount1'], $disc['discount2'], $disc['discount3']),
             'discount_amount' => $discount * $detail->qty,
-            'amount' => ($detail->price - $discount) * $detail->qty
+            'amount' => $amount,
+            'totalFrgn' => convertFC($amount, $detail->rate)
           );
 
           $this->consign_order_model->update_detail($id, $arr);
@@ -1285,81 +1264,46 @@ class Consign_order extends PS_Controller
 
   public function get_item_by_code()
   {
+    $sc = TRUE;
+    $ds = array();
+
     if($this->input->get('code'))
     {
       $this->load->model('stock/stock_model');
 
-      $product_code = $this->input->get('code');
+      $product_code = trim($this->input->get('code'));
       $zone_code = $this->input->get('zone_code');
-      $item = $this->products_model->get($product_code);
+      $rate = empty($this->input->get('rate')) ? 0 : floatval($this->input->get('rate'));
+      $item = $this->products_model->get_with_barcode($product_code);
+
       if(!empty($item))
       {
         $gp  = $this->consign_order_model->get_item_gp($item->code, $zone_code);
         $stock = $item->count_stock == 1 ? $this->stock_model->get_stock_zone($zone_code, $item->code) : 0;
 
-        $arr = array(
+        $ds = array(
           'pdCode' => $item->code,
           'barcode' => $item->barcode,
           'product' => $item->code,
-          'price' => round($item->price, 2),
+          'price' => round(convertPrice($item->price, $rate), 2),
           'disc' => $gp,
           'stock' => $stock,
           'count_stock' => $item->count_stock
         );
-
-        $sc = json_encode($arr);
       }
       else
       {
-        $sc = 'สินค้าไม่ถูกต้อง';
+        $sc = FALSE;
+        $this->error = 'Invalid item code';
       }
-
-      echo $sc;
     }
     else
     {
-      echo "สินค้าไม่ถูกต้อง";
+      $sc = FALSE;
+      $this->error =  "Invalid item code";
     }
-  }
 
-
-  public function get_item_by_barcode()
-  {
-    if($this->input->get('barcode'))
-    {
-      $this->load->model('stock/stock_model');
-
-      $barcode = $this->input->get('barcode');
-      $zone_code = $this->input->get('zone_code');
-      $item = $this->products_model->get_product_by_barcode($barcode);
-      if(!empty($item))
-      {
-        $gp  = $this->consign_order_model->get_item_gp($item->code, $zone_code);
-        $stock = $item->count_stock == 1 ? $this->stock_model->get_stock_zone($zone_code, $item->code) : 0;
-
-        $arr = array(
-          'pdCode' => $item->code,
-          'barcode' => $item->barcode,
-          'product' => $item->code,
-          'price' => round($item->price, 2),
-          'disc' => $gp,
-          'stock' => $stock,
-          'count_stock' => $item->count_stock
-        );
-
-        $sc = json_encode($arr);
-      }
-      else
-      {
-        $sc = 'สินค้าไม่ถูกต้อง';
-      }
-
-      echo $sc;
-    }
-    else
-    {
-      echo "สินค้าไม่ถูกต้อง";
-    }
+    echo $sc === TRUE ? json_encode($ds) : $this->error;
   }
 
 
@@ -1377,6 +1321,7 @@ class Consign_order extends PS_Controller
     $this->excel->getActiveSheet()->setCellValue('B1', 'Price');
     $this->excel->getActiveSheet()->setCellValue('C1', 'Qty');
     $this->excel->getActiveSheet()->setCellValue('D1', 'Discount');
+    $this->excel->getActiveSheet()->setCellValue('F1', '*** Prices should be converted to the same currency exchange rate as the document. ***');
 
     //--- sample data
     $this->excel->getActiveSheet()->setCellValue('A2', 'WA-1234-AA-L');
@@ -1468,7 +1413,7 @@ class Consign_order extends PS_Controller
   {
     $sc = TRUE;
     $this->load->library('export');
-    
+
     if(! $this->export->export_consign_order($code))
     {
       $sc = FALSE;

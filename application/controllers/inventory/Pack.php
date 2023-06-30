@@ -6,7 +6,7 @@ class Pack extends PS_Controller
   public $menu_code = 'ICCKQC';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'CHECK';
-	public $title = 'ตรวจสอบ QC';
+	public $title = 'Pack History';
   public $filter;
   public $error;
   public function __construct()
@@ -58,13 +58,15 @@ class Pack extends PS_Controller
 			if(!$rs)
 			{
 				$sc = FALSE;
-				$this->error = "ลบรายการไม่สำเร็จ";
+        set_error('delete');
+				//$this->error = "ลบรายการไม่สำเร็จ";
 			}
 		}
 		else
 		{
 			$sc = FALSE;
-			$this->error = "Missing required parameter : id";
+      set_error('required');
+			//$this->error = "Missing required parameter : id";
 		}
 
 		echo $sc === TRUE ? 'success' : $this->error;

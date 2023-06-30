@@ -6,12 +6,13 @@ class Receive_transform extends PS_Controller
   public $menu_code = 'ICTRRC';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'RECEIVE';
-	public $title = 'รับสินค้าจากการแปรสภาพ';
+	public $title = 'Goods Receipt Transform';
   public $filter;
   public $error;
 	public $wms;
 	public $isAPI;
   public $required_remark = TRUE; //--- บังคับใส่หมายเหตุ
+  public $dfCurrency = "THB";
 
   public function __construct()
   {
@@ -21,6 +22,7 @@ class Receive_transform extends PS_Controller
     $this->load->model('inventory/transform_model');
 
 		$this->isAPI = is_true(getConfig('WMS_API'));
+    $this->dfCurrency = getConfig('CURRENCY');
   }
 
 
@@ -166,7 +168,7 @@ class Receive_transform extends PS_Controller
                     if($this->movement_model->add($arr) === FALSE)
                     {
                       $sc = FALSE;
-                      $this->error = 'บันทึก movement ไม่สำเร็จ';
+                      $this->error = 'Insert movement failed.';
                     }
                   }
 
@@ -206,7 +208,7 @@ class Receive_transform extends PS_Controller
               if(!$ex)
               {
                 $sc = FALSE;
-                $thiis->error = "บันทึกข้อมูลสำเร็จแต่ส่งข้อมูลไป WMS ไม่สำเร็จ <br/>{$this->wms_receive_api->error}";
+                $thiis->error = "Document saved. But send interface data to WMS failed<br/>{$this->wms_receive_api->error}";
               }
             }
             else
@@ -292,7 +294,7 @@ class Receive_transform extends PS_Controller
 					if(!$ex)
 					{
 						$sc = FALSE;
-						$thiis->error = "ส่งข้อมูลไป WMS ไม่สำเร็จ <br/>{$this->wms_receive_api->error}";
+						$thiis->error = "Interface data failed<br/>{$this->wms_receive_api->error}";
 					}
 				}
 				else
@@ -342,13 +344,13 @@ class Receive_transform extends PS_Controller
 				if($doc->is_wms == 1 && $warehouse->is_wms == 0)
 				{
 					$sc = FALSE;
-					$this->error = "เอกสารต้องรับเข้าที่ WMS";
+					$this->error = "The warehouse must be WMS's warehouse.";
 				}
 
 				if($doc->is_wms == 0 && $warehouse->is_wms == 1)
 				{
 					$sc = FALSE;
-					$this->error = "เอกสารต้องรับเข้าที่ WARRIX";
+					$this->error = "The warehouse must be Warrix's warehouse.";
 				}
 
 	      $warehouse_code = $warehouse->code;
@@ -447,7 +449,7 @@ class Receive_transform extends PS_Controller
 		                if($this->movement_model->add($ds) === FALSE)
 		                {
 		                  $sc = FALSE;
-		                  $this->error = 'บันทึก movement ไม่สำเร็จ';
+		                  $this->error = 'Failed to save movement';
 		                }
 		              }
 
@@ -461,7 +463,7 @@ class Receive_transform extends PS_Controller
 								else
 								{
 									$sc = FALSE;
-									$this->error = "ไม่พบรหัสสินค้า : {$rs->product_code}";
+									$this->error = "Product code not found : {$rs->product_code}";
 								}
 
 	            }//--- end if qty > 0
@@ -524,13 +526,13 @@ class Receive_transform extends PS_Controller
 			else
 			{
 				$sc = FALSE;
-				$this->error = "เลขที่เอกสารไม่ถูกต้อง";
+				$this->error = "The document number is invalid.";
 			}
     }
     else
     {
       $sc = FALSE;
-      $this->error = 'ไม่พบข้อมูล';
+      set_error('required');
     }
 
     if($sc === TRUE && $must_accept == FALSE && ($this->isAPI === FALSE OR $doc->is_wms == 0))
@@ -649,7 +651,7 @@ class Receive_transform extends PS_Controller
               if(! empty($sap))
               {
                 $sc = FALSE;
-                $this->error = "กรุณายกเลิกเอกสาร Goods Receipt บน SAP ก่อน (สร้างเอกสาร Goods Issue กลับรายการ แล้วแก้ไขเลข RT โดยเติม -X ต่อท้าย)";
+                $this->error = "Please cancel the Goods Receipt document on SAP first (Create a Reversed Goods Issue document and edit the reference number by adding -C to the end).";
               }
 
               if($sc === TRUE)
@@ -682,7 +684,7 @@ class Receive_transform extends PS_Controller
               if( ! $this->receive_transform_model->cancle_details($code) )
               {
                 $sc = FALSE;
-                $this->error = "ยกเลิกรายการไม่สำเร็จ";
+                $this->error = "Failed to cancel the transaction.";
               }
 
               $arr = array(
@@ -693,13 +695,13 @@ class Receive_transform extends PS_Controller
               if(! $this->receive_transform_model->update($code, $arr)) //--- 0 = ยังไม่บันทึก 1 = บันทึกแล้ว 2 = ยกเลิก
               {
                 $sc = FALSE;
-                $this->error = "เปลี่ยนสถานะเอกสารไม่สำเร็จ";
+                $this->error = "Failed to change document status";
               }
 
               if(! $this->movement_model->drop_movement($code))
               {
                 $sc = FALSE;
-                $this->error = "ลบ movement ไม่สำเร็จ";
+                $this->error = "Failed to delete movement.";
               }
 
 
@@ -716,7 +718,7 @@ class Receive_transform extends PS_Controller
                       if(!$this->unreceive_product($doc->order_code, $rs->product_code, $rs->qty))
                       {
                         $sc = FALSE;
-                        $this->error = "Update ยอดค้างรับไม่สำเร็จ";
+                        $this->error = "Update outstanding balance failed.";
                         break;
                       }
                     }
@@ -742,26 +744,26 @@ class Receive_transform extends PS_Controller
 
             if($doc->status == 3)
             {
-              $this->error = "ไม่สามารถยกเลิกได้เนื่องจากอยู่ระหว่างการรับสินค้า";
+              $this->error = "It cannot be canceled because it is in the process of receiving the product.";
             }
 
             if($doc->status == 2)
             {
-              $this->error = "เอกสารถูกยกเลิกไปแล้ว";
+              $this->error = "The document has been cancelled.";
             }
           }
         }
         else
         {
           $sc = FALSE;
-          $this->error = "ไม่พบเลขที่เอกสาร";
+          $this->error = "Document number not found.";
         }
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = 'ไม่พบเลขทีเอกสาร';
+      $this->error = 'Document number not found.';
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -840,7 +842,7 @@ class Receive_transform extends PS_Controller
     }
     else
     {
-      $sc = 'ใบเบิกสินค้าไม่ถูกต้องหรือถูกปิดไปแล้ว';
+      $sc = 'The requisition is invalid or has already been closed.';
     }
 
     echo $sc;
@@ -902,14 +904,13 @@ class Receive_transform extends PS_Controller
 	    if(!$this->receive_transform_model->update($code, $arr))
 	    {
 	      $sc = FALSE;
-				$this->error = "ปรับปรุงข้อมูลไม่สำเร็จ";
+				$this->error = "Failed to update data.";
 	    }
-
     }
 		else
 		{
 			$sc = FALSE;
-			$this->error = "Missing required parameter : code";
+			set_error('required');
 		}
 
 		echo $sc === TRUE ? 'success' : $this->error;
@@ -923,7 +924,7 @@ class Receive_transform extends PS_Controller
     $ext = $this->receive_transform_model->is_exists($code);
     if($ext)
     {
-      echo 'เลขที่เอกสารซ้ำ';
+      echo 'Duplicate document number';
     }
     else
     {
@@ -968,7 +969,7 @@ class Receive_transform extends PS_Controller
       }
       else
       {
-        echo 'เพิ่มเอกสารไม่สำเร็จ กรุณาลองใหม่อีกครั้ง';
+        echo 'Failed to add document Please try again.';
       }
     }
 		else

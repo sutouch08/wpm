@@ -37,7 +37,7 @@ class Warehouse extends PS_Controller
 			$perpage = 20;
 		}
 
-		$rows = $this->warehouse_model->count_rows($filter);    
+		$rows = $this->warehouse_model->count_rows($filter);
 		//--- ส่งตัวแปรเข้าไป 4 ตัว base_url ,  total_row , perpage = 20, segment = 3
 		$init = pagination_config($this->home.'/index/', $rows, $perpage, $this->segment);
 		$list = $this->warehouse_model->get_list($filter, $perpage, $this->uri->segment($this->segment));
@@ -88,7 +88,7 @@ class Warehouse extends PS_Controller
           'auz' => $this->input->post('auz'),
           'active' => $this->input->post('active'),
           'is_consignment' => get_null($this->input->post('is_consignment')),
-          'update_user' => get_cookie('uname')
+          'update_user' => $this->_user->uname
         );
 
         if($this->warehouse_model->update($code, $arr))
@@ -171,7 +171,7 @@ class Warehouse extends PS_Controller
             'last_sync' => date('Y-m-d H:i:s'),
             'update_user' => 'SAP',
             'old_code' => $rs->old_code,
-            'limit_amount' => $rs->limit_amount
+            'limit_amount' => 0 //$rs->limit_amount
           );
 
           $this->warehouse_model->update($rs->code, $ds);
@@ -185,7 +185,7 @@ class Warehouse extends PS_Controller
             'last_sync' => date('Y-m-d H:i:s'),
             'update_user' => 'SAP',
             'old_code' => $rs->old_code,
-            'limit_amount' => $rs->limit_amount
+            'limit_amount' => 0 //$rs->limit_amount
           );
 
           $this->warehouse_model->add($ds);
@@ -214,7 +214,7 @@ class Warehouse extends PS_Controller
             'last_sync' => date('Y-m-d H:i:s'),
             'update_user' => 'SAP',
             'old_code' => $rs->old_code,
-            'limit_amount' => $rs->limit_amount
+            'limit_amount' => 0 //$rs->limit_amount
           );
 
           $this->warehouse_model->update($rs->code, $ds);
@@ -228,7 +228,7 @@ class Warehouse extends PS_Controller
             'last_sync' => date('Y-m-d H:i:s'),
             'update_user' => 'SAP',
             'old_code' => $rs->old_code,
-            'limit_amount' => $rs->limit_amount
+            'limit_amount' => 0 //$rs->limit_amount
           );
 
           $this->warehouse_model->add($ds);

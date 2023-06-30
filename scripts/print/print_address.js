@@ -108,12 +108,12 @@ function printSelectAddress()
   var target   = BASE_URL + 'masters/address/print_address_sheet/'+order_code+'/'+customer_code+'/'+id_ad+'/'+id_sen;
 
 	if( isNaN(parseInt(id_ad)) ){
-    swal("กรุณาเลือกที่อยู่", "", "warning");
+    swal("Please select shpping address", "", "warning");
     return false;
   }
 
 	if( isNaN(parseInt(id_sen)) ){
-    swal("กรุณาเลือกขนส่ง", "", "warning");
+    swal("Please select shipper", "", "warning");
     return false;
   }
 
@@ -128,7 +128,7 @@ function printSelectAddress()
 
 function noAddress()
 {
-	swal("ข้อผิดพลาด", "ไม่พบที่อยู่ของลูกค้า กรุณาตรวจสอบว่าลูกค้ามีที่อยู่ในระบบแล้วหรือยัง", "warning");
+	swal("Not found", "Customer address not found Please check if the customer already has an address in the system.", "warning");
 }
 
 
@@ -136,5 +136,5 @@ function noAddress()
 
 function noSender()
 {
-	swal("ไม่พบผู้จัดส่ง", "ไม่พบรายชื่อผู้จัดส่ง กรุณาตรวจสอบว่าลูกค้ามีการกำหนดชื่อผู้จัดส่งในระบบแล้วหรือยัง", "warning");
+	swal("Not found", "Shipper not found Please check the customer has already assigned the sender's name in the system or not.", "warning");
 }

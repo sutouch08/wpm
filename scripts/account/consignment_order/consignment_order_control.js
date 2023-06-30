@@ -42,6 +42,8 @@ $('#item-code').autocomplete({
 function getItemByCode(){
   var code = $.trim($('#item-code').val());
   var zone_code = $('#zone_code').val();
+  var rate = $('#doc_rate').val();
+
   if(code.length > 0)
   {
     $.ajax({
@@ -50,7 +52,8 @@ function getItemByCode(){
       cache:'false',
       data:{
         'code' : code,
-        'zone_code' : zone_code
+        'zone_code' : zone_code,
+        'rate' : rate
       },
       success:function(rs){
         var rs = $.trim(rs);

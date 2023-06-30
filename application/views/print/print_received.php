@@ -3,21 +3,21 @@
 
   $page = '';
   $page .= $this->printer->doc_header();
-	$this->printer->add_title("ใบรับสินค้าสำเร็จรูป");
+	$this->printer->add_title("Goods Receipt");
 	$header	= array(
-    'เลขที่' => $doc->code,
-    'วันที่'  => thai_date($doc->date_add, FALSE, '/'),
-    'ใบสั่งซื้อ' => $doc->po_code,
-    'ใบรับสินค้า' => $doc->invoice_code,
-    'ผู้ขาย' => $doc->vendor_name,
-    'โซน' => $doc->zone_name,
-    'คลัง' => $doc->warehouse_name,
-    'พนักงาน' => $this->user_model->get_name($doc->user)
+    'Document No.' => $doc->code,
+    'Date'  => thai_date($doc->date_add, FALSE, '/'),
+    'Po No.' => $doc->po_code,
+    'Invoice No.' => $doc->invoice_code,
+    'Vendor' => $doc->vendor_name,
+    'Bin Location' => $doc->zone_name,
+    'Warehouse' => $doc->warehouse_name,
+    'Employee' => $this->user_model->get_name($doc->user)
 	);
 
   if($doc->remark != '')
   {
-    $header['หมายเหตุ'] = $doc->remark;
+    $header['Remark'] = $doc->remark;
   }
 
 	$this->printer->add_header($header);
@@ -38,12 +38,12 @@
   $total_af = 0;
 	//**************  กำหนดหัวตาราง  ******************************//
 	$thead	= array(
-						array("ลำดับ", "width:5%; text-align:center; border-top:0px; border-top-left-radius:10px;"),
-						array("รหัส", "width:20%; text-align:center; border-left: solid 1px #ccc; border-top:0px;"),
-						array("สินค้า", "width:45%; text-align:center;border-left: solid 1px #ccc; border-top:0px;"),
-            array("ก่อนรับ", "width:10%; text-align:center; border-left: solid 1px #ccc; border-top:0px;"),
-						array("รับ", "width:10%; text-align:center; border-left: solid 1px #ccc; border-top:0px;"),
-						array("ยังค้างรับ", "width:10%; text-align:center; border-left: solid 1px #ccc; border-top:0px; border-top-right-radius:10px")
+						array("No.", "width:5%; text-align:center; border-top:0px; border-top-left-radius:10px;"),
+						array("Item Code", "width:20%; text-align:center; border-left: solid 1px #ccc; border-top:0px;"),
+						array("Description", "width:45%; text-align:center;border-left: solid 1px #ccc; border-top:0px;"),
+            array("Outstanding", "width:10%; text-align:center; border-left: solid 1px #ccc; border-top:0px;"),
+						array("Received", "width:10%; text-align:center; border-left: solid 1px #ccc; border-top:0px;"),
+						array("Balance", "width:10%; text-align:center; border-left: solid 1px #ccc; border-top:0px; border-top-right-radius:10px")
 						);
 
 	$this->printer->add_subheader($thead);
@@ -66,9 +66,9 @@
 	$m = date('m', strtotime($doc->date_add) );
 	$Y = date('Y', strtotime($doc->date_add) );
 	$footer	= array(
-						array("ผู้รับ", "", "วันที่ ............................."),
-						array("ผู้ตรวจสอบ", "","วันที่ ............................."),
-						array("ผู้อนุมัติ", "","วันที่ .............................")
+						array("Recipient", "", "Date ............................."),
+						array("Inspector", "","Date ............................."),
+						array("Approver", "","Date .............................")
 						);
 
   $this->printer->set_footer($footer);
@@ -85,7 +85,7 @@
 				{
 					$page .= '
 				  <div style="width:0px; height:0px; position:relative; left:30%; line-height:0px; top:300px;color:red; text-align:center; z-index:100000; opacity:0.1; transform:rotate(-45deg)">
-				      <span style="font-size:150px; border-color:red; border:solid 10px; border-radius:20px; padding:0 20 0 20;">ยกเลิก</span>
+				      <span style="font-size:150px; border-color:red; border:solid 10px; border-radius:20px; padding:0 20 0 20;">Cancelled</span>
 				  </div>';
 				}
 
@@ -134,7 +134,7 @@
           "<td style='height:".$this->printer->row_height."mm; border: solid 1px #ccc;
           border-bottom:0px; border-left:0px; text-align:right;
           width:70.3%;'>
-          <strong>รวม</strong>
+          <strong>Total</strong>
           </td>
 					<td style='height:".$this->printer->row_height."mm; border: solid 1px #ccc;
           border-right:0px; border-bottom:0px; width:10%; text-align:right;'>

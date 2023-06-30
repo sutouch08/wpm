@@ -83,7 +83,7 @@ class Adjust_transform extends PS_Controller
             'from_warehouse' => $zone->warehouse_code,
             'from_zone' => $zone->code,
             'date_add' => $date_add,
-            'user' => get_cookie('uname'),
+            'user' => $this->_user->uname,
             'remark' => get_null(trim($this->input->post('remark')))
           );
 

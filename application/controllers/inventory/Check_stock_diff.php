@@ -325,7 +325,7 @@ class Check_stock_diff extends PS_Controller
               'product_code' => $product_code,
               'qty' => $diff,
               'status' => 0,
-              'user' => get_cookie('uname')
+              'user' => $this->_user->uname
             );
 
             if(! $this->check_stock_diff_model->add($arr))
@@ -404,7 +404,7 @@ class Check_stock_diff extends PS_Controller
                     'product_code' => $item,
                     'qty' => $diff,
                     'status' => 0,
-                    'user' => get_cookie('uname')
+                    'user' => $this->_user->uname
                   );
 
                   if(! $this->check_stock_diff_model->add($arr))

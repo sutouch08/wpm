@@ -4,28 +4,28 @@ var zero_qty = 0;
 function saveConsign(){
   var code = $('#consign_code').val();
   var details = $('.rox').length;
-  if(details == 0){
-    swal("ไม่พบรายการสินค้า");
+  if(details == 0) {
+    swal("No items found");
     return false;
   }
 
   check_zero();
 
   if(zero_qty > 0){
-    swal("พบรายการที่เป็น 0");
+    swal("Found an entry with a count of 0.");
     return false;
   }else{
     $('.qty').css('color', '');
   }
 
   swal({
-		title: "บันทึกขายและตัดสต็อก",
-		text: "เมื่อบันทึกแล้วจะไม่สามารถแก้ไขได้ ต้องการบันทึกหรือไม่ ?",
+		title: "Save Document",
+		text: "Once saved it cannot be edited. Do you want to save it ?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#8CC152",
-		confirmButtonText: 'บันทึก',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: true
 		}, function(){
       load_in();
@@ -83,19 +83,19 @@ function check_zero(){
 
 function unSaveConsign(){
   var code = $('#consign_code').val();
-  msg  = '<center><span style="color:red;">ก่อนยืนยันการทำรายการนี้</span></center>';
-  msg += '<center><span style="color:red;">คุณต้องแน่ใจว่าได้ลบ เอกสารใน SAP แล้ว</span></center>';
-  msg += '<center><span style="color:red;">ต้องการยกเลิกการเปิดบิลหรือไม่</span></center>';
+  msg  = '<center><span style="color:red;">Before confirming this transaction</span></center>';
+  msg += '<center><span style="color:red;">you must be sure to delete the document in SAP.</span></center>';
+  msg += '<center><span style="color:red;">Do you want to cancel billing ?</span></center>';
 
   swal({
-    title: "ยกเลิกการเปิดบิล ?",
+    title: "Cancellation ?",
     text: msg,
     type: "warning",
     html:true,
     showCancelButton: true,
     confirmButtonColor: "#FA5858",
-    confirmButtonText: 'ใช่, ฉันต้องการ',
-    cancelButtonText: 'ยกเลิก',
+    confirmButtonText: 'Yes',
+    cancelButtonText: 'No',
     closeOnConfirm: true
     }, function(){
       load_in();
@@ -184,7 +184,13 @@ $("#customer").autocomplete({
 
 $('#pd-box').autocomplete({
   source: BASE_URL + 'auto_complete/get_style_code',
-  autoFocus:true
+  autoFocus:true,
+  close:function() {
+    let ds = $(this).val().split(' | ');
+    if(ds.length == 2) {
+      $(this).val(ds[0])
+    }
+  }
 })
 
 
@@ -242,6 +248,17 @@ function zoneInit(customer_code, edit) {
 }
 
 
+async function updateDocRate() {
+  let date = $('#date').val();
+  let currency = $('#doc_currency').val();
+  let rate = await getCurrencyRate(currency, date);
+  $('#doc_rate').val(rate);
+}
+
+$('#date').change(function() {
+  updateDocRate();
+})
+
 
 
 function add(){
@@ -253,19 +270,19 @@ function add(){
 
 
   if(customer_code.length == 0 || customer_name.length == 0){
-    swal('ชื่อลูกค้าไม่ถูกต้อง');
+    swal('Invalid customer');
     return false;
   }
 
   if(!isDate(date_add))
   {
-    swal('วันที่ไม่ถูกต้อง');
+    swal('Invalid date');
     return false;
   }
 
   if(zone_code.length == 0 || zone_name.length == 0)
   {
-    swal('โซนไม่ถูกต้อง');
+    swal('Invalid location');
     return false;
   }
 
@@ -293,20 +310,22 @@ function update(){
   let customer_name = $('#customer').val();
   let zone_code = $('#zone_code').val();
   let zone_name = $('#zone').val();
+  let doc_currency = $('#doc_currency').val();
+  let doc_rate = $('#doc_rate').val();
 
   if(!isDate(date)){
-    swal('วันที่ไม่ถูกต้อง');
+    swal('Invalid date');
     return false;
   }
 
   if(customer_code.length == 0 || customer_name.length == 0){
-    swal('ชื่อลูกค้าไม่ถูกต้อง');
+    swal('Invalid customer');
     return false;
   }
 
   if(zone_code.length == 0 || zone_name.length == 0)
   {
-    swal('โซนไม่ถูกต้อง');
+    swal('Invalid location');
     return false;
   }
 
@@ -319,6 +338,8 @@ function update(){
     data:{
       'code' : code,
       'date_add' : date,
+      'doc_currency' : doc_currency,
+      'doc_rate' : doc_rate,
       'customerCode' : customer_code,
       'customer' : customer_name,
       'zone_code' : zone_code,
@@ -333,9 +354,17 @@ function update(){
           timer:1000
         });
 
-        $('.edit').attr('disabled', 'disabled');
-        $('#btn-edit').removeClass('hide');
-        $('#btn-update').addClass('hide');
+        setTimeout(() => {
+          window.location.reload();
+        }, 1200);
+
+      }
+      else {
+        swal({
+          title:'Error!',
+          text:rs,
+          type:'error'
+        })
       }
     }
   })
@@ -344,13 +373,13 @@ function update(){
 
 function deleteRow(id, code){
   swal({
-		title: "คุณแน่ใจ ?",
-		text: "ต้องการลบ '"+code+"' หรือไม่ ?",
+		title: "Are you sure ?",
+		text: "Do you really want to delete '"+code+"'?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#FA5858",
-		confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
 		}, function(){
       deleteDetail(id);
@@ -385,13 +414,13 @@ function deleteDetail(id){
 
 function clearAll(){
   swal({
-		title: "คุณแน่ใจ ?",
-		text: "ต้องการลบรายการทั้งหมด หรือไม่ ?",
+		title: "Are you sure ?",
+		text: "Do you really want to delete all entries ?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#FA5858",
-		confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
 		}, function(){
       deleteAllDetails();
@@ -425,64 +454,17 @@ function deleteAllDetails(){
 
 
 
-function unSave(id){
-  msg  = '<center><span style="color:red;">ก่อนยืนยันการทำรายการนี้</span></center>';
-  msg += '<center><span style="color:red;">คุณต้องแน่ใจว่าได้ลบ เอกสารใบสั่งซื้อ(SO) ใน Formula แล้ว</span></center>';
-  msg += '<center><span style="color:red;">ต้องการยกเลิกการเปิดบิลหรือไม่</span></center>';
-
-  swal({
-    title: "ยกเลิกการเปิดบิล ?",
-    text: msg,
-    type: "warning",
-    html:true,
-    showCancelButton: true,
-    confirmButtonColor: "#FA5858",
-    confirmButtonText: 'ใช่, ฉันต้องการลบ',
-    cancelButtonText: 'ยกเลิก',
-    closeOnConfirm: true
-    }, function(){
-      load_in();
-      $.ajax({
-        url:'controller/consignController.php?unSaveConsign',
-        type:'POST',
-        cache:'false',
-        data:{
-          'id_consign' : id
-        },
-        success:function(rs){
-          load_out();
-          var rs = $.trim(rs);
-          if(rs == 'success'){
-            swal({
-              title:'Success',
-              type:'success',
-              timer:1000
-            });
-
-            setTimeout(function(){
-              window.location.reload();
-            }, 1500);
-
-          }else{
-            swal('Error!', rs, 'error');
-          }
-        }
-      });
-  });
-}
-
-
 
 //--- ลบรายการนำเข้ายอดต่าง
 function clearImportDetail(check_code){
   swal({
-		title: "คุณแน่ใจ ?",
-		text: "ต้องการลบรายการนำเข้าจาก '"+ check_code +"' หรือไม่ ?",
+		title: "Are you sure ?",
+		text: "Do you want to delete items imported from '"+ check_code +"' ?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#FA5858",
-		confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
     closeOnConfirm:false
 		}, function(){
       load_in();
@@ -545,12 +527,12 @@ function getActiveCheckList(){
 function loadCheckDiff(check_code){
   $('#check-list-modal').modal('hide');
   swal({
-    title: "นำเข้ายอดต่าง",
-		text: "ต้องการนำเข้ายอดต่างจากเอกสารกระทบยอด "+check_code+" หรือไม่ ?",
+    title: "Import items",
+		text: "Do you want to import balances different from "+check_code+" ?",
 		type: "warning",
 		showCancelButton: true,
-		confirmButtonText: 'ใช่, ฉันต้องการ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
   },function(){
     var code = $('#consign_code').val();
@@ -614,7 +596,7 @@ $("#uploadFile").change(function(){
 
 		if( size > 5000000 )
 		{
-			swal("ขนาดไฟล์ใหญ่เกินไป", "ไฟล์แนบต้องมีขนาดไม่เกิน 5 MB", "error");
+			swal("File size is too large", "The attachment size must not exceed 5 MB", "error");
 			$(this).val('');
 			return false;
 		}
@@ -693,10 +675,10 @@ function validateOrder(){
 
   if(arr.length == 2){
     if(arr[0] !== prefix){
-      swal('Prefix ต้องเป็น '+prefix);
+      swal('Prefix must be '+prefix);
       return false;
     }else if(arr[1].length != (4 + runNo)){
-      swal('Run Number ไม่ถูกต้อง');
+      swal('Run Number is not valid');
       return false;
     }else{
       $.ajax({
@@ -718,7 +700,7 @@ function validateOrder(){
     }
 
   }else{
-    swal('เลขที่เอกสารไม่ถูกต้อง');
+    swal('Invalid document no');
     return false;
   }
 

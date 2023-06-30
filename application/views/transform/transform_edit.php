@@ -1,5 +1,5 @@
 <?php $this->load->view('include/header'); ?>
-<?php $isAdmin = (get_cookie('id_profile') == -987654321 ? TRUE : FALSE); ?>
+<?php $isAdmin = $this->_SuperAdmin; ?>
 <div class="row">
 	<div class="col-lg-3 col-md-3 col-sm-3 hidden-xs padding-5">
     <h3 class="title"><?php echo $this->title; ?></h3>
@@ -10,8 +10,8 @@
     <div class="col-sm-9 col-xs-12 padding">
     	<p class="pull-right top-p">
 				<?php if(empty($approve_view)) : ?>
-				<button type="button" class="btn btn-xs btn-warning top-btn" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
-				<button type="button" class="btn btn-xs btn-default top-btn" onclick="printOrderSheet()"><i class="fa fa-print"></i> พิมพ์</button>
+				<button type="button" class="btn btn-xs btn-warning top-btn" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
+				<button type="button" class="btn btn-xs btn-default top-btn" onclick="printOrderSheet()"><i class="fa fa-print"></i> Print</button>
 				<?php endif; ?>
 				<?php if(empty($approve_view)) : ?>
 					<?php if($isAdmin && $this->isClosed) : ?>
@@ -23,7 +23,7 @@
 				<?php endif; ?>
 			<?php if(empty($approve_view)) : ?>
 				<?php if($order->state < 4 && $isAdmin && $order->never_expire == 0) : ?>
-				<button type="button" class="btn btn-xs btn-primary top-btn" onclick="setNotExpire(1)">ยกเว้นการหมดอายุ</button>
+				<button type="button" class="btn btn-xs btn-primary top-btn" onclick="setNotExpire(1)">Except expiration</button>
 				<?php endif; ?>
 				<?php if($order->state < 4 && $isAdmin && $order->never_expire == 1) : ?>
 					<button type="button" class="btn btn-xs btn-info top-btn" onclick="setNotExpire(0)">ไม่ยกเว้นการหมดอายุ</button>

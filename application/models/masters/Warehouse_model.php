@@ -325,7 +325,7 @@ class Warehouse_model extends CI_Model
 
   public function get_new_data($last_sync)
   {
-    $this->ms->select('WhsCode AS code, WhsName AS name, Inactive, U_OLDWHSCODE AS old_code, U_LIMIT_AMOUNT AS limit_amount');
+    $this->ms->select('WhsCode AS code, WhsName AS name, Inactive, U_OLDWHSCODE AS old_code');//, U_LIMIT_AMOUNT AS limit_amount');
     $this->ms->where('createDate >=', sap_date($last_sync));
     $this->ms->or_where('updateDate >=', sap_date($last_sync));
     $rs = $this->ms->get('OWHS');

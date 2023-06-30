@@ -6,9 +6,11 @@ class Receive_po_request extends PS_Controller
   public $menu_code = 'ICRQRC';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'RECEIVE';
-	public $title = 'ใบขออนุมัติรับสินค้า';
+	public $title = 'Goods Receipt Request';
   public $filter;
   public $error;
+  public $dfCurrency = "THB";
+
   public function __construct()
   {
     parent::__construct();
@@ -18,6 +20,8 @@ class Receive_po_request extends PS_Controller
     $this->load->model('orders/orders_model');
     $this->load->model('masters/products_model');
     $this->load->library('api');
+
+    $this->dfCurrency = getConfig('CURRENCY');
   }
 
 
@@ -170,7 +174,7 @@ class Receive_po_request extends PS_Controller
 		        'po_code' => $po_code,
 		        'invoice_code' => $invoice,
 		        'update_user' => get_cookie('uname'),
-						'currency' => empty($DocCur) ? "THB" : $DocCur,
+						'currency' => empty($DocCur) ? $this->dfCurrency : $DocCur,
 						'rate' => empty($DocRate) ? 1 : $DocRate
 		      );
 
@@ -179,7 +183,7 @@ class Receive_po_request extends PS_Controller
           if($this->receive_po_request_model->update($code, $arr) === FALSE)
 		      {
 		        $sc = FALSE;
-		        $this->error = 'Update Document Fail';
+		        $this->error = 'Update Document Failed';
 		      }
           else
 		      {
@@ -204,7 +208,7 @@ class Receive_po_request extends PS_Controller
                     'price' => $rs->price,
                     'qty' => $rs->qty,
                     'amount' => $rs->qty * $rs->price,
-                    'currency' => empty($DocCur) ? "THB" : $DocCur,
+                    'currency' => empty($DocCur) ? $this->dfCurrency : $DocCur,
                     'rate' => empty($DocRate) ? 1 : $DocRate,
                     'vatGroup' => $rs->vatGroup,
                     'vatRate' => $rs->vatRate
@@ -213,14 +217,14 @@ class Receive_po_request extends PS_Controller
                   if($this->receive_po_request_model->add_detail($ds) === FALSE)
                   {
                     $sc = FALSE;
-                    $this->error = 'Add Receive Row Fail';
+                    $this->error = 'Add Receive Row Failed';
                     break;
                   }
                 }
                 else
                 {
                   $sc = FALSE;
-                  $this->error = 'ไม่พบรหัสสินค้า : '.$item.' ในระบบ';
+                  $this->error = 'Product code not found : '.$item;
                 }
               } //--- if qty > 0
             } //-- end foreach
@@ -274,14 +278,14 @@ class Receive_po_request extends PS_Controller
         if(! $this->receive_po_request_model->cancle_details($code))
         {
           $sc = FALSE;
-          $this->error = "ยกเลิกรายการไม่สำเร็จ";
+          $this->error = "Failed to cancel item.";
         }
 
         //--- 0 = ยังไม่บันทึก 1 = บันทึกแล้ว 2 = ยกเลิก
         if(! $this->receive_po_request_model->set_status($code, 2))
         {
           $sc = FALSE;
-          $this->error = "ยกเลิกเอกสารไม่สำเร็จ";
+          $this->error = "Failed to cancel the document.";
         }
 
         if($sc === TRUE)
@@ -297,13 +301,13 @@ class Receive_po_request extends PS_Controller
       else
       {
         $sc = FALSE;
-        $this->error = 'เอกสารถูกดึงไปรับเข้าแล้วไม่สามารถยกเลิกได้';
+        $this->error = 'The document has been received and cannot be canceled.';
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = 'ไม่พบเลขทีเอกสาร';
+      $this->error = 'Document number not found';
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -366,7 +370,7 @@ class Receive_po_request extends PS_Controller
     }
     else
     {
-      $sc = 'ใบสั่งซื้อไม่ถูกต้อง หรือ ใบสั่งซื้อถูกปิดไปแล้ว';
+      $sc = 'The purchase order is invalid or the purchase order has been closed.';
     }
 
     echo $sc;
@@ -416,7 +420,7 @@ class Receive_po_request extends PS_Controller
     $ext = $this->receive_po_request_model->is_exists($code);
     if($ext)
     {
-      echo 'เลขที่เอกสารซ้ำ';
+      echo 'Duplicate document number';
     }
     else
     {
@@ -463,7 +467,7 @@ class Receive_po_request extends PS_Controller
       }
       else
       {
-        set_error('เพิ่มเอกสารไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+        set_error('Failed to add document Please try again.');
         redirect($this->home.'/add_new');
       }
     }
@@ -478,10 +482,11 @@ class Receive_po_request extends PS_Controller
     $date = db_date($this->input->post('date_add'), TRUE);
     $remark = trim($this->input->post('remark'));
 
-    if(!empty($code))
+    if(! empty($code))
     {
       $doc = $this->receive_po_request_model->get($code);
-      if(!empty($doc))
+
+      if(! empty($doc))
       {
         if($doc->status == 0)
         {
@@ -493,25 +498,25 @@ class Receive_po_request extends PS_Controller
           if(! $this->receive_po_request_model->update($code, $arr))
           {
             $sc = FALSE;
-            $this->error = "ปรับปรุงข้อมูลไม่สำเร็จ";
+            $this->error = "Failed to update information";
           }
         }
         else
         {
           $sc = FALSE;
-          $this->error = "เอกสารถูกบันทึกแล้วไม่สามารถแก้ไขได้";
+          $this->error = "The document has been saved and cannot be edited.";
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "ไม่พบข้อมูล";
+        $this->error = "No data found";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขทีเอกสาร";
+      set_error('required');
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -567,7 +572,7 @@ class Receive_po_request extends PS_Controller
         if(! $this->receive_po_request_model->set_approve($code, 1))
         {
           $sc = FALSE;
-          $this->error = "อนุมัติเอกสารไม่สำเร็จ";
+          $this->error = "Failed to approve document";
         }
         else
         {
@@ -578,13 +583,13 @@ class Receive_po_request extends PS_Controller
       else
       {
         $sc = FALSE;
-        $this->error = "คุณไม่มีสิทธิ์ในการอนุมัติ";
+        $this->error = "You do not have authorization rights.";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสาร";
+      $this->error = "Document number not found.";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -605,7 +610,7 @@ class Receive_po_request extends PS_Controller
         if(! $this->receive_po_request_model->set_approve($code, 0))
         {
           $sc = FALSE;
-          $this->error = "ยกเลิกการอนุมัติเอกสารไม่สำเร็จ";
+          $this->error = "Failed to cancel authorization.";
         }
         else
         {
@@ -616,13 +621,13 @@ class Receive_po_request extends PS_Controller
       else
       {
         $sc = FALSE;
-        $this->error = "คุณไม่มีสิทธิ์ในการอนุมัติ";
+        $this->error = "You do not have authorization rights.";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสาร";
+      $this->error = "Document number not found";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;

@@ -9,17 +9,17 @@
   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
     <p class="pull-right top-p">
       <?php if(empty($approve_view)) : ?>
-      <button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+      <button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
       <?php endif; ?>
 
       <?php if($order->role == 'N' && ($order->is_valid == '0' OR $order->is_received === NULL OR $order->is_received === 'N') ) : ?>
-      <button type="button" class="btn btn-sm btn-primary" onclick="confirm_receipted()"><i class="fa fa-check"></i> ยืนยันการรับสินค้า</button>
+      <button type="button" class="btn btn-sm btn-primary" onclick="confirm_receipted()"><i class="fa fa-check"></i> Acceptance </button>
     <?php elseif($order->role == 'N' && ($order->is_valid == '1' OR $order->is_received === 'Y')) : ?>
-      <button type="button" class="btn btn-sm btn-default" disabled><i class="fa fa-check"></i> รับสินค้าแล้ว</button>
+      <button type="button" class="btn btn-sm btn-default" disabled><i class="fa fa-check"></i> Accepted</button>
       <?php endif; ?>
 
       <?php if(empty($approve_view)) : ?>
-      <button type="button" class="btn btn-sm btn-success" onclick="doExport()">ส่งข้อมูลไป SAP</button>
+      <button type="button" class="btn btn-sm btn-success" onclick="doExport()">Export To Temp</button>
       <?php endif; ?>
     </p>
   </div>
@@ -31,74 +31,40 @@
   <input type="hidden" id="order_code" value="<?php echo $order->code; ?>" />
   <input type="hidden" id="customer_code" value="<?php echo $order->customer_code; ?>" />
   <input type="hidden" id="customer_ref" value="<?php echo $order->customer_ref; ?>" />
-<?php $reference = empty($order->reference) ? $order->code : $order->code . " [{$order->reference}]"; ?>
-<?php $cust_name = empty($order->customer_ref) ? $order->customer_name : $order->customer_name.' ['.$order->customer_ref.']'; ?>
-  <div class="row">
-    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-      <label>เลขที่เอกสาร</label>
-      <input type="text" class="form-control input-sm text-center" value="<?php echo $order->code; ?>" disabled />
-    </div>
 
-    <?php if($order->role == 'C' OR $order->role == 'N') : ?>
-    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-      <label>รหัสลูกค้า</label>
-      <input type="text" class="form-control input-sm text-center" value="<?php echo $order->customer_code; ?>" disabled />
-    </div>
-    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 padding-5">
-      <label>ลูกค้า</label>
-      <input type="text" class="form-control input-sm" value="<?php echo $cust_name; ?>" disabled />
-    </div>
-    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 padding-5">
-      <label>โซน</label>
-      <input type="text" class="form-control input-sm" value="<?php echo $order->zone_name; ?>" disabled />
-    </div>
-    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4 padding-5">
-      <label>พนักงาน</label>
-      <input type="text" class="form-control input-sm" value="<?php echo $order->user; ?>" disabled />
-    </div>
-    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-4 padding-5">
-      <label>หมายเหตุ</label>
-      <input type="text" class="form-control input-sm" value="<?php echo $order->remark; ?>" disabled />
-    </div>
-    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4 padding-5">
-      <label class="font-size-2 blod">SAP No</label>
-      <input type="text" class="form-control input-sm text-center" value="<?php echo $order->inv_code; ?>" disabled />
-    </div>
-    <?php else : ?>
-      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-        <label>อ้างอิง</label>
-        <input type="text" class="form-control input-sm text-center" value="<?php echo $order->reference; ?>" disabled />
-      </div>
-      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4 padding-5">
-        <label>รหัสลูกค้า</label>
-        <input type="text" class="form-control input-sm text-center" value="<?php echo $order->customer_code; ?>" disabled />
-      </div>
-      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-8 padding-5">
-        <label>ลูกค้า</label>
-        <input type="text" class="form-control input-sm" value="<?php echo $cust_name; ?>" disabled />
-      </div>
-      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4 padding-5">
-        <label>พนักงาน</label>
-        <input type="text" class="form-control input-sm" value="<?php echo $order->user; ?>" disabled />
-      </div>
-      <div class="col-lg-8 col-md-8 col-sm-8 col-xs-4 padding-5">
-        <label>หมายเหตุ</label>
-        <input type="text" class="form-control input-sm" value="<?php echo $order->remark; ?>" disabled />
-      </div>
-      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4 padding-5">
-        <label class="font-size-2 blod">SAP No</label>
-        <input type="text" class="form-control input-sm text-center" value="<?php echo $order->inv_code; ?>" disabled />
-      </div>
-    <?php endif; ?>
-  </div>
+<?php
+
+  $reference = empty($order->reference) ? $order->code : $order->code . " [{$order->reference}]";
+  $cust_name = empty($order->customer_ref) ? $order->customer_name : $order->customer_name.' ['.$order->customer_ref.']';
+
+  if($order->role == 'N' OR $order->role == 'C')
+  {
+    $this->load->view('inventory/order_closed/consign_header');
+  }
+  elseif($order->role == 'S')
+  {
+    $this->load->view('inventory/order_closed/sales_header');
+  }
+  elseif($order->role == 'U' OR $order->role == 'P' OR $order->role == 'Q' OR $order->role == 'T')
+  {
+    $this->load->view('inventory/order_closed/other_header');
+  }
+  elseif($order->role == 'L')
+  {
+    $this->load->view('inventory/order_closed/lend_header');
+  }
+ ?>
+
+
+
   <hr/>
 
   <div class="row hidden-xs">
     <div class="col-sm-12 text-right">
-      <button type="button" class="btn btn-sm btn-info top-btn" onclick="printAddress()"><i class="fa fa-print"></i> ใบนำส่ง</button>
+      <button type="button" class="btn btn-sm btn-info top-btn" onclick="printAddress()"><i class="fa fa-print"></i> Delivery Slip</button>
       <button type="button" class="btn btn-sm btn-primary top-btn" onclick="printOrder()"><i class="fa fa-print"></i> Packing List </button>
       <button type="button" class="btn btn-sm btn-success top-btn" onclick="printOrderBarcode()"><i class="fa fa-print"></i> Packing List (barcode)</button>
-      <button type="button" class="btn btn-sm btn-warning top-btn" onclick="showBoxList()"><i class="fa fa-print"></i> Packing List (ปะหน้ากล่อง)</button>
+      <button type="button" class="btn btn-sm btn-warning top-btn" onclick="showBoxList()"><i class="fa fa-print"></i> Packing List (Box)</button>
     </div>
   </div>
   <hr class="padding-5 hidden-xs"/>
@@ -108,15 +74,15 @@
       <table class="table table-bordered" style="min-width:960px;">
         <thead>
           <tr class="font-size-12">
-            <th class="fix-width-40 text-center">ลำดับ</th>
-            <th class="min-width-300 text-center">สินค้า</th>
-            <th class="fix-width-100 text-center">ราคา</th>
-            <th class="fix-width-80 text-center">ออเดอร์</th>
-            <th class="fix-width-80 text-center">จัด</th>
-            <th class="fix-width-80 text-center">ตรวจ</th>
-            <th class="fix-width-80 text-center">เปิดบิล</th>
-            <th class="fix-width-100 text-center">ส่วนลด</th>
-            <th class="fix-width-100 text-center">มูลค่า</th>
+            <th class="fix-width-40 text-center">#</th>
+            <th class="min-width-300 text-center">Items</th>
+            <th class="fix-width-100 text-center">Price</th>
+            <th class="fix-width-80 text-center">Ordered</th>
+            <th class="fix-width-80 text-center">Picked</th>
+            <th class="fix-width-80 text-center">Packed</th>
+            <th class="fix-width-80 text-center">Delivered</th>
+            <th class="fix-width-100 text-center">Discount</th>
+            <th class="fix-width-100 text-center">Amount</th>
           </tr>
         </thead>
         <tbody>
@@ -178,6 +144,7 @@
 
               <td class="middle text-right">
                 <?php echo $rs->is_count == 0 ? number($rs->final_price * $rs->order_qty) : number( $rs->final_price * $rs->sold , 2); ?>
+                &nbsp; <?php echo $rs->currency; ?>
               </td>
 
             </tr>
@@ -194,7 +161,7 @@
   <?php   endforeach; ?>
           <tr class="font-size-12">
             <td colspan="3" class="text-right font-size-14">
-              รวม
+              Total
             </td>
 
             <td class="text-center">
@@ -214,7 +181,7 @@
             </td>
 
             <td class="text-center">
-              ส่วนลดท้ายบิล
+              Bill discount
             </td>
 
             <td class="text-right">
@@ -226,37 +193,37 @@
           <tr>
             <td colspan="4" rowspan="3" style="white-space:normal;">
               <?php if(!empty($order->remark)) : ?>
-              หมายเหตุ : <?php echo $order->remark; ?>
+              Remark : <?php echo $order->remark; ?>
               <?php endif; ?>
             </td>
             <td colspan="3" class="blod">
-              ราคารวม
+              Total amount
             </td>
             <td colspan="2" class="text-right">
-              <?php echo number($totalPrice, 2); ?>
+              <?php echo number($totalPrice, 2); ?><?php echo $order->DocCur; ?>
             </td>
           </tr>
 
           <tr>
             <td colspan="3">
-              ส่วนลดรวม
+              Total discount
             </td>
             <td colspan="2" class="text-right">
-              <?php echo number($totalDiscount + $order->bDiscAmount, 2); ?>
+              <?php echo number($totalDiscount + $order->bDiscAmount, 2); ?><?php echo $order->DocCur; ?>
             </td>
           </tr>
 
           <tr>
             <td colspan="3" class="blod">
-              ยอดเงินสุทธิ
+              Net amount
             </td>
             <td colspan="2" class="text-right">
-              <?php echo number($totalPrice - ($totalDiscount + $order->bDiscAmount), 2); ?>
+              <?php echo number($totalPrice - ($totalDiscount + $order->bDiscAmount), 2); ?><?php echo $order->DocCur; ?>
             </td>
           </tr>
 
   <?php else : ?>
-        <tr><td colspan="8" class="text-center"><h4>ไม่พบรายการ</h4></td></tr>
+        <tr><td colspan="8" class="text-center"><h4>No data</h4></td></tr>
   <?php endif; ?>
         </tbody>
       </table>
@@ -275,7 +242,7 @@
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-sm btn-primary" onclick="printSelectAddress()"><i class="fa fa-print"></i> พิมพ์</button>
+          <button type="button" class="btn btn-sm btn-primary" onclick="printSelectAddress()"><i class="fa fa-print"></i> Print</button>
         </div>
       </div>
     </div>
@@ -297,13 +264,13 @@
   function confirm_receipted(){
     var code = $('#order_code').val();
     swal({
-      title: "ยืนยันการรับสินค้า",
-      text: "คุณได้รับสินค้าครบเอกสารเลขที่ "+code+" แล้วใช่หรือไม่ ?",
+      title: "Confirmation",
+      text: "Does the recipient of the goods complete according to document number "+code+" ?",
       type:"warning",
       showCancelButton:true,
       confirmButtonColor:"#428bca",
-      confirmButtonText:"ยืนยัน ได้รับครบแล้ว",
-      cancelButtonText:"ยกเลิก",
+      confirmButtonText:"Confirm",
+      cancelButtonText:"Cancel",
       closeOnConfirm: false
     }, function(){
       $.ajax({

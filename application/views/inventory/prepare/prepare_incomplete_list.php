@@ -4,18 +4,17 @@
 
 
 <div class="row">
-  <div class="col-sm-12">
-    <table class="table table-striped border-1">
+  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5 table-responsive">
+    <table class="table table-striped border-1" style="min-width:900px;">
       <thead>
-        <tr><td colspan="6" align="center">รายการรอจัด</td></tr>
         <tr>
-          <th class="width-15 middle">บาร์โค้ด</th>
-          <th class="width-50 middle">สินค้า</th>
-          <th class="width-5 middle text-center">จำนวน</th>
-          <th class="width-5 middle text-center">จัดแล้ว</th>
-          <th class="width-5 middle text-center">คงเหลือ</th>
-          <th class="text-right">
-            <label><input type="checkbox" id="showZone" style="margin-right:10px;" <?php echo $checked; ?> />แสดงที่เก็บ</label>
+          <th class="fix-width-150 middle">Barcode</th>
+          <th class="min-width-200 middle">Item Code</th>
+          <th class="fix-width-100 middle text-center">Order Qty</th>
+          <th class="fix-width-100 middle text-center">Picked Qty</th>
+          <th class="fix-width-100 middle text-center">Balance Qty</th>
+          <th class="fix-width-150 text-right">
+            <label><input type="checkbox" id="showZone" style="margin-right:10px;" <?php echo $checked; ?> />Expand</label>
           </th>
         </tr>
       </thead>
@@ -51,7 +50,7 @@
           data-content="<?php echo $rs->stock_in_zone; ?>"
           data-original-title=""
           title="">
-          ที่เก็บ
+          Location
         </button>
         <span class="zoneLabel <?php echo $showZone; ?>">
             <?php echo $rs->stock_in_zone; ?>
@@ -69,18 +68,18 @@
         <div id="force-bar" class="">
           <button type="button" class="btn btn-sm btn-danger not-show" id="btn-force-close" onclick="forceClose()">
             <i class="fa fa-exclamation-triangle"></i>
-            &nbsp; บังคับจบ
+            &nbsp; Force Close
           </button>
           <label style="margin-left:15px;">
             <input type="checkbox" id="force-close" class="ace" style="margin-right:5px;" onchange="toggleForceClose()" />
-            <span class="lbl">  สินค้าไม่ครบ</span>
+            <span class="lbl">  Not complete</span>
           </label>
 
         </div>
 
 
         <div id="close-bar" class="<?php echo $close; ?>">
-          <button type="button" class="btn btn-sm btn-success" onclick="finishPrepare()">จัดเสร็จแล้ว</button>
+          <button type="button" class="btn btn-sm btn-success" onclick="finishPrepare()">Finish</button>
         </div>
 
       </td>
@@ -91,7 +90,7 @@
   <tr>
     <td colspan="6" class="text-center">
       <div id="close-bar">
-        <button type="button" class="btn btn-sm btn-success" onclick="finishPrepare()">จัดเสร็จแล้ว</button>
+        <button type="button" class="btn btn-sm btn-success" onclick="finishPrepare()">Finish</button>
       </div>
     </td>
   </tr>

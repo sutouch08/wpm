@@ -52,8 +52,8 @@ class Products_model extends CI_Model
     ->select('OITM.U_CATE, OITM.U_SUBTYPE, OITM.U_TYPE, OITM.U_BRAND, OITM.U_YEAR')
     ->select('OITM.InvntItem, OITM.InvntryUom, OITM.U_OLDCODE, ITM1.Price AS cost, ITM2.Price AS price')
     ->from('OITM')
-    ->join('ITM1 AS ITM1', '(ITM1.ItemCode = OITM.ItemCode AND ITM1.PriceList = 13)')
-    ->join('ITM1 AS ITM2', '(ITM2.ItemCode = OITM.ItemCode AND ITM2.PriceList = 11)')
+    ->join('ITM1 AS ITM1', '(ITM1.ItemCode = OITM.ItemCode AND ITM1.PriceList = 1)')
+    ->join('ITM1 AS ITM2', '(ITM2.ItemCode = OITM.ItemCode AND ITM2.PriceList = 2)')
     ->group_start()
     ->where('OITM.CreateDate >', $date_add)
     ->or_where('OITM.UpdateDate >', $date_upd)
@@ -557,6 +557,19 @@ class Products_model extends CI_Model
     $rs = $this->db->where('code', $code)->or_where('old_code', $code)->get('products');
 
     if($rs->num_rows() == 1)
+    {
+      return $rs->row();
+    }
+
+    return NULL;
+  }
+
+
+  public function get_with_barcode($code)
+  {
+    $rs = $this->db->where('code', $code)->or_where('old_code', $code)->or_where('barcode', $code)->get('products');
+
+    if($rs->num_rows() === 1)
     {
       return $rs->row();
     }

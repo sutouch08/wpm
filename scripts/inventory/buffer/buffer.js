@@ -40,13 +40,14 @@ $("#toDate").datepicker({
 
 function deleteBuffer(id, order, product) {
 	swal({
-		title: "คุณแน่ใจ ?",
-		text: "ต้องการลบ " + order + "/"+product+" หรือไม่ ?",
+		title: "Are you sure ?",
+		text: "Do you really to delete this record ?<br/>This process cannot be undone",
 		type: "warning",
+    html:true,
 		showCancelButton: true,
 		confirmButtonColor: "#DD6B55",
-		confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Delete',
+		cancelButtonText: 'Cancel',
 		closeOnConfirm: false
 		}, function(){
 			$.ajax({
@@ -63,7 +64,7 @@ function deleteBuffer(id, order, product) {
 							title: 'Deleted',
 							type: 'success',
 							timer: 1000 });
-							
+
 						$('#row-'+id).remove();
 						reIndex();
 					}else{

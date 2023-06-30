@@ -1,7 +1,4 @@
-
 var chk = setInterval(function () { checkState(); }, 10000);
-
-
 
 function checkState(){
   var order_code = $("#order_code").val();
@@ -20,7 +17,6 @@ function checkState(){
     }
   });
 }
-
 
 
 function confirmOrder(){

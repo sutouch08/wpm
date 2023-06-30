@@ -39,7 +39,7 @@
 		<div class="form-group">
 			<label class="col-sm-3 control-label no-padding-right">รุ่น</label>
 			<div class="col-xs-12 col-sm-3">
-				<input type="text" name="style" id="style" class="width-100" value="<?php echo $style_code; ?>" required />
+				<input type="text" name="style" id="style" class="width-100" value="<?php echo $style_code; ?>"  />
 			</div>
 			<div class="help-block col-xs-12 col-sm-reset inline red" id="style-error"></div>
 		</div>
@@ -55,7 +55,7 @@
 		<div class="form-group">
 			<label class="col-sm-3 control-label no-padding-right">สี</label>
 			<div class="col-xs-12 col-sm-3">
-				<input type="text" name="color" id="color" class="width-100" value="<?php echo $color_code; ?>" required />
+				<input type="text" name="color" id="color" class="width-100" value="<?php echo $color_code; ?>"  />
 			</div>
 			<div class="help-block col-xs-12 col-sm-reset inline red" id="color-error"></div>
 		</div>
@@ -64,7 +64,7 @@
 		<div class="form-group">
 			<label class="col-sm-3 control-label no-padding-right">ไซส์</label>
 			<div class="col-xs-12 col-sm-3">
-				<input type="text" name="size" id="size" class="width-100" value="<?php echo $size_code; ?>" required />
+				<input type="text" name="size" id="size" class="width-100" value="<?php echo $size_code; ?>"  />
 			</div>
 			<div class="help-block col-xs-12 col-sm-reset inline red" id="size-error"></div>
 		</div>
@@ -131,7 +131,7 @@
 		<div class="form-group">
 			<label class="col-sm-3 control-label no-padding-right">กลุ่มหลัก</label>
 			<div class="col-xs-12 col-sm-3">
-				<select name="main_group_code" id="mainGroup" class="form-control" required>
+				<select name="main_group_code" id="mainGroup" class="form-control" >
 					<option value="">โปรดเลือก</option>
 				<?php echo select_product_main_group($main_group_code); ?>
 				</select>

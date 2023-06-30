@@ -2,6 +2,7 @@ var data = [];
 var poError = 0;
 var invError = 0;
 var zoneError = 0;
+var dfCurrency = $('#dfCurrency').val();
 
 function getSample(){
 	window.location.href = HOME + 'get_sample_file';
@@ -21,7 +22,7 @@ function updateHeader() {
 	var is_wms = $('#is_wms').val();
 
 	if(!isDate(date_add)){
-		swal('วันที่ไม่ถูกต้อง');
+		swal('Invalid date');
 		return false;
 	}
 
@@ -99,44 +100,49 @@ function save() {
 	docRate = parseDefault(parseFloat($('#DocRate').val()), 0);
 
 	//--- ตรวจสอบความถูกต้องของข้อมูล
-	if(code == '' || code == undefined){
-		swal('ไม่พบเลขที่เอกสาร', 'หากคุณเห็นข้อผิดพลาดนี้มากกว่า 1 ครับ ให้ลองออกจากหน้านี้แล้วกลับเข้ามาทำรายการใหม่', 'error');
+	if(code == '' || code == undefined) {
+		swal({
+			title:'Document number not found',
+			text: 'If you see this error more than once, try leaving this page and come back again.',
+			type:'error'
+		});
+
 		return false;
 	}
 
 	if(vendor_code == '' || vendor_name == ''){
-		swal('กรุณาระบุผู้จำหน่าย');
+		swal('Vendor is required');
 		return false;
 	}
 
 
 	//--- ใบสั่งซื้อถูกต้องหรือไม่
 	if(po == ''){
-		swal('กรุณาระบุใบสั่งซื้อ');
+		swal('PO is required');
 		return false;
 	}
 
 
 	//--- มีรายการในใบสั่งซื้อหรือไม่
 	if(count = 0){
-		swal('Error!', 'ไม่พบรายการรับเข้า','error');
+		swal('Error!', 'No item(s) found','error');
 		return false;
 	}
 
 	//--- ตรวจสอบใบส่งของ (ต้องระบุ)
 	if(invoice.length == 0) {
-		swal('กรุณาระบุใบส่งสินค้า');
+		swal('Invoice No is required');
 		return false;
 	}
 
 	//--- ตรวจสอบโซนรับเข้า
 	if(zone_code == '' || zoneName == ''){
-		swal('กรุณาระบุโซนเพื่อรับเข้า');
+		swal('Bin location is required');
 		return false;
 	}
 
 	if(docRate <= 0) {
-		swal('กรุณาระบุอัตราแลกเปลี่ยน');
+		swal('Document rate is required');
 		$('#DocRate').addClass('has-error');
 		return false;
 	}
@@ -186,7 +192,7 @@ function save() {
 
 
 	if(rows.length < 1){
-		swal('ไม่พบรายการรับเข้า');
+		swal('No item(s) found');
 		return false;
 	}
 
@@ -209,7 +215,6 @@ function save() {
 				if(ds.status == 'success') {
 					swal({
 						title:'Success',
-						text:'บันทึกรายการเรียบร้อยแล้ว',
 						type:'success',
 						timer:1000
 					});
@@ -283,8 +288,8 @@ function checkLimit() {
 	{
 		if( ! allow) {
 			swal({
-				title:'สินค้าเกิน',
-				text: 'กรุณาระบุจำนวนรับไม่เกินยอดค้างร้บ',
+				title:'Quantity exceeded',
+				text: 'Please specify the amount received not exceeding the outstanding balance.',
 				type:'error'
 			});
 
@@ -399,7 +404,8 @@ function doApprove(){
 
 function leave(){
 	swal({
-		title: 'ยกเลิกข้อมูลนี้ ?',
+		title: 'Do you want to leave ?',
+		text: 'Changes will not be saved.',
 		type: 'warning',
 		showCancelButton: true,
 		cancelButtonText: 'No',
@@ -413,7 +419,7 @@ function leave(){
 
 
 function changeRate() {
-	if($('#DocCur').val() == 'THB') {
+	if($('#DocCur').val() == dfCurrency) {
 		$('#DocRate').val('1.00');
 	}
 	else {
@@ -425,7 +431,8 @@ function changeRate() {
 
 function changePo(){
 	swal({
-		title: 'ยกเลิกข้อมูลนี้ ?',
+		title: "Warning",
+		text: "Current items will be removed. Do you want to process ?",
 		type: 'warning',
 		showCancelButton: true,
 		cancelButtonText: 'No',
@@ -441,7 +448,7 @@ function changePo(){
 		$('#requestCode').removeAttr('disabled');
 		$('#btn-change-request').addClass('hide');
 		$('#btn-get-request').removeClass('hide');
-		$('#DocCur').val('THB');
+		$('#DocCur').val(dfCurrency);
 		$('#DocRate').val('1.00');
 
 		swal({
@@ -477,7 +484,7 @@ function changeRequestPo(){
 		$('#vendorName').val('');
 		$('#poCode').val('');
 		$('#invoice').val('');
-		$('#DocCur').val('THB');
+		$('#DocCur').val(dfCurrency);
 		$('#DocRate').val('1.00');
 
 		if(is_strict == '0') {
@@ -514,7 +521,7 @@ function getPoCurrency(poCode)
 				$('#DocCur').val(ds.DocCur);
 				$('#DocRate').val(ds.DocRate);
 
-				if(ds.DocCur == 'THB') {
+				if(ds.DocCur == dfCurrency) {
 					$('#DocRate').val(1.00);
 				}
 			}
@@ -620,7 +627,7 @@ function getRequestData(){
 				$('#barcode').focus();
 
 			}else{
-				swal("ข้อผิดพลาด !", rs, "error");
+				swal("Error! !", rs, "error");
 				$("#receiveTable").html('');
 			}
 		}
@@ -890,8 +897,8 @@ function checkBarcode() {
 			if(qty > 0) {
 				beep();
 				swal({
-					title: "ข้อผิดพลาด !",
-					text: "สินค้าเกินใบสั่งซื้อ "+qty+" Pcs.",
+					title: "Error !",
+					text: "Quantity exceeded "+qty+" Pcs.",
 					type: "error"
 				},
 				function(){
@@ -910,8 +917,8 @@ function checkBarcode() {
 			$('#barcode').removeAttr('disabled');
 			beep();
 			swal({
-				title: "ข้อผิดพลาด !",
-				text: "บาร์โค้ดไม่ถูกต้องหรือสินค้าไม่ตรงกับใบสั่งซื้อ",
+				title: "Error !",
+				text: "The barcode is invalid or the product does not match the purchase order.",
 				type: "error"
 			},
 			function(){
@@ -966,10 +973,10 @@ function validateOrder(){
 
   if(arr.length == 2){
     if(arr[0] !== prefix){
-      swal('Prefix ต้องเป็น '+prefix);
+      swal('Prefix must be '+prefix);
       return false;
     }else if(arr[1].length != (4 + runNo)){
-      swal('Run Number ไม่ถูกต้อง');
+      swal('Invalid running number');
       return false;
     }else{
       $.ajax({
@@ -979,7 +986,8 @@ function validateOrder(){
         success:function(rs){
           if(rs == 'not_exists'){
             $('#addForm').submit();
-          }else{
+          }
+					else {
             swal({
               title:'Error!!',
               text: rs,
@@ -990,8 +998,14 @@ function validateOrder(){
       })
     }
 
-  }else{
-    swal('เลขที่เอกสารไม่ถูกต้อง');
+  }
+	else {
+		swal({
+			title:'Warning',
+			text:'Invalid document number',
+			type:'warning'
+		});
+
     return false;
   }
 }
@@ -1046,7 +1060,7 @@ $("#uploadFile").change(function(){
 
 		if( size > 5000000 )
 		{
-			swal("ขนาดไฟล์ใหญ่เกินไป", "ไฟล์แนบต้องมีขนาดไม่เกิน 5 MB", "error");
+			swal("File size is too large", "File size must not exceed 5 MB.", "error");
 			$(this).val('');
 			return false;
 		}
@@ -1099,7 +1113,7 @@ $("#uploadFile").change(function(){
 						$('#btn-change-po').removeClass('hide');
 
 					}else{
-						swal("ข้อผิดพลาด !", rs, "error");
+						swal("Error !", rs, "error");
 						$("#receiveTable").html('');
 					}
 				}
@@ -1118,7 +1132,7 @@ $("#uploadFile").change(function(){
 		let note = $.trim($('#accept-note').val());
 
 		if(note.length < 10) {
-			$('#accept-error').text('กรุณาระบุหมายเหตุอย่างนี้อย 10 ตัวอักษร');
+			$('#accept-error').text('Please enter at least 10 characters in this remark.');
 			return false;
 		}
 		else {
@@ -1158,7 +1172,7 @@ $("#uploadFile").change(function(){
 							text:ds.message,
 							type:'warning'
 						}, () => {
-							window.location.reload();							
+							window.location.reload();
 						});
 					}
 					else {

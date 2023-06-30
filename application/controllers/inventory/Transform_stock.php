@@ -158,7 +158,7 @@ class Transform_stock extends PS_Controller
         'role' => $role,
         'bookcode' => $book_code,
         'customer_code' => $this->input->post('customerCode'),
-        'user' => get_cookie('uname'),
+        'user' => $this->_user->uname,
         'remark' => $this->input->post('remark'),
         'user_ref' => $this->input->post('empName'),
         'zone_code' => $zone_code,
@@ -172,7 +172,7 @@ class Transform_stock extends PS_Controller
         $arr = array(
           'order_code' => $code,
           'state' => 1,
-          'update_user' => get_cookie('uname')
+          'update_user' => $this->_user->uname
         );
 
         $this->order_state_model->add_state($arr);

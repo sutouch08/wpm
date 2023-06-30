@@ -10,42 +10,42 @@ function doc_type($role)
 
 		case 'C' :
 			$content = "consign";
-			$title = "ใบส่งของ / ใบแจ้งหนี้  สินค้าฝากขาย";
+			$title = "Delivery slip / Invoice (Consignment)";
 		break;
 
 		case 'N' :
 			$content = "consign";
-			$title = "ใบส่งของ / ใบแจ้งหนี้  สินค้าฝากขาย";
+			$title = "Delivery slip / Invoice (Consignment)";
 		break;
 
 		case 'U' :
 			$content = "support";
-			$title = "ใบส่งของ / รายการเบิกอภินันทนาการ";
+			$title = "Delivery slip / Complimentary slip";
 		break;
 
 		case 'P' :
 			$content = "sponsor";
-			$title = "ใบส่งของ / รายการสปอนเซอร์สโมสร";
+			$title = "Delivery slip / Sponsored slip";
 		break;
 
 		case 'T' :
 			$content = "transform";
-			$title = "ใบส่งของ / ใบเบิกสินค้าเพื่อแปรรูป";
+			$title = "Delivery slip / Products transform slip";
 		break;
 
 		case 'L' :
 			$content = "lend";
-			$title = "ใบส่งของ / ใบยืมสินค้า";
+			$title = "Delivery slip / Lending slip";
 		break;
 
 		case 'R' :
 			$content 	= "requisition";
-			$title 		= "ใบส่งของ / ใบเบิกสินค้า";
+			$title 		= "Delivery slip / Requisition slip";
 		break;
 
 		default :
 			$content = "order";
-			$title = "ใบส่งของ / ใบแจ้งหนี้";
+			$title = "Delivery slip / Invoice";
 		break;
 	}
 
@@ -65,12 +65,12 @@ function get_header($order)
 	if( $order->role == 'P')
 	{
 		$header	= array(
-				"ผู้รับ" => $order->customer_name,
-				"วันที่" => thai_date($order->date_add, FALSE, '/'),
-				"ผู้เบิก" => $CI->user_model->get_name($order->user),
-				"เลขที่" => $order->code,
-				"ผู้ทำรายการ" =>  $CI->user_model->get_name($order->user)
-			);
+			"Receiver" => $order->customer_name,
+			"Date" => thai_date($order->date_add, FALSE, '/'),
+			"Requester" => $CI->user_model->get_name($order->user),
+			"Document No" => $order->code,
+			"Maker" =>  $CI->user_model->get_name($order->user)
+		);
 	}
 
 
@@ -78,12 +78,12 @@ function get_header($order)
 	//---	ยิมสินค้า
 	else if($order->role == 'L' )
 	{
-				$header		= array(
-								"เลขที่"	=> $order->code,
-								"วันที่"	=> thai_date($order->date_add, FALSE, '/'),
-								"ผู้ยืม"	=> $order->customer_name,
-								"ผู้ทำรายการ" => $CI->user_model->get_name($order->user)
-							);
+		$header		= array(
+			"Document No"	=> $order->code,
+			"Date"	=> thai_date($order->date_add, FALSE, '/'),
+			"Lender"	=> $order->customer_name,
+			"Maker" => $CI->user_model->get_name($order->user)
+		);
 	}
 
 
@@ -91,41 +91,41 @@ function get_header($order)
 	else if( $order->role == 'R' || $order->role == 'T' )
 	{
 		$header		= array(
-									"ลูกค้า"	=> $order->customer_name,
-									"วันที่"	=> thai_date($order->date_add, FALSE, '/'),
-									"ผู้เบิก"	=> $CI->user_model->get_name($order->user),
-									"เลขที่"	=> $order->code
-									);
+			"Customer"	=> $order->customer_name,
+			"Date"	=> thai_date($order->date_add, FALSE, '/'),
+			"Requester"	=> $CI->user_model->get_name($order->user),
+			"Document No"	=> $order->code
+		);
 	}
 
 	//---	เบิกอภินันท์
 	else if( $order->role == 'U')
 	{
 		$header	= array(
-									"ผู้เบิก"	=> $order->customer_name,
-									"วันที่"	=> thai_date($order->date_add, FALSE, '/'),
-									"ผู้ทำรายการ"	=> $CI->user_model->get_name($order->user),
-									"เลขที่"	=> $order->code
-									);
+			"Requester"	=> $order->customer_name,
+			"Date"	=> thai_date($order->date_add, FALSE, '/'),
+			"Maker"	=> $CI->user_model->get_name($order->user),
+			"Document No"	=> $order->code
+		);
 	}
 	else if( $order->role == 'C' OR $order->role == 'N')
 	{
 		$header	= array(
-							"ลูกค้า"	 => $order->customer_name,
-							"วันที่"		=> thai_date($order->date_add, FALSE, '/'),
-							"พนักงาน" => $CI->user_model->get_name($order->user),
-							"เลขที่" => $order->code
-							);
+			"Customer"	 => $order->customer_name,
+			"Date"		=> thai_date($order->date_add, FALSE, '/'),
+			"Maker" => $CI->user_model->get_name($order->user),
+			"Document No" => $order->code
+		);
 	}
 	else
 	{
 		$ref = !empty($order->reference) ? '['.$order->reference.']' : '';
 		$header	= array(
-							"ลูกค้า"	=> $order->customer_name,
-							"วันที่"		=> thai_date($order->date_add, FALSE, '/'),
-							"พนักงาน" => $CI->user_model->get_name($order->user),
-							"เลขที่" => $order->code.$ref
-							);
+			"Customer"	=> $order->customer_name,
+			"Date"		=> thai_date($order->date_add, FALSE, '/'),
+			"Maker" => $CI->user_model->get_name($order->user),
+			"Document No" => $order->code.$ref
+		);
 	}
 
 	return $header;

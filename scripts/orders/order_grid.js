@@ -97,7 +97,7 @@ function getOrderGrid(styleCode){
 function valid_qty(el, qty){
 	var order_qty = el.val();
 	if(parseInt(order_qty) > parseInt(qty) )	{
-		swal('สั่งได้ '+qty+' เท่านั้น');
+		swal('Available : '+qty);
 		el.val('');
 		el.focus();
 	}

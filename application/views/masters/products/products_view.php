@@ -162,7 +162,7 @@
 						<td class="middle text-center"><?php echo is_active($rs->sell); ?></td>
 						<td class="middle text-center"><?php echo is_active($rs->active); ?></td>
 						<td class="middle text-right">
-							<button type="button" class="btn btn-mini btn-info" onclick="sendToWms('<?php echo $rs->code; ?>')">
+							<button type="button" class="btn btn-mini btn-info" onclick="sendToSap('<?php echo $rs->code; ?>')">
 								<i class="fa fa-send"></i>
 							</button>
 							<?php if($this->pm->can_edit) : ?>

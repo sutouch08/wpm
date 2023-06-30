@@ -13,7 +13,7 @@
 	</div>
     <div class="col-sm-6">
       	<p class="pull-right top-p">
-			<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+			<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
         </p>
     </div>
 </div>
@@ -22,7 +22,7 @@
 <form id="addForm" action="<?php echo $this->home.'/add'; ?>" method="post">
 <div class="row">
     <div class="col-sm-1 col-1-harf padding-5 first">
-    	<label>เลขที่เอกสาร</label>
+    	<label>Document No</label>
 			<?php if($manual_code == 1) : ?>
 				<input type="text" class="form-control input-sm" name="code" id="code" value="" required />
 			<?php else : ?>
@@ -30,20 +30,20 @@
 			<?php endif; ?>
     </div>
 		<div class="col-sm-1 padding-5">
-    	<label>วันที่</label>
+    	<label>Date</label>
       <input type="text" class="form-control input-sm text-center" name="date_add" id="dateAdd" value="<?php echo date('d-m-Y'); ?>" readonly/>
     </div>
     <div class="col-sm-8 padding-5">
-    	<label>หมายเหตุ</label>
-        <input type="text" class="form-control input-sm" name="remark" id="remark" placeholder="ระบุหมายเหตุเอกสาร (ถ้ามี)" />
+    	<label>Remark</label>
+        <input type="text" class="form-control input-sm" name="remark" id="remark" placeholder="" />
     </div>
 		<div class="col-sm-1 col-1-harf padding-5 last">
 			<label class="display-block not-show">save</label>
 			<?php if($this->pm->can_add) : ?>
 				<?php if($manual_code == 1) : ?>
-							<button type="button" class="btn btn-xs btn-success btn-block" onclick="validateOrder()"><i class="fa fa-plus"></i> เพิ่ม</button>
+							<button type="button" class="btn btn-xs btn-success btn-block" onclick="validateOrder()"><i class="fa fa-plus"></i> Add</button>
 				<?php else : ?>
-							<button type="button" class="btn btn-xs btn-success btn-block" onclick="addNew()"><i class="fa fa-plus"></i> เพิ่ม</button>
+							<button type="button" class="btn btn-xs btn-success btn-block" onclick="addNew()"><i class="fa fa-plus"></i> Add</button>
 				<?php endif; ?>
 			<?php	endif; ?>
 		</div>

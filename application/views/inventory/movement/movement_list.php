@@ -8,23 +8,23 @@
 <form id="searchForm" method="post" action="<?php echo current_url(); ?>">
 <div class="row">
   <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
-    <label>เลขที่เอกสาร</label>
+    <label>Document No.</label>
     <input type="text" class="form-control input-sm text-center search-box" name="reference" value="<?php echo $reference; ?>" />
   </div>
   <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
-    <label>รหัสสินค้า</label>
+    <label>Item Code</label>
     <input type="text" class="form-control input-sm text-center search-box" name="product_code" value="<?php echo $product_code; ?>" />
   </div>
   <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
-    <label>รหัสคลัง</label>
+    <label>Whs Code</label>
     <input type="text" class="form-control input-sm text-center search-box" name="warehouse_code" value="<?php echo $warehouse_code; ?>" />
   </div>
   <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
-    <label>รหัสโซน</label>
+    <label>Bin Code</label>
     <input type="text" class="form-control input-sm text-center search-box" name="zone_code" value="<?php echo $zone_code; ?>" />
   </div>
   <div class="col-lg-2 col-md-3 col-sm-3 col-xs-6 padding-5">
-    <label>วันที่</label>
+    <label>Date</label>
     <div class="input-daterange input-group">
       <input type="text" class="form-control input-sm width-50 text-center from-date" name="from_date" id="fromDate" value="<?php echo $from_date; ?>" />
       <input type="text" class="form-control input-sm width-50 text-center" name="to_date" id="toDate" value="<?php echo $to_date; ?>" />
@@ -36,7 +36,7 @@
   </div>
   <div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-3 padding-5">
     <label class="display-block not-show">reset</label>
-    <button type="button" class="btn btn-xs btn-warning btn-block" onclick="clearFilter()">Reset</button>
+    <button type="button" class="btn btn-xs btn-warning btn-block" onclick="clearFilter()">Clear</button>
   </div>
 </div>
 </form>
@@ -47,13 +47,13 @@
     <table class="table table-striped border-1">
       <thead>
         <tr>
-          <th class="fix-width-150">เลขที่เอกสาร</th>
-          <th class="fix-width-200">รหัสสินค้า</th>
-          <th class="fix-width-150">รหัสคลัง</th>
-          <th class="fix-width-200">รหัสโซน</th>
-          <th class="fix-width-100 text-right">เข้า</th>
-          <th class="fix-width-100 text-right">ออก</th>
-          <th class="fix-width-150">วันที่</th>
+          <th class="fix-width-150">Document No.</th>
+          <th class="fix-width-200">Item Code</th>
+          <th class="fix-width-150">Warehouse Code</th>
+          <th class="fix-width-200">Bin Code</th>
+          <th class="fix-width-100 text-right">In</th>
+          <th class="fix-width-100 text-right">Out</th>
+          <th class="fix-width-150">Date Time</th>
         </tr>
       </thead>
       <tbody>
@@ -70,7 +70,7 @@
         </tr>
       <?php endforeach; ?>
     <?php else : ?>
-      <tr><td colspan="7" class="text-center"> -- ไม่พบข้อมูล --</td></tr>
+      <tr><td colspan="7" class="text-center"> -- No Data --</td></tr>
     <?php endif; ?>
       </tbody>
     </table>

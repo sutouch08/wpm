@@ -106,7 +106,7 @@ class Consign_check extends PS_Controller
 	        'customer_name' => $customer_name,
 	        'zone_code' => $zone->code,
 	        'warehouse_code' => $zone->warehouse_code,
-	        'user' => get_cookie('uname'),
+	        'user' => $this->_user->uname,
 	        'date_add' => $date,
 	        'remark' => $remark,
 					'is_wms' => $is_wms,

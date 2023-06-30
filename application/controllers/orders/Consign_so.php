@@ -6,7 +6,7 @@ class Consign_so extends PS_Controller
   public $menu_code = 'SOCCSO';
 	public $menu_group_code = 'SO';
   public $menu_sub_group_code = 'ORDER';
-	public $title = 'ฝากขาย(ใบกำกับ)';
+	public $title = 'Consignment order';
   public $filter;
   public $role = 'C';
 	public $isAPI;
@@ -191,7 +191,8 @@ class Consign_so extends PS_Controller
       $wh = $this->warehouse_model->get($this->input->post('warehouse'));
 			$gp = $this->input->post('gp');
 			$unit = $this->input->post('unit');
-			$gp = $unit == '%' ? $gp.'%' : $gp;
+			$gp = $gp.'%'; //$unit == '%' ? $gp.'%' : $gp;
+
       if(!empty($zone))
       {
         $ds = array(
@@ -201,7 +202,7 @@ class Consign_so extends PS_Controller
           'bookcode' => $book_code,
           'customer_code' => $this->input->post('customerCode'),
           'gp' => $gp,
-          'user' => get_cookie('uname'),
+          'user' => $this->_user->uname,
           'remark' => $this->input->post('remark'),
           'zone_code' => $zone,
           'warehouse_code' => $wh->code,
@@ -213,7 +214,7 @@ class Consign_so extends PS_Controller
           $arr = array(
             'order_code' => $code,
             'state' => 1,
-            'update_user' => get_cookie('uname')
+            'update_user' => $this->_user->uname
           );
 
           $this->order_state_model->add_state($arr);
@@ -222,19 +223,19 @@ class Consign_so extends PS_Controller
         }
         else
         {
-          set_error('เพิ่มเอกสารไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+          set_error('Failed to add document Please try again.');
           redirect($this->home.'/add_new');
         }
       }
       else
       {
-        set_error('ไม่พบโซนฝากขาย');
+        set_error('Invalid consignment location');
         redirect($this->home.'/add_new');
       }
     }
     else
     {
-      set_error('ไม่พบข้อมูลลูกค้า กรุณาตรวจสอบ');
+      set_error('Customer information not found, please check.');
       redirect($this->home.'/add_new');
     }
   }
@@ -250,6 +251,7 @@ class Consign_so extends PS_Controller
 
     $ds = array();
     $rs = $this->orders_model->get($code);
+
     if(!empty($rs))
     {
       $rs->customer_name = $this->customers_model->get_name($rs->customer_code);
@@ -257,6 +259,7 @@ class Consign_so extends PS_Controller
       $rs->user          = $this->user_model->get_name($rs->user);
       $rs->state_name    = get_state_name($rs->state);
       $rs->zone_name = $this->zone_model->get_name($rs->zone_code);
+      $rs->gp = str_replace('%', '', $rs->gp);
     }
 
     $state = $this->order_state_model->get_order_state($code);
@@ -321,13 +324,15 @@ class Consign_so extends PS_Controller
       $code = $this->input->post('order_code');
       $zone = $this->input->post('zone_code');
       $wh = $this->warehouse_model->get($this->input->post('warehouse'));
+      $gp = trim($this->input->post('gp'));
+
       if(!empty($code))
       {
         $ds = array(
           'customer_code' => $this->input->post('customer_code'),
-          'gp' => $this->input->post('gp'),
+          'gp' => $gp > 0 ? $gp.'%' : 0,
           'date_add' => db_date($this->input->post('date_add')),
-          'remark' => $this->input->post('remark'),
+          'remark' => trim($this->input->post('remark')),
           'zone_code' => $zone,
           'warehouse_code' => $wh->code,
 					'is_wms' => $wh->is_wms,
@@ -340,19 +345,19 @@ class Consign_so extends PS_Controller
         if($rs !== TRUE)
         {
           $sc = FALSE;
-          $message = 'ปรับปรุงข้อมูลไม่สำเร็จ';
+          $message = 'Update failed';
         }
       }
       else
       {
         $sc = FALSE;
-        $message = '่ไม่พบโซน';
+        $message = 'Invalid consignment location';
       }
     }
     else
     {
       $sc = FALSE;
-      $message = 'ไม่พบเลขที่เอกสาร';
+      $message = 'Document not found';
     }
 
     echo $sc === TRUE ? 'success' : $message;
@@ -378,7 +383,7 @@ class Consign_so extends PS_Controller
       {
         $diff = $credit_used - $credit_balance;
         $sc = FALSE;
-        $message = 'เครดิตคงเหลือไม่พอ (ขาด : '.number($diff, 2).')';
+        $message = 'Insufficient credit balance (need more : '.number($diff, 2).')';
       }
     }
 
@@ -439,7 +444,7 @@ class Consign_so extends PS_Controller
       if($rs === FALSE)
       {
         $sc = FALSE;
-        $message = 'บันทึกออเดอร์ไม่สำเร็จ';
+        $message = 'Save failed';
       }
     }
 

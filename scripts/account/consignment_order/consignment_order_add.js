@@ -228,6 +228,17 @@ function zoneInit(customer_code, edit)
 }
 
 
+async function updateDocRate() {
+  let date = $('#date').val();
+  let currency = $('#doc_currency').val();
+  let rate = await getCurrencyRate(currency, date);
+  $('#doc_rate').val(rate);
+}
+
+$('#date').change(function() {
+  updateDocRate();
+})
+
 
 
 function add(){
@@ -279,6 +290,8 @@ function update() {
   var customer_name = $('#customer').val();
   var zone_code = $('#zone_code').val();
   var zone_name = $('#zone').val();
+  let doc_currency = $('#doc_currency').val();
+  let doc_rate = $('#doc_rate').val();
 
   if(!isDate(date)){
     swal('วันที่ไม่ถูกต้อง');
@@ -305,6 +318,11 @@ function update() {
     data:{
       'code' : code,
       'date' : date,
+      'doc_currency' : doc_currency,
+      'doc_rate' : doc_rate,
+      'customerCode' : customer_code,
+      'customer' : customer_name,
+      'zone_code' : zone_code,
       'remark' : remark
     },
     success:function(rs){
@@ -316,9 +334,13 @@ function update() {
           timer:1000
         });
 
-        $('.edit').attr('disabled', 'disabled');
-        $('#btn-edit').removeClass('hide');
-        $('#btn-update').addClass('hide');
+        setTimeout(() => {
+          window.location.reload();
+        }, 1200);
+
+        // $('.edit').attr('disabled', 'disabled');
+        // $('#btn-edit').removeClass('hide');
+        // $('#btn-update').addClass('hide');
       }
     }
   })

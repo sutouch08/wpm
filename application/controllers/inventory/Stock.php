@@ -6,7 +6,7 @@ class Stock extends PS_Controller
   public $menu_code = 'ICCKST';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'CHECK';
-	public $title = 'ตรวจสอบสต็อกคงเหลือ(SAP)';
+	public $title = 'Stock Balance';
   public $filter;
   public $error;
   public function __construct()

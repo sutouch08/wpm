@@ -6,16 +6,19 @@ class Invoice extends PS_Controller
   public $menu_code = 'ICODIV';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'PICKPACK';
-	public $title = 'รายการเปิดบิลแล้ว';
+	public $title = 'Order Shipped';
   public $filter;
   public function __construct()
   {
     parent::__construct();
     $this->home = base_url().'inventory/invoice';
     $this->load->model('inventory/invoice_model');
+    $this->load->model('inventory/delivery_order_model');
     $this->load->model('orders/orders_model');
     $this->load->model('masters/customers_model');
-    $this->load->model('inventory/delivery_order_model');
+    $this->load->model('masters/warehouse_model');
+    $this->load->model('masters/channels_model');
+		$this->load->model('masters/payment_methods_model');
     $this->load->helper('order');
   }
 
@@ -70,11 +73,15 @@ class Invoice extends PS_Controller
 
     $order = $this->orders_model->get($code);
     $order->customer_name = $this->customers_model->get_name($order->customer_code);
+		$order->warehouse_name = $this->warehouse_model->get_name($order->warehouse_code);
+		$order->channels_name = $this->channels_model->get_name($order->channels_code);
+		$order->payment_name = $this->payment_methods_model->get_name($order->payment_code);
 
-    if($order->role == 'C' OR $order->role == 'N')
+    if($order->role == 'C' OR $order->role == 'N' OR $order->role == 'L')
     {
       $this->load->model('masters/zone_model');
       $order->zone_name = $this->zone_model->get_name($order->zone_code);
+
       if($order->role == 'N')
       {
         $order->is_received = $this->invoice_model->is_received($order->code);

@@ -2,14 +2,15 @@
   <div class="col-sm-12">
     <table class="table table-striped border-1">
       <thead>
-        <tr><th colspan="6" class="text-center">รายการที่ครบแล้ว</th></tr>
+        <tr><th colspan="6" class="text-center">Completed</th></tr>
+
         <tr class="font-size-12">
-          <th class="width-15">บาร์โค้ด</th>
-          <th class="width-50">สินค้า</th>
-          <th class="width-8 text-center">จำนวนที่สั่ง</th>
-          <th class="width-8 text-center">จำนวนที่จัด</th>
-          <th class="width-8 text-center">ตรวจแล้ว</th>
-          <th class="text-right">จากโซน</th>
+          <th class="fix-width-150 text-center">Barcode</th>
+          <th class="min-width-200">Item Code</th>
+          <th class="fix-width-100 text-center">Order Qty</th>
+          <th class="fix-width-100 text-center">Picked Qty</th>
+          <th class="fix-width-100 text-center">Packed Qty</th>
+          <th class="fix-width-100 text-right">Location</th>
         </tr>
       </thead>
       <tbody id="complete-table">
@@ -32,7 +33,7 @@
         <td class="middle text-right">
           <?php if(($rs->qc > $rs->prepared OR $rs->qc > $rs->order_qty) && $this->pm->can_delete) : ?>
             <button type="button" class="btn btn-xs btn-warning must-edit" onclick="showEditOption('<?php echo $order->code; ?>', '<?php echo $rs->product_code; ?>')">
-              <i class="fa fa-pencil"></i> แก้ไข
+              <i class="fa fa-pencil"></i> Edit
             </button>
           <?php endif; ?>
           <button
@@ -45,7 +46,7 @@
             data-content="<?php echo $rs->from_zone; ?>"
             data-original-title=""
             title="">
-            ที่เก็บ
+            Location
           </button>
           <input type="hidden" id="id-<?php echo $rs->id; ?>" value="<?php echo $rs->id; ?>" />
         </td>

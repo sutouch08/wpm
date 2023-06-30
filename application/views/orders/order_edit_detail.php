@@ -6,18 +6,21 @@ $delete = $this->pm->can_delete;
 $hide = $order->status == 1 ? 'hide' : '';
  ?>
 <div class="row">
-	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-3 padding-5">
-    	<h4 class="title"><?php echo $this->title; ?></h4>
-    </div>
-    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-9 padding-5">
-    	<p class="pull-right top-p">
-        	<button type="button" class="btn btn-xs btn-warning" onClick="editOrder('<?php echo $order->code; ?>')"><i class="fa fa-arrow-left"></i> กลับ</button>
-					<button type="button" class="btn btn-xs btn-info" onclick="recalDiscount()">คำนวณส่วนลดใหม่</button></button>
-      <?php if($this->pm->can_add OR $this->pm->can_edit) : ?>
-          <button type="button" class="btn btn-xs btn-success <?php echo $hide; ?>" id="btn-save-order" onclick="saveOrder()"><i class="fa fa-save"></i> บันทึก</button>
-      <?php endif; ?>
-        </p>
-    </div>
+  <div class="col-lg-6 col-md-6 col-sm-6 padding-5 hidden-xs">
+    <h3 class="title"><?php echo $this->title; ?></h3>
+  </div>
+	<div class="col-xs-12 padding-5 text-center visible-xs">
+		<h3 class="title-xs"><?php echo $this->title; ?></h3>
+	</div>
+  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
+  	<p class="pull-right top-p">
+      	<button type="button" class="btn btn-xs btn-warning" onClick="editOrder('<?php echo $order->code; ?>')"><i class="fa fa-arrow-left"></i> Back</button>
+				<button type="button" class="btn btn-xs btn-info" onclick="recalDiscount()">Recalculate discount</button></button>
+    <?php if($this->pm->can_add OR $this->pm->can_edit) : ?>
+        <button type="button" class="btn btn-xs btn-success btn-100 <?php echo $hide; ?>" id="btn-save-order" onclick="saveOrder()"><i class="fa fa-save"></i> Save</button>
+    <?php endif; ?>
+      </p>
+  </div>
 </div>
 <hr class="margin-bottom-15" />
 <?php $this->load->view('orders/order_edit_detail_header'); ?>
@@ -99,7 +102,7 @@ $hide = $order->status == 1 ? 'hide' : '';
   			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				<h4 class="modal-title" id="modalTitle">title</h4>
-        <center><span style="color: red;">ใน ( ) = ยอดคงเหลือทั้งหมด   ไม่มีวงเล็บ = สั่งได้ทันที</span></center>
+        <center><span style="color: red;">In ( ) = Outstanding   out ( ) = Avalible</span></center>
 			 </div>
 			 <div class="modal-body">
          <div class="row">
@@ -109,8 +112,8 @@ $hide = $order->status == 1 ? 'hide' : '';
          </div>
        </div>
 			 <div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
-				<button type="button" class="btn btn-primary" onClick="addToOrder()" >เพิ่มในรายการ</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" onClick="addToOrder()" >Add to list</button>
 			 </div>
 		</div>
 	</div>

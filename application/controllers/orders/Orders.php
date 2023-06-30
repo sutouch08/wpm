@@ -6,7 +6,7 @@ class Orders extends PS_Controller
   public $menu_code = 'SOODSO';
 	public $menu_group_code = 'SO';
   public $menu_sub_group_code = 'ORDER';
-	public $title = 'ออเดอร์';
+	public $title = 'Sales Order';
   public $filter;
   public $error;
   public $isAPI;
@@ -130,7 +130,7 @@ class Orders extends PS_Controller
         $rs->payment_name  = $this->payment_methods_model->get_name($rs->payment_code);
         $rs->customer_name = $this->customers_model->get_name($rs->customer_code);
         $rs->total_amount  = $this->orders_model->get_order_total_amount($rs->code);
-        $rs->state_name    = get_state_name($rs->state);
+        $rs->state_name    = get_state_name($rs->state).($rs->status == 0 ? '/Not save' : '');
         $ds[] = $rs;
       }
     }
@@ -193,7 +193,7 @@ class Orders extends PS_Controller
     $exists = $this->orders_model->is_exists_order($code, $old_code);
     if($exists)
     {
-      echo 'เลขที่เอกสารซ้ำ';
+      echo 'Duplicated document no';
     }
     else
     {
@@ -227,7 +227,7 @@ class Orders extends PS_Controller
 			$customer_ref = trim($this->input->post('cust_ref'));
       $role = 'S'; //--- S = ขาย
       $has_term = $this->payment_methods_model->has_term($this->input->post('payment'));
-      $sale_code = $customer->sale_code;//$this->customers_model->get_sale_code($this->input->post('customerCode'));
+      $sale_code = $customer->sale_code;
 
       //--- check over due
       $is_strict = getConfig('STRICT_OVER_DUE') == 1 ? TRUE : FALSE;
@@ -237,7 +237,7 @@ class Orders extends PS_Controller
       //--- ไม่ให้เพิ่มออเดอร์
       if($overDue && $has_term && !($customer->skip_overdue))
       {
-        set_error('มียอดค้างชำระเกินกำหนดไม่อนุญาติให้ขาย');
+        set_error('Overdue balance is not allowed to sell.');
         redirect($this->home.'/add_new');
       }
       else
@@ -250,6 +250,8 @@ class Orders extends PS_Controller
           'code' => $code,
           'role' => $role,
           'bookcode' => $book_code,
+          'DocCur' => $this->input->post('doc_currency'),
+          'DocRate' => $this->input->post('doc_rate'),
           'reference' => $this->input->post('reference'),
           'customer_code' => $customer->code,
           'customer_ref' => $customer_ref,
@@ -258,7 +260,7 @@ class Orders extends PS_Controller
           'warehouse_code' => $wh->code,
           'sale_code' => $sale_code,
           'is_term' => ($has_term === TRUE ? 1 : 0),
-          'user' => get_cookie('uname'),
+          'user' => $this->_user->uname,
           'remark' => addslashes($this->input->post('remark')),
 					'id_address' => $id_address,
 					'id_sender' => $this->sender_model->get_main_sender($customer->code),
@@ -271,7 +273,7 @@ class Orders extends PS_Controller
           $arr = array(
             'order_code' => $code,
             'state' => 1,
-            'update_user' => get_cookie('uname')
+            'update_user' => $this->_user->uname
           );
 
           $this->order_state_model->add_state($arr);
@@ -280,14 +282,14 @@ class Orders extends PS_Controller
         }
         else
         {
-          set_error('เพิ่มเอกสารไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+          set_error('Failed to add document Please try again.');
           redirect($this->home.'/add_new');
         }
       }
     }
     else
     {
-      set_error('ไม่พบข้อมูลลูกค้า กรุณาตรวจสอบ');
+      set_error('Customer information not found, please check.');
       redirect($this->home.'/add_new');
     }
   }
@@ -300,12 +302,14 @@ class Orders extends PS_Controller
     $auz = getConfig('ALLOW_UNDER_ZERO');
 		$this->sync_chatbot_stock = getConfig('SYNC_CHATBOT_STOCK') == 1 ? TRUE : FALSE;
 		$chatbot_warehouse_code = getConfig('CHATBOT_WAREHOUSE_CODE');
+    $dfCurrency = getConfig('CURRENCY');
 		$sync_stock = array();
     $result = TRUE;
     $err = "";
     $err_qty = 0;
     $data = $this->input->post('data');
     $order = $this->orders_model->get($order_code);
+
     if(!empty($data))
     {
       foreach($data as $rs)
@@ -316,11 +320,12 @@ class Orders extends PS_Controller
 
         if( $qty > 0 && !empty($item))
         {
+          $item->price = convertPrice($item->price, $order->DocRate, 1);
+
           $qty = ceil($qty);
 
           //---- ยอดสินค้าที่่สั่งได้
           $sumStock = $this->get_sell_stock($item->code, $order->warehouse_code);
-
 
           //--- ถ้ามีสต็อกมากว่าที่สั่ง หรือ เป็นสินค้าไม่นับสต็อก
           if( $sumStock >= $qty OR $item->count_stock == 0 OR $auz == 1)
@@ -356,6 +361,9 @@ class Orders extends PS_Controller
       					{
       						if($i < 3) //--- limit ไว้แค่ 3 เสต็ป
       						{
+                    $discText = str_replace(' ', '', $discText);
+                    $discText = str_replace('๔', '%', $discText);
+
       							$disc = explode('%', $discText);
       							$disc[0] = floatval(trim($disc[0])); //--- ตัดช่องว่างออก
       							$amount = count($disc) == 1 ? $disc[0] : $price * ($disc[0] * 0.01); //--- ส่วนลดต่อชิ้น
@@ -375,19 +383,27 @@ class Orders extends PS_Controller
                 $discount['discLabel3'] = $discLabel[2];
               }
 
+              $ds['amount'] = convertPrice($discount['amount'], $order->DocRate, 1);
+
+
+              $line_total = ($item->price * $qty) - $discount['amount'];
+
               $arr = array(
                       "order_code"	=> $order_code,
                       "style_code"		=> $item->style_code,
                       "product_code"	=> $item->code,
                       "product_name"	=> addslashes($item->name),
+                      "qty"		=> $qty,
                       "cost"  => $item->cost,
                       "price"	=> $item->price,
-                      "qty"		=> $qty,
+                      "currency" => $order->DocCur,
+                      "rate" => $order->DocRate,
                       "discount1"	=> $discount['discLabel1'],
                       "discount2" => $discount['discLabel2'],
                       "discount3" => $discount['discLabel3'],
                       "discount_amount" => $discount['amount'],
-                      "total_amount"	=> ($item->price * $qty) - $discount['amount'],
+                      "total_amount"	=> $line_total,
+                      "totalFrgn"=> convertFC($line_total, $order->DocRate),
                       "id_rule"	=> get_null($discount['id_rule']),
                       "is_count" => $item->count_stock
                     );
@@ -430,6 +446,7 @@ class Orders extends PS_Controller
                 $discount 	= $this->discount_model->get_item_discount($item->code, $order->customer_code, $qty, $order->payment_code, $order->channels_code, $order->date_add, $order->code);
               }
 
+              $line_total = ($item->price * $qty) - $discount['amount'];
 
               $arr = array(
                         "qty"		=> $qty,
@@ -437,7 +454,8 @@ class Orders extends PS_Controller
                         "discount2" => $discount['discLabel2'],
                         "discount3" => $discount['discLabel3'],
                         "discount_amount" => $discount['amount'],
-                        "total_amount"	=> ($item->price * $qty) - $discount['amount'],
+                        "total_amount"	=> $line_total,
+                        "totalFrgn"=> convertFC($line_total, $order->DocRate),
                         "id_rule"	=> get_null($discount['id_rule']),
                         "valid" => 0
                         );
@@ -467,7 +485,7 @@ class Orders extends PS_Controller
           else 	// if getStock
           {
             $result = FALSE;
-            $error = "Error : สินค้าไม่เพียงพอ : {$item->code}";
+            $error = "Error : Exceeds qty : {$item->code}";
           } 	//--- if getStock
         }	//--- if qty > 0
       }
@@ -504,7 +522,7 @@ class Orders extends PS_Controller
 					if($order->state == 3 && $order->is_wms == 1)
 					{
 						$sc = FALSE;
-						$this->error = "Delete failed : ออเดอร์อยู่ในระหว่างจัดการที่คลัง Pionerr ไม่อนุญาติให้แก้ไขรายการ";
+						$this->error = "Delete failed : Orders are being fulfilled at the Pioneer inventory, item modifications are not allowed.";
 					}
 					else
 					{
@@ -644,6 +662,10 @@ class Orders extends PS_Controller
       $recal = $this->input->post('recal');
       $has_term = $this->payment_methods_model->has_term($this->input->post('payment_code'));
       $sale_code = $this->customers_model->get_sale_code($this->input->post('customer_code'));
+      $DocCur = $this->input->post('DocCur');
+      $DocRate = $this->input->post('DocRate');
+      $current_currency = $this->input->post('current_currency');
+      $current_rate = $this->input->post('current_rate');
 
       $customer = $this->customers_model->get($this->input->post('customerCode'));
 
@@ -656,13 +678,15 @@ class Orders extends PS_Controller
       if($overDue && $has_term && !($customer->skip_overdue))
       {
         $sc = FALSE;
-        $message = 'มียอดค้างชำระเกินกำหนดไม่อนุญาติให้แก้ไขการชำระเงิน';
+        $message = 'There is an outstanding amount overdue. Payment modifications are not allowed.';
       }
       else
       {
 				$wh = $this->warehouse_model->get($this->input->post('warehouse_code'));
 
         $ds = array(
+          'DocCur' => $DocCur,
+          'DocRate' => $DocRate,
           'reference' => $this->input->post('reference'),
           'customer_code' => $this->input->post('customer_code'),
           'customer_ref' => $this->input->post('customer_ref'),
@@ -684,12 +708,47 @@ class Orders extends PS_Controller
 
         if($rs === TRUE)
         {
+          if($DocCur != $current_currency && $DocRate != $current_rate)
+          {
+            $details = $this->orders_model->get_order_details($code);
+
+            if( ! empty($details))
+            {
+              foreach($details as $detail)
+              {
+                //--- convert price
+                $cost = $detail->cost;
+                $price = convertPrice($detail->price, $DocRate,  $current_rate);
+                $full_amount = $detail->total_amount + $detail->discount_amount;
+                $discount = $detail->discount_amount / $full_amount;
+                $total_amount = $detail->qty * $price;
+                $total_discount = ($detail->qty * $price) * $discount;
+                $line_total = $total_amount - $total_discount;
+                $total_frgn = convertFC($total_amount, $DocRate, $current_rate);
+
+                $arr = array(
+                  'cost' => $cost,
+                  'price' => $price,
+                  'currency' => $DocCur,
+                  'rate' => $DocRate,
+                  'discount_amount' => $total_discount,
+                  'total_amount' => $line_total,
+                  'totalFrgn' => $total_frgn
+                );
+
+                $this->orders_model->update_detail($detail->id, $arr);
+              }
+            }
+          }
+
+
           if($recal == 1)
           {
             $order = $this->orders_model->get($code);
 
             //---- Recal discount
             $details = $this->orders_model->get_order_details($code);
+
             if(!empty($details))
             {
               foreach($details as $detail)
@@ -700,7 +759,7 @@ class Orders extends PS_Controller
                 $discount 	= $this->discount_model->get_item_recal_discount($detail->order_code, $detail->product_code, $detail->price, $order->customer_code, $qty, $order->payment_code, $order->channels_code, $order->date_add);
 
                 $arr = array(
-                  "qty"		=> $qty,
+                  "qty"	=> $qty,
                   "discount1"	=> $discount['discLabel1'],
                   "discount2" => $discount['discLabel2'],
                   "discount3" => $discount['discLabel3'],
@@ -713,18 +772,20 @@ class Orders extends PS_Controller
               }
             }
           }
+
+
         }
         else
         {
           $sc = FALSE;
-          $message = 'ปรับปรุงรายการไม่สำเร็จ';
+          $message = 'Failed to update item.';
         }
       }
     }
     else
     {
       $sc = FALSE;
-      $message = 'ไม่พบเลขที่เอกสาร';
+      $message = 'Document number not found';
     }
 
     echo $sc === TRUE ? 'success' : $message;
@@ -795,8 +856,7 @@ class Orders extends PS_Controller
         {
           $diff = $credit_used - $credit_balance;
           $sc = FALSE;
-          $this->error = 'เครดิตคงเหลือไม่พอ (ขาด : '.number($diff, 2).')';
-					//$message = 'เครดิตคงเหลือไม่พอ ยอด :'.$credit_used.', คงเหลือ : '.$credit_balance.', (ขาด : '.$diff.')';
+          $this->error = 'Insufficient credit balance (Missing : '.number($diff, 2).')';
         }
       }
     }
@@ -829,7 +889,7 @@ class Orders extends PS_Controller
               {
                 $dif_over = $amount - $diff;
                 $sc = FALSE;
-                $this->error = "มูลค่าสินค้าที่เบิก เกินกว่ามูลค่าคงเหลือสูงสุดที่ของคลัง {$whsCode} (เกิน : ".number($dif_over, 2).")";
+                $this->error = "Total price is more than the maximum allowed amount for this warehouse : {$whsCode} (Difference : ".number($dif_over, 2).")";
               }
             }
           }
@@ -837,7 +897,7 @@ class Orders extends PS_Controller
         else
         {
           $sc = FALSE;
-          $this->error = "ไม่พบคลังสินค้า";
+          $this->error = "Warehouse not found";
         }
       }
     }
@@ -904,7 +964,7 @@ class Orders extends PS_Controller
       if($rs === FALSE)
       {
         $sc = FALSE;
-        $this->error = 'บันทึกออเดอร์ไม่สำเร็จ';
+        $this->error = 'Failed to save order';
       }
     }
 
@@ -949,14 +1009,14 @@ class Orders extends PS_Controller
 							if(! $this->orders_model->update($code, $arr))
 							{
 								$sc = FALSE;
-								$this->error = "ลบเลขที่ใบเสนอราคาไม่สำเร็จ";
+								$this->error = "Failed to delete quote number";
 							}
 
 						}
 						else
 						{
 							$sc = FALSE;
-							$this->error = "ลบรายการไม่สำเร็จ";
+							$this->error = "Failed to delete item";
 						}
 					}
 					else
@@ -1023,13 +1083,13 @@ class Orders extends PS_Controller
 													else
 													{
 														$sc = FALSE;
-														$this->error = "สินค้าไม่พอ : {$item->code} ต้องการ {$qty} คงเหลือ {$stock}";
+														$this->error = "Not enough products : {$item->code} ordered {$qty} remaining {$stock}";
 													}
 												}
 												else
 												{
 													$sc = FALSE;
-													$this->error = "ไม่พบรหัสสินค้า '{$rs->code}' ในระบบ";
+													$this->error = "The product code '{$rs->code}' could not be found in the system.";
 												}
 
 											} //--- end foreach
@@ -1045,25 +1105,25 @@ class Orders extends PS_Controller
 										else
 										{
 											$sc = FALSE;
-											$this->error = "Error : ไม่พบรายการในใบเสนอราคา";
+											$this->error = "Error : Item not found in quote";
 										}
 									}
 									else
 									{
 										$sc = FALSE;
-										$this->error = "ลบรายการเก่าไม่สำเร็จ";
+										$this->error = "Failed to delete old entries.";
 									}
 								}
 								else
 								{
 									$sc = FALSE;
-									$this->error = "ไม่พบรายการในใบเสนอราคา";
+									$this->error = "Item not found in quote";
 								}
 							}
 							else
 							{
 								$sc = FALSE;
-								$this->error = "ใบเสนอราคาไม่ถูกต้อง";
+								$this->error = "Quotation is invalid.";
 							} //--- end if empty qt
 						}
 
@@ -1083,19 +1143,19 @@ class Orders extends PS_Controller
 				else
 				{
 					$sc = FALSE;
-					$this->error = "ออเดอร์อยุ๋ในสถานะที่ไม่สามารถแก้ไขรายการได้";
+					$this->error = "The order is in a state where the item cannot be modified.";
 				}
 			}
 			else
 			{
 				$sc = FALSE;
-				$this->error = "ไม่พบข้อมูลออเดอร์";
+				$this->error = "Order information not found";
 			}
 		}
 		else
 		{
 			$sc = FALSE;
-			$this->error = "ไม่พบเลขที่เอกสาร";
+			$this->error = "Document number not found";
 		}
 
 		echo $sc === TRUE ? 'success' : $this->error;
@@ -1200,14 +1260,14 @@ class Orders extends PS_Controller
         else
         {
 					$sc = FALSE;
-          $this->error = "สินค้า Inactive";
+          $this->error = "Product Inactive";
         }
 
       }
       else
       {
 				$sc = FALSE;
-        $this->error = "รหัสซ้ำ ";
+        $this->error = "Duplicated item codes ";
 
         foreach($style as $rs)
         {
@@ -1245,7 +1305,7 @@ class Orders extends PS_Controller
       }
       else
       {
-        $this->error = "รหัสซ้ำ ";
+        $this->error = "Duplicated ";
         foreach($item as $rs)
         {
           $this->error .= " :{$rs->code}";
@@ -1257,7 +1317,7 @@ class Orders extends PS_Controller
     }
     else
     {
-      $sc = "Error | ไม่พบสินค้า | {$item_code}";
+      $sc = "Error | Product not found | {$item_code}";
     }
 
     echo $sc;
@@ -1673,17 +1733,18 @@ class Orders extends PS_Controller
       foreach($details as $rs)
       {
         $arr = array(
-                "id"		=> $rs->id,
-                "no"	=> $no,
-                "imageLink"	=> get_product_image($rs->product_code, 'mini'),
-                "productCode"	=> $rs->product_code,
-                "productName"	=> $rs->product_name,
-                "cost"				=> $rs->cost,
-                "price"	=> number_format($rs->price, 2),
-                "qty"	=> number_format($rs->qty),
-                "discount"	=> discountLabel($rs->discount1, $rs->discount2, $rs->discount3),
-                "amount"	=> number_format($rs->total_amount, 2)
-                );
+          "id"		=> $rs->id,
+          "no"	=> $no,
+          "imageLink"	=> get_product_image($rs->product_code, 'mini'),
+          "productCode"	=> $rs->product_code,
+          "productName"	=> $rs->product_name,
+          "cost" => $rs->cost,
+          "price"	=> number_format($rs->price, 2),
+          "qty"	=> number_format($rs->qty),
+          "discount"	=> discountLabel($rs->discount1, $rs->discount2, $rs->discount3),
+          "amount"	=> number_format($rs->total_amount, 2)
+        );
+
         array_push($ds, $arr);
         $total_qty += $rs->qty;
         $total_discount += $rs->discount_amount;
@@ -1763,7 +1824,7 @@ class Orders extends PS_Controller
     $rs = $this->bank_model->get_account_detail($id);
     if($rs !== FALSE)
     {
-      $ds = bankLogoUrl($rs->bank_code).' | '.$rs->bank_name.' สาขา '.$rs->branch.'<br/>เลขที่บัญชี '.$rs->acc_no.'<br/> ชื่อบัญชี '.$rs->acc_name;
+      $ds = bankLogoUrl($rs->bank_code).' | '.$rs->bank_name.' Branch '.$rs->branch.'<br/>Account No '.$rs->acc_no.'<br/> Account Name '.$rs->acc_name;
       $sc = $ds;
     }
 
@@ -1798,7 +1859,7 @@ class Orders extends PS_Controller
         'pay_date' => $pay_date,
         'id_account' => $this->input->post('id_account'),
         'acc_no' => $this->input->post('acc_no'),
-        'user' => get_cookie('uname')
+        'user' => $this->_user->uname
       );
 
       //--- บันทึกรายการ
@@ -1813,7 +1874,7 @@ class Orders extends PS_Controller
             $arr = array(
               'order_code' => $order_code,
               'state' => 2,
-              'update_user' => get_cookie('uname')
+              'update_user' => $this->_user->uname
             );
             $this->order_state_model->add_state($arr);
           }
@@ -1821,14 +1882,14 @@ class Orders extends PS_Controller
           if($rs === FALSE)
           {
             $sc = FALSE;
-            $message = 'เปลี่ยนสถานะออเดอร์ไม่สำเร็จ';
+            $message = 'Failed to change order status';
           }
         }
       }
       else
       {
         $sc = FALSE;
-        $message = 'บันทึกรายการไม่สำเร็จ';
+        $message = 'Failed to save item';
       }
 
       if($file !== FALSE)
@@ -1959,7 +2020,7 @@ class Orders extends PS_Controller
         if(! $this->address_model->update_shipping_address($id, $arr))
         {
           $sc = FALSE;
-          $this->error = 'แก้ไขที่อยู่ไม่สำเร็จ';
+          $this->error = 'Failed to edit delivery address';
         }
 
       }
@@ -1986,7 +2047,7 @@ class Orders extends PS_Controller
         if($rs === FALSE)
         {
           $sc = FALSE;
-          $this->error = 'เพิ่มที่อยู่ไม่สำเร็จ';
+          $this->error = 'Failed to add address';
         }
 
       }
@@ -2144,7 +2205,7 @@ class Orders extends PS_Controller
     $code = $this->input->post('order_code');
     $option = $this->input->post('option');
     $rs = $this->orders_model->set_never_expire($code, $option);
-    echo $rs === TRUE ? 'success' : 'ทำรายการไม่สำเร็จ';
+    echo $rs === TRUE ? 'success' : 'Failed to complete the transaction';
   }
 
 
@@ -2170,7 +2231,7 @@ class Orders extends PS_Controller
 					if($total_amount > $balance)
 					{
 						$sc = FALSE;
-						$this->error = "งบประมาณไม่เพียงพอ";
+						$this->error = "Not enough budget";
 					}
 				}
 
@@ -2186,7 +2247,7 @@ class Orders extends PS_Controller
 					if($total_amount > $balance)
 					{
 						$sc = FALSE;
-						$this->error = "งบประมาณไม่เพียงพอ";
+						$this->error = "Not enough budget";
 					}
 				}
 			}
@@ -2202,7 +2263,7 @@ class Orders extends PS_Controller
 			if( ! $this->orders_model->un_expired($code))
 			{
 				$sc = FALSE;
-				$this->error = "ทำรายการไม่สำเร็จ";
+				$this->error = "Failed to complete the transaction";
 			}
 		}
 
@@ -2219,12 +2280,12 @@ class Orders extends PS_Controller
     {
       if($order->state == 1)
       {
-        $user = get_cookie('uname');
+        $user = $this->_user->uname;
         $rs = $this->orders_model->update_approver($code, $user);
         if(! $rs)
         {
           $sc = FALSE;
-          $this->error = "อนุมัติไม่สำเร็จ";
+          $this->error = "Failed to approve";
         }
         else
         {
@@ -2234,13 +2295,13 @@ class Orders extends PS_Controller
       else
       {
         $sc = FALSE;
-        $this->error = "สถานะเอกสารไม่ถูกต้อง";
+        $this->error = "Invalid document status";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสาร";
+      $this->error = "Document number not found";
     }
 
 
@@ -2257,12 +2318,12 @@ class Orders extends PS_Controller
     {
       if($order->state == 1 )
       {
-        $user = get_cookie('uname');
+        $user = $this->_user->uname;
         $rs = $this->orders_model->un_approver($code, $user);
         if(! $rs)
         {
           $sc = FALSE;
-          $this->error = "อนุมัติไม่สำเร็จ";
+          $this->error = "Failed to approve";
         }
         else
         {
@@ -2272,13 +2333,13 @@ class Orders extends PS_Controller
       else
       {
         $sc = FALSE;
-        $this->error = "สถานะเอกสารไม่ถูกต้อง";
+        $this->error = "Invalid document status";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสาร";
+      $this->error = "Document number not found";
     }
 
 
@@ -2301,7 +2362,7 @@ class Orders extends PS_Controller
       {
 				if($this->isAPI && $order->state >= 3 && $order->is_wms && $state != 9 && !$this->_SuperAdmin)
 				{
-					echo "ออเดอร์ถูกส่งไประบบ WMS แล้วไม่อนุญาติให้ย้อนสถานะ";
+					echo "Orders sent to WMS system are not allowed to revert.";
 					exit;
 				}
 
@@ -2316,7 +2377,7 @@ class Orders extends PS_Controller
 	          $sap = $this->orders_model->get_sap_doc_num($order->code);
 						if(!empty($sap))
 						{
-							echo "ไม่สามารถยกเลิกได้เนื่องจากออเดอร์ถูกจัดส่งแล้ว";
+							echo "It cannot be canceled because the order has already been shipped.";
 							exit;
 						}
 	        }
@@ -2329,7 +2390,7 @@ class Orders extends PS_Controller
 						$sap = $this->transfer_model->get_sap_transfer_doc($code);
 						if(! empty($sap))
 						{
-							echo "ไม่สามารถยกเลิกได้เนื่องจากออเดอร์ถูกจัดส่งแล้ว";
+							echo "It cannot be canceled because the order has already been shipped.";
 							exit;
 						}
 	        }
@@ -2342,7 +2403,7 @@ class Orders extends PS_Controller
           $sap = $this->orders_model->get_sap_doc_num($order->code);
 					if(!empty($sap))
 					{
-						echo 'กรุณายกเลิกใบส่งสินค้า SAP ก่อนย้อนสถานะ';
+						echo 'Please cancel the SAP delivery invoice before reversing the status.';
 						exit;
 					}
         }
@@ -2354,7 +2415,7 @@ class Orders extends PS_Controller
 					$sap = $this->transfer_model->get_sap_transfer_doc($code);
 					if(! empty($sap))
 					{
-						echo "กรุณายกเลิกใบโอนสินค้าใน SAP ก่อนย้อนสถานะ";
+						echo "Please cancel the transfer slip in SAP before reversing the status.";
 						exit;
 					}
 				}
@@ -2368,7 +2429,7 @@ class Orders extends PS_Controller
           $is_received = $this->transform_model->is_received($code);
           if($is_received === TRUE)
           {
-            echo 'ใบเบิกมีการรับสินค้าแล้วไม่อนุญาติให้ย้อนสถานะ';
+            echo 'The requisition has already received the goods, it is not allowed to reverse the status.';
 						exit;
           }
         }
@@ -2381,7 +2442,7 @@ class Orders extends PS_Controller
           $is_received = $this->lend_model->is_received($code);
           if($is_received === TRUE)
           {
-            echo 'ใบเบิกมีการรับคืนสินค้าแล้วไม่อนุญาติให้ย้อนสถานะ';
+            echo 'The product loan slip has been returned and is not allowed to reverse status.';
 						exit;
           }
         }
@@ -2434,7 +2495,7 @@ class Orders extends PS_Controller
 							}
 							else
 							{
-								echo "กรุณาระบุผู้จัดส่ง";
+								echo "Please specify the sender.";
 								exit;
 							}
 
@@ -2456,7 +2517,7 @@ class Orders extends PS_Controller
               $arr = array(
                 'order_code' => $code,
                 'state' => $state,
-                'update_user' => get_cookie('uname')
+                'update_user' => $this->_user->uname
               );
 
               if(! $this->order_state_model->add_state($arr) )
@@ -2469,7 +2530,7 @@ class Orders extends PS_Controller
             else
             {
               $sc = FALSE;
-              $this->error = "เปลี่ยนสถานะไม่สำเร็จ";
+              $this->error = "Failed to change status";
             }
           }
 
@@ -2492,7 +2553,7 @@ class Orders extends PS_Controller
 
 						if(! $ex)
 						{
-              $this->error = "ส่งข้อมูลไป WMS ไม่สำเร็จ <br/> (".$this->wms_order_api->error.")";
+              $this->error = "Failed to send data to WMS <br/> (".$this->wms_order_api->error.")";
               $txt = "998 : This order no {$code} was already processed by PLC operation.";
 
               if($this->wms_order_api->error == $txt)
@@ -2536,13 +2597,13 @@ class Orders extends PS_Controller
       else
       {
         $sc = FALSE;
-        $this->error = 'ไม่พบข้อมูลออเดอร์';
+        $this->error = 'Order information not found';
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = 'ไม่พบเลขที่เอกสาร';
+      $this->error = 'Document number not found';
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -2771,7 +2832,7 @@ class Orders extends PS_Controller
 
 				if(! $ex)
 				{
-					$this->error = "ส่งข้อมูลไป WMS ไม่สำเร็จ <br/> (".$this->wms_order_cancle_api->error.")";
+					$this->error = "Failed to send data to WMS. <br/> (".$this->wms_order_cancle_api->error.")";
 					$txt = "ORDER_NO {$code} already canceled.";
 					$err = "ORDER_NO {$code} doesn't exists in system.";
 					if($this->wms_order_cancle_api->error != $txt && $this->wms_order_cancle_api->error != $err)
@@ -2803,7 +2864,7 @@ class Orders extends PS_Controller
             'warehouse_code' => empty($zone->warehouse_code) ? NULL : $zone->warehouse_code,
             'zone_code' => $rs->zone_code,
             'qty' => $rs->qty,
-            'user' => get_cookie('uname')
+            'user' => $this->_user->uname
           );
 
           if( ! $this->cancle_model->add($arr) )
@@ -3028,7 +3089,7 @@ class Orders extends PS_Controller
             'warehouse_code' => $rs->warehouse_code,
             'zone_code' => $rs->zone_code,
             'qty' => $rs->qty,
-            'user' => get_cookie('uname')
+            'user' => $this->_user->uname
           );
           //--- move buffer to cancle
           $this->cancle_model->add($arr);
@@ -3046,7 +3107,7 @@ class Orders extends PS_Controller
     $discount = $this->input->post('discount');
     $approver = $this->input->post('approver');
     $order = $this->orders_model->get($code);
-    $user = get_cookie('uname');
+    $user = $this->_user->uname;
     $this->load->model('orders/discount_logs_model');
   	if(!empty($discount))
   	{
@@ -3074,39 +3135,43 @@ class Orders extends PS_Controller
                 $discText = str_replace(' ', '', $discText);
                 $discText = str_replace('๔', '%', $discText);
   							$disc = explode('%', $discText);
-  							$disc[0] = trim($disc[0]); //--- ตัดช่องว่างออก
-  							$discount = count($disc) == 1 ? floatval($disc[0]) : $price * (floatval($disc[0]) * 0.01); //--- ส่วนลดต่อชิ้น
-  							$discLabel[$i] = count($disc) == 1 ? $disc[0] : number($disc[0], 2).'%';
+                $disc[0] = trim($disc[0]); //--- ตัดช่องว่างออก
+  							$discount = $price * (floatval($disc[0]) * 0.01); //--- ส่วนลดต่อชิ้น
+  							$discLabel[$i] = number($disc[0], 2).'%';
   							$discAmount += $discount;
   							$price -= $discount;
   						}
+
   						$i++;
   					}
 
   					$total_discount = $detail->qty * $discAmount; //---- ส่วนลดรวม
   					$total_amount = ( $detail->qty * $detail->price ) - $total_discount; //--- ยอดรวมสุดท้าย
+            $total_frgn = convertFC($total_amount, $order->DocRate, 1);
 
-  					$arr = array(
-  								"discount1" => $discLabel[0],
-  								"discount2" => $discLabel[1],
-  								"discount3" => $discLabel[2],
-  								"discount_amount"	=> $total_discount,
-  								"total_amount" => $total_amount ,
-  								"id_rule"	=> NULL,
-                  "update_user" => $user
-  							);
+            $arr = array(
+              "discount1" => $discLabel[0],
+              "discount2" => $discLabel[1],
+              "discount3" => $discLabel[2],
+              "discount_amount"	=> $total_discount,
+              "total_amount" => $total_amount ,
+              "totalFrgn" => $total_frgn,
+              "id_rule"	=> NULL,
+              "update_user" => $user
+            );
 
   					$cs = $this->orders_model->update_detail($id, $arr);
+
             if($cs)
             {
               $log_data = array(
-    												"order_code"		=> $code,
-    												"product_code"	=> $detail->product_code,
-    												"old_discount"	=> discountLabel($detail->discount1, $detail->discount2, $detail->discount3),
-    												"new_discount"	=> discountLabel($discLabel[0], $discLabel[1], $discLabel[2]),
-    												"user"	=> $user,
-    												"approver"		=> $approver
-    												);
+                "order_code"		=> $code,
+                "product_code"	=> $detail->product_code,
+                "old_discount"	=> discountLabel($detail->discount1, $detail->discount2, $detail->discount3),
+                "new_discount"	=> discountLabel($discLabel[0], $discLabel[1], $discLabel[2]),
+                "user"	=> $user,
+                "approver"		=> $approver
+              );
     					$this->discount_logs_model->logs_discount($log_data);
             }
 
@@ -3148,7 +3213,7 @@ class Orders extends PS_Controller
 							'state' => 9,
 							'is_cancled' => 1,
 							'cancle_date' => now(),
-							'date_upd' => get_cookie('uname')
+							'date_upd' => $this->_user->uname
 						);
 
 						if(!$this->orders_model->update($code, $arr))
@@ -3162,7 +3227,7 @@ class Orders extends PS_Controller
 							$arr = array(
 								'order_code' => $code,
 								'state' => 9,
-								'update_user' => get_cookie('uname')
+								'update_user' => $this->_user->uname
 							);
 
 							if(! $this->order_state_model->add_state($arr) )
@@ -3206,14 +3271,14 @@ class Orders extends PS_Controller
 						else
 						{
 							$sc = FALSE;
-							$this->error = "ไม่พบรายการสินค้าที่ต้องรับคืน";
+							$this->error = "Item not found to be returned";
 						}
 
 					}
 					else
 					{
 						$sc = FALSE;
-						$this->error = "ยกเลิกออเดอร์ไม่สำเร็จ";
+						$this->error = "Unsuccessful order cancellation";
 					}
 				}
 			}
@@ -3281,7 +3346,7 @@ class Orders extends PS_Controller
 				else
 				{
 					$sc = FALSE;
-					$this->error = "ไม่พบรายการสินค้าที่ต้องรับคืน";
+					$this->error = "Item not found to be returned";
 				}
 			}
 		}
@@ -3299,8 +3364,9 @@ class Orders extends PS_Controller
   {
     $code = $this->input->post('code');
     $gp = $this->input->post('gp');
+    $order = $this->orders_model->get($code);
     $details = $this->orders_model->get_order_details($code);
-    $user = get_cookie('uname');
+    $user = $this->_user->uname;
     $this->load->model('orders/discount_logs_model');
 
     if(!empty($details))
@@ -3317,10 +3383,13 @@ class Orders extends PS_Controller
         {
           if($i < 3) //--- limit ไว้แค่ 3 เสต็ป
           {
+            $discText = str_replace(' ', '', $discText);
+            $discText = str_replace('๔', '%', $discText);
+
             $disc = explode('%', $discText);
-            $disc[0] = trim($disc[0]); //--- ตัดช่องว่างออก
-            $discount = count($disc) == 1 ? $disc[0] : $price * ($disc[0] * 0.01); //--- ส่วนลดต่อชิ้น
-            $discLabel[$i] = count($disc) == 1 ? $disc[0] : $disc[0].'%';
+            $disc[0] = floatval($disc[0]); //--- ตัดช่องว่างออก
+            $discount = count($disc) == 1 ? $disc[0] : $price * (floatval($disc[0]) * 0.01); //--- ส่วนลดต่อชิ้น
+            $discLabel[$i] = count($disc) == 1 ? $disc[0] : number($disc[0], 2).'%';
             $discAmount += $discount;
             $price -= $discount;
           }
@@ -3329,28 +3398,30 @@ class Orders extends PS_Controller
 
         $total_discount = $detail->qty * $discAmount; //---- ส่วนลดรวม
         $total_amount = ( $detail->qty * $detail->price ) - $total_discount; //--- ยอดรวมสุดท้าย
+        $total_frgn = $order->DocRate > 0 ? $total_amount / $order->DocRate : 0;
 
         $arr = array(
-              "discount1" => $discLabel[0],
-              "discount2" => $discLabel[1],
-              "discount3" => $discLabel[2],
-              "discount_amount"	=> $total_discount,
-              "total_amount" => $total_amount ,
-              "id_rule"	=> NULL,
-              "update_user" => $user
-            );
+          "discount1" => $discLabel[0],
+          "discount2" => $discLabel[1],
+          "discount3" => $discLabel[2],
+          "discount_amount"	=> $total_discount,
+          "total_amount" => $total_amount ,
+          "totalFrgn" => $total_frgn,
+          "id_rule"	=> NULL,
+          "update_user" => $user
+        );
 
         $cs = $this->orders_model->update_detail($detail->id, $arr);
         if($cs)
         {
           $log_data = array(
-                        "order_code"		=> $code,
-                        "product_code"	=> $detail->product_code,
-                        "old_discount"	=> discountLabel($detail->discount1, $detail->discount2, $detail->discount3),
-                        "new_discount"	=> discountLabel($discLabel[0], $discLabel[1], $discLabel[2]),
-                        "user"	=> $user,
-                        "approver"		=> get_cookie('uname')
-                        );
+            "order_code"		=> $code,
+            "product_code"	=> $detail->product_code,
+            "old_discount"	=> discountLabel($detail->discount1, $detail->discount2, $detail->discount3),
+            "new_discount"	=> discountLabel($discLabel[0], $discLabel[1], $discLabel[2]),
+            "user"	=> $user,
+            "approver"		=> $this->_user->uname
+          );
           $this->discount_logs_model->logs_discount($log_data);
         }
       }
@@ -3367,12 +3438,13 @@ class Orders extends PS_Controller
     $code = $this->input->post('order_code');
     $id = $this->input->post('id_order_detail');
     $price = $this->input->post('price');
-    $user = get_cookie('uname');
+    $user = $this->_user->uname;
 
     $order = $this->orders_model->get($code);
+
     if($order->state == 8) //--- ถ้าเปิดบิลแล้ว
     {
-      echo 'ไม่สามารถแก้ไขราคาได้ เนื่องจากออเดอร์ถูกเปิดบิลไปแล้ว';
+      echo "can't edit the price because the order has already been shipped";
     }
     else
     {
@@ -3389,24 +3461,32 @@ class Orders extends PS_Controller
             $price_c = $price;
   					$discAmount = 0;
             $step = array($detail->discount1, $detail->discount2, $detail->discount3);
-            foreach($step as $discount)
+
+            foreach($step as $discText)
             {
-              $disc 	= explode('%', $discount);
-              $disc[0] = trim($disc[0]); //--- ตัดช่องว่างออก
-              $discount = count($disc) == 1 ? $disc[0] : $price_c * ($disc[0] * 0.01); //--- ส่วนลดต่อชิ้น
+              $discText = str_replace(' ', '', $discText);
+              $discText = str_replace('๔', '%', $discText);
+
+              $disc = explode('%', $discText);
+              $disc[0] = floatval($disc[0]); //--- ตัดช่องว่างออก
+              $discount = count($disc) == 1 ? $disc[0] : $price_c * (floatval($disc[0]) * 0.01); //--- ส่วนลดต่อชิ้น
+              $discLabel[$i] = count($disc) == 1 ? $disc[0] : number($disc[0], 2).'%';
               $discAmount += $discount;
               $price_c -= $discount;
+
             }
 
             $total_discount = $detail->qty * $discAmount; //---- ส่วนลดรวม
   					$total_amount = ( $detail->qty * $price ) - $total_discount; //--- ยอดรวมสุดท้าย
+            $total_frgn = convertFC($total_amount, $order->DocRate, 1);
 
             $arr = array(
-                  "price"	=> $price,
-                  "discount_amount"	=> $total_discount,
-                  "total_amount" => $total_amount,
-                  "update_user" => $user
-                );
+              "price"	=> $price,
+              "discount_amount"	=> $total_discount,
+              "total_amount" => $total_amount,
+              "totalFrgn" => $total_frgn,
+              "update_user" => $user
+            );
             $cs = $this->orders_model->update_detail($id, $arr);
           }	//--- end if detail
         } //--- End if value
@@ -3424,8 +3504,11 @@ class Orders extends PS_Controller
     $code = $this->input->post('order_code');
     $ds = $this->input->post('price');
   	$approver	= $this->input->post('approver');
-  	$user = get_cookie('uname');
+  	$user = $this->_user->uname;
     $this->load->model('orders/discount_logs_model');
+
+    $order = $this->orders_model->get($code);
+
   	foreach( $ds as $id => $value )
   	{
   		//----- ข้ามรายการที่ไม่ได้กำหนดค่ามา
@@ -3452,11 +3535,13 @@ class Orders extends PS_Controller
 
 					$total_discount = $detail->qty * $discAmount; //---- ส่วนลดรวม
 					$total_amount = ( $detail->qty * $value ) - $total_discount; //--- ยอดรวมสุดท้าย
+          $total_frgn = convertFC($total_amount, $order->DocRate, 1);
 
 					$arr = array(
 						'price' => $value,
 						'discount_amount' => $total_discount,
 						'total_amount' => $total_amount,
+            'totalFrgn' => $total_frgn,
 						'update_user' => $user
 					);
 

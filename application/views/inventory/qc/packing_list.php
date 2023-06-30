@@ -12,17 +12,17 @@ $this->printer->add_title('Packing List');
 $header	 = '<table style="width:100%; border:0px;">';
 $header .= '<tr>';
 $header .= '<td style="width:80%; height:10mm; line-height:10mm; padding-left:10px;">';
-$header .= 'เลขที่เอกสาร : <span class="font-size-18 blod">'.$order->code.'</span>';
+$header .= 'Document No : <span class="font-size-18 blod">'.$order->code.'</span>';
 $header .= '</td>';
-$header .= '<td class="text-center font-size-12" style="border-left:solid 1px #CCC;">กล่องที่</td>';
+$header .= '<td class="text-center font-size-12" style="border-left:solid 1px #CCC;">Box No</td>';
 $header .= '</tr>';
 $header .= '<tr>';
-$header .= '<td style="width:80%; height:10mm; line-height:10mm; padding-left:10px;">วันที่ : '.thai_date($order->date_add, FALSE, '/').'</td>';
+$header .= '<td style="width:80%; height:10mm; line-height:10mm; padding-left:10px;">Date : '.thai_date($order->date_add, FALSE, '/').'</td>';
 $header .= '<td rowspan="2" class="middle text-center font-size-48 blod" style="border-left:solid 1px #CCC;">'.$box_no.'/'.$all_box.'</td>';
 $header .= '</tr>';
 $header .= '<tr>';
 $header .= '<td style="width:80%; height:10mm; line-height:10mm; padding-left:10px;">';
-$header .= '<input type="text" style="border:0px; width:100%; padding-right:5px;" value="ลูกค้า : '.($order->customer_ref != '' ? $order->customer_ref : $order->customer_name).'" />';
+$header .= '<input type="text" style="border:0px; width:100%; padding-right:5px;" value="Customer : '.($order->customer_ref != '' ? $order->customer_ref : $order->customer_name).'" />';
 $header .= '</td>';
 $header .= '</tr>';
 $header .= '</table>';
@@ -52,9 +52,9 @@ $total_page = $this->printer->total_page;
 
 //--- กำหนดหัวตาราง
 $thead	= array(
-          array("ลำดับ", "width:10%; text-align:center; border-top:0px; border-top-left-radius:10px;"),
-          array("สินค้า", "width:75%; text-align:center;border-left: solid 1px #ccc; border-top:0px;"),
-          array("จำนวน", "width:15%; text-align:center; border-left: solid 1px #ccc; border-top:0px; border-top-right-radius:10px")
+          array("No", "width:10%; text-align:center; border-top:0px; border-top-left-radius:10px;"),
+          array("Items", "width:75%; text-align:center;border-left: solid 1px #ccc; border-top:0px;"),
+          array("Qty", "width:15%; text-align:center; border-left: solid 1px #ccc; border-top:0px; border-top-right-radius:10px")
           );
 
 $this->printer->add_subheader($thead);
@@ -119,22 +119,22 @@ while( $total_page > 0 )
 
 
   $sub  = '<td class="subtotal-first subtotal-last text-right" style="height:'.$this->printer->row_height.'mm;">';
-  $sub .= '<span class="font-size-18 blod">รวม  '.number($total_qty).'</span>';
+  $sub .= '<span class="font-size-18 blod">Total  '.number($total_qty).'</span>';
   $sub .= '</td>';
 
   $sub2  = '<td class="subtotal-first subtotal-last font-size-14" style="height:'.($this->printer->row_height *2).'mm;">';
-  $sub2 .= 'หมายเหตุ : '.$order->remark;
+  $sub2 .= 'Remark : '.$order->remark;
   $sub2 .= '</td>';
 
-  $sub3  = '<td class="subtotal-first subtotal-last font-size-14 text-right" style="height:'.($this->printer->row_height).'mm;">';
-  $sub3 .= 'พิมพ์โดย : '.get_cookie('uname') . '  วันที่ : '.date('d/m/Y H:i').' น.';
+  $sub3  = '<td class="subtotal-first subtotal-last font-size-14 text-right" style="border:0px; height:'.($this->printer->row_height).'mm;">';
+  $sub3 .= 'Printed by : '.$this->_user->uname . '  &nbsp;&nbsp; Printed date : '.date('d/m/Y H:i');
   $sub3 .= '</td>';
 
   $sub_total = array(
-                    array($sub),
-                    array($sub2),
-                    array($sub3)
-                  );
+    array($sub),
+    array($sub2),
+    array($sub3)
+  );
 
 
   $sc .= $this->printer->print_sub_total($sub_total);

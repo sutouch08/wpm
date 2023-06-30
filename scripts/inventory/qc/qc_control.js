@@ -10,8 +10,8 @@ function closeOrder(){
   //-- ตรวจสอบว่ามีรายการที่ต้องแก้ไขให้ถูกต้องหรือเปล่า
   if(must_edit > 0){
     swal({
-      title:'ข้อผิดพลาด',
-      text:'พบรายการที่ต้องแก้ไข กรุณาแก้ไขให้ถูกต้อง',
+      title:'Oops !',
+      text:'Some items need to fix. Please correct it.',
       type:'error'
     });
 
@@ -61,13 +61,13 @@ function closeOrder(){
 
 function forceClose(){
   swal({
-    title: "คุณแน่ใจ ?",
-    text: "ต้องการบังคับจบออเดอร์นี้หรือไม่ ?",
+    title: "Are you sure ?",
+    text: "Do you really want to close this pack list ?",
     type: "warning",
     showCancelButton: true,
     confirmButtonColor: "#FA5858",
-    confirmButtonText: 'บังคับจบ',
-    cancelButtonText: 'ยกเลิก',
+    confirmButtonText: 'Confirm',
+    cancelButtonText: 'Cancel',
     closeOnConfirm: false
     }, function(){
       closeOrder();
@@ -93,6 +93,7 @@ function saveQc(option){
     var value = $(this).val();
     ds.push( {"name" : name, "value" : value });
   });
+  
 
   if(ds.length > 2){
     load_in();
@@ -170,7 +171,7 @@ $("#barcode-item").keyup(function(e){
 
 
 function qcProduct(){
-  var barcode = $("#barcode-item").val();
+  var barcode = $("#barcode-item").val().trim();
   $("#barcode-item").val('');
 
   if($("."+barcode).length == 1 ){
@@ -226,12 +227,13 @@ function qcProduct(){
 
       }else{
         beep();
-        swal("สินค้าเกิน!");
+        swal("Quantity exceeds!");
       }
 
-  }else{
+  }
+  else {
     beep();
-    swal("สินค้าไม่ถูกต้อง");
+    swal("Invalid Barcode Item");
   }
 
 }
@@ -240,13 +242,13 @@ function qcProduct(){
 
 function updateBox(){
   var id_box = $("#id_box").val();
-  var qty = parseInt( removeCommas( $("#"+id_box).text() ) ) +1 ;
-  $("#"+id_box).text(addCommas(qty));
+  var qty = parseInt( removeCommas( $("#box-"+id_box).text() ) ) +1 ;
+  $("#box-"+id_box).text(addCommas(qty));
 }
 
 
 
-function updateBoxList(){
+function updateBoxList() {
   var id_box = $("#id_box").val();
   var order_code = $("#order_code").val();
 
@@ -266,7 +268,7 @@ function updateBoxList(){
         var output = $("#box-row");
         render(source, data, output);
       }else if(rs == "no box"){
-        $("#box-row").html('<span id="no-box-label">ยังไม่มีการตรวจสินค้า</span>');
+        $("#box-row").html('<span id="no-box-label">No packing data</span>');
       }else{
         swal("Error!", rs, "error");
       }
@@ -328,13 +330,13 @@ function confirmSaveBeforeChangeBox(){
 
   if( count > 0 ){
     swal({
-  		title: "บันทึกรายการก่อน ?",
-  		text: "คุณจำเป็นต้องบันทึกรายการก่อนที่จะเปลี่ยนกล่องใหม่",
+  		title: "Please Save ?",
+  		text: "You must click save button before change packing box",
   		type: "warning",
   		showCancelButton: true,
   		confirmButtonColor: "#5FB404",
-  		confirmButtonText: 'บันทึก',
-  		cancelButtonText: 'ยกเลิก',
+  		confirmButtonText: 'Save',
+  		cancelButtonText: 'Cancel',
   		closeOnConfirm: false
   		}, function(){
   			saveQc(1);
@@ -378,7 +380,7 @@ function updateQty(id_qc){
   limit = isNaN(limit) ? 0 : limit;
 
   if(remove_qty > limit){
-    swal('ยอดที่เอาออกต้องไม่มากกว่ายอดตรวจนับ');
+    swal('Remove qty cannot greater than packed qty');
     return false;
   }
 
@@ -386,7 +388,6 @@ function updateQty(id_qc){
     load_in();
     $.ajax({
       url:HOME + 'remove_check_qty',
-      //url:'controller/qcController.php?decreaseCheckedQty',
       type:'POST',
       cache:'false',
       data:{
@@ -413,7 +414,6 @@ function showEditOption(order_code, product_code){
   load_in();
   $.ajax({
     url:HOME + 'get_checked_table',
-    //url:'controller/qcController.php?getCheckedTable',
     type:'GET',
     cache:'false',
     data:{

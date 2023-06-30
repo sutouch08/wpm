@@ -6,7 +6,7 @@ class Prepare_list extends PS_Controller
   public $menu_code = 'ICPREP';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'CHECK';
-	public $title = 'ตรวจสอบ รายการจัดสินค้า';
+	public $title = 'Pick History';
   public $filter;
   public $error;
   public function __construct()

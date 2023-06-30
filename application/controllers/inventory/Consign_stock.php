@@ -6,7 +6,7 @@ class Consign_stock extends PS_Controller
   public $menu_code = 'ICCSST';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'CHECK';
-	public $title = 'ตรวจสอบสต็อกฝากขาย(แท้)';
+	public $title = 'Stock Balance (CS1)';
   public $filter;
   public $error;
   public function __construct()

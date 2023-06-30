@@ -3,16 +3,9 @@ $(document).ready(function(){
 });
 
 
-
-
-
-
 function getSearch(){
   $("#searchForm").submit();
 }
-
-
-
 
 
 function clearFilter(){
@@ -20,15 +13,11 @@ function clearFilter(){
 }
 
 
-
-
-
 $(".search").keyup(function(e){
   if(e.keyCode == 13){
     getSearch();
   }
 });
-
 
 
 $("#fromDate").datepicker({

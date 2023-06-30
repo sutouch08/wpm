@@ -3,13 +3,14 @@ var HOME = BASE_URL + 'inventory/receive_po_request/';
 
 function goDelete(code){
 	swal({
-		title: "คุณแน่ใจ ?",
-		text: "ต้องการยกเลิก '"+code+"' หรือไม่ ?",
+		title: "Are you sure ?",
+		text: "Do you really want to cancel '"+code+"' ?<br/>This process cannot be undone.",
 		type: "warning",
+		html:true,
 		showCancelButton: true,
 		confirmButtonColor: "#DD6B55",
-		confirmButtonText: 'ใช่, ฉันต้องการ',
-		cancelButtonText: 'ไม่ใช่',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
 		}, function(){
 			$.ajax({
@@ -23,7 +24,7 @@ function goDelete(code){
 					var rs = $.trim(rs);
 					if( rs == 'success' ){
 						swal({
-							title: 'Cancled',
+							title: 'Canceled',
 							type: 'success',
 							timer: 1000
 						});
@@ -47,7 +48,7 @@ function addNew()
   var date_add = $('#dateAdd').val();
   var remark = $('#remark').val();
   if(!isDate(date_add)){
-    swal('วันที่ไม่ถูกต้อง');
+    swal('Invalid date');
     return false;
   }
 

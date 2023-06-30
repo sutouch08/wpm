@@ -8,19 +8,19 @@ function doPrepare(){
 
   if( zone_code == ""){
     beep();
-    swal("Error!", "ไม่พบรหัสโซน กรุณาเปลี่ยนโซนแล้วลองใหม่อีกครั้ง", "error");
+    swal("Error!", "Invalid Bin Location Code", "error");
     return false;
   }
 
   if( barcode.length == 0){
     beep();
-    swal("Error!", "บาร์โค้ดสินค้าไม่ถูกต้อง", "error");
+    swal("Error!", "Invalid Barcode Item", "error");
     return false;
   }
 
   if( isNaN(parseInt(qty))){
     beep();
-    swal("Error!", "จำนวนไม่ถูกต้อง", "error");
+    swal("Error!", "Invalid Qty", "error");
     return false;
   }
 
@@ -110,12 +110,12 @@ function finishPrepare(){
 function forceClose(){
   swal({
     title: "Are you sure ?",
-    text: "ต้องการบังคับจบออเดอร์นี้หรือไม่ ?",
+    text: "Do you really want to close this pick list ?",
     type: "warning",
     showCancelButton:true,
     confirmButtonColor:"#FA5858",
-    confirmButtonText: "ใช่ ฉันต้องการ",
-    cancelButtonText: "ยกเลิก",
+    confirmButtonText: "Confirm",
+    cancelButtonText: "Cancel",
     closeOnConfirm:false
   }, function(){
     finishPrepare();
@@ -148,7 +148,7 @@ $("#barcode-zone").keyup(function(e){
               $("#qty").select();
             }else{
               beep();
-              swal("Error!", 'โซนไม่ถูกต้อง', "error");
+              swal("Error!", 'Invalid Bin Location Code', "error");
               $("#zone_code").val('');
             }
         }
@@ -192,7 +192,7 @@ $("#qty").keyup(function(e){
     if(! isNaN($(this).val())){
       $("#barcode-item").focus();
     }else{
-      swal("จำนวนไม่ถูกต้อง");
+      swal("Invalid Qty");
       $(this).val(1);
     }
   }

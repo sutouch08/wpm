@@ -9,9 +9,9 @@
 	</div>
   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
     <p class="pull-right top-p">
-			<button type="button" class="btn btn-sm btn-warning" onclick="leave()"><i class="fa fa-arrow-left"></i> กลับ</button>
+			<button type="button" class="btn btn-sm btn-warning" onclick="leave()"><i class="fa fa-arrow-left"></i> Back</button>
     <?php if($this->pm->can_add) : ?>
-			<button type="button" class="btn btn-sm btn-success" onclick="checkLimit()"><i class="fa fa-save"></i> บันทึก</button>
+			<button type="button" class="btn btn-sm btn-success" onclick="checkLimit()"><i class="fa fa-save"></i> Save</button>
     <?php	endif; ?>
     </p>
   </div>
@@ -19,32 +19,32 @@
 <hr />
 <div class="row">
   <div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-4 padding-5">
-  	<label>เลขที่เอกสาร</label>
+  	<label>Document No</label>
     <input type="text" class="form-control input-sm text-center" value="<?php echo $document->code; ?>" disabled />
   </div>
 	<div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-4 padding-5">
-    <label>วันที่</label>
+    <label>Date</label>
     <input type="text" class="form-control input-sm text-center header-box" name="date_add" id="dateAdd" value="<?php echo thai_date($document->date_add); ?>" disabled />
   </div>
-	<div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-4 padding-5">
+	<div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-4 padding-5 hide">
 		<label>ช่องทางการรับ</label>
 		<select class="form-control input-sm header-box" name="is_wms" id="is_wms" disabled>
-			<option value="0" <?php echo is_selected('0', $document->is_wms); ?>>Warrix</option>
 			<option value="1" <?php echo is_selected('1', $document->is_wms); ?>>WMS</option>
+			<option value="0" <?php echo is_selected('0', $document->is_wms); ?>>Warrix</option>
 		</select>
 	</div>
 	<div class="col-lg-6-harf col-md-6 col-sm-4-harf col-xs-9 padding-5">
-		<label>หมายเหตุ</label>
+		<label>Remark</label>
 		<input type="text" class="form-control input-sm header-box" name="remark" id="remark" value="<?php echo $document->remark; ?>" disabled />
 	</div>
 	<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-3 padding-5">
 <?php if($this->pm->can_edit && $document->status == 0) : ?>
 		<label class="display-block not-show">edit</label>
 		<button type="button" class="btn btn-xs btn-warning btn-block" id="btn-edit" onclick="editHeader()">
-			<i class="fa fa-pencil"></i> แก้ไข
+			<i class="fa fa-pencil"></i> Edit
 		</button>
 		<button type="button" class="btn btn-xs btn-success btn-block hide" id="btn-update" onclick="updateHeader()">
-			<i class="fa fa-save"></i> อัพเดต
+			<i class="fa fa-save"></i> Update
 		</button>
 <?php endif; ?>
 	</div>
@@ -56,36 +56,36 @@
 <form id="receiveForm" method="post" action="<?php echo $this->home; ?>/save">
 <div class="row">
 	<div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-4 padding-5">
-  	<label>ใบเบิกสินค้า</label>
-    <input type="text" class="form-control input-sm text-center" name="order_code" id="order_code" placeholder="ค้นหาใบสั่งซื้อ" />
+  	<label>Transform No</label>
+    <input type="text" class="form-control input-sm text-center" name="order_code" id="order_code" placeholder="Transform No" />
   </div>
-	<div class="col-lg-1 col-md-1 col-sm-1-harf col-xs-2 padding-5">
+	<div class="col-lg-1 col-md-1 col-sm-1-harf col-xs-3 padding-5">
 		<label class="display-block not-show">clear</label>
-		<button type="button" class="btn btn-xs btn-info btn-block hide" id="btn-change-po" onclick="changePo()">เปลี่ยน</button>
-		<button type="button" class="btn btn-xs btn-primary btn-block" id="btn-get-po" onclick="getData()">ยืนยัน</button>
+		<button type="button" class="btn btn-xs btn-info btn-block hide" id="btn-change-po" onclick="changePo()">Change</button>
+		<button type="button" class="btn btn-xs btn-primary btn-block" id="btn-get-po" onclick="getData()">Confirm</button>
 	</div>
-  <div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-6 padding-5">
-  	<label>ใบส่งสินค้า</label>
-    <input type="text" class="form-control input-sm text-center" name="invoice" id="invoice" placeholder="อ้างอิงใบส่งสินค้า" />
+  <div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-5 padding-5">
+  	<label>Invoice No</label>
+    <input type="text" class="form-control input-sm text-center" name="invoice" id="invoice" placeholder="Invoice no" />
   </div>
 	<div class="col-lg-2 col-md-2-harf col-sm-2 col-xs-6 padding-5">
-  	<label>โซนรับสินค้า</label>
-    <input type="text" class="form-control input-sm" name="zone_code" id="zone_code" placeholder="รหัสโซน" value="<?php echo $zone_code; ?>"/>
+  	<label>Bin location</label>
+    <input type="text" class="form-control input-sm" name="zone_code" id="zone_code" placeholder="Bin code" value="<?php echo $zone_code; ?>"/>
   </div>
   <div class="col-lg-6 col-md-5-harf col-sm-4-harf col-xs-6 padding-5">
-  	<label class="not-show">ชื่อโซน</label>
-    <input type="text" class="form-control input-sm zone" name="zoneName" id="zoneName" placeholder="ชื่อโซน"  value="<?php echo $zone_name; ?>"/>
+  	<label class="not-show">zone</label>
+    <input type="text" class="form-control input-sm zone" name="zoneName" id="zoneName" placeholder="Bin location name"  value="<?php echo $zone_name; ?>"/>
   </div>
 </div>
 <hr class="margin-top-15"/>
 <div class="row">
 	<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-3 padding-5">
-		<label>จำนวน</label>
+		<label>Qty.</label>
     <input type="text" class="form-control input-sm text-center" id="qty" value="1.00" />
   </div>
-  <div class="col-lg-2 col-md-2-harf col-sm-3 col-xs-6 padding-5">
-  	<label>บาร์โค้ดสินค้า</label>
-    <input type="text" class="form-control input-sm text-center" id="barcode" placeholder="ยิงบาร์โค้ดเพื่อรับสินค้า" autocomplete="off"  />
+  <div class="col-lg-3 col-md-2-harf col-sm-3 col-xs-6 padding-5">
+  	<label>Barcode</label>
+    <input type="text" class="form-control input-sm text-center" id="barcode" placeholder="Scan barcode to receive product" autocomplete="off"  />
   </div>
   <div class="col-lg-1 col-md-1 col-sm-1-harf col-xs-3 padding-5">
   	<label class="display-block not-show">ok</label>
@@ -102,17 +102,17 @@
   	<table class="table table-striped table-bordered" style="min-width:1300px;">
     	<thead>
       	<tr class="font-size-12">
-        	<th class="fix-width-40 text-center">ลำดับ</th>
-          <th class="fix-width-120 text-center hide">บาร์โค้ด</th>
-          <th class="fix-width-200 text-center">รหัสสินค้า</th>
-          <th class="min-width-250" style="max-width:350px;">ชื่อสินค้า</th>
-					<th class="fix-width-100 text-right">ต้นทุน(เฉลี่ย)</th>
-          <th class="fix-width-100 text-center">เบิก</th>
-					<th class="fix-width-100 text-center">รับแล้ว</th>
-					<th class="fix-width-100 text-center">รอยืนยัน</th>
-          <th class="fix-width-100 text-center">ค้างรับ</th>
-          <th class="fix-width-100 text-center">จำนวน</th>
-					<th class="fix-width-100 text-center">มูลค่า</th>
+        	<th class="fix-width-40 text-center">#</th>
+          <th class="fix-width-120 text-center hide">Barcode</th>
+          <th class="fix-width-200 text-center">Item code</th>
+          <th class="min-width-250" style="max-width:350px;">Description</th>
+					<th class="fix-width-100 text-right">Cost(Avg)</th>
+          <th class="fix-width-100 text-center">Transform</th>
+					<th class="fix-width-100 text-center">Received</th>
+					<th class="fix-width-100 text-center">Waiting Acceptance</th>
+          <th class="fix-width-100 text-center">Outstanding</th>
+          <th class="fix-width-100 text-center">Qty</th>
+					<th class="fix-width-100 text-center">Amount</th>
         </tr>
       </thead>
       <tbody id="receiveTable">
@@ -128,7 +128,7 @@
     <div class="modal-content">
       <div class="modal-header">
       	<button type='button' class='close' data-dismiss='modal' aria-hidden='true'> &times; </button>
-		    <h4 class='modal-title-site text-center' > ผู้มีอำนาจอนุมัติรับสินค้าเกิน </h4>
+		    <h4 class='modal-title-site text-center' > Authorized person to accept excess product </h4>
       </div>
       <div class="modal-body">
         <div class="row">
@@ -137,7 +137,7 @@
             <span class="help-block red text-center" id="approvError">&nbsp;</span>
           </div>
           <div class="col-sm-12">
-            <button type="button" class="btn btn-sm btn-primary btn-block" onclick="doApprove()">อนุมัติ</button>
+            <button type="button" class="btn btn-sm btn-primary btn-block" onclick="doApprove()">Approve</button>
           </div>
         </div>
     	 </div>

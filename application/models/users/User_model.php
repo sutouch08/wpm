@@ -14,7 +14,8 @@ class User_model extends CI_Model
     ->select('u.*')
     ->select('p.name AS profile_name')
     ->from('user AS u')
-    ->join('profile AS p', 'u.id_profile = p.id', 'left');
+    ->join('profile AS p', 'u.id_profile = p.id', 'left')
+    ->where('u.id >', 0);
 
     if( ! $all)
     {
@@ -118,7 +119,8 @@ class User_model extends CI_Model
 		$this->db
 		->select('user.*, user.name AS dname, profile.name AS pname')
 		->from('user')
-		->join('profile', 'user.id_profile = profile.id', 'left');
+		->join('profile', 'user.id_profile = profile.id', 'left')
+    ->where('user.id >', 0);
 
 		if(!empty($ds['uname']))
 		{
@@ -153,7 +155,8 @@ class User_model extends CI_Model
 		$this->db
 		->select('user.*, user.name AS dname, profile.name AS pname')
 		->from('user')
-		->join('profile', 'user.id_profile = profile.id', 'left');
+		->join('profile', 'user.id_profile = profile.id', 'left')
+    ->where('user.id >', 0);
 
 		if( ! empty($ds['uname']))
 		{
@@ -193,7 +196,8 @@ class User_model extends CI_Model
   {
 		$this->db
 		->from('user')
-		->join('profile', 'user.id_profile = profile.id', 'left');
+		->join('profile', 'user.id_profile = profile.id', 'left')
+    ->where('user.id >', 0);
 
 		if(!empty($ds['uname']))
 		{

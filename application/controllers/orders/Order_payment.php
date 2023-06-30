@@ -114,7 +114,7 @@ class Order_payment extends PS_Controller
       $arr = array(
         'order_code' => $detail->order_code,
         'state' => 3,
-        'update_user' => get_cookie('uname')
+        'update_user' => $this->_user->uname
       );
 
       //--- start transection
@@ -179,7 +179,7 @@ class Order_payment extends PS_Controller
 						$this->orders_model->update($order->code, $arr);
 					}
 				}
-				
+
 				//---- send api to chatbot
 				if($order->is_api == 1 && !empty($order->reference))
 				{
@@ -231,7 +231,7 @@ class Order_payment extends PS_Controller
       $arr = array(
         'order_code' => $detail->order_code,
         'state' => 2,
-        'update_user' => get_cookie('uname')
+        'update_user' => $this->_user->uname
       );
 
       //--- start transection
@@ -301,7 +301,7 @@ class Order_payment extends PS_Controller
 	        $arr = array(
 	          'order_code' => $detail->order_code,
 	          'state' => 1,
-	          'update_user' => get_cookie('uname')
+	          'update_user' => $this->_user->uname
 	        );
 
 	        $this->order_state_model->add_state($arr);

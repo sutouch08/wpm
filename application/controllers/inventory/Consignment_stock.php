@@ -6,12 +6,14 @@ class Consignment_stock extends PS_Controller
   public $menu_code = 'ICCMST';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'CHECK';
-	public $title = 'ตรวจสอบสต็อกฝากขาย(เทียม)';
+	public $title = 'Consignment Stock Balance';
   public $filter;
   public $error;
+  public $cn;
   public function __construct()
   {
     parent::__construct();
+    $this->cn = $this->load->database('cn', TRUE);
     $this->home = base_url().'inventory/consignment_stock';
     $this->load->model('inventory/sap_consignment_stock_model');
   }
@@ -57,7 +59,8 @@ class Consignment_stock extends PS_Controller
 
     $token = $this->input->post('token');
 
-    $data = $this->sap_stock_model->get_list($arr);
+    $data = $this->sap_consignment_stock_model->get_list($arr);
+
     if(!empty($data))
     {
       //--- load excel library

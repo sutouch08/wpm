@@ -45,7 +45,7 @@
 									<div class="widget-body">
 										<div class="widget-main">
 											<h4 class="header blue lighter bigger text-center" style="border:none;">
-												รหัสผ่านหมดอายุ คุณต้องเปลี่ยนรหัสผ่านเพื่อเริ่มใช้งานใหม่
+												Password expired. You must change your password to start using it again.
 											</h4>
 
 											<div class="space-6"></div>
@@ -56,7 +56,7 @@
 
 													<label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input type="password" name="current_password" id="current-password" class="form-control" placeholder="รหัสผ่านปัจจุบัน" autofocus required />
+															<input type="password" name="current_password" id="current-password" class="form-control" placeholder="Current password" autofocus required />
 															<i class="ace-icon fa fa-lock"></i>
 														</span>
 
@@ -64,27 +64,27 @@
 
 													<label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input type="password" name="new_password" id="new-password" class="form-control" placeholder="รหัสผ่านใหม่" required />
+															<input type="password" name="new_password" id="new-password" class="form-control" placeholder="New password" required />
 															<i class="ace-icon fa fa-lock"></i>
 														</span>
 													</label>
 
 													<label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input type="password" name="confirm_password" id="confirm-password" class="form-control" placeholder="ยืนยันรหัสผ่าน" required />
+															<input type="password" name="confirm_password" id="confirm-password" class="form-control" placeholder="Confirm password" required />
 															<i class="ace-icon fa fa-lock"></i>
 														</span>
 
 													</label>
 
 													<label class="block clearfix">
-														<span class="hide" style="font-size:12px; color:red" id="password-error">รหัสไม่ตรงกัน</span>
+														<span class="hide" style="font-size:12px; color:red" id="password-error">Passwords do not match.</span>
 													</label>
 													<div class="space"></div>
 
 													<div class="clearfix">
 														<button type="button" id="btn-change" class="width-100 pull-right btn btn-sm btn-primary" onclick="checkPassword()">
-															<span class="bigger-110">เปลี่ยนรหัสผ่าน</span>
+															<span class="bigger-110">Change password</span>
 														</button>
 													</div>
 
@@ -100,13 +100,13 @@
 											<div>
 												<a href="<?php echo base_url(); ?>users/authentication" class="forgot-password-link">
 													<i class="ace-icon fa fa-arrow-left"></i>
-													กลับไปเข้าระบบอีกครั้ง
+													Back to login
 												</a>
 											</div>
 
 											<div>
 												<a href="<?php echo base_url(); ?>users/authentication/logout" class="user-signup-link">
-													ออกจากระบบ
+													Logout
 													<i class="ace-icon fa fa-arrow-right"></i>
 												</a>
 											</div>

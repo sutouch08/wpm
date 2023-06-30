@@ -29,13 +29,13 @@ function get_quotation()
 	var code = $('#order_code').val();
 
 	swal({
-		title: "คุณแน่ใจ ?",
-		text: "การทั้งเก่าหมดจะถูกลบและโหลดใหม่  ยืนยันการดึงรายการหรือไม่ ?",
+		title: "Are you sure ?",
+		text: "All old ones will be deleted and reloaded. Confirm the retrieval of the item or not ?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#DD6B55",
-		confirmButtonText: 'ยืนยัน',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Confirm',
+		cancelButtonText: 'Cancel',
 		closeOnConfirm: false
 		}, function(){
 			load_in();
@@ -125,10 +125,45 @@ $("#customer").autocomplete({
 });
 
 
+$('#customer_code').autocomplete({
+  source: BASE_URL + 'auto_complete/get_customer_code_and_name',
+  autoFocus: true,
+  close: function() {
+    let rs = $.trim($(this).val());
+    let arr = rs.split(' | ');
+    if(arr.length == 2) {
+      let code = arr[0];
+      let name = arr[1];
+      $('#customerCode').val(code);
+      $('#customer_code').val(code);
+      $('#customer').val(name);
+    }
+    else {
+      $('#customerCode').val('');
+      $('#customer').val('');
+      $(this).val('');
+    }
+  }
+});
+
+
+async function updateDocRate() {
+  let date = $('#date').val();
+  let currency = $('#doc_currency').val();
+  let rate = await getCurrencyRate(currency, date);
+  $('#doc_rate').val(rate);
+}
+
+$('#date').change(function() {
+  updateDocRate();
+})
+
 var customer;
 var channels;
 var payment;
 var date;
+var doc_currency;
+var doc_rate;
 
 
 function getEdit(){
@@ -140,16 +175,53 @@ function getEdit(){
 	channels = $("#channels").val();
 	payment  = $("#payment").val();
 	date = $("#date").val();
+  doc_currency = $('#doc_currency').val();
+  doc_rate = $('#doc_rate').val();
 }
 
 
+function add() {
+  let data_add = $('#date').val();
+  let customer_code = $('#customer_code').val();
+  let customer = $("#customerCode").val();
+	let channels = $("#channels").val();
+	let payment  = $("#payment").val();
+	let date = $("#date").val();
+  let doc_currency = $('#doc_currency').val();
+  let doc_rate = $('#doc_rate').val();
+  let warehouse = $('#warehouse').val();
+
+  if(customer_code.length == 0 || customer.length == 0 || customer_code != customer) {
+    swal("Invalid customer code");
+    return false;
+  }
+
+  if( ! isDate(data_add)) {
+    swal("Invalid date format");
+    return false;
+  }
+
+  if(doc_currency == "") {
+    swal("Please define currency");
+    return false;
+  }
+
+  if(doc_rate <= 0) {
+    swal("Invalid currency exchange rate");
+    return false;
+  }
+
+  $('#btn-submit').click();
+}
+
 //---- เพิ่มรายการสินค้าเช้าออเดอร์
 function addToOrder(){
-  var order_code = $('#order_code').val();
-	//var count = countInput();
-  var data = [];
+  let order_code = $('#order_code').val();
+
+  let data = [];
+
   $(".order-grid").each(function(index, element){
-    if($(this).val() != ''){
+    if($(this).val() != '') {
       var code = $(this).attr('id');
       var arr = code.split('qty_');
       data.push({'code' : arr[1], 'qty' : $(this).val()});
@@ -192,9 +264,10 @@ function addItemToOrder(){
 	var qty = parseDefault(parseInt($('#input-qty').val()), 0);
 	var limit = parseDefault(parseInt($('#stock-qty').val()), 0);
 	var itemCode = $('#item-code').val();
+  var auz = $('#auz').val();
   var data = [{'code':itemCode, 'qty' : qty}];
 
-	if(qty > 0 && qty <= limit){
+	if(qty > 0 && (qty <= limit || auz == 1)){
 		load_in();
 		$.ajax({
 			url:BASE_URL + 'orders/orders/add_detail/'+orderCode,
@@ -262,13 +335,13 @@ function updateDetailTable(){
 
 function removeDetail(id, name){
 	swal({
-		title: "คุณแน่ใจ ?",
-		text: "ต้องการลบ '" + name + "' หรือไม่ ?",
+		title: "Are you sure ?",
+		text: "Do you really want to delete '" + name + "' ?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#DD6B55",
-		confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'ํYes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
 		}, function(){
 			$.ajax({
@@ -369,31 +442,34 @@ function validUpdate(){
   var customer_name = $('#customer').val();
 	var channels_code = $("#channels").val();
 	var payment_code = $("#payment").val();
+  var currency = $('#doc_currency').val();
+  var rate = $('#doc_rate').val();
   var recal = 0;
 
 
 	//---- ตรวจสอบวันที่
 	if( ! isDate(date_add) ){
-		swal("วันที่ไม่ถูกต้อง");
+		swal("Invalid date");
 		return false;
 	}
 
 	//--- ตรวจสอบลูกค้า
 	if( customer_code.length == 0 || customer_name == "" ){
-		swal("ชื่อลูกค้าไม่ถูกต้อง");
+		swal("Invalid Customer");
 		return false;
 	}
 
   if(channels_code == ""){
-    swal('กรุณาเลือกช่องทางขาย');
+    swal('Please select sales channels');
     return false;
   }
 
 
   if(payment_code == ""){
-    swal('กรุณาเลือกช่องทางการชำระเงิน');
+    swal('Please select payment method');
     return false;
   }
+
 
 	//--- ตรวจสอบความเปลี่ยนแปลงที่สำคัญ
 	if( (date_add != date) || ( customer_code != customer ) || ( channels_code != channels ) || ( payment_code != payment ) )
@@ -409,17 +485,22 @@ function validUpdate(){
 
 
 function updateOrder(recal){
-	var order_code = $("#order_code").val();
-	var date_add = $("#date").val();
-	var customer_code = $("#customerCode").val();
-  var customer_name = $("#customer").val();
-  var customer_ref = $('#customer_ref').val();
-	var channels_code = $("#channels").val();
-	var payment_code = $("#payment").val();
-	var reference = $('#reference').val();
-  var warehouse_code = $('#warehouse').val();
-	var transformed = $('#transformed').val();
-	var remark = $("#remark").val();
+	let order_code = $("#order_code").val();
+	let date_add = $("#date").val();
+	let customer_code = $("#customerCode").val();
+  let customer_name = $("#customer").val();
+  //let customer_ref = $('#customer_ref').val();
+	let channels_code = $("#channels").val();
+	let payment_code = $("#payment").val();
+	let reference = $('#reference').val();
+  let warehouse_code = $('#warehouse').val();
+	//let transformed = $('#transformed').val();
+	let remark = $("#remark").val();
+  let currency = $('#doc_currency').val();
+  let rate = $('#doc_rate').val();
+  let current_currency = $('#current-currency').val();
+  let current_rate = $('#current-rate').val();
+
 
 	load_in();
 
@@ -431,13 +512,17 @@ function updateOrder(recal){
       "order_code" : order_code,
   		"date_add"	: date_add,
   		"customer_code" : customer_code,
-      "customer_ref" : customer_ref,
+      "DocCur" : currency,
+      "DocRate" : rate,
+      "current_currency" : current_currency,
+      "current_rate" : current_rate,
+      //"customer_ref" : customer_ref,
   		"channels_code" : channels_code,
   		"payment_code" : payment_code,
   		"reference" : reference,
       "warehouse_code" : warehouse_code,
   		"remark" : remark,
-			"transformed" : transformed,
+			//"transformed" : transformed,
       "recal" : recal
     },
 		success: function(rs){
@@ -486,23 +571,23 @@ function changeState(){
 
 		if(is_wms) {
 			if(state == 3 && id_address == "") {
-				swal("กรุณาระบุที่อยู่จัดส่ง");
+				swal("Please specify shipping address");
 				return false;
 			}
 
 			if(state == 3 && id_sender == "") {
-				swal("กรุณาระบุผู้จัดส่ง");
+				swal("Please specify shipper");
 				return false;
 			}
 
 			if($('#sender option:selected').data('tracking') == 1) {
 				if(trackingNo != tracking) {
-					swal("กรุณากดบันทึก Tracking No");
+					swal("Please Save Tracking No");
 					return false;
 				}
 
 				if(trackingNo.length === 0) {
-					swal("กรุณาระบุ Tracking No");
+					swal("Please specify Tracking No");
 					return false;
 				}
 			}
@@ -653,7 +738,7 @@ function validateOrder(){
       swal('Prefix ต้องเป็น '+prefix);
       return false;
     }else if(arr[1].length != (4 + runNo)){
-      swal('Run Number ไม่ถูกต้อง');
+      swal('Run Number is not valid');
       return false;
     }else{
       $.ajax({
@@ -662,7 +747,7 @@ function validateOrder(){
         cache:false,
         success:function(rs){
           if(rs == 'not_exists'){
-            $('#btn-submit').click();
+            add();
           }else{
             swal({
               title:'Error!!',
@@ -675,7 +760,7 @@ function validateOrder(){
     }
 
   }else{
-    swal('เลขที่เอกสารไม่ถูกต้อง');
+    swal('Invalid document no');
     return false;
   }
 }

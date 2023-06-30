@@ -4,58 +4,58 @@
         <div class="modal-content">
             <div class="modal-header" style="border-bottom:solid 1px #e5e5e5;">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title-site text-center margin-top-5 margin-bottom-5">เพิ่ม/แก้ไข ที่อยู่สำหรับจัดส่ง</h4>
+                <h4 class="modal-title-site text-center margin-top-5 margin-bottom-5">Add/Edit Shipping address</h4>
             </div>
             <div class="modal-body" style="padding-top:5px;">
             <form id="addAddressForm"	>
             <input type="hidden" name="id_address" id="id_address" />
             <div class="row margin-left-0 margin-right-0">
             	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5">
-                	<label class="input-label">ชื่อ</label>
-                    <input type="text" class="form-control input-sm" name="Fname" id="Fname" placeholder="ชื่อผู้รับ (จำเป็น)" />
+                	<label class="input-label">Name</label>
+                    <input type="text" class="form-control input-sm" name="Fname" id="Fname" placeholder="Consignee name (required)" />
                 </div>
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5">
-                	<label class="input-label">ที่อยู่</label>
-                    <input type="text" class="form-control input-sm" name="address" id="address1" placeholder="เลขที่, หมู่บ้าน, ถนน (จำเป็น)" />
+                	<label class="input-label">Address</label>
+                    <input type="text" class="form-control input-sm" name="address" id="address1" placeholder="Block, bulding, street etc. (required)" />
                 </div>
 
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 padding-5">
-                	<label class="input-label">ตำบล/แขวง</label>
-                    <input type="text" class="form-control input-sm" name="sub_district" id="sub_district" placeholder="ตำบล" />
+                	<label class="input-label">Sub district</label>
+                    <input type="text" class="form-control input-sm" name="sub_district" id="sub_district" placeholder="Sub district" />
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 padding-5">
-                	<label class="input-label">อำเภอ/เขต</label>
-                    <input type="text" class="form-control input-sm" name="district" id="district" placeholder="อำเภอ (จำเป็น)" />
+                	<label class="input-label">District</label>
+                    <input type="text" class="form-control input-sm" name="district" id="district" placeholder="District (required)" />
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 padding-5">
-                	<label class="input-label">จังหวัด</label>
-                    <input type="text" class="form-control input-sm" name="province" id="province" placeholder="จังหวัด (จำเป็น)" />
+                	<label class="input-label">Province</label>
+                    <input type="text" class="form-control input-sm" name="province" id="province" placeholder="Province (required)" />
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 padding-5">
-                	<label class="input-label">รหัสไปรษณีย์</label>
-                    <input type="text" class="form-control input-sm" name="postcode" id="postcode" placeholder="รหัสไปรษณีย์" />
+                	<label class="input-label">Post code</label>
+                    <input type="text" class="form-control input-sm" name="postcode" id="postcode" placeholder="Post code" />
                 </div>
 								<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 padding-5">
-                	<label class="input-label">ปรเทศ</label>
-                    <input type="text" class="form-control input-sm" name="country" id="country" placeholder="Thailand" value="Thailand"/>
+                	<label class="input-label">Country</label>
+                    <input type="text" class="form-control input-sm" name="country" id="country" placeholder="Country" value=""/>
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 padding-5">
-                	<label class="input-label">เบอร์โทรศัพท์</label>
+                	<label class="input-label">Phone</label>
                     <input type="text" class="form-control input-sm" name="phone" id="phone" placeholder="000 000 0000" />
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 padding-5">
-                	<label class="input-label">อีเมล์</label>
+                	<label class="input-label">Email</label>
                     <input type="text" class="form-control input-sm" name="email" id="email" placeholder="someone@somesite.com" />
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 padding-5">
-                	<label class="input-label">ชื่อเรียก</label>
-                    <input type="text" class="form-control input-sm" name="alias" id="alias" placeholder="ใช้เรียกที่อยู่ เช่น บ้าน, ที่ทำงาน (จำเป็น)" />
+                	<label class="input-label">Alias name</label>
+                    <input type="text" class="form-control input-sm" name="alias" id="alias" placeholder="Such as 'home', 'office' etc. (required)" />
                 </div>
             </div>
             </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-success" onClick="saveAddress()" ><i class="fa fa-save"></i> บันทึก</button>
+                <button type="button" class="btn btn-sm btn-success" onClick="saveAddress()" ><i class="fa fa-save"></i> Save</button>
             </div>
         </div>
     </div>

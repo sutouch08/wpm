@@ -15,8 +15,8 @@ class Items extends PS_Controller
     $this->home = base_url().'masters/items';
 
 		//--- load database
-		$this->wms = $this->load->database('wms', TRUE);
-		$this->load->library('wms_product_api');
+		//$this->wms = $this->load->database('wms', TRUE);
+		//$this->load->library('wms_product_api');
 		$this->wms_export_item = getConfig('WMS_EXPORT_ITEMS');
 
     //--- load model
@@ -277,7 +277,7 @@ class Items extends PS_Controller
                     'unit_code' => trim($rs['Q']),
                     'count_stock' => trim($rs['R']) === 'N' ? 0:1,
                     'is_api' => trim($rs['S']) === 'N' ? 0 : 1,
-                    'update_user' => get_cookie('uname'),
+                    'update_user' => $this->_user->uname,
                     'old_code' => $old_style
                   );
 
@@ -312,7 +312,7 @@ class Items extends PS_Controller
                 'unit_code' => empty(trim($rs['Q'])) ? 'PCS' : trim($rs['Q']),
                 'count_stock' => trim($rs['R']) === 'N' ? 0:1,
                 'is_api' => trim($rs['S']) === 'N' ? 0 : 1,
-                'update_user' => get_cookie('uname'),
+                'update_user' => $this->_user->uname,
                 'old_style' => $old_style,
                 'old_code' => $old_code
               );
@@ -367,7 +367,7 @@ class Items extends PS_Controller
         $sell = $this->input->post('can_sell');
         $api = $this->input->post('is_api');
         $active = $this->input->post('active');
-        $user = get_cookie('uname');
+        $user = $this->_user->uname;
 
         $arr = array(
           'code' => trim($this->input->post('code')),
@@ -431,7 +431,7 @@ class Items extends PS_Controller
         $sell = $this->input->post('can_sell');
         $api = $this->input->post('is_api');
         $active = $this->input->post('active');
-        $user = get_cookie('uname');
+        $user = $this->_user->uname;
 
         $arr = array(
           'code' => trim($this->input->post('code')),
@@ -665,6 +665,22 @@ class Items extends PS_Controller
 
 
 
+  public function send_to_sap()
+  {
+    $sc = TRUE;
+    $code = trim($this->input->post('code'));
+
+    if( ! empty($code))
+    {
+      if( ! $this->do_export($code))
+      {
+        $sc = FALSE;
+      }
+    }
+
+    echo $sc === TRUE ? 'success' : $this->error;
+  }
+
 
 	public function send_to_wms()
 	{
@@ -757,18 +773,24 @@ class Items extends PS_Controller
       'F_E_CommerceDate' => sap_date(now(), TRUE)
     );
 
-		if($this->products_model->add_item($ds))
+		if( ! $this->products_model->add_item($ds))
 		{
-			if($this->wms_export_item)
-			{
-				$this->wms_product_api->export_item($item->code, $item);
-			}
-		}
-		else
-		{
-			$sc = FALSE;
+      $sc = FALSE;
 			$this->error = "Update Item failed";
 		}
+
+    // if($this->products_model->add_item($ds))
+		// {
+		// 	if($this->wms_export_item)
+		// 	{
+		// 		$this->wms_product_api->export_item($item->code, $item);
+		// 	}
+		// }
+		// else
+		// {
+		// 	$sc = FALSE;
+		// 	$this->error = "Update Item failed";
+		// }
 
     return $sc;
 

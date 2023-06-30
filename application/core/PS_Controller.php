@@ -22,11 +22,11 @@ class PS_Controller extends CI_Controller
 	public $_user;
 	public $_SuperAdmin = FALSE;
   public $_dataDate = '2021-01-01';
+  public $_Currency = "SGD";
 
   public function __construct()
   {
     parent::__construct();
-
 
     //--- check is user has logged in ?
     _check_login();
@@ -36,6 +36,7 @@ class PS_Controller extends CI_Controller
 		$this->_user = $this->user_model->get_user_by_uid($uid);
 		$this->isViewer = $this->_user->is_viewer == 1 ? TRUE : FALSE;
 		$this->_SuperAdmin = $this->_user->id_profile == -987654321 ? TRUE : FALSE;
+    $this->_Currency = getConfig('CURRENCY');
 
 		$this->close_system   = getConfig('CLOSE_SYSTEM'); //--- ปิดระบบทั้งหมดหรือไม่
 
@@ -56,7 +57,7 @@ class PS_Controller extends CI_Controller
 
     $this->ms = $this->load->database('ms', TRUE); //--- SAP database
     $this->mc = $this->load->database('mc', TRUE); //--- Temp Database
-    //$this->cn = $this->load->database('cn', TRUE); //--- consign Database
+    $this->cn = $this->load->database('cn', TRUE); //--- consign Database
 
     $dataDate = getConfig('DATA_DATE');
     if( ! empty($dataDate))

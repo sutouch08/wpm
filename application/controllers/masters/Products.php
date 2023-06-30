@@ -39,10 +39,10 @@ class Products extends PS_Controller
     $this->load->helper('product_images');
     $this->load->helper('unit');
 
-		$this->wms = $this->load->database('wms', TRUE);
-		$this->load->library('wms_product_api');
-
-		$this->wms_export_item = getConfig('WMS_EXPORT_ITEMS');
+		// $this->wms = $this->load->database('wms', TRUE);
+		// $this->load->library('wms_product_api');
+    //
+		// $this->wms_export_item = getConfig('WMS_EXPORT_ITEMS');
 
   }
 
@@ -243,7 +243,7 @@ class Products extends PS_Controller
         'can_sell' => $can_sell,
         'active' => $active,
         'is_api' => $is_api,
-        'update_user' => get_cookie('uname'),
+        'update_user' => $this->_user->uname,
         'old_code' => $old_code
       );
 
@@ -399,7 +399,7 @@ class Products extends PS_Controller
       $sell = $this->input->post('can_sell');
       $api = $this->input->post('is_api');
       $active = $this->input->post('active');
-      $user = get_cookie('uname');
+      $user = $this->_user->uname;
 
       $flag_cost = $this->input->post('cost_update');
       $flag_price = $this->input->post('price_update');
@@ -423,7 +423,7 @@ class Products extends PS_Controller
         'can_sell' => ($sell === NULL ? 0 : 1),
         'active' => ($active === NULL ? 0 : 1),
         'is_api' => ($api === NULL ? 0 : 1),
-        'update_user' => get_cookie('uname'),
+        'update_user' => $this->_user->uname,
         'old_code' => $old_code
       );
 
@@ -459,7 +459,7 @@ class Products extends PS_Controller
             'can_sell' => ($sell === NULL ? 0 : 1),
             'active' => ($active === NULL ? 0 : 1),
             'is_api' => ($api === NULL ? 0 : 1),
-            'update_user' => get_cookie('uname'),
+            'update_user' => $this->_user->uname,
             'old_style' => $old_code
           );
 
@@ -810,7 +810,7 @@ class Products extends PS_Controller
           'is_api' => $ds->is_api,
           'old_style' => $ds->old_code,
           'old_code' => NULL, //(isset($old_code[$code]) ? $old_code[$code] : $code),
-          'update_user' => get_cookie('uname')
+          'update_user' => $this->_user->uname
         );
 
         if($this->products_model->is_exists($code))
@@ -866,7 +866,7 @@ class Products extends PS_Controller
         'is_api' => $ds->is_api,
         'old_style' => $ds->old_code,
         'old_code' => NULL, //(isset($old_code[$code]) ? $old_code[$code] : $code),
-        'update_user' => get_cookie('uname')
+        'update_user' => $this->_user->uname
       );
 
       $rs = $this->products_model->add($data);
@@ -912,7 +912,7 @@ class Products extends PS_Controller
         'is_api' => $ds->is_api,
         'old_style' => $ds->old_code,
         'old_code' => NULL, //(isset($old_code[$code]) ? $old_code[$code] : $code),
-        'update_user' => get_cookie('uname')
+        'update_user' => $this->_user->uname
       );
 
       $rs = $this->products_model->add($data);
@@ -1307,39 +1307,68 @@ class Products extends PS_Controller
   }
 
 
+  public function send_to_sap()
+  {
+    $sc = TRUE;
+    $style_code = $this->input->post('code'); //--- style_code
+    $success = 0;
+    $fail = 0;
 
-	public function send_to_wms()
-	{
-		$sc = TRUE;
-		$code = trim($this->input->post('code')); //--- style code
+    $products = $this->products_model->get_style_items($style_code);
 
-		if(!empty($code))
-		{
-			$items = $this->products_model->get_style_items($code);
+    if(!empty($products))
+    {
+      foreach($products as $item)
+      {
+        if($this->do_export($item->code))
+        {
+          $success++;
+        }
+        else
+        {
+          $sc = FALSE;
+          $fail++;
+        }
+      }
+    }
 
-			if(!empty($items))
-			{
-				$export = $this->wms_product_api->export_style($code, $items);
-				if(!$export)
-				{
-					$sc = FALSE;
-					$this->error = "Error : ".$this->wms_product_api->error;
-				}
-			}
-			else
-			{
-				$sc = FALSE;
-				$this->error = "Items not found";
-			}
-		}
-		else
-		{
-			$sc = FALSE;
-			$this->error = "Missing required parameter: code";
-		}
+    echo $sc === TRUE ? 'success' : "Success : {$success}, Fail : {$fail}";
+  }
 
-		echo $sc === TRUE ? 'success' : $this->error;
-	}
+
+
+	// public function send_to_wms()
+	// {
+	// 	$sc = TRUE;
+	// 	$code = trim($this->input->post('code')); //--- style code
+  //
+	// 	if(!empty($code))
+	// 	{
+	// 		$items = $this->products_model->get_style_items($code);
+  //
+	// 		if(!empty($items))
+	// 		{
+	// 			$export = $this->wms_product_api->export_style($code, $items);
+	// 			if(!$export)
+	// 			{
+	// 				$sc = FALSE;
+	// 				$this->error = "Error : ".$this->wms_product_api->error;
+	// 			}
+	// 		}
+	// 		else
+	// 		{
+	// 			$sc = FALSE;
+	// 			$this->error = "Items not found";
+	// 		}
+	// 	}
+	// 	else
+	// 	{
+	// 		$sc = FALSE;
+	// 		$this->error = "Missing required parameter: code";
+	// 	}
+  //
+	// 	echo $sc === TRUE ? 'success' : $this->error;
+	// }
 
 
   public function export_barcode($code, $token)

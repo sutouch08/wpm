@@ -6,7 +6,7 @@ class Qc extends PS_Controller
   public $menu_code = 'ICODQC';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'PICKPACK';
-	public $title = 'ตรวจสินค้า';
+	public $title = 'Pack List';
   public $filter;
   public function __construct()
   {
@@ -27,7 +27,7 @@ class Qc extends PS_Controller
       $arr = array(
         'order_code' => $code,
         'state' => 7,
-        'update_user' => get_cookie('uname')
+        'update_user' => $this->_user->uname
       );
 
       if($this->orders_model->change_state($code, 7))
@@ -38,7 +38,7 @@ class Qc extends PS_Controller
     else
     {
       $sc = FALSE;
-      $message = 'ไม่สามารถปิดออเดอร์ได้ เนื่องจากสถานะออเดอร์ได้ถูกเปลี่ยนไปแล้ว';
+      $message = 'Cannot close pack list : Invalid document status';
     }
 
     echo $sc === TRUE ? 'success' : $message;
@@ -47,7 +47,7 @@ class Qc extends PS_Controller
 
 
   public function save_qc()
-  {
+  {    
     $sc = TRUE;
     if($this->input->post('order_code'))
     {
@@ -85,14 +85,14 @@ class Qc extends PS_Controller
           if($updateQty > $prepared)
           {
             $sc = FALSE;
-            $message = $detail->product_code.' ยอดตรวจเกินยอดจัดหรือยอดสั่ง';
+            $message = $detail->product_code.' : Packed qty more than order qty';
           }
 
           //--- update ยอดตรวจ
           if($this->qc_model->update_checked($code, $detail->product_code, $id_box, $qty) === FALSE)
           {
             $sc = FALSE;
-            $message = $detail->product_code.' บันทึกยอดตรวจไม่สำเร็จ';
+            $message = $detail->product_code.' : Update data failed';
           }
 
         } //--- end foreach
@@ -107,7 +107,7 @@ class Qc extends PS_Controller
         if($this->db->trans_status() === FALSE)
         {
           $sc = FALSE;
-          $message = 'ทำรายการไม่สำเร็จ';
+          $message = 'Udate data failed';
         }
 
       }
@@ -115,7 +115,7 @@ class Qc extends PS_Controller
     else
     {
       $sc = FALSE;
-      $message = 'ไม่พบเลขที่เอกสาร';
+      $message = 'Document No not found';
     }
 
     echo $sc == TRUE ? 'success' : $message;
@@ -159,7 +159,10 @@ class Qc extends PS_Controller
 
   public function view_process()
   {
+    $this->title = "Packing List";
+
     $this->load->helper('channels');
+
     $filter = array(
       'code'          => get_filter('code', 'qc_code', ''),
       'customer'      => get_filter('customer', 'qc_customer', ''),
@@ -206,7 +209,7 @@ class Qc extends PS_Controller
         $arr = array(
           'order_code' => $code,
           'state' => 6,
-          'update_user' => get_cookie('uname')
+          'update_user' => $this->_user->uname
         );
         $this->order_state_model->add_state($arr);
       }
@@ -287,7 +290,7 @@ class Qc extends PS_Controller
     {
       $this->load->model('inventory/prepare_model');
 
-      $sc = 'ไม่พบข้อมูล';
+      $sc = 'No data found';
       $buffer = $this->prepare_model->get_prepared_from_zone($order_code, $item_code);
       if(!empty($buffer))
       {
@@ -300,7 +303,7 @@ class Qc extends PS_Controller
     }
     else
     {
-      $sc = 'ไม่นับสต็อก';
+      $sc = 'Not inventory item';
     }
 
   	return $sc;
@@ -323,7 +326,7 @@ class Qc extends PS_Controller
       //--- insert new box
       $box_no = $this->qc_model->get_last_box_no($code) + 1;
       $id_box = $this->qc_model->add_new_box($code, $barcode, $box_no);
-      echo $id_box === FALSE ? 'เพิมกล่องไม่สำเร็จ' : $id_box;
+      echo $id_box === FALSE ? 'Add box failed' : $id_box;
     }
   }
 
@@ -385,7 +388,7 @@ class Qc extends PS_Controller
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบรายการตรวจสินค้า";
+      $this->error = "No data found";
     }
 
     echo $sc === TRUE ? json_encode($ds) : $this->error;
@@ -407,7 +410,7 @@ class Qc extends PS_Controller
         if(! $this->qc_model->delete_qc($id))
         {
           $sc = FALSE;
-          $this->error = "ลบรายการไม่สำเร็จ";
+          $this->error = "Delete failed";
         }
       }
       else
@@ -415,14 +418,14 @@ class Qc extends PS_Controller
         if(! $this->qc_model->update_qty($id, (-1) * $qty))
         {
           $sc = FALSE;
-          $this->error = "ปรับปรุงยอดตรวจนับไม่สำเร็จ";
+          $this->error = "Update packed qty failed";
         }
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบรายการตรวจนับ";
+      $this->error = "No data found";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;

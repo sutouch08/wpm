@@ -6,7 +6,7 @@ class Movement extends PS_Controller
   public $menu_code = 'ICCKMV';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'CHECK';
-	public $title = 'ตรวจสอบ Movement';
+	public $title = 'Stock Movement';
   public $filter;
   public $error;
   public $segment = 4;

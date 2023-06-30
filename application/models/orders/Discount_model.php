@@ -9,7 +9,7 @@ class Discount_model extends CI_Model
   }
 
 
-  public function get_item_discount($item_code, $customer_code, $qty, $payment_code, $channels_code, $date = '', $order_code)
+  public function get_item_discount($item_code, $customer_code, $qty, $payment_code, $channels_code, $date , $order_code)
 	{
     $this->load->model('masters/products_model');
     $this->load->model('masters/customers_model');
@@ -175,7 +175,7 @@ class Discount_model extends CI_Model
 					if($isSetMin && $canGroup)
 					{
 						//---- คำนวณยอดสั่งใหม่
-						$qty = $this->orders_model->get_sum_style_qty($order_code, $pd->code_style);
+						$qty = $this->orders_model->get_sum_style_qty($order_code, $pd->style_code);
 						$amount = $qty * $price;
 					}
 
@@ -283,7 +283,7 @@ class Discount_model extends CI_Model
     if( $pd->code != "" && $cs->code != "" )
 		{
 			$qr  = "SELECT DISTINCT
-							r.id, r.item_price,
+							r.id, r.item_price, r.all_product,
 							r.item_disc, r.item_disc_unit,
 							r.item_disc_2, r.item_disc_2_unit,
 							r.item_disc_3, r.item_disc_3_unit,
@@ -412,12 +412,12 @@ class Discount_model extends CI_Model
 					$canGroup = $rs->canGroup == 1 ? TRUE : FALSE; //--- รวมยอดได้หรือไม่
 
 					//----- หากมีการกำหนดยอดขั้นต่ำ และ สามารถรวมยอดได้
-					if($isSetMin && $canGroup)
-					{
-						//---- คำนวณยอดสั่งใหม่
-						$qty = $order->get_sum_style_qty($order_code, $pd->style_code);
-						$amount = $qty * $price;
-					}
+					// if($isSetMin && $canGroup)
+					// {
+					// 	//---- คำนวณยอดสั่งใหม่
+					// 	$qty = $this->orders_model->get_sum_style_qty($order_code, $pd->style_code);
+					// 	$amount = $qty * $price;
+					// }
 
 					//---- ถ้ามีการกำหนดราคาขาย
 					if($rs->item_price > 0)
@@ -493,6 +493,79 @@ class Discount_model extends CI_Model
 	}
 
 
+  public function rule_detail($id, $field, $table)
+  {
+    $qr = "SELECT $field FROM $table WHERE id_rule = {$id}";
 
+    $qs = $this->db->query($qr);
+
+    if($qs->num_rows() > 0)
+    {
+      return $qs->result_array();
+    }
+
+    return NULL;
+  }
+
+  public function parseInQuery($fields, $ds)
+  {
+    $qr = "";
+    $in = "";
+
+    if(! empty($ds))
+    {
+      $i = 1;
+      foreach($ds as $rs)
+      {
+        $in .= $i === 1 ? "'{$rs}'" : ", '{$rs}'";
+        $i++;
+      }
+
+      $qr = "AND {$fields} IN({$in}) ";
+    }
+
+    return $qr;
+  }
+
+
+  public function get_sum_rule_qty($order_code, $rule_id, $all = 0)
+  {
+    if($all != 0)
+    {
+      $style_in = $this->rule_detail($rule_id, 'style_code', 'discount_rule_product_style');
+      $brand_in = $this->rule_detail($rule_id, 'brand_code', 'discount_rule_product_brand');
+      $cate_in = $this->rule_detail($rule_id, 'category_code', 'discount_rule_product_category');
+      $group_in = $this->rule_detail($rule_id, 'group_code', 'discount_rule_product_group');
+      $sub_group_in = $this->rule_detail($rule_id, 'sub_group_code', 'discount_rule_product_sub_group');
+      $kind_in = $this->rule_detail($rule_id, 'kind_code', 'discount_rule_product_kind');
+      $type_in = $this->rule_detail($rule_id, 'type_code', 'discount_rule_product_type');
+      $year_in = $this->rule_detail($rule_id, 'year', 'discount_rule_product_year');
+    }
+
+    $qr  = "SELECT SUM(qty) AS qty FROM order_details AS od ";
+    $qr .= "LEFT JOIN products AS pd ON od.product_code = pd.code ";
+    $qr .= "WHERE od.order_code = '{$order_code}' ";
+
+    if($all == 1)
+    {
+      $qr .= $this->parseInQuery('pd.style_code', $style_in);
+      $qr .= $this->parseInQuery('pd.brand_code', $brand_in);
+      $qr .= $this->parseInQuery('pd.category_code', $cate_in);
+      $qr .= $this->parseInQuery('pd.group_code', $group_in);
+      $qr .= $this->parseInQuery('pd.sub_group_code', $sub_group_in);
+      $qr .= $this->parseInQuery('pd.kind_code', $kind_in);
+      $qr .= $this->parseInQuery('pd.type_code', $type_in);
+      $qr .= $this->parseInQuery('pd.year', $year_in);
+    }
+
+    $qs = $this->db->query($qr);
+
+    if($qs->num_rows() == 1)
+    {
+      return $qs->row()->qty;
+    }
+
+    return 0;
+  }
 } //--- end class
 ?>

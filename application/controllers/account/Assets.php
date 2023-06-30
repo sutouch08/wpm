@@ -107,7 +107,7 @@ class Assets extends PS_Controller
           'warehouse_code' => $zone->warehouse_code,
           'remark' => $this->input->post('remark'),
           'date_add' => $date_add,
-          'user' => get_cookie('uname')
+          'user' => $this->_user->uname
         );
 
         if(! $this->consign_order_model->add($arr))
@@ -186,7 +186,7 @@ class Assets extends PS_Controller
           'warehouse_code' => $zone->warehouse_code,
           'remark' => $this->input->post('remark'),
           'date_add' => $date_add,
-          'user' => get_cookie('uname')
+          'user' => $this->_user->uname
         );
 
         if(! $this->consign_order_model->update($code, $arr))
@@ -629,7 +629,7 @@ class Assets extends PS_Controller
                       'date_add'  => $doc->date_add,
                       'zone_code' => $doc->zone_code,
                       'warehouse_code'  => $doc->warehouse_code,
-                      'update_user' => get_cookie('uname'),
+                      'update_user' => $this->_user->uname,
                       'budget_code' => NULL
               );
 

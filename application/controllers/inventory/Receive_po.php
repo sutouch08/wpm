@@ -6,11 +6,12 @@ class Receive_po extends PS_Controller
   public $menu_code = 'ICPURC';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'RECEIVE';
-	public $title = 'รับสินค้าจากการซื้อ';
+	public $title = 'Goods receipt PO';
   public $filter;
   public $error;
 	public $isAPI;
   public $required_remark = 1;
+  public $dfCurrency = "THB";
 
   public function __construct()
   {
@@ -22,6 +23,7 @@ class Receive_po extends PS_Controller
     $this->load->model('masters/products_model');
 
 		$this->isAPI = is_true(getConfig('WMS_API'));
+    $this->dfCurrency = getConfig('CURRENCY');
   }
 
 
@@ -122,7 +124,7 @@ class Receive_po extends PS_Controller
 							"invoice_code" => $cs[2]['C'],
 							"vendor_code" => $vendor->CardCode,
 							"vendor_name" => $vendor->CardName,
-							"DocCur" => empty($cur) ? "THB" : $cur->DocCur,
+							"DocCur" => empty($cur) ? getConfig('CURRENCY') : $cur->DocCur,
 							"DocRate" => empty($cur) ? 1.00 : $cur->DocRate
 						);
 
@@ -325,7 +327,7 @@ class Receive_po extends PS_Controller
 		      $vendor_name = $header->vendorName;
 		      $po_code = $header->poCode;
 		      $invoice = $header->invoice;
-		      $zone_code = ($this->isAPI && $doc->is_wms == 1) ? getConfig('WMS_ZONE') : $header->zone_code;
+		      $zone_code = $header->zone_code;
           $zone = $this->zone_model->get($zone_code);
 		      $warehouse_code = $zone->warehouse_code;
 		      $approver = get_null($header->approver);
@@ -344,8 +346,8 @@ class Receive_po extends PS_Controller
 		        'update_user' => $this->_user->uname,
 		        'approver' => $approver,
 		        'request_code' => $request_code,
-						'currency' => empty($DocCur) ? "THB" : $DocCur,
-						'rate' => empty($DocRate) ? 1 : $DocRate,
+						'DocCur' => empty($DocCur) ? $this->dfCurrency : $DocCur,
+						'DocRate' => empty($DocRate) ? 1 : $DocRate,
             'must_accept' => $must_accept
 		      );
 
@@ -377,6 +379,7 @@ class Receive_po extends PS_Controller
 		              {
 		                $bf = $rs->backlogs; ///--- ยอดค้ารับ ก่อนรับ
 		                $af = ($bf - $rs->qty) > 0 ? ($bf - $rs->qty) : 0;  //--- ยอดค้างรับหลังรับแล้ว
+                    $amount = $rs->qty * $rs->price;
 
 		                $ds = array(
 		                  'receive_code' => $code,
@@ -385,14 +388,15 @@ class Receive_po extends PS_Controller
 		                  'style_code' => $pd->style_code,
 		                  'product_code' => $pd->code,
 		                  'product_name' => $pd->name,
+                      'currency' => empty($DocCur) ? getConfig('CURRENCY') : $DocCur,
+                      'rate' => empty($DocRate) ? 1 : $DocRate,
 		                  'price' => $rs->price,
 		                  'qty' => $rs->qty,
                       'receive_qty' => ($this->isAPI && $doc->is_wms) ? 0 : $rs->qty,
-		                  'amount' => $rs->qty * $rs->price,
+		                  'amount' => $amount,
+                      'totalFrgn' => convertFC($amount, $DocRate, 1),
 		                  'before_backlogs' => $bf,
 		                  'after_backlogs' => $af,
-											'currency' => empty($DocCur) ? "THB" : $DocCur,
-											'rate' => empty($DocRate) ? 1 : $DocRate,
 											'vatGroup' => $rs->vatGroup,
 											'vatRate' => $rs->vatRate
 		                );
@@ -447,7 +451,7 @@ class Receive_po extends PS_Controller
 		              else
 		              {
 		                $sc = FALSE;
-		                $this->error = 'ไม่พบรหัสสินค้า : '.$item.' ในระบบ';
+		                $this->error = $item.' not found';
 		              }
 		            }
 		          }
@@ -498,7 +502,7 @@ class Receive_po extends PS_Controller
               {
                 $sc = FALSE;
                 $ex = 0;
-                $this->error = "บันทึกเอกสารสำเร็จ แต่ส่งข้อมูลไป WMS ไม่สำเร็จ <br/> ".$this->wms_receive_api->error;
+                $this->error = "Document saved but send data to WMS failed <br/> ".$this->wms_receive_api->error;
               }
             }
             else
@@ -508,7 +512,7 @@ class Receive_po extends PS_Controller
               {
                 $sc = FALSE;
                 $ex = 0;
-                $this->error = "บันทึกสำเร็จ แต่ส่งข้อมูลเข้า SAP ไม่สำเร็จ <br/> ".trim($this->export->error);
+                $this->error = "Save document successful but send interface to SAP failed <br/> ".trim($this->export->error);
               }
             }
           }
@@ -528,7 +532,7 @@ class Receive_po extends PS_Controller
     else
     {
       $sc = FALSE;
-      $this->error = 'ไม่พบข้อมูล';
+      $this->error = 'nodata';
     }
 
     $arr = array(
@@ -656,7 +660,7 @@ class Receive_po extends PS_Controller
           {
             $sc = FALSE;
             $ex = 0;
-            $this->error = "บันทึกสำเร็จ แต่ส่งข้อมูลเข้า SAP ไม่สำเร็จ <br/> ".trim($this->export->error);
+            $this->error = "Save successfully, but failed to send data to SAP. <br/> ".trim($this->export->error);
           }
         }
       }
@@ -699,7 +703,7 @@ class Receive_po extends PS_Controller
 					if(!$ex)
 					{
 						$sc = FALSE;
-						$thiis->error = "ส่งข้อมูลไป WMS ไม่สำเร็จ <br/>{$this->wms_receive_api->error}";
+						$thiis->error = "Send intaface data to WMS failed <br/>{$this->wms_receive_api->error}";
 					}
 				}
 				else
@@ -782,19 +786,19 @@ class Receive_po extends PS_Controller
         if($this->db->trans_status() === FALSE)
         {
           $sc = FALSE;
-          $this->error = 'ยกเลิกรายการไม่สำเร็จ';
+          $this->error = 'Cancellation failed';
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = 'กรุณายกเลิกใบรับสินค้าบน SAP ก่อนทำการยกเลิก';
+        $this->error = "Please cancel GRPO on SAP before cancel this document"; //'กรุณายกเลิกใบรับสินค้าบน SAP ก่อนทำการยกเลิก';
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = 'ไม่พบเลขทีเอกสาร';
+      $this->error = "Document No not found";//'ไม่พบเลขทีเอกสาร';
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -878,7 +882,7 @@ class Receive_po extends PS_Controller
     }
     else
     {
-      $sc = 'ใบสั่งซื้อไม่ถูกต้อง หรือ ใบสั่งซื้อถูกปิดไปแล้ว';
+      $sc = "Incorrect PO No or PO already closed"; //'ใบสั่งซื้อไม่ถูกต้อง หรือ ใบสั่งซื้อถูกปิดไปแล้ว';
     }
 
     echo $sc;
@@ -969,12 +973,12 @@ class Receive_po extends PS_Controller
       }
       else
       {
-        $sc = 'ใบสั่งซื้อไม่ถูกต้อง หรือ ใบสั่งซื้อถูกปิดไปแล้ว';
+        $sc = "Incorrect PO No or PO already closed"; //'ใบสั่งซื้อไม่ถูกต้อง หรือ ใบสั่งซื้อถูกปิดไปแล้ว';
       }
     }
     else
     {
-      $sc = "ใบขออนุมัติไม่ถูกต้อง";
+      $sc = "Invalid Goods Receipt Request Document"; //"ใบขออนุมัติไม่ถูกต้อง";
     }
 
 
@@ -1038,7 +1042,7 @@ class Receive_po extends PS_Controller
     $ext = $this->receive_po_model->is_exists($code);
     if($ext)
     {
-      echo 'เลขที่เอกสารซ้ำ';
+      echo "Document number already exists"; //'เลขที่เอกสารซ้ำ';
     }
     else
     {

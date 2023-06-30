@@ -171,7 +171,7 @@ class Support extends PS_Controller
         'role' => $role,
         'bookcode' => $book_code,
         'customer_code' => $this->input->post('customerCode'),
-        'user' => get_cookie('uname'),
+        'user' => $this->_user->uname,
         'warehouse_code' => $wh->code,
         'remark' => $this->input->post('remark'),
 				'is_wms' => $wh->is_wms,
@@ -183,7 +183,7 @@ class Support extends PS_Controller
         $arr = array(
           'order_code' => $code,
           'state' => 1,
-          'update_user' => get_cookie('uname')
+          'update_user' => $this->_user->uname
         );
 
         $this->order_state_model->add_state($arr);

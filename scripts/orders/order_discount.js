@@ -65,6 +65,109 @@ $(document).ready(function(e) {
 
 
 
+// function updateDiscount(){
+// 	var error = 0;
+// 	var message = '';
+// 	var disc = [];
+// 	disc.push( {"name" : "order_code", "value" : $("#order_code").val() } ); //---- id_order
+// 	disc.push( { "name" : "approver", "value" : $("#approverName").val() } ); //--- ชื่อผู้อนุมัติ
+// 	$(".discount-box").each(function(index, element) {
+//     var attr = $(this).attr('id').split('_');
+// 		var id = attr[1];
+// 		var name = "discount["+id+"]";
+// 		var price = parseFloat($("#price_"+id).val());
+// 		var cPrice = price;
+// 		var amount = 0;
+// 		var oldValue = $('#disc_label_'+id).text();
+// 		var value = $(this).val();
+// 		if(value != '' && value != 0 && value != oldValue){
+// 			var rs = value.split('+');
+// 			if(rs.length > 1){
+// 				for(let ele of rs){
+// 					let el = ele.split('%');
+// 					el[0] = $.trim(el[0]);
+// 					vdis = parseFloat(el[0]);
+// 					if(isNaN(vdis)){
+// 						error++;
+// 						message = 'Invalid discount format';
+// 						$(this).addClass('has-error');
+// 						return;
+// 					}
+//
+// 					if(el.length == 2){
+// 						let discAmount = cPrice * (vdis * 0.01);
+// 						cPrice -= discAmount;
+// 						amount += discAmount;
+// 					}
+//
+// 					if(el.length == 1){
+// 						let discAmount = vdis;
+// 						cPrice -= discAmount;
+// 						amount += discAmount;
+// 					}
+// 				}
+// 			}else{
+// 				let el = rs[0].split('%');
+// 				el[0] = $.trim(el[0]);
+// 				vdis = parseFloat(el[0]);
+// 				console.log(vdis);
+// 				if(isNaN(vdis)){
+// 					error++;
+// 					message = 'Invalid discount format';
+// 					$(this).addClass('has-error');
+// 					return;
+// 				}
+//
+// 				if(el.length == 2){
+// 					let discAmount = cPrice * (vdis * 0.01);
+// 					cPrice -= discAmount;
+// 					amount += discAmount;
+// 				}
+//
+// 				if(el.length == 1){
+// 					let discAmount = vdis;
+// 					cPrice -= discAmount;
+// 					amount += discAmount;
+// 				}
+// 			}
+// 		}
+//
+// 		if(amount > price){
+// 			error++;
+// 			message = 'The discount must not exceed the selling price.';
+// 			$(this).addClass('has-error');
+// 			return;
+// 		}
+//
+// 		if(value != oldValue){
+// 			disc.push( {"name" : name, "value" : value }); //----- discount each row
+// 		}
+//
+//     });
+//
+// 		if(error > 0)
+// 		{
+// 			swal(message);
+// 			return false;
+// 		}
+//
+// 	$.ajax({
+// 		url:BASE_URL + 'orders/orders/update_discount',
+// 		type:"POST",
+// 		cache:"false",
+// 		data: disc,
+// 		success: function(rs){
+// 			var rs = $.trim(rs);
+// 			if( rs == 'success' ){
+// 				swal({title: "Done", type: "success", timer: 1000});
+// 				setTimeout(function(){ window.location.reload(); }, 1200 );
+// 			}else{
+// 				swal("Error!", rs, "error");
+// 			}
+// 		}
+// 	});
+// }
+
 function updateDiscount(){
 	var error = 0;
 	var message = '';
@@ -89,52 +192,40 @@ function updateDiscount(){
 					vdis = parseFloat(el[0]);
 					if(isNaN(vdis)){
 						error++;
-						message = 'รูปแบบส่วนลดไม่ถูกต้อง';
+						message = 'Invalid discount format';
 						$(this).addClass('has-error');
 						return;
 					}
 
-					if(el.length == 2){
-						let discAmount = cPrice * (vdis * 0.01);
-						cPrice -= discAmount;
-						amount += discAmount;
-					}
 
-					if(el.length == 1){
-						let discAmount = vdis;
-						cPrice -= discAmount;
-						amount += discAmount;
-					}
+					let discAmount = cPrice * (vdis * 0.01);
+					cPrice -= discAmount;
+					amount += discAmount;
 				}
-			}else{
+
+			}
+			else {
 				let el = rs[0].split('%');
 				el[0] = $.trim(el[0]);
 				vdis = parseFloat(el[0]);
 				console.log(vdis);
 				if(isNaN(vdis)){
 					error++;
-					message = 'รูปแบบส่วนลดไม่ถูกต้อง';
+					message = 'Invalid discount format';
 					$(this).addClass('has-error');
 					return;
 				}
 
-				if(el.length == 2){
-					let discAmount = cPrice * (vdis * 0.01);
-					cPrice -= discAmount;
-					amount += discAmount;
-				}
-
-				if(el.length == 1){
-					let discAmount = vdis;
-					cPrice -= discAmount;
-					amount += discAmount;
-				}
+				let discAmount = cPrice * (vdis * 0.01);
+				cPrice -= discAmount;
+				amount += discAmount;
+				
 			}
 		}
 
 		if(amount > price){
 			error++;
-			message = 'ส่วนลดต้องไม่เกินราคาขาย';
+			message = 'The discount must not exceed the selling price.';
 			$(this).addClass('has-error');
 			return;
 		}
@@ -195,7 +286,6 @@ function updateNonCountPrice(id){
 			if(rs == 'success'){
 				swal({
 					title:'Updated',
-					text:'ปรับปรุงราคาเรียบร้อยแล้ว',
 					type:'success',
 					timer: 1000
 				});
@@ -281,7 +371,7 @@ function getApprove(tab){
 	//--- แก้ไขราคา id_tab = 65
 	if( tab == 'discount' ){
 		var initialData = {
-			"title" : 'อนุมัติแก้ไขส่วนลด',
+			"title" : 'Authorization code',
 			"menu" : 'SODISC',
 			"field" : "", //--- add/edit/delete ถ้าอันไหนเป็น 1 ถือว่ามีสิทธิ์ /// ถ้าต้องการเฉพาะให้ระบุเป็น  add, edit หรือ delete
 			"callback" : function(){ updateDiscount();  }
@@ -290,7 +380,7 @@ function getApprove(tab){
 
 	if( tab == 'price' ){
 		var initialData = {
-			"title" : 'อนุมัติแก้ไขราคาขาย',
+			"title" : 'Authorization code',
 			"menu" : 'SOPRIC',
 			"field" : "", //--- add/edit/delete ถ้าอันไหนเป็น 1 ถือว่ามีสิทธิ์ /// ถ้าต้องการเฉพาะให้ระบุเป็น  add, edit หรือ delete
 			"callback" : function(){ updatePrice();  }
@@ -299,7 +389,7 @@ function getApprove(tab){
 
 	if( tab == 'cost' ){
 		var initialData = {
-			"title" : 'อนุมัติแก้ไขราคาทุน',
+			"title" : 'Authorization code',
 			"menu" : 'SOCOST',
 			"field" : "", //--- add/edit/delete ถ้าอันไหนเป็น 1 ถือว่ามีสิทธิ์ /// ถ้าต้องการเฉพาะให้ระบุเป็น  add, edit หรือ delete
 			"callback" : function(){ updateCost();  }

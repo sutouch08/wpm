@@ -5,7 +5,7 @@ class Zone extends PS_Controller
   public $menu_code = 'DBZONE';
 	public $menu_group_code = 'DB';
   public $menu_sub_group_code = 'WAREHOUSE';
-	public $title = 'เพิ่ม/แก้ไข โซน';
+	public $title = 'Add/Edit Bin location';
   public $error;
 
   public function __construct()
@@ -20,11 +20,11 @@ class Zone extends PS_Controller
   public function index()
   {
     $filter = array(
-      'code' => get_filter('code', 'code', ''),
-      'uname' => get_filter('uname', 'uname', ''),
-      'warehouse' => get_filter('warehouse', 'warehouse', ''),
-      'customer' => get_filter('customer', 'customer', ''),
-      'active' => get_filter('active', 'active', 'all')
+      'code' => get_filter('code', 'z_code', ''),
+      'uname' => get_filter('uname', 'z_uname', ''),
+      'warehouse' => get_filter('warehouse', 'z_warehouse', ''),
+      'customer' => get_filter('customer', 'z_customer', ''),
+      'active' => get_filter('active', 'z_active', 'all')
     );
 
 		//--- แสดงผลกี่รายการต่อหน้า
@@ -75,7 +75,7 @@ class Zone extends PS_Controller
     }
     else
     {
-      set_error("คุณไม่มีสิทธิ์แก้ไข");
+      set_error("permission");
       redirect($this->home);
     }
   }
@@ -127,14 +127,14 @@ class Zone extends PS_Controller
       if($this->zone_model->count_customer($code) > 0)
       {
         $sc = FALSE;
-        $this->error = "ไม่สามารถลบโซนได้เนื่องจากมีการเชื่อมโยงลูกค้าไว้";
+        $this->error = "Bin Location cannot be deleted because the customer is associated with it.";
       }
       else
       {
         if($this->zone_model->is_sap_exists($code))
         {
           $sc = FALSE;
-          $this->error = "กรุณาลบโซนใน SAP ก่อน";
+          $this->error = "You have to delete Bin location in SAP before delete";
         }
       }
 
@@ -143,7 +143,7 @@ class Zone extends PS_Controller
         if( ! $this->zone_model->delete($code))
         {
           $sc = FALSE;
-          $this->error = "ลบโซนไม่สำเร็จ";
+          $this->error = "Delete failed";
         }
       }
 
@@ -151,7 +151,7 @@ class Zone extends PS_Controller
     else
     {
       $sc = FALSE;
-      $this->error = "คุณไมมีสิทธิ์ลบโซน";
+      set_error('permission');
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -176,7 +176,7 @@ class Zone extends PS_Controller
           if($this->zone_model->is_exists_customer($code, $customer->code))
           {
             $sc = FALSE;
-            $this->error = "มีลูกค้าในโซนนี้อยู่แล้ว";
+            $this->error = "The customer is already associated with this location.";
           }
           else
           {
@@ -189,27 +189,27 @@ class Zone extends PS_Controller
             if( ! $this->zone_model->add_customer($arr))
             {
               $sc = FALSE;
-              $this->error = "เพิ่มลูกค้าไม่สำเร็จ";
+              $this->error = "Add customer failed";
             }
           }
         }
         else
         {
           $sc = FALSE;
-          $this->error = "รหัสลูกค้าไม่ถูกต้อง";
+          $this->error = "Invalid customer";
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "ไม่พบข้อมูล";
+        $this->error = "No data found";
       }
 
     }
     else
     {
       $sc = FALSE;
-      $this->error = "คุณไม่มีสิทธิ์ในการเพิ่มข้อมูล";
+      set_error('permission');
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -226,13 +226,13 @@ class Zone extends PS_Controller
       if( ! $this->zone_model->delete_customer($id))
       {
         $sc = FALSE;
-        $this->error = "ลบรายการไม่สำเร็จ";
+        $this->error = "Delete failed";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "คุณไม่มีสิทธิ์ลบข้อมูล";
+      set_error('permission');
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -257,7 +257,7 @@ class Zone extends PS_Controller
         if($zone->role != 8)
         {
           $sc = FALSE;
-          $this->error = "โซนนี้ไม่อยู่ในประเภทคลังยืมสินค้า";
+          $this->error = "This bin location is not for lending products";
         }
 
         if($sc === TRUE)
@@ -267,7 +267,7 @@ class Zone extends PS_Controller
             if($this->zone_model->is_exists_employee($code, $empID))
             {
               $sc = FALSE;
-              $this->error = "มีพนักงานนี้ในโซนอยู่แล้ว";
+              $this->error = "Employees are already associated with this zone.";
             }
             else
             {
@@ -280,14 +280,14 @@ class Zone extends PS_Controller
               if( ! $this->zone_model->add_employee($arr))
               {
                 $sc = FALSE;
-                $this->error = "เพิ่มพนักงานไม่สำเร็จ";
+                $this->error = "Add Employee failed";
               }
             }
           }
           else
           {
             $sc = FALSE;
-            $this->error = "ชื่อพนักงานไม่ถูกต้อง";
+            $this->error = "Invalid ";
           }
         }
       }
@@ -344,11 +344,11 @@ class Zone extends PS_Controller
         {
           $ds = array(
             'code' => $rs->code,
-            'name' => is_null($rs->name) ? '' : $rs->name,
+            'name' => is_null($rs->name) ? $rs->code : $rs->name,
 						'warehouse_code' => $rs->warehouse_code,
             'old_code' => $rs->old_code,
             'active' => $rs->Disabled == 'N' ? 1 : 0,
-            'last_sync' => date('Y-m-d H:i:s'),
+            'last_sync' => date('Y-m-d H:i:s')
           );
 
           $this->zone_model->update($rs->id, $ds);
@@ -358,7 +358,7 @@ class Zone extends PS_Controller
           $ds = array(
             'id' => $rs->id,
             'code' => $rs->code,
-            'name' => is_null($rs->name) ? '' : $rs->name,
+            'name' => is_null($rs->name) ? $rs->code : $rs->name,
             'warehouse_code' => $rs->warehouse_code,
             'active' => $rs->Disabled == 'N' ? 1 : 0,
             'last_sync' => date('Y-m-d H:i:s'),
@@ -512,7 +512,7 @@ class Zone extends PS_Controller
 
   public function clear_filter()
   {
-    $filter = array('code', 'uname', 'customer', 'warehouse', 'active');
+    $filter = array('z_code', 'z_uname', 'z_customer', 'z_warehouse', 'z_active');
     clear_filter($filter);
   }
 

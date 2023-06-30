@@ -6,8 +6,8 @@
   <div class="col-lg-6 col-md-6 col-sm-4 col-xs-4 padding-5">
     <p class="pull-right top-p">
 <?php if( $this->pm->can_add ) : ?>
-      <button type="button" class="btn btn-xs btn-success top-btn" onclick="goAdd()">
-        <i class="fa fa-plus"></i> สร้างใหม่
+      <button type="button" class="btn btn-xs btn-success btn-100 top-btn" onclick="goAdd()">
+        <i class="fa fa-plus"></i>&nbsp; New
       </button>
 <?php endif; ?>
     </p>
@@ -18,27 +18,27 @@
 <form id="searchForm" method="post">
 <div class="row">
   <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-    <label>เลขที่</label>
+    <label>Document No</label>
     <input type="text" class="form-control input-sm search text-center" name="code" id="code" value="<?php echo $code; ?>" autofocus />
   </div>
 
   <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-    <label>ลูกค้า</label>
+    <label>Customer</label>
     <input type="text" class="form-control input-sm search text-center" name="customer" id="customer" value="<?php echo $customer; ?>" />
   </div>
 
   <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-    <label>โซน</label>
+    <label>Bin location</label>
     <input type="text" class="form-control input-sm search text-center" name="zone" id="zone" value="<?php echo $zone; ?>" />
   </div>
 
   <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
-    <label>อ้างอิง</label>
+    <label>Reference</label>
     <input type="text" class="form-control input-sm search text-center" name="ref_code" id="ref_code" value="<?php echo $ref_code; ?>" />
   </div>
 
   <div class="col-lg-2 col-md-2-harf col-sm-2-harf col-xs-6 padding-5">
-    <label class="display-block">วันที่</label>
+    <label class="display-block">Date</label>
     <div class="input-daterange input-group">
         <input type="text" class="form-control input-sm width-50 text-center from-date" name="from_date" id="fromDate" value="<?php echo $from_date; ?>">
         <input type="text" class="form-control input-sm width-50 text-center" name="to_date" id="toDate" value="<?php echo $to_date; ?>">
@@ -46,23 +46,23 @@
   </div>
 
   <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-    <label>สถานะ</label>
+    <label>Status</label>
     <select class="form-control input-sm" name="status" id="status" onchange="getSearch()">
-      <option value="all" <?php echo is_selected($status, 'all'); ?>>ทั้งหมด</option>
-      <option value="0" <?php echo is_selected($status, '0'); ?>>ยังไม่บันทึก</option>
-      <option value="1" <?php echo is_selected($status, 1); ?>>บันทึกแล้ว</option>
-      <option value="2" <?php echo is_selected($status, 2); ?>>ยกเลิก</option>
+      <option value="all" <?php echo is_selected($status, 'all'); ?>>All</option>
+      <option value="0" <?php echo is_selected($status, '0'); ?>>Draft</option>
+      <option value="1" <?php echo is_selected($status, '1'); ?>>Success</option>
+      <option value="2" <?php echo is_selected($status, '2'); ?>>Cancelled</option>
     </select>
   </div>
 
   <div class="col-lg-1 col-md-1 col-sm-1 col-xs-4 padding-5">
     <label class="display-block not-show">search</label>
-    <button type="button" class="btn btn-xs btn-primary btn-block" onclick="getSearch()">ค้นหา</button>
+    <button type="button" class="btn btn-xs btn-primary btn-block" onclick="getSearch()">Search</button>
   </div>
 
   <div class="col-lg-1 col-md-1 col-sm-1 col-xs-4 padding-5">
     <label class="display-block not-show">Reset</label>
-    <button type="button" class="btn btn-xs btn-warning btn-block" onclick="clearFilter()">Reset</button>
+    <button type="button" class="btn btn-xs btn-warning btn-block" onclick="clearFilter()">Clear</button>
   </div>
 </div>
 </form>
@@ -72,9 +72,10 @@
 <div class="row">
   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
     <p class="pull-right top-p">
-      <span>ว่าง</span><span class="margin-right-15"> = ปกติ</span>
-      <span class="blue">NC</span><span class="margin-right-15"> = ยังไม่บันทึก</span>
-      <span class="red">CN</span><span class=""> = ยกเลิก</span>
+      <span> Status : &nbsp; &nbsp;</span>
+      <span class="green">SC</span><span class="margin-right-15"> = Success</span>
+      <span class="blue">DF</span><span class="margin-right-15"> = Draft</span>
+      <span class="red">CN</span><span class=""> = Cancelled</span>
     </p>
   </div>
 </div>
@@ -85,14 +86,14 @@
        <thead>
          <tr class="font-size-12">
            <th class="fix-width-40 text-center">#</th>
-           <th class="fix-width-100">วันที่</th>
-           <th class="fix-width-120">เลขที่เอกสาร</th>
-           <th class="fix-width-350">ลูกค้า</th>
-           <th class="fix-width-250">โซน</th>
-           <th class="fix-width-100 text-right">มูลค่า</th>
-           <th class="fix-width-100 text-center">อ้างอิง</th>
-           <th class="fix-width-40 text-center">สถานะ</th>
-           <th class="fix-width-100"></th>
+           <th class="fix-width-80"></th>
+           <th class="fix-width-40 text-center">Status</th>
+           <th class="fix-width-100">Date</th>
+           <th class="fix-width-120">Document No</th>
+           <th class="fix-width-350">Customer</th>
+           <th class="fix-width-100 text-right">Amount</th>
+           <th class="fix-width-250">Bin Location</th>
+           <th class="fix-width-100 text-center">Reference</th>
          </tr>
        </thead>
        <tbody>
@@ -102,33 +103,6 @@
         <tr class="font-size-12" id="row-<?php echo $rs->code; ?>">
           <td class="middle text-center no">
             <?php echo $no; ?>
-          </td>
-          <td class="middle">
-            <?php echo thai_date($rs->date_add, FALSE); ?>
-          </td>
-          <td class="middle">
-            <?php echo $rs->code; ?>
-          </td>
-          <td class="middle">
-            <?php echo $rs->customer_name; ?>
-          </td>
-          <td class="middle">
-            <?php echo $rs->zone_name; ?>
-          </td>
-          <td class="middle text-right">
-            <?php echo number($rs->amount, 2); ?>
-          </td>
-          <td class="middle text-center">
-            <?php echo $rs->ref_code; ?>
-          </td>
-
-          <td class="middle text-center">
-            <?php if($rs->status == 2) : ?>
-              <span class="red">CN</span>
-            <?php endif; ?>
-            <?php if($rs->status == 0) : ?>
-              <span class="blue">NC</span>
-            <?php endif; ?>
           </td>
           <td class="middle text-right">
             <?php if($rs->status == 1) : ?>
@@ -141,12 +115,44 @@
               <button type="button" class="btn btn-minier btn-danger" onclick="getDelete('<?php echo $rs->code; ?>')"><i class="fa fa-trash"></i></button>
             <?php endif; ?>
           </td>
+          <td class="middle text-center">
+            <?php if($rs->status == 2) : ?>
+              <span class="red">CN</span>
+            <?php endif; ?>
+            <?php if($rs->status == 0) : ?>
+              <span class="blue">DF</span>
+            <?php endif; ?>
+            <?php if($rs->status == 1) : ?>
+              <span class="green">SC</span>
+            <?php endif; ?>
+          </td>
+          <td class="middle">
+            <?php echo thai_date($rs->date_add, FALSE); ?>
+          </td>
+          <td class="middle">
+            <?php echo $rs->code; ?>
+          </td>
+          <td class="middle">
+            <?php echo $rs->customer_name; ?>
+          </td>
+
+          <td class="middle text-right">
+            <?php echo number($rs->amount, 2); ?>
+          </td>
+
+          <td class="middle">
+            <?php echo $rs->zone_name; ?>
+          </td>
+          <td class="middle text-center">
+            <?php echo $rs->ref_code; ?>
+          </td>
+
         </tr>
 <?php    $no++; ?>
 <?php   endforeach; ?>
 <?php else : ?>
         <tr>
-          <td colspan="9" class="middle text-center">---- ไม่พบรายการ ----</td>
+          <td colspan="9" class="middle text-center">---- No item found ----</td>
         </tr>
 <?php endif; ?>
        </tbody>

@@ -1,5 +1,39 @@
 <?php
 
+function parse_discount_text_percent_only($discText, $price)
+{
+	$disc = array(
+		'discount1' => 0,
+		'discount2' => 0,
+		'discount3' => 0,
+		'discount_amount' => 0
+	);
+
+	if( ! empty($discText))
+	{
+		$step = explode('+', $discText);
+
+		$i = 1;
+		foreach($step as $discLabel)
+		{
+			if($i < 4)
+			{
+				$key = 'discount'.$i;
+				$arr = explode('%', $discLabel);
+				$arr[0] = floatval($arr[0]);
+				$discount = ($arr[0] * 0.01) * $price; //--- ส่วนลดต่อชิ้น
+				$disc[$key] = $arr[0].'%'; //--- discount label
+				$disc['discount_amount'] += $discount;
+				$price -= $discount;
+			}
+
+			$i++;
+		}
+	}
+
+	return $disc;
+}
+
 //--- convert discount text to array
 function parse_discount_text($discText, $price)
 {
@@ -10,7 +44,7 @@ function parse_discount_text($discText, $price)
 		'discount_amount' => 0
 	);
 
-	if(!empty($discText))
+	if( ! empty($discText))
 	{
 		$step = explode('+', $discText);
 

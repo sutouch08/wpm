@@ -20,7 +20,7 @@
 		<!-- ace settings handler -->
 		<script src="<?php echo base_url(); ?>assets/js/ace-extra.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/jquery.min.js"></script>
-  	<script src="<?php echo base_url(); ?>assets/js/jquery-ui-1.10.4.custom.min.js"></script>
+  	<script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 	  <script src="<?php echo base_url(); ?>assets/js/bootstrap.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/ace/ace.js"></script>
 		<script src="<?php echo base_url(); ?>assets/js/ace-elements.js"></script>

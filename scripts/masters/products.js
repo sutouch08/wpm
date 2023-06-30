@@ -143,10 +143,10 @@ function doExport(code){
 }
 
 
-function sendToWms(code) {
+function sendToSap(code) {
 	load_in();
 	$.ajax({
-		url:BASE_URL + 'masters/products/send_to_wms',
+		url:BASE_URL + 'masters/products/send_to_sap',
 		type:'POST',
 		cache:false,
 		data:{

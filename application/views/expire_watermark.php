@@ -27,5 +27,5 @@
 </style>
 
 <div style="width:100vw; height:0px; position:fixed; top:40vh; left:0; line-height:0px; color:grey; text-align:center; z-index:100000; opacity:0.1;">
-    <span class="cancleWatermark">หมดอายุ</span>
+    <span class="cancleWatermark">Expired</span>
 </div>

@@ -7,7 +7,7 @@ class Delivery_order extends PS_Controller
   public $menu_code = 'ICODDO';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'PICKPACK';
-	public $title = 'รายการรอเปิดบิล';
+	public $title = 'Ready To Ship';
   public $filter;
   public $error;
   public function __construct()
@@ -63,7 +63,7 @@ class Delivery_order extends PS_Controller
   public function confirm_order()
   {
     $sc = TRUE;
-    $message = 'ทำรายการไม่สำเร็จ';
+    $message = 'Update failed';
     $this->load->model('masters/products_model');
     $this->load->model('inventory/buffer_model');
     $this->load->model('inventory/cancle_model');
@@ -103,7 +103,7 @@ class Delivery_order extends PS_Controller
         $arr = array(
           'order_code' => $code,
           'state' => 8,
-          'update_user' => get_cookie('uname')
+          'update_user' => $this->_user->uname
         );
 
         $this->order_state_model->add_state($arr);
@@ -127,6 +127,7 @@ class Delivery_order extends PS_Controller
 
             //--- ดึงข้อมูลสินค้าที่จัดไปแล้วตามสินค้า
             $buffers = $this->buffer_model->get_details($code, $rs->product_code);
+
             if(!empty($buffers))
             {
               $no = 0;
@@ -146,7 +147,7 @@ class Delivery_order extends PS_Controller
                   if($this->buffer_model->update($rm->order_code, $rm->product_code, $rm->zone_code, $qty) !== TRUE)
                   {
                     $sc = FALSE;
-                    $message = 'ปรับยอดใน buffer ไม่สำเร็จ';
+                    $message = 'Update buffer failed';
                     break;
                   }
 
@@ -167,12 +168,17 @@ class Delivery_order extends PS_Controller
                   if($this->movement_model->add($arr) === FALSE)
                   {
                     $sc = FALSE;
-                    $message = 'บันทึก movement ขาออกไม่สำเร็จ';
+                    $message = 'Update movement failed';
                     break;
                   }
 
                   $item = $this->products_model->get($rs->product_code);
                   //--- ข้อมูลสำหรับบันทึกยอดขาย
+                  $total_amount = $rs->final_price * $buffer_qty;
+                  $totalFrgn = convertFC($total_amount, $rs->rate, 1);
+
+                  $total_cost = $rs->cost * $buffer_qty;
+
                   $arr = array(
                           'reference' => $order->code,
                           'role'   => $order->role,
@@ -185,11 +191,14 @@ class Delivery_order extends PS_Controller
                           'price'  => $rs->price,
                           'sell'  => $rs->final_price,
                           'qty'   => $buffer_qty,
+                          'currency' => $rs->currency,
+                          'rate' => $rs->rate,
                           'discount_label'  => discountLabel($rs->discount1, $rs->discount2, $rs->discount3),
                           'discount_amount' => ($rs->discount_amount * $buffer_qty),
-                          'total_amount'   => $rs->final_price * $buffer_qty,
-                          'total_cost'   => $rs->cost * $buffer_qty,
-                          'margin'  =>  ($rs->final_price * $buffer_qty) - ($rs->cost * $buffer_qty),
+                          'total_amount'   => $total_amount,
+                          'total_cost'   => $total_cost,
+                          'totalFrgn' => $totalFrgn,
+                          'margin'  =>  $totalFrgn > 0 ? $totalFrgn - $total_cost : $total_amount - $total_cost,
                           'id_policy'   => $rs->id_policy,
                           'id_rule'     => $rs->id_rule,
                           'customer_code' => $order->customer_code,
@@ -199,7 +208,7 @@ class Delivery_order extends PS_Controller
                           'date_add'  => $date_add, //---- เปลี่ยนไปตาม config ORDER_SOLD_DATE
                           'zone_code' => $rm->zone_code,
                           'warehouse_code'  => $rm->warehouse_code,
-                          'update_user' => get_cookie('uname'),
+                          'update_user' => $this->_user->uname,
                           'budget_code' => $order->budget_code,
                           'empID' => $order->empID,
                           'empName' => $order->empName,
@@ -210,7 +219,7 @@ class Delivery_order extends PS_Controller
                   if($this->delivery_order_model->sold($arr) !== TRUE)
                   {
                     $sc = FALSE;
-                    $message = 'บันทึกขายไม่สำเร็จ';
+                    $message = 'Insert sale record failed';
                     break;
                   }
                 } //--- end if sell_qty > 0
@@ -249,7 +258,7 @@ class Delivery_order extends PS_Controller
                     else
                     {
                       $sc = FALSE;
-                      $message = 'ปรับปรุงยอดรายการค้างรับไม่สำเร็จ';
+                      $message = 'Failed to update transform item qty';
                     }
                   }
                 }
@@ -274,7 +283,7 @@ class Delivery_order extends PS_Controller
               if($this->lend_model->add_detail($arr) === FALSE)
               {
                 $sc = FALSE;
-                $message = 'เพิ่มรายการค้างรับไม่สำเร็จ';
+                $message = 'Failed to update lend item qty';
               }
             }
 
@@ -299,13 +308,13 @@ class Delivery_order extends PS_Controller
                 'warehouse_code' => $rs->warehouse_code,
                 'zone_code' => $rs->zone_code,
                 'qty' => $rs->qty,
-                'user' => get_cookie('uname')
+                'user' => $this->_user->uname
               );
 
               if($this->cancle_model->add($arr) === FALSE)
               {
                 $sc = FALSE;
-                $message = 'เคลียร์ยอดค้างเข้า cancle ไม่สำเร็จ';
+                $message = 'Insert Cancel item failed';
                 break;
               }
             }
@@ -313,7 +322,7 @@ class Delivery_order extends PS_Controller
             if($this->buffer_model->delete($rs->id) === FALSE)
             {
               $sc = FALSE;
-              $message = 'ลบ Buffer ที่ค้างอยู่ไม่สำเร็จ';
+              $message = 'Delete buffer failed';
               break;
             }
           }
@@ -322,6 +331,7 @@ class Delivery_order extends PS_Controller
 
         //--- บันทึกขายรายการที่ไม่นับสต็อก
         $bill = $this->delivery_order_model->get_non_count_bill_detail($order->code);
+
         if(!empty($bill))
         {
           foreach($bill as $rs)
@@ -353,7 +363,7 @@ class Delivery_order extends PS_Controller
                     'date_add'  => $date_add, //--- เปลี่ยนตาม Config ORDER_SOLD_DATE
                     'zone_code' => NULL,
                     'warehouse_code'  => NULL,
-                    'update_user' => get_cookie('uname'),
+                    'update_user' => $this->_user->uname,
                     'budget_code' => $order->budget_code,
                     'is_count' => 0,
                     'empID' => $order->empID,
@@ -365,7 +375,7 @@ class Delivery_order extends PS_Controller
             if($this->delivery_order_model->sold($arr) !== TRUE)
             {
               $sc = FALSE;
-              $message = 'บันทึกขายไม่สำเร็จ';
+              $message = 'Insert sale record failed';
               break;
             }
           }
@@ -387,7 +397,7 @@ class Delivery_order extends PS_Controller
     else
     {
       $sc = FALSE;
-      $message = 'order code not found';
+      $message = 'Order code not found';
     }
 
     if($sc === TRUE)
@@ -406,6 +416,7 @@ class Delivery_order extends PS_Controller
 
   public function view_detail($code)
   {
+    $this->title = "Ready to ship";
     $this->load->model('masters/customers_model');
     $this->load->model('inventory/qc_model');
 		$this->load->model('masters/warehouse_model');
@@ -444,7 +455,7 @@ class Delivery_order extends PS_Controller
 
 		$arr = array(
 			'shipped_date' => $date,
-			'update_user' => get_cookie('uname')
+			'update_user' => $this->_user->uname
 		);
 
 		if( ! $this->orders_model->update($code, $arr))
@@ -570,7 +581,7 @@ class Delivery_order extends PS_Controller
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสาร {$code}";
+      $this->error = "Document No not found : {$code}";
     }
 
     return $sc;
