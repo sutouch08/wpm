@@ -1,131 +1,131 @@
 <?php $this->load->view('include/header'); ?>
 <div class="row">
-	<div class="col-sm-12">
-    <h3 class="title"><?php echo $this->title; ?></h3>
-    </div>
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5">
+    <h3 class="title title-xs"><?php echo $this->title; ?></h3>
+  </div>
 </div><!-- End Row -->
 <hr class=""/>
 <form id="searchForm" method="post" action="<?php echo current_url(); ?>">
 <div class="row">
-  <div class="col-sm-1 col-1-harf padding-5 first">
-    <label>รหัส</label>
-    <input type="text" class="form-control input-sm text-center search" name="code" id="code" value="<?php echo $code; ?>" />
+  <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
+    <label>SKU</label>
+    <input type="text" class="form-control text-center search" name="code" id="code" value="<?php echo $code; ?>" />
   </div>
 
-  <div class="col-sm-1 col-1-harf padding-5">
-    <label>ชื่อ</label>
-    <input type="text" class="form-control input-sm text-center search" name="name" id="name" value="<?php echo $name; ?>" />
+  <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
+    <label>Description</label>
+    <input type="text" class="form-control text-center search" name="name" id="name" value="<?php echo $name; ?>" />
   </div>
 
-	<div class="col-sm-2 padding-5">
-    <label>ราคา</label>
+	<div class="col-lg-2-harf col-md-3 col-sm-3 col-xs-6 padding-5">
+    <label>Sell price</label>
 		<div class="input-reduction">
-		<select class="form-control input-sm input-discount" name="operater">
-			<option value="equal">เท่ากับ</option>
-			<option value="less_than" <?php echo is_selected('less_than', $operater); ?>> ไม่เกิน </option>
-			<option value="more_than" <?php echo is_selected('more_than', $operater); ?>> มากกว่า </option>
+		<select class="form-control input-discount" name="operater">
+			<option value="equal">Equal</option>
+			<option value="less_than" <?php echo is_selected('less_than', $operater); ?>> Less than </option>
+			<option value="more_than" <?php echo is_selected('more_than', $operater); ?>> More than </option>
 		</select>
-		<input type="number" class="form-control input-sm input-unit search text-center" name="price" id="price" value="<?php echo $price; ?>" />
+		<input type="number" class="form-control input-unit search text-center" name="price" id="price" value="<?php echo $price; ?>" />
 	</div>
   </div>
 
-	<div class="col-sm-1 col-1-harf padding-5">
-    <label>ไซส์</label>
-    <input type="text" class="form-control input-sm text-center search" name="size" id="size" value="<?php echo $size; ?>" />
+	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
+    <label>Size</label>
+    <input type="text" class="form-control text-center search" name="size" id="size" value="<?php echo $size; ?>" />
   </div>
 
-  <div class="col-sm-1 col-1-harf padding-5">
-    <label>สี</label>
-    <select class="form-control input-sm" name="color_group" id="color_group">
-      <option value="">ทั้งหมด</option>
+  <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
+    <label>Color group</label>
+    <select class="form-control" name="color_group" id="color_group">
+      <option value="">All</option>
       <?php echo select_color_group($color_group); ?>
     </select>
   </div>
 
-  <div class="col-sm-2 col-xs-12 padding-5">
-    <label>คลัง</label>
-    <select class="form-control input-sm" id="warehouse" name="warehouse">
-      <option value="">ทั้งหมด</option>
+  <div class="col-lg-3-harf col-md-3 col-sm-3 col-xs-6 padding-5">
+    <label>Warehouse</label>
+    <select class="form-control" id="warehouse" name="warehouse">
+      <option value="">All</option>
       <?php echo select_warehouse($warehouse); ?>
     </select>
   </div>
 
 
-	<div class="col-sm-2 padding-5 last">
-    <label>กลุ่ม</label>
+	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
+    <label>Group</label>
     <select class="form-control" name="group">
-			<option value="">ทั้งหมด</option>
+			<option value="">All</option>
 			<?php echo select_product_group($group); ?>
 		</select>
   </div>
 
-	<div class="col-sm-2 padding-5 first">
-    <label>หมวดหมู่</label>
+	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
+    <label>Category</label>
 		<select class="form-control" name="category">
-			<option value="">ทั้งหมด</option>
+			<option value="">All</option>
 			<?php echo select_product_category($category); ?>
 		</select>
   </div>
 
-	<div class="col-sm-2 padding-5">
-    <label>ประเภท</label>
+	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
+    <label>Kind</label>
 		<select class="form-control" name="kind">
-			<option value="">ทั้งหมด</option>
+			<option value="">All</option>
 			<?php echo select_product_kind($kind); ?>
 		</select>
   </div>
 
-	<div class="col-sm-2 padding-5">
-    <label>ชนิด</label>
+	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
+    <label>Type</label>
 		<select class="form-control" name="type">
-			<option value="">ทั้งหมด</option>
+			<option value="">All</option>
 			<?php echo select_product_type($type); ?>
 		</select>
   </div>
 
-	<div class="col-sm-2 padding-5">
-    <label>ยี่ห้อ</label>
+	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
+    <label>Brand</label>
 		<select class="form-control" name="brand">
-			<option value="">ทั้งหมด</option>
+			<option value="">All</option>
 			<?php echo select_product_brand($brand); ?>
 		</select>
   </div>
 
-	<div class="col-sm-2 padding-5">
-    <label>ปี</label>
+	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
+    <label>Year</label>
 		<select class="form-control" name="year">
-			<option value="">ทั้งหมด</option>
+			<option value="">All</option>
 			<?php echo select_years($year); ?>
 		</select>
   </div>
 
-  <div class="col-sm-1 padding-5">
+  <div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-3 padding-5">
     <label class="display-block not-show">buton</label>
-    <button type="button" class="btn btn-sm btn-primary btn-block" onclick="getSearch()"><i class="fa fa-search"></i> ค้นหา</button>
+    <button type="button" class="btn btn-sm btn-primary btn-block" onclick="getSearch()"><i class="fa fa-search"></i> Search</button>
   </div>
-	<div class="col-sm-1 padding-5 last">
+	<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-3 padding-5">
     <label class="display-block not-show">buton</label>
-    <button type="button" class="btn btn-sm btn-warning btn-block" onclick="clearFilter()"><i class="fa fa-retweet"></i> Reset</button>
+    <button type="button" class="btn btn-sm btn-warning btn-block" onclick="clearFilter()"><i class="fa fa-retweet"></i> Clear</button>
   </div>
 </div>
 <hr class="margin-top-15">
 </form>
 <?php echo $this->pagination->create_links(); ?>
 <div class="row">
-	<div class="col-sm-12">
-		<table class="table table-striped table-bordered table-hover">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5 table-responsive">
+		<table class="table table-striped table-bordered table-hover" style="min-width:1000px;">
 			<thead>
 				<tr>
-					<th class="width-5 middle text-center">ลำดับ</th>
-					<th class="width-5 middle"></th>
-					<th class="width-20 middle">รหัส</th>
-					<th class="width-8 middle">ราคา</th>
-					<th class="width-8 middle text-center">สต็อก</th>
-					<th class="width-8 middle text-center">จอง</th>
-					<th class="width-8 middle text-center">คงเหลือ</th>
-          <th class="middle">สินค้า</th>
-					<th class="width-5 middle text-center">สี</th>
-					<th class="width-5 middle text-center">ไซส์</th>
+					<th class="fix-width-40 middle text-center">#</th>
+					<th class="fix-width-60 middle">Image</th>
+					<th class="fix-width-200 middle">SKU</th>
+					<th class="fix-width-80 middle">Price</th>
+					<th class="fix-width-80 middle text-center">In stock</th>
+					<th class="fix-width-80 middle text-center">Reserved</th>
+					<th class="fix-width-80 middle text-center">Available</th>
+					<th class="fix-width-80 middle text-center">Color</th>
+					<th class="fix-width-80 middle text-center">Size</th>
+          <th class="min-width-250 middle">Description</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -140,9 +140,9 @@
 						<td class="middle text-center blue"><?php echo number($rs->OnHand); ?></td>
 						<td class="middle text-center green"><?php echo number($rs->ordered); ?></td>
 						<td class="middle text-center red"><?php echo number($rs->balance); ?></td>
-            <td class="middle"><?php echo $rs->name; ?></td>
 						<td class="middle text-center"><?php echo $rs->color_code; ?></td>
 						<td class="middle text-center"><?php echo $rs->size_code; ?></td>
+            <td class="middle"><?php echo $rs->name; ?></td>
 					</tr>
 					<?php $no++; ?>
 				<?php endforeach; ?>

@@ -6,7 +6,7 @@ class Temp_delivery_order extends PS_Controller
   public $menu_code = 'TEIVCK';
 	public $menu_group_code = 'TE';
   public $menu_sub_group_code = 'TESALE';
-	public $title = 'ตรวจสอบ ออเดอร์ - ถังกลาง';
+	public $title = 'Delivery Order Temp';
   public $filter;
   public function __construct()
   {

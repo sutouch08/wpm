@@ -6,7 +6,7 @@ class Temp_delivery_consignment extends PS_Controller
   public $menu_code = 'TECMCK';
 	public $menu_group_code = 'TE';
   public $menu_sub_group_code = 'TECONSIGNMENT';
-	public $title = 'ตรวจสอบ ตัดยอดฝากขาย(เทียม) - ถังกลาง';
+	public $title = 'Dellivery Consignment Temp';
   public $filter;
   public function __construct()
   {

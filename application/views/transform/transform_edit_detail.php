@@ -11,9 +11,9 @@ $hide = $order->status == 1 ? 'hide' : '';
     </div>
     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 padding-5">
     	<p class="pull-right top-p">
-        	<button type="button" class="btn btn-xs btn-warning top-btn" onClick="editOrder('<?php echo $order->code; ?>')"><i class="fa fa-arrow-left"></i> กลับ</button>
+        	<button type="button" class="btn btn-xs btn-warning top-btn" onClick="editOrder('<?php echo $order->code; ?>')"><i class="fa fa-arrow-left"></i> Back</button>
       <?php if($this->pm->can_add OR $this->pm->can_edit) : ?>
-          <button type="button" class="btn btn-xs btn-success top-btn <?php echo $hide; ?>" id="btn-save-order" onclick="saveOrder()"><i class="fa fa-save"></i> บันทึก</button>
+          <button type="button" class="btn btn-xs btn-success top-btn <?php echo $hide; ?>" id="btn-save-order" onclick="saveOrder()"><i class="fa fa-save"></i> Save</button>
       <?php endif; ?>
         </p>
     </div>
@@ -84,12 +84,11 @@ $hide = $order->status == 1 ? 'hide' : '';
   			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				<h4 class="modal-title" id="modalTitle">title</h4>
-        <center><span style="color: red;">ใน ( ) = ยอดคงเหลือทั้งหมด   ไม่มีวงเล็บ = สั่งได้ทันที</span></center>
 			 </div>
 			 <div class="modal-body" id="modalBody"></div>
 			 <div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
-				<button type="button" class="btn btn-primary" onClick="addToOrder()" >เพิ่มในรายการ</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" onClick="addToOrder()" >Add to list</button>
 			 </div>
 		</div>
 	</div>

@@ -95,7 +95,7 @@ function getMoveTable(){
 		success: function(rs){
 			if( isJson(rs) ){
 				var source 	= $("#moveTableTemplate").html();
-				var data		= $.parseJSON(rs);
+				var data		= JSON.parse(rs);
 				var output	= $("#move-list");
 				render(source, data, output);
 			}

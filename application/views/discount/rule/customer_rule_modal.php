@@ -4,7 +4,7 @@
     <div class="modal-content">
       <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      <h4 class="modal-title">รายชื่อลูกค้า</h4>
+      <h4 class="modal-title">Customer List</h4>
       </div>
       <div class="modal-body" id="cust-name-body">
         <ul style="list-style-type:none;" id="cust-list">
@@ -33,7 +33,7 @@
         </ul>
       </div>
       <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -47,7 +47,7 @@
     <div class="modal-content">
       <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      <h4 class="modal-title">เลือกกลุ่มลูกค้า</h4>
+      <h4 class="modal-title">Customer Group</h4>
       </div>
       <div class="modal-body" id="cust-group-body">
         <div class="row">
@@ -67,7 +67,7 @@
         </div>
       </div>
       <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

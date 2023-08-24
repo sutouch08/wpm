@@ -61,20 +61,20 @@ function approve()
   var order_code = $('#order_code').val();
 	var is_wms = $('#is_wms').val();
 
-	if(is_wms == 1) {
-		var id_address = $('#address_id').val();
-		var id_sender = $('#id_sender').val();
-
-		if(id_address == "") {
-			swal("กรุณาระบุที่อยู่จัดส่ง");
-			return false;
-		}
-
-		if(id_sender == "") {
-			swal("กรุณาระบุผู้จัดส่ง");
-			return false;
-		}
-	}
+	// if(is_wms == 1) {
+	// 	var id_address = $('#address_id').val();
+	// 	var id_sender = $('#id_sender').val();
+  //
+	// 	if(id_address == "") {
+	// 		swal("กรุณาระบุที่อยู่จัดส่ง");
+	// 		return false;
+	// 	}
+  //
+	// 	if(id_sender == "") {
+	// 		swal("กรุณาระบุผู้จัดส่ง");
+	// 		return false;
+	// 	}
+	// }
 
 	load_in();
 
@@ -149,30 +149,30 @@ function change_state(){
 	var tracking = $('#tracking').val();
 	var is_wms = $('#is_wms').val();
 
-	if(is_wms == 1) {
-
-		if(id_address == "") {
-			swal("กรุณาระบุที่อยู่จัดส่ง");
-			return false;
-		}
-
-		if(id_sender == "") {
-			swal("กรุณาระบุผู้จัดส่ง");
-			return false;
-		}
-
-		if($('#sender option:selected').data('tracking') == 1) {
-			if(trackingNo != tracking) {
-				swal("กรุณากดบันทึก Tracking No");
-				return false;
-			}
-
-			if(trackingNo.length === 0) {
-				swal("กรุณาระบุ Tracking No");
-				return false;
-			}
-		}
-	}
+	// if(is_wms == 1) {
+  //
+	// 	if(id_address == "") {
+	// 		swal("กรุณาระบุที่อยู่จัดส่ง");
+	// 		return false;
+	// 	}
+  //
+	// 	if(id_sender == "") {
+	// 		swal("กรุณาระบุผู้จัดส่ง");
+	// 		return false;
+	// 	}
+  //
+	// 	if($('#sender option:selected').data('tracking') == 1) {
+	// 		if(trackingNo != tracking) {
+	// 			swal("กรุณากดบันทึก Tracking No");
+	// 			return false;
+	// 		}
+  //
+	// 		if(trackingNo.length === 0) {
+	// 			swal("กรุณาระบุ Tracking No");
+	// 			return false;
+	// 		}
+	// 	}
+	// }
 
   $.ajax({
     url:BASE_URL + 'orders/orders/order_state_change',
@@ -189,8 +189,7 @@ function change_state(){
 			load_out();
       if(rs === 'success'){
         swal({
-          title:'Success',
-          text:'ปล่อยจัดสินค้าเรียบร้อยแล้ว',
+          title:'Success',          
           type:'success',
           timer:1000
         });

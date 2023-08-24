@@ -5,7 +5,7 @@ class Transfer_acception extends PS_Controller
   public $menu_code = 'RADACT';
 	public $menu_group_code = 'RE';
   public $menu_sub_group_code = 'REAUDIT';
-	public $title = 'รายงานเอกสารโอนคลังที่ต้องกดรับ';
+	public $title = 'Transfer acceptance report';
   public $filter;
 	public $wms;
 	public $limit = 2000;
@@ -73,7 +73,7 @@ class Transfer_acception extends PS_Controller
               'no' => $no,
               'date_add' => thai_date($rs->date_add),
               'code' => $rs->code,
-              'is_accept' => $rs->is_accept == 1 ? 'กดรับแล้ว' : 'ยังไม่กดรับ',
+              'is_accept' => $rs->is_accept == 1 ? 'Yes' : 'No',
               'owner_name' => $owner,
               'accept_by' => $name,
               'accept_on' => thai_date($rs->accept_on, TRUE),
@@ -147,17 +147,17 @@ class Transfer_acception extends PS_Controller
     $this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(25);
     $this->excel->getActiveSheet()->getColumnDimension('H')->setWidth(50);
 
-    $this->excel->getActiveSheet()->setCellValue('A1', 'รายงานเอกสารโอนคลังที่ต้องกดรับ');
+    $this->excel->getActiveSheet()->setCellValue('A1', 'Transfer acceptance report');
 
     //--- set Table header
-    $this->excel->getActiveSheet()->setCellValue('A2', 'ลำดับ');
-    $this->excel->getActiveSheet()->setCellValue('B2', 'วันที่');
-    $this->excel->getActiveSheet()->setCellValue('C2', 'เลขที่');
-    $this->excel->getActiveSheet()->setCellValue('D2', 'เจ้าของโซน');
-    $this->excel->getActiveSheet()->setCellValue('E2', 'การกดรับ');
-    $this->excel->getActiveSheet()->setCellValue('F2', 'กดรับโดย');
-    $this->excel->getActiveSheet()->setCellValue('G2', 'วันที่กดรับ');
-    $this->excel->getActiveSheet()->setCellValue('H2', 'หมายเหตุ');
+    $this->excel->getActiveSheet()->setCellValue('A2', 'No');
+    $this->excel->getActiveSheet()->setCellValue('B2', 'Date');
+    $this->excel->getActiveSheet()->setCellValue('C2', 'Document No');
+    $this->excel->getActiveSheet()->setCellValue('D2', 'Location Owner');
+    $this->excel->getActiveSheet()->setCellValue('E2', 'Acceptance');
+    $this->excel->getActiveSheet()->setCellValue('F2', 'Accept by');
+    $this->excel->getActiveSheet()->setCellValue('G2', 'Accept date');
+    $this->excel->getActiveSheet()->setCellValue('H2', 'Notes');
 
 
 		if(! empty($docList))
@@ -185,7 +185,7 @@ class Transfer_acception extends PS_Controller
   	        $this->excel->getActiveSheet()->setCellValue('B'.$row, thai_date($rs->date_add, FALSE, '/'));
   					$this->excel->getActiveSheet()->setCellValue('C'.$row, $rs->code);
             $this->excel->getActiveSheet()->setCellValue('D'.$row, $owner);
-  	        $this->excel->getActiveSheet()->setCellValue('E'.$row, $rs->is_accept == 1 ? 'กดรับแล้ว' : 'ยังไม่กดรับ');
+  	        $this->excel->getActiveSheet()->setCellValue('E'.$row, $rs->is_accept == 1 ? 'Yes' : 'No');
   	        $this->excel->getActiveSheet()->setCellValue('F'.$row, $name);
   					$this->excel->getActiveSheet()->setCellValue('G'.$row, thai_date($rs->accept_on, TRUE, '/'));
             $this->excel->getActiveSheet()->setCellValue('H'.$row, $rs->accept_remark);
@@ -198,7 +198,7 @@ class Transfer_acception extends PS_Controller
 		} //--- end WO
 
     setToken($token);
-    $file_name = "รายงานเอกสารโอนคลังที่ต้องกดรับ ".date('Ymd').".xlsx";
+    $file_name = "Transfer acceptance report ".date('Ymd').".xlsx";
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); /// form excel 2007 XLSX
     header('Content-Disposition: attachment;filename="'.$file_name.'"');
     $writer = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');

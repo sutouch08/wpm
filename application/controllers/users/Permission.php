@@ -72,7 +72,7 @@ class Permission extends PS_Controller{
   {
     $this->load->model('menu');
     $profile = $this->profile_model->get_profile($id);
-    $this->title = 'กำหนดสิทธิ์ - '.$profile->name;
+    $this->title = 'Permission - '.$profile->name;
     $data['data'] = $profile;
     $data['menus'] = array();
     $groups = $this->menu->get_menu_groups();

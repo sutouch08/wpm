@@ -5,7 +5,7 @@ class Discount_policy extends PS_Controller
 {
   public $menu_code = 'SCPOLI';
 	public $menu_group_code = 'SC';
-	public $title = 'นโยบายส่วนลด';
+	public $title = 'Discount Policy';
 
   public function __construct()
   {
@@ -90,13 +90,13 @@ class Discount_policy extends PS_Controller
       }
       else
       {
-        set_error('เพิ่มข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+        set_error('Failed to add data. Please try again.');
         redirect($this->home.'/add_new');
       }
     }
     else
     {
-      set_error('เพิ่มข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+      set_error('Failed to add data Please try again.');
       redirect($this->home.'/add_new');
     }
 
@@ -144,7 +144,7 @@ class Discount_policy extends PS_Controller
     }
     else
     {
-      set_error('ปรับปรุงข้อมูลไม่สำเร็จ');
+      set_error('Failed to update data');
       redirect($this->home.'/edit_policy/'.$code);
     }
   }

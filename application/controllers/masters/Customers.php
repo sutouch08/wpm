@@ -5,7 +5,7 @@ class Customers extends PS_Controller
   public $menu_code = 'DBCUST';
 	public $menu_group_code = 'DB';
   public $menu_sub_group_code = 'CUSTOMER';
-	public $title = 'เพิ่ม/แก้ไข รายชื่อลูกค้า';
+	public $title = 'Customers';
   public $segment = 4;
 
   public function __construct()
@@ -98,26 +98,26 @@ class Customers extends PS_Controller
       if($this->customers_model->is_exists($code) === TRUE)
       {
         $sc = FALSE;
-        set_error("'".$code."' มีในระบบแล้ว");
+        set_error("'".$code."' already exists");
       }
 
       if($this->customers_model->is_exists_name($name) === TRUE)
       {
         $sc = FALSE;
-        set_error("'".$name."' มีในระบบแล้ว");
+        set_error("'".$name."' already exists");
       }
 
       if($sc === TRUE)
       {
         if($this->customers_model->add($ds))
         {
-          set_message('เพิ่มข้อมูลเรียบร้อยแล้ว');
+          set_message('Insert successfully');
           $this->do_export($code);
         }
         else
         {
           $sc = FALSE;
-          set_error('เพิ่มข้อมูลไม่สำเร็จ');
+          set_error('Insert data failed');
         }
       }
 
@@ -142,7 +142,7 @@ class Customers extends PS_Controller
     }
     else
     {
-      set_error('ไม่พบข้อมูล');
+      set_error('Not found');
     }
 
     redirect($this->home.'/add_new');
@@ -179,7 +179,7 @@ class Customers extends PS_Controller
         //'code' => $code,
         'customer_code' => $code,
         'branch_code' => empty($branch_code) ? '000' : $branch_code,
-        'branch_name' => empty($branch_name) ? 'สำนักงานใหญ่' : $branch_name,
+        'branch_name' => empty($branch_name) ? 'Head office' : $branch_name,
         'address' => $this->input->post('address'),
         'sub_district' => $this->input->post('sub_district'),
         'district' => $this->input->post('district'),
@@ -192,17 +192,17 @@ class Customers extends PS_Controller
       $rs = $this->customer_address_model->add_bill_to($ds);
       if($rs === TRUE)
       {
-        set_message("เพิ่มที่อยู่เปิดบิลเรียบร้อยแล้ว");
+        set_message("Add billing address successfully");
         $this->export_bill_to_address($code);
       }
       else
       {
-        set_error("เพิ่มที่อยู่ไม่สำเร็จ");
+        set_error("Add Address failed");
       }
     }
     else
     {
-      set_error("ที่อยู่ต้องไม่ว่างเปล่า");
+      set_error("Address cannot be empty.");
     }
 
     redirect($this->home.'/edit/'.$code.'/billTab');
@@ -220,7 +220,7 @@ class Customers extends PS_Controller
       $country = $this->input->post('country');
       $ds = array(
         'branch_code' => empty($branch_code) ? '000' : $branch_code,
-        'branch_name' => empty($branch_name) ? 'สำนักงานใหญ่' : $branch_name,
+        'branch_name' => empty($branch_name) ? 'Head office' : $branch_name,
         'address' => $this->input->post('address'),
         'sub_district' => $this->input->post('sub_district'),
         'district' => $this->input->post('district'),
@@ -236,16 +236,16 @@ class Customers extends PS_Controller
       {
         $this->export_bill_to_address($code);
 
-        set_message("ปรับปรุงที่อยู่เปิดบิลเรียบร้อยแล้ว");
+        set_message("Update billing address successfully");
       }
       else
       {
-        set_error("ปรับปรุงที่อยู่ไม่สำเร็จ");
+        set_error("Failed to update address");
       }
     }
     else
     {
-      set_error("ที่อยู่ต้องไม่ว่างเปล่า");
+      set_error("Address cannot be empty.");
     }
 
     redirect($this->home.'/edit/'.$code.'/billTab');
@@ -323,7 +323,7 @@ class Customers extends PS_Controller
           'LineNum' => ($this->customer_address_model->get_max_line_num($code, 'S') + 1),
           'AdresType' => 'S',
           'Address2' => '0000',
-          'Address3' => 'สำนักงานใหญ่',
+          'Address3' => 'Head office',
           'F_E_Commerce' => $ex ? 'U' : 'A',
           'F_E_CommerceDate' => sap_date(now(), TRUE)
         );
@@ -342,7 +342,7 @@ class Customers extends PS_Controller
           'County' => $rs->district,
           'AdresType' => 'S',
           'Address2' => '0000',
-          'Address3' => 'สำนักงานใหญ่',
+          'Address3' => 'Head office',
           'F_E_Commerce' => $ex ? 'U' : 'A',
           'F_E_CommerceDate' => sap_date(now(), TRUE)
         );
@@ -391,25 +391,25 @@ class Customers extends PS_Controller
       if($sc === TRUE && $this->customers_model->is_exists($code, $old_code) === TRUE)
       {
         $sc = FALSE;
-        set_error("'".$code."' มีอยู่ในระบบแล้ว โปรดใช้รหัสอื่น");
+        set_error("'".$code."' already exists");
       }
 
       if($sc === TRUE && $this->customers_model->is_exists_name($name, $old_name) === TRUE)
       {
         $sc = FALSE;
-        set_error("'".$name."' มีอยู่ในระบบแล้ว โปรดใช้ชื่ออื่น");
+        set_error("'".$name."' already exists");
       }
 
       if($sc === TRUE)
       {
         if($this->customers_model->update($old_code, $ds) === TRUE)
         {
-          set_message('ปรับปรุงข้อมูลเรียบร้อยแล้ว');
+          set_message('Update data successfully');
         }
         else
         {
           $sc = FALSE;
-          set_error('ปรับปรุงข้อมูลไม่สำเร็จ');
+          set_error('Failed to update data');
         }
       }
 
@@ -417,7 +417,7 @@ class Customers extends PS_Controller
     else
     {
       $sc = FALSE;
-      set_error('ไม่พบข้อมูล');
+      set_error('Not found');
     }
 
     if($sc === FALSE)
@@ -437,7 +437,7 @@ class Customers extends PS_Controller
       $rs = $this->customers_model->delete($code);
       if($rs === TRUE)
       {
-        set_message('ลบข้อมูลเรียบร้อยแล้ว');
+        set_message('Data has been deleted.');
       }
       else
       {
@@ -447,14 +447,14 @@ class Customers extends PS_Controller
         }
         else
         {
-          $message = "ลบข้อมูลไม่สำเร็จ";
+          $message = "Failed to delete data";
         }
         set_error($message);
       }
     }
     else
     {
-      set_error('ไม่พบข้อมูล');
+      set_error('Not data found');
     }
 
     redirect($this->home);

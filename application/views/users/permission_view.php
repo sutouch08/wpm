@@ -16,7 +16,7 @@
 	<div class="col-lg-3 col-md-4 col-sm-4 col-xs-7 padding-5">
 		<label>Menu</label>
 		<select class="width-100" id="menu-x" name="menu">
-			<option value="all">ทั้งหมด</option>
+			<option value="all">All</option>
 			<?php $groups = $this->menu->get_active_menu_groups();		?>
 			<?php 	if(!empty($groups)) : ?>
 			<?php			 foreach($groups as $group) : ?>
@@ -36,12 +36,12 @@
 	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
 		<label>Permission</label>
 		<select class="form-control input-sm" name="permission" id="permission">
-			<option value="all">ทั้งหมด</option>
-			<option value="view" <?php echo is_selected('view', $permission); ?>>ดู</option>
-			<option value="add" <?php echo is_selected('add', $permission); ?>>เพิ่ม</option>
-			<option value="edit" <?php echo is_selected('edit', $permission); ?>>แก้ไข</option>
-			<option value="delete" <?php echo is_selected('delete', $permission); ?>>ลบ</option>
-			<option value="approve" <?php echo is_selected('approve', $permission); ?>>อนุมัติ</option>
+			<option value="all">All</option>
+			<option value="view" <?php echo is_selected('view', $permission); ?>>View</option>
+			<option value="add" <?php echo is_selected('add', $permission); ?>>Add</option>
+			<option value="edit" <?php echo is_selected('edit', $permission); ?>>Edit</option>
+			<option value="delete" <?php echo is_selected('delete', $permission); ?>>Delete</option>
+			<option value="approve" <?php echo is_selected('approve', $permission); ?>>Approve</option>
 		</select>
 	</div>
 
@@ -64,9 +64,9 @@
 		<table class="table table-striped table-bordered table-hover">
 			<thead>
 				<tr>
-					<th class="width-5 middle text-center">ลำดับ</th>
-					<th class="">ชื่อ</th>
-					<th class="width-10 text-center">สมาชิก</th>
+					<th class="width-5 middle text-center">#</th>
+					<th class="">Name</th>
+					<th class="width-10 text-center">Members</th>
 					<th class="width-15"></th>
 				</tr>
 			</thead>
@@ -81,7 +81,7 @@
 						<td class="text-right">
 							<?php if($this->pm->can_edit && $rs->id > 0) : ?>
 								<button type="button" class="btn btn-mini btn-warning" onclick="getEdit(<?php echo $rs->id; ?>)">
-									<i class="fa fa-lock"></i> กำหนดสิทธิ์
+									<i class="fa fa-lock"></i> Edit Permission
 								</button>
 							<?php endif; ?>
 						</td>

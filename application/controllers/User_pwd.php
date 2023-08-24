@@ -116,7 +116,7 @@ class User_pwd extends PS_Controller
 				if(!$this->user_model->change_password($user->id, $password))
 				{
 					$sc = FALSE;
-					$this->error = "เปลี่ยนรหัสผ่านไม่สำเร็จ";
+					$this->error = "Failed to change password";
 				}
 				else
 				{
@@ -130,7 +130,7 @@ class User_pwd extends PS_Controller
 			else
 			{
 				$sc = FALSE;
-				$this->error = "รหัสผ่านไม่ถูกต้อง";
+				$this->error = "password is incorrect";
 			}
 		}
 		else
@@ -158,7 +158,7 @@ class User_pwd extends PS_Controller
       if($is_exists)
       {
         $sc = FALSE;
-        $this->error = "ไม่สามารถใช้รหัสนี้ได้กรุณากำหนดรหัสอื่น";
+        $this->error = "This password cannot be used, please set another code.";
       }
       else
       {
@@ -166,14 +166,14 @@ class User_pwd extends PS_Controller
         if(! $this->user_model->update_user($user->id, $arr))
         {
           $sc = FALSE;
-          $this->error = "เปลี่ยนรหัสลับไม่สำเร็จ";
+          $this->error = "Failed to change password";
         }
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบ user หรือ user ไม่ถูกต้อง";
+      $this->error = "The user was not found or the user is invalid.";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;

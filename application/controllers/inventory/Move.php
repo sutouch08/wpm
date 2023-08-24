@@ -6,7 +6,7 @@ class Move extends PS_Controller
   public $menu_code = 'ICTRMV';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'TRANSFER';
-	public $title = 'ย้ายพื้นที่จัดเก็บ';
+	public $title = 'Move location';
   public $filter;
   public $error;
   public $require_remark = 1;
@@ -116,7 +116,7 @@ class Move extends PS_Controller
     if( ! $this->move_model->add($ds))
     {
       $sc = FALSE;
-      $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+      $this->error = "Failed to add document";
     }
 
     $arr = array(
@@ -179,7 +179,7 @@ class Move extends PS_Controller
     }
     else
     {
-      echo 'ปรับปรุงข้อมูลไม่สำเร็จ';
+      echo 'Update failed';
     }
   }
 
@@ -264,14 +264,14 @@ class Move extends PS_Controller
               if($this->movement_model->add($move_out) === FALSE)
               {
                 $sc = FALSE;
-                $this->error = 'บันทึก movement ขาออกไม่สำเร็จ';
+                $this->error = 'Failed to save outgoing movement';
               }
 
               //--- move in
               if($this->movement_model->add($move_in) === FALSE)
               {
                 $sc = FALSE;
-                $this->error = 'บันทึก movement ขาเข้าไม่สำเร็จ';
+                $this->error = 'Failed to save incoming movement.';
               }
             } //--- foreach
 
@@ -317,7 +317,7 @@ class Move extends PS_Controller
           {
             $sc = FALSE;
             $ex = 0;
-            $this->error = "บันทึกเอกสารสำเร็จ แต่ส่งข้อมูลไป SAP ไม่สำเร็จ";
+            $this->error = "Save the document successfully. but failed to send data to SAP";
           }
         }
       }
@@ -458,7 +458,7 @@ class Move extends PS_Controller
             {
               $sc = FALSE;
               $ex = 0;
-              $this->error = "บันทึกเอกสารสำเร็จ แต่ส่งข้อมูลไป SAP ไม่สำเร็จ";
+              $this->error = "Save the document successfully. but failed to send data to SAP";
             }
           }
         }
@@ -612,7 +612,7 @@ class Move extends PS_Controller
             {
               $sc = FALSE;
               $ex = 0;
-              $this->error = "บันทึกเอกสารสำเร็จ แต่ส่งข้อมูลไป SAP ไม่สำเร็จ";
+              $this->error = "Save the document successfully. but failed to send data to SAP";
             }
           }
         }
@@ -744,7 +744,7 @@ class Move extends PS_Controller
               else
               {
                 $sc = FALSE;
-                $this->error = "ไม่พบรายการที่ต้องการย้าย";
+                $this->error = "No items found";
               }
             }
             else
@@ -752,13 +752,13 @@ class Move extends PS_Controller
               if(empty($fzone))
               {
                 $sc = FALSE;
-                $this->error = "โซนต้นทางไม่ถูกต้อง";
+                $this->error = "The source location is invalid.";
               }
 
               if(empty($tzone))
               {
                 $sc = FALSE;
-                $this->error = "โซนปลายทางไม่ถูกต้อง";
+                $this->error = "The destination location is invalid.";
               }
             }
 
@@ -766,7 +766,7 @@ class Move extends PS_Controller
           else
           {
             $sc = FALSE;
-            $this->error = "โซนต้นทาง - ปลายทาง ต้องเป็นคนละโซนกัน";
+            $this->error = "Source and destination cannot be the same.";
           }
         }
         else
@@ -829,26 +829,26 @@ class Move extends PS_Controller
           if($this->move_model->update_temp($arr) === FALSE)
           {
             $sc = FALSE;
-            $message = 'ย้ายสินค้าเข้า temp ไม่สำเร็จ';
+            $message = 'Failed to move product into temp';
           }
 
         }
         else
         {
           $sc = FALSE;
-          $message = 'ยอดในโซนไม่เพียงพอ';
+          $message = 'Not enough balance in the location';
         }
       }
       else
       {
         $sc = FALSE;
-        $message = 'บาร์โค้ดไม่ถูกต้อง';
+        $message = 'Invalid barcode';
       }
     }
     else
     {
       $sc = FALSE;
-      $message = 'ไม่พบเลขที่เอกสาร';
+      $message = 'Document number not found';
     }
 
     echo $sc === TRUE ? 'success' : $message;

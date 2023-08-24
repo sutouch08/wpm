@@ -6,17 +6,17 @@ $delete = $this->pm->can_delete;
 $hide = $order->status == 1 ? 'hide' : '';
  ?>
 <div class="row">
-	<div class="col-sm-6 col-xs-6 padding-5">
-    	<h4 class="title"><?php echo $this->title; ?></h4>
-    </div>
-    <div class="col-sm-6 col-xs-6 padding-5">
-    	<p class="pull-right top-p">
-        	<button type="button" class="btn btn-sm btn-warning" onClick="editOrder('<?php echo $order->code; ?>')"><i class="fa fa-arrow-left"></i> กลับ</button>
-      <?php if($this->pm->can_add OR $this->pm->can_edit) : ?>
-          <button type="button" class="btn btn-sm btn-success <?php echo $hide; ?>" id="btn-save-order" onclick="saveOrder()"><i class="fa fa-save"></i> บันทึก</button>
-      <?php endif; ?>
-        </p>
-    </div>
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
+  	<h4 class="title title-xs"><?php echo $this->title; ?></h4>
+  </div>
+  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
+  	<p class="pull-right top-p">
+    	<button type="button" class="btn btn-xs btn-warning" onClick="editOrder('<?php echo $order->code; ?>')"><i class="fa fa-arrow-left"></i> Back</button>
+    <?php if($this->pm->can_add OR $this->pm->can_edit) : ?>
+        <button type="button" class="btn btn-xs btn-success <?php echo $hide; ?>" id="btn-save-order" onclick="saveOrder()"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>
+    <?php endif; ?>
+      </p>
+  </div>
 </div>
 <hr class="margin-bottom-15 padding-5" />
 <?php $this->load->view('sponsor/sponsor_edit_header'); ?>

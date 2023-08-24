@@ -9,9 +9,9 @@
   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
   	<p class="pull-right top-p">
 			<button type="button" class="btn btn-sm btn-info top-btn" onclick="syncData()"><i class="fa fa-refresh"></i> Sync</button>
-			<?php if(get_cookie('id_profile') == -987654321) : ?>
+			<?php if($this->_SuperAdmin) : ?>
 			<button type="button" class="btn btn-sm btn-primary top-btn" onclick="syncAllData()"><i class="fa fa-refresh"></i> Sync All</button>
-      <button type="button" class="btn btn-sm btn-success top-btn" onclick="addNew()"><i class="fa fa-plus"></i> เพิมใหม่</button>
+      <button type="button" class="btn btn-sm btn-success top-btn" onclick="addNew()"><i class="fa fa-plus"></i> Add New</button>
     <?php endif; ?>
     </p>
   </div>
@@ -20,60 +20,60 @@
 <form id="searchForm" method="post" action="<?php echo current_url(); ?>">
 <div class="row">
   <div class="col-lg-2 col-md-3 col-sm-3 col-xs-6 padding-5">
-    <label>รหัส/ชื่อ</label>
+    <label>Customer</label>
     <input type="text" class="form-control input-sm" name="code" id="code" value="<?php echo $code; ?>" />
   </div>
 
 	<div class="col-lg-1-harf col-md-3 col-sm-3 col-xs-6 padding-5">
-    <label>กลุ่ม</label>
+    <label>Group</label>
     <select class="form-control input-sm filter" name="group" id="customer_group">
-			<option value="all">ทั้งหมด</option>
+			<option value="all">All</option>
 			<?php echo select_customer_group($group); ?>
-			<option value="NULL" <?php echo is_selected('NULL', $group); ?>>ไม่มี</option>
+			<option value="NULL" <?php echo is_selected('NULL', $group); ?>>No group</option>
 		</select>
   </div>
 
 	<div class="col-lg-1-harf col-md-3 col-sm-3 col-xs-6 padding-5">
-    <label>ประเภท</label>
+    <label>Kind</label>
     <select class="form-control input-sm filter" name="kind" id="customer_kind">
-			<option value="all">ทั้งหมด</option>
+			<option value="all">All</option>
 			<?php echo select_customer_kind($kind); ?>
-			<option value="NULL" <?php echo is_selected('NULL', $kind); ?>>ไม่มี</option>
+			<option value="NULL" <?php echo is_selected('NULL', $kind); ?>>No Kind</option>
 		</select>
   </div>
 
 	<div class="col-lg-1-harf col-md-3 col-sm-3 col-xs-6 padding-5">
-    <label>ชนิด</label>
+    <label>Type</label>
     <select class="form-control input-sm filter" name="type" id="customer_type">
-			<option value="all">ทั้งหมด</option>
+			<option value="all">All</option>
 			<?php echo select_customer_type($type); ?>
-			<option value="NULL" <?php echo is_selected('NULL', $type); ?>>ไม่มี</option>
+			<option value="NULL" <?php echo is_selected('NULL', $type); ?>>No Type</option>
 		</select>
   </div>
 
 	<div class="col-lg-1-harf col-md-3 col-sm-3 col-xs-6 padding-5">
-		<label>เขต</label>
+		<label>Region</label>
 		<select class="form-control input-sm filter" name="area" id="customer_area">
-			<option value="all">ทั้งหมด</option>
+			<option value="all">All</option>
 			<?php echo select_customer_area($area); ?>
-			<option value="NULL" <?php echo is_selected('NULL', $area); ?>>ไม่มี</option>
+			<option value="NULL" <?php echo is_selected('NULL', $area); ?>>No Region</option>
 		</select>
 	</div>
 
 	<div class="col-lg-1 col-md-3 col-sm-3 col-xs-6 padding-5">
-    <label>เกรด</label>
+    <label>Grade</label>
     <select class="form-control input-sm filter" name="class" id="customer_class">
-			<option value="all">ทั้งหมด</option>
+			<option value="all">All</option>
 			<?php echo select_customer_class($class); ?>
-			<option value="NULL" <?php echo is_selected('NULL', $class); ?>>ไม่มี</option>
+			<option value="NULL" <?php echo is_selected('NULL', $class); ?>>No Grade</option>
 		</select>
   </div>
 
 
 	<div class="col-lg-1 col-md-3 col-sm-3 col-xs-6 padding-5">
-    <label>สถานะ</label>
+    <label>Status</label>
     <select class="form-control input-sm filter" name="status" id="status">
-			<option value="all">ทั้งหมด</option>
+			<option value="all">All</option>
 			<option value="1" <?php echo is_selected('1', $status); ?>>Active</option>
 			<option value="0" <?php echo is_selected('0', $status); ?>>Disactive</option>
 		</select>
@@ -101,14 +101,14 @@
 				<tr>
 					<th class="fix-width-80 text-center"></th>
 					<th class="fix-width-40 middle text-center">#</th>
-					<th class="fix-width-100 middle">รหัส</th>
-					<th class="min-width-200 middle">ชื่อ</th>
-					<th class="fix-width-100 middle">รหัสเก่า</th>
-					<th class="fix-width-100 middle">กลุ่ม</th>
-					<th class="fix-width-100 middle">ประเภท</th>
-					<th class="fix-width-100 middle">ชนิด</th>
-					<th class="fix-width-60 middle text-center">เกรด</th>
-					<th class="fix-width-60 middle text-center">active</th>
+					<th class="fix-width-100 middle">Code</th>
+					<th class="min-width-200 middle">Name</th>
+					<th class="fix-width-100 middle">Old Code</th>
+					<th class="fix-width-100 middle">Group</th>
+					<th class="fix-width-100 middle">Kind</th>
+					<th class="fix-width-100 middle">Type</th>
+					<th class="fix-width-60 middle text-center">Grade</th>
+					<th class="fix-width-60 middle text-center">Status</th>
 				</tr>
 			</thead>
 			<tbody>

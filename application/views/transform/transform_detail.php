@@ -1,17 +1,17 @@
 
 <div class="row">
-	<p class="pull-right red">** เชื่อมโยงสินค้าได้เฉพาะสถานะ "รอดำเนินการ" เท่านั้น</p>
+	<p class="pull-right red">** You Can link products on status "Pending" only</p>
 	<div class="col-sm-12 col-xs-12 padding-5 table-responsive">
     	<table class="table table-striped border-1">
         <thead>
         	<tr class="font-size-12">
           	<th class="width-5 text-center">No.</th>
             <th class="width-5 text-center"></th>
-            <th class="width-15">รหัสสินค้า</th>
-						<th class="width-30">ชื่อสินค้า</th>
-						<th class="width-10 text-center">จำนวน</th>
-						<th class="width-5 text-center">ไม่คืน</th>
-						<th class="width-15">สินค้าแปรสภาพ</th>
+            <th class="width-15">SKU (Original)</th>
+						<th class="width-30">Description</th>
+						<th class="width-10 text-center">Qty</th>
+						<th class="width-5 text-center">Not return</th>
+						<th class="width-15">SKU (Transformed)</th>
 						<th class="width-10 text-center"></th>
             <th class="width-5 text-center"></th>
           </tr>
@@ -75,7 +75,7 @@
         <td class="text-center" id="connect-box-<?php echo $rs->id; ?>">
 			<?php if(empty($approve_view)) : ?>
 				<?php if( $order->is_expired == 0 && $order->is_approved == 0 && $order->state < 3 && $rs->not_return == 0 ) : ?>
-					<button type="button" class="btn btn-xs btn-success btn-block connect" id="btn-connect-<?php echo $rs->id; ?>" onclick="addTransformProduct(<?php echo $rs->id; ?>,'<?php echo $rs->product_code; ?>')"><i class="fa fa-plus"></i> เชื่อมโยง</button>
+					<button type="button" class="btn btn-xs btn-success btn-block connect" id="btn-connect-<?php echo $rs->id; ?>" onclick="addTransformProduct(<?php echo $rs->id; ?>,'<?php echo $rs->product_code; ?>')"><i class="fa fa-plus"></i> Link</button>
 				<?php endif; ?>
 			<?php endif; ?>
         </td>
@@ -93,13 +93,13 @@
 <?php		$no++; ?>
 <?php 	endforeach; ?>
 			<tr class="font-size-12">
-        <td colspan="7" class="text-right"><b>จำนวนรวม</b></td>
+        <td colspan="7" class="text-right"><b>Total Qty</b></td>
         <td class="text-right"><b><?php echo number($total_qty); ?></b></td>
         <td class="text-center"><b>Pcs.</b></td>
       </tr>
 <?php else : ?>
 			<tr>
-        <td colspan="9" class="text-center"><h4>ไม่พบรายการ</h4></td>
+        <td colspan="9" class="text-center"><h4>Not found</h4></td>
       </tr>
 <?php endif; ?>
 
@@ -114,7 +114,7 @@
 		<div class="modal-content">
   		<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" >เพิ่มการเชื่อมโยง</h4>
+				<h4 class="modal-title" >Link products</h4>
         <input type="hidden" id="id_order_detail" value="" />
 				<input type="hidden" id="detail-qty" value="" />
 				<input type="hidden" id="transform_product" value="" />
@@ -123,12 +123,12 @@
 			 <div class="modal-body">
 				 <div class="row">
 				 	<div class="col-sm-3">
-				 		<label>จำนวน</label>
+				 		<label>Qty</label>
 						<input type="text" class="form-control input-sm text-center" id="trans-qty" value="" />
 						<span class="help-block red not-show" id="qty-error">error</span>
 				 	</div>
 					<div class="col-sm-9">
-						<label>สินค้าแปรสภาพ</label>
+						<label>Products</label>
 						<input type="text" class="form-control input-sm" id="trans-product" value="" />
 						<span class="help-block red not-show" id="product-error">error</span>
 					</div>
@@ -139,8 +139,8 @@
 
 			 </div>
 			 <div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
-				<button type="button" class="btn btn-primary" onClick="addToTransform()" >เชื่อมโยง</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" onClick="addToTransform()" >Link</button>
 			 </div>
 		</div>
 	</div>
@@ -151,7 +151,7 @@
 		<div class="modal-content">
   		<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" >แก้ไขการเชื่อมโยง</h4>
+				<h4 class="modal-title" >Linked products</h4>
         <input type="hidden" id="id-order-detail" value="" />
 				<input type="hidden" id="max-qty" value="" />
 				<input type="hidden" id="id-product" value="" />
@@ -159,12 +159,12 @@
 			 <div class="modal-body">
 				 <div class="row">
 				 	<div class="col-sm-3">
-				 		<label>จำนวน</label>
+				 		<label>Qty</label>
 						<input type="number" class="form-control input-sm text-center" id="edit-trans-qty" value="" />
 						<span class="help-block red not-show" id="edit-qty-error">error</span>
 				 	</div>
 					<div class="col-sm-9">
-						<label>สินค้าแปรสภาพ</label>
+						<label>Product</label>
 						<input type="text" class="form-control input-sm" id="tr-product" value="" disabled />
 					</div>
 					<div class="col-sm-12">
@@ -174,8 +174,8 @@
 
 			 </div>
 			 <div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
-				<button type="button" class="btn btn-primary" onClick="updateTransformQty()" >เชื่อมโยง</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" onClick="updateTransformQty()" >Link</button>
 			 </div>
 		</div>
 	</div>
@@ -187,7 +187,7 @@
 {{#each this}}
 	{{#if @last}}
         <tr>
-        	<td colspan="7" class="text-right" ><b>จำนวนรวม</b></td>
+        	<td colspan="7" class="text-right" ><b>Total Qty</b></td>
           <td class="text-right"><b>{{ total_qty }}</b></td>
           <td class="text-center"><b>Pcs.</b></td>
         </tr>
@@ -214,7 +214,7 @@
 
             <td class="middle text-right" id="connect-box-{{ id }}">
 							{{#if button}}
-							<button type="button" class="btn btn-xs btn-success btn-block connect" id="btn-connect-{{ id }}" onclick="addTransformProduct({{ id }}, '{{productCode}}')"><i class="fa fa-plus"></i> เชื่อมโยง</button>
+							<button type="button" class="btn btn-xs btn-success btn-block connect" id="btn-connect-{{ id }}" onclick="addTransformProduct({{ id }}, '{{productCode}}')"><i class="fa fa-plus"></i> Link</button>
 							{{/if}}
 						</td>
 
@@ -230,6 +230,6 @@
 
 <script id="nodata-template" type="text/x-handlebars-template">
 	<tr>
-          <td colspan="8" class="text-center"><h4>ไม่พบรายการ</h4></td>
+          <td colspan="8" class="text-center"><h4>Not found</h4></td>
     </tr>
 </script>

@@ -94,7 +94,7 @@ $('#lend_code').keyup(function(e){
 
 function change_lend_code(){
   swal({
-		title: 'ยกเลิกข้อมูลนี้ ?',
+		title: 'Do you want to discard this information? ?',
 		type: 'warning',
 		showCancelButton: true,
 		cancelButtonText: 'No',
@@ -108,7 +108,6 @@ function change_lend_code(){
 		$('#lend_code').removeAttr('disabled');
 		swal({
 			title:'Success',
-			text:'ยกเลิกข้อมูลเรียบร้อยแล้ว',
 			type:'success',
 			timer:1000
 		});
@@ -123,7 +122,7 @@ function setZone(){
   let zone = $('#zone_code').val();
   let code = $('#lend_code').val();
   if(zone.length == 0){
-    swal('โซนไม่ถูกต้อง');
+    swal('Invalid bin loction');
     return false;
   }
 
@@ -174,7 +173,7 @@ function doReceive() {
     if(sum_qty > limit) {
       swal({
         title:'Oops !',
-        text:"จำนวนเกินยอดค้างรับ",
+        text:"Exceeds outstanding balance",
         type:'warning'
       });
 
@@ -191,7 +190,7 @@ function doReceive() {
   else {
     swal({
       title:'Oops!',
-      text:'ไม่พบสินค้า',
+      text:'Product not found.',
       type:'warning'
     });
   }

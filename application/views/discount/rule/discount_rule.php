@@ -25,16 +25,17 @@ $ac_disc3 = $set_price === 'Y' ? 'disabled' : '';
 $can_group = $rule->canGroup == 1 ? 'Y' : 'N';
 $btn_can_group_yes = $can_group == 'Y' ? 'btn-primary' : '';
 $btn_can_group_no = $can_group == 'N' ? 'btn-primary' : '';
+
 ?>
 
 <div class="tab-pane fade active in" id="discount">
 	<div class="row">
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-			<h4 class="title">กำหนดส่วนลด</h4>
+			<h4 class="title">Set Discount</h4>
 		</div>
 		<div class="divider margin-top-5"></div>
 		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4 padding-5">
-			<span class="form-control left-label text-right">ราคาขาย</span>
+			<span class="form-control left-label text-right">Net Price</span>
 		</div>
 		<div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-4">
 			<div class="btn-group width-100">
@@ -139,7 +140,7 @@ $btn_can_group_no = $can_group == 'N' ? 'btn-primary' : '';
 		<div class="divider-hidden"></div>
 
 		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-4">
-			<button type="button" class="btn btn-sm btn-success btn-block" onclick="saveDiscount()"><i class="fa fa-save"></i> บันทึก</button>
+			<button type="button" class="btn btn-sm btn-success btn-block" onclick="saveDiscount()"><i class="fa fa-save"></i> Save</button>
 		</div>
 	</div>
 

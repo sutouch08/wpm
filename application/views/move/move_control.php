@@ -2,13 +2,13 @@
 
   <div class="row">
   	<div class="col-sm-2">
-      	<button type="button" class="btn btn-xs btn-default btn-block" onclick="showMoveTable()">แสดงรายการ</button>
+      	<button type="button" class="btn btn-xs btn-default btn-block" onclick="showMoveTable()">Show Moved Items</button>
       </div>
   	<div class="col-sm-2 control-btn">
-      	<button type="button" class="btn btn-xs btn-danger btn-block" onclick="getMoveOut()">ย้ายสินค้าออก</button>
+      	<button type="button" class="btn btn-xs btn-danger btn-block" onclick="getMoveOut()">Move Items Out</button>
       </div>
       <div class="col-sm-2 control-btn">
-      	<button type="button" class="btn btn-xs btn-info btn-block" onclick="getMoveIn()">ย้ายสินค้าเข้า</button>
+      	<button type="button" class="btn btn-xs btn-info btn-block" onclick="getMoveIn()">Move Items In</button>
       </div>
   </div>
 
@@ -18,23 +18,23 @@
   	<div class="col-sm-12 moveOut-zone hide">
       <div class="row">
         <div class="col-sm-3 padding-5 first">
-          <label>โซนต้นทาง</label>
-          <input type="text" class="form-control input-sm" id="fromZone-barcode" placeholder="ยิงบาร์โค้ดโซน" />
+          <label>From location</label>
+          <input type="text" class="form-control input-sm" id="fromZone-barcode" placeholder="Scan a barcode to select location" />
         </div>
 
-        <div class="col-sm-1 padding-5">
+        <div class="col-sm-2 padding-5">
           <label class="display-block not-show">newZone</label>
-          <button type="button" class="btn btn-xs btn-info btn-block" id="btn-new-zone" onclick="newFromZone()" disabled >โซนใหม่</button>
+          <button type="button" class="btn btn-xs btn-info btn-block" id="btn-new-zone" onclick="newFromZone()" disabled >Change Location</button>
         </div>
 
         <div class="col-sm-1 padding-5">
-          <label>จำนวน</label>
+          <label>Qty</label>
           <input type="number" class="form-control input-sm text-center" id="qty-from" value="1" disabled />
         </div>
 
         <div class="col-sm-3 padding-5">
-          <label>บาร์โค้ดสินค้า</label>
-          <input type="text" class="form-control input-sm" id="barcode-item-from" placeholder="ยิงบาร์โค้ดเพื่อย้ายสินค้าออก" disabled />
+          <label>Barcode item</label>
+          <input type="text" class="form-control input-sm" id="barcode-item-from" placeholder="Scan a barcode to move items out." disabled />
         </div>
       </div>
     </div>
@@ -42,24 +42,24 @@
     <div class="col-sm-12 moveIn-zone hide">
       <div class="row">
         <div class="col-sm-3 padding-5 first">
-          <label>บาร์โค้ดโซน</label>
-          <input type="text" class="form-control input-sm" id="toZone-barcode" placeholder="ยิงบาร์โค้ดโซนปลายทาง" />
+          <label>To Location</label>
+          <input type="text" class="form-control input-sm" id="toZone-barcode" placeholder="Scan a barcode to select location" />
         </div>
-        <div class="col-sm-4 padding-5">
+        <div class="col-sm-4 padding-5 hide">
           <label class="display-block not-show">zoneName</label>
           <input type="text" class="form-control input-sm" id="zoneName-label" disabled />
         </div>
-        <div class="col-sm-1 padding-5">
+        <div class="col-sm-2 padding-5">
           <label class="display-block not-show">newzone</label>
-        	<button type="button" class="btn btn-xs btn-info btn-block" id="btn-new-to-zone" onclick="newToZone()" disabled>โซนใหม่</button>
+        	<button type="button" class="btn btn-xs btn-info btn-block" id="btn-new-to-zone" onclick="newToZone()" disabled>Change Location</button>
         </div>
         <div class="col-sm-1 padding-5">
-          <label>จำนวน</label>
+          <label>Qty</label>
           <input type="number" class="form-control input-sm text-center" id="qty-to" value="1" disabled />
         </div>
         <div class="col-sm-3 padding-5 last">
-          <label>บาร์โค้ดสินค้า</label>
-          <input type="text" class="form-control input-sm" id="barcode-item-to" placeholder="ยิงบาร์โค้ดเพื่อย้ายสินค้าออก" disabled />
+          <label>Barcode item</label>
+          <input type="text" class="form-control input-sm" id="barcode-item-to" placeholder="Scan a barcode to move items in." disabled />
         </div>
       </div>
     </div>
@@ -69,22 +69,22 @@
 
 <div class="row">
   <div class="col-sm-4 padding-5 first">
-    <label>ต้นทาง</label>
-    <input type="text" class="form-control input-sm" id="from-zone" placeholder="ค้นหาชื่อโซน" autofocus />
+    <label>From location</label>
+    <input type="text" class="form-control input-sm" id="from-zone" placeholder="" autofocus />
   </div>
 
   <div class="col-sm-1 padding-5">
     <label class="display-block not-show">ok</label>
-    <button type="button" class="btn btn-xs btn-primary btn-block" onclick="getProductInZone()">แสดงสินค้า</button>
+    <button type="button" class="btn btn-xs btn-primary btn-block" onclick="getProductInZone()">Get Items</button>
   </div>
   <div class="col-sm-4 padding-5">
-    <label>ปลายทาง</label>
-    <input type="text" class="form-control input-sm" id="to-zone" placeholder="ค้นหาชื่อโซน" />
+    <label>To location</label>
+    <input type="text" class="form-control input-sm" id="to-zone" placeholder="" />
   </div>
 
-  <div class="col-sm-2">
+  <div class="col-sm-3 text-right">
     <label class="display-block not-show">ok</label>
-    <button type="button" class="btn btn-xs btn-default btn-block" onclick="showMoveTable()">แสดงรายการ</button>
+    <button type="button" class="btn btn-xs btn-default" onclick="showMoveTable()">Show Moved Items</button>
   </div>
 
 

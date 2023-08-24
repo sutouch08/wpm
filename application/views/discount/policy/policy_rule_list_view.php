@@ -4,18 +4,18 @@
     <table class="table table-striped table-bordered">
       <thead>
         <tr style="background-image:none;">
-          <th rowspan="2" class="width-5 middle text-center">ลำดับ</th>
-          <th rowspan="2" class="width-10 middle text-center">เลขที่</th>
-          <th rowspan="2" class="width-22 middle text-center">ชื่อกฏ</th>
-          <th rowspan="2" class="width-10 middle text-center">ส่วนลด</th>
-          <th colspan="6" class="middle text-center">เงื่อนไข</th>
+          <th rowspan="2" class="width-5 middle text-center">#</th>
+          <th rowspan="2" class="width-10 middle text-center">Code</th>
+          <th rowspan="2" class="width-22 middle text-center">Description</th>
+          <th rowspan="2" class="width-10 middle text-center">Discount</th>
+          <th colspan="6" class="middle text-center">Conditions</th>
         </tr>
         <tr class="font-size-10" style="background-image:none;">
-          <th class="width-8 text-center">ลูกค้า</th>
-          <th class="width-8 text-center">สิ้นค้า</th>
-          <th class="width-8 text-center">ช่องทาง</th>
-          <th class="width-8 text-center">การชำระเงิน</th>
-          <th class="width-8 text-center">ขั้นต่ำ</th>
+          <th class="width-8 text-center">Customer</th>
+          <th class="width-8 text-center">Product</th>
+          <th class="width-8 text-center">Channels</th>
+          <th class="width-8 text-center">Payments</th>
+          <th class="width-8 text-center">Minimum</th>
           <th class="width-10 text-center">action</th>
         </tr>
       </thead>
@@ -28,10 +28,10 @@
           <td class="middle text-center"><?php echo $rs->code; ?></td>
           <td class="middle"><?php echo $rs->name; ?></td>
           <td class="middle text-center"><?php echo showItemDiscountLabel($rs->item_price, $rs->item_disc, $rs->item_disc_unit); ?></td>
-          <td class="middle text-center"><?php echo ($rs->all_customer == 1 ? 'ทั้งหมด' : 'กำหนดค่า'); ?></td>
-          <td class="middle text-center"><?php echo ($rs->all_product == 1 ? 'ทั้งหมด' : 'กำหนดค่า'); ?></td>
-          <td class="middle text-center"><?php echo ($rs->all_channels == 1 ? 'ทั้งหมด' : 'กำหนดค่า'); ?></td>
-          <td class="middle text-center"><?php echo ($rs->all_payment == 1 ? 'ทั้งหมด' : 'กำหนดค่า'); ?></td>
+          <td class="middle text-center"><?php echo ($rs->all_customer == 1 ? 'All' : 'condition'); ?></td>
+          <td class="middle text-center"><?php echo ($rs->all_product == 1 ? 'All' : 'condition'); ?></td>
+          <td class="middle text-center"><?php echo ($rs->all_channels == 1 ? 'All' : 'condition'); ?></td>
+          <td class="middle text-center"><?php echo ($rs->all_payment == 1 ? 'All' : 'condition'); ?></td>
           <td class="middle text-center"><?php echo ($rs->qty > 0 ? $rs->qty.' pcs' : ($rs->amount > 0 ? $rs->amount.' '.getConfig('CURRENTCY') : 'No')); ?></td>
           <td class="middle text-right">
             <?php if(empty($view_detail)) : ?>
@@ -48,7 +48,7 @@
 <?php else : ?>
       <tr>
         <td colspan="10" class="text-center">
-          <h4>ไม่พบรายการ</h4>
+          <h4>Not found</h4>
         </td>
       </tr>
 

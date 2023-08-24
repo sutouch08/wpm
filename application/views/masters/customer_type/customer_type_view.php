@@ -8,7 +8,7 @@
     <div class="col-sm-6">
     	<p class="pull-right">
       <?php if($this->pm->can_add) : ?>
-        <button type="button" class="btn btn-sm btn-success" onclick="addNew()"><i class="fa fa-plus"></i> เพิมใหม่</button>
+        <button type="button" class="btn btn-sm btn-success" onclick="addNew()"><i class="fa fa-plus"></i> Add New</button>
       <?php endif; ?>
       </p>
     </div>
@@ -17,12 +17,12 @@
 <form id="searchForm" method="post" action="<?php echo current_url(); ?>">
 <div class="row">
   <div class="col-sm-2">
-    <label>รหัส</label>
+    <label>Code</label>
     <input type="text" class="width-100" name="code" id="code" value="<?php echo $code; ?>" />
   </div>
 
   <div class="col-sm-2">
-    <label>ชื่อ</label>
+    <label>Name</label>
     <input type="text" class="width-100" name="name" id="name" value="<?php echo $name; ?>" />
   </div>
 

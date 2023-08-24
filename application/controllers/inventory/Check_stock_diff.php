@@ -6,7 +6,7 @@ class Check_stock_diff extends PS_Controller
   public $menu_code = 'ICSTDF';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = '';
-	public $title = 'ตรวจนับสต็อก(เก็บยอดต่าง)';
+	public $title = 'Counting Stock';
   public $filter;
   public $error;
   public function __construct()
@@ -283,7 +283,7 @@ class Check_stock_diff extends PS_Controller
     if(empty($item))
     {
       $sc = FALSE;
-      $this->error = "รหัสสินค้าไม่ถูกต้อง";
+      $this->error = "Invalid item code";
     }
     else
     {
@@ -291,7 +291,7 @@ class Check_stock_diff extends PS_Controller
       if(empty($zone))
       {
         $sc = FALSE;
-        $this->error = "โซนไม่ถูกต้อง";
+        $this->error = "Invlid bin location";
       }
       else
       {
@@ -308,7 +308,7 @@ class Check_stock_diff extends PS_Controller
             if(! $this->check_stock_diff_model->update($row->id, $arr))
             {
               $sc = FALSE;
-              $this->error = "Update ยอดต่างไม่สำเร็จ";
+              $this->error = "Failed to update difference qty";
             }
           }
           else
@@ -331,7 +331,7 @@ class Check_stock_diff extends PS_Controller
             if(! $this->check_stock_diff_model->add($arr))
             {
               $sc = FALSE;
-              $this->error = "เพิ่มรายการไม่สำเร็จ";
+              $this->error = "Failed to add item";
             }
           }
         }
@@ -387,7 +387,7 @@ class Check_stock_diff extends PS_Controller
                   if(! $this->check_stock_diff_model->update($row->id, $arr))
                   {
                     $sc = FALSE;
-                    $this->error = "Update ยอดต่างไม่สำเร็จ";
+                    $this->error = "Failed to update difference qty";
                   }
                 }
                 else
@@ -410,7 +410,7 @@ class Check_stock_diff extends PS_Controller
                   if(! $this->check_stock_diff_model->add($arr))
                   {
                     $sc = FALSE;
-                    $this->error = "เพิ่มรายการไม่สำเร็จ";
+                    $this->error = "Failed to add item";
                   }
                 }
               }
@@ -419,25 +419,25 @@ class Check_stock_diff extends PS_Controller
           else
           {
             $sc = FALSE;
-            $this->error = "ไม่พบรายการตรวจนับ";
+            $this->error = "No items found";
           }
         }
         else
         {
           $sc = FALSE;
-          $this->error = "ไม่พบสต็อกคงเหลือ";
+          $this->error = "No stock found";
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "ไม่พบรายการสินค้า";
+        $this->error = "No items found";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "โซนไม่ถูกต้อง";
+      $this->error = "Invlid bin location";
     }
 
     if($sc === TRUE)
@@ -460,7 +460,7 @@ class Check_stock_diff extends PS_Controller
     if(! $this->check_stock_diff_model->delete($id))
     {
       $sc = FALSE;
-      $this->error = "ลบรายการไม่สำเร็จ";
+      $this->error = "Failed to delete data";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;

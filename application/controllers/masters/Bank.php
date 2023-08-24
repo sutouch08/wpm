@@ -5,7 +5,7 @@ class Bank extends PS_Controller
 {
   public $menu_code = 'DBBANK';
 	public $menu_group_code = 'DB';
-	public $title = 'บัญชีธนาคาร';
+	public $title = 'Bank Account';
 	public $error;
 
   public function __construct()
@@ -72,26 +72,26 @@ class Bank extends PS_Controller
 			if(empty($bank_code))
 			{
 				$sc = FALSE;
-				$this->error = "กรุณาเลือกธนาคาร";
+				$this->error = "Please select a bank";
 			}
 
 			if(empty($account_name))
 			{
 				$sc = FALSE;
-				$this->error = "กรุณาระบุชื่อบัญชี";
+				$this->error = "Please specify account name";
 			}
 
 
 			if(empty($account_no))
 			{
 				$sc = FALSE;
-				$this->error = "กรุณาระบุเลขที่บัญชี";
+				$this->error = "Please enter account number";
 			}
 
 			if(empty($branch))
 			{
 				$sc = FALSE;
-				$this->error = "กรุณาระบุสาขา";
+				$this->error = "Please specify branch";
 			}
 
 
@@ -117,19 +117,19 @@ class Bank extends PS_Controller
 						if(! $this->bank_model->add($arr))
 						{
 							$sc = FALSE;
-							$this->error = "เพิ่มเลขที่บัญชีไม่สำเร็จ";
+							$this->error = "Failed to add account number";
 						}
 					}
 					else
 					{
 						$sc = FALSE;
-						$this->error = "ธนาคารไม่ถูกต้อง";
+						$this->error = "invalid bank";
 					}
 				}
 				else
 				{
 					$sc = FALSE;
-					$this->error = "เลขที่บัญชีซ้ำ";
+					$this->error = "duplicate account number";
 				}
 
 			}
@@ -137,7 +137,7 @@ class Bank extends PS_Controller
 		else
 		{
 			$sc = FALSE;
-			$this->error = "คุณไม่มีสิทธ์เพิ่มบัญชีธนาคาร";
+			$this->error = "You do not have the right to add a bank account.";
 		}
 
 
@@ -171,26 +171,26 @@ class Bank extends PS_Controller
 			if(empty($bank_code))
 			{
 				$sc = FALSE;
-				$this->error = "กรุณาเลือกธนาคาร";
+				$this->error = "Please select a bank";
 			}
 
 			if(empty($account_name))
 			{
 				$sc = FALSE;
-				$this->error = "กรุณาระบุชื่อบัญชี";
+				$this->error = "Please specify account name";
 			}
 
 
 			if(empty($account_no))
 			{
 				$sc = FALSE;
-				$this->error = "กรุณาระบุเลขที่บัญชี";
+				$this->error = "Please enter account number";
 			}
 
 			if(empty($branch))
 			{
 				$sc = FALSE;
-				$this->error = "กรุณาระบุสาขา";
+				$this->error = "Please specify branch";
 			}
 
 			if(empty($id))
@@ -223,19 +223,19 @@ class Bank extends PS_Controller
 						if(! $this->bank_model->update($id, $arr))
 						{
 							$sc = FALSE;
-							$this->error = "เพิ่มเลขที่บัญชีไม่สำเร็จ";
+							$this->error = "Failed to add account number";
 						}
 					}
 					else
 					{
 						$sc = FALSE;
-						$this->error = "ธนาคารไม่ถูกต้อง";
+						$this->error = "invalid bank";
 					}
 				}
 				else
 				{
 					$sc = FALSE;
-					$this->error = "เลขที่บัญชีซ้ำ";
+					$this->error = "duplicate account number";
 				}
 
 			}
@@ -243,7 +243,7 @@ class Bank extends PS_Controller
 		else
 		{
 			$sc = FALSE;
-			$this->error = "คุณไม่มีสิทธ์แก้ไขบัญชีธนาคาร";
+			$this->error = "You do not have the right to modify the bank account.";
 		}
 
 
@@ -265,14 +265,14 @@ class Bank extends PS_Controller
 				if($this->order_payment_model->has_account_transection($id))
 				{
 					$sc = FALSE;
-					$this->error = "บัญชีมีการใช้งานในระบบแล้ว ไม่อนุญาติให้ลบ";
+					$this->error = "This account is already in use. deletion is not allowed";
 				}
 				else
 				{
 					if(! $this->bank_model->delete($id))
 					{
 						$sc = FALSE;
-						$this->error = "ลบบัญชีไม่สำเร็จ";
+						$this->error = "Failed to delete account";
 					}
 				}
 			}
@@ -285,13 +285,13 @@ class Bank extends PS_Controller
 		else
 		{
 			$sc = FALSE;
-			$this->error = "คุณไม่มีสิทธิ์ในการลบบัญชีธนาคาร";
+			$this->error = "You do not have the right to delete a bank account.";
 		}
 
 		echo $sc === TRUE ? 'success' : $this->error;
 	}
 
-	
+
 
   public function clear_filter()
   {

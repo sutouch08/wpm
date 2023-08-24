@@ -7,7 +7,7 @@
   </div>
 	<div class="col-sm-6 col-xs-6 padding-5">
 		<p class="pull-right top-p">
-			<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i>&nbsp; กลับ</button>
+			<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i>&nbsp; Back</button>
 		</p>
 	</div>
 </div><!-- End Row -->
@@ -17,10 +17,10 @@
 <?php else : ?>
 <form class="form-horizontal">
 	<div class="form-group">
-    <label class="col-sm-3 col-xs-12 control-label no-padding-right">ธนาคาร</label>
+    <label class="col-sm-3 col-xs-12 control-label no-padding-right">Bank</label>
     <div class="col-xs-12 col-sm-3">
         <select class="form-control input-sm" id="bank-code" name="bank_code" required>
-					<option value="">เลือกธนาคาร</option>
+					<option value="">Select Bank</option>
 					<?php echo select_bank($data->bank_code); ?>
   			</select>
     </div>
@@ -30,7 +30,7 @@
 
 
   <div class="form-group">
-    <label class="col-sm-3 col-xs-12 control-label no-padding-right">ชื่อบัญชี</label>
+    <label class="col-sm-3 col-xs-12 control-label no-padding-right">Bank Account</label>
     <div class="col-xs-12 col-sm-3">
 			<input type="text" name="acc_name" id="acc-name" class="form-control input-sm" value="<?php echo $data->acc_name; ?>" required autofocus/>
     </div>
@@ -38,7 +38,7 @@
   </div>
 
 	<div class="form-group">
-    <label class="col-sm-3 col-xs-12 control-label no-padding-right">เลขที่บัญชี</label>
+    <label class="col-sm-3 col-xs-12 control-label no-padding-right">Account No</label>
     <div class="col-xs-12 col-sm-3">
 			<input
 				type="text"
@@ -53,7 +53,7 @@
   </div>
 
 	<div class="form-group">
-    <label class="col-sm-3 col-xs-12 control-label no-padding-right">สาขา</label>
+    <label class="col-sm-3 col-xs-12 control-label no-padding-right">Branch</label>
     <div class="col-xs-12 col-sm-3">
 			<input type="text" name="branch" id="branch" class="form-control input-sm" value="<?php echo $data->branch; ?>" required />
     </div>
@@ -61,7 +61,7 @@
   </div>
 
 	<div class="form-group">
-		<label class="col-sm-3 col-xs-12 control-label no-padding-right">เปิดใช้งาน</label>
+		<label class="col-sm-3 col-xs-12 control-label no-padding-right">Active</label>
 		<div class="col-xs-12 col-sm-3">
 			<label style="padding-top:5px;">
 				<input name="active" class="ace ace-switch ace-switch-7" type="checkbox" value="1" <?php echo is_checked($data->active,1); ?> />

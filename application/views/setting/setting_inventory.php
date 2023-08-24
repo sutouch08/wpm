@@ -21,12 +21,12 @@
 	<form id="inventoryForm" method="post" action="<?php echo $this->home; ?>/update_config">
   	<div class="row">
 			<div class="col-sm-3">
-        <span class="form-control left-label">สต็อกติดลบได้</span>
+        <span class="form-control left-label">Allow Negative Stock</span>
       </div>
       <div class="col-sm-9">
 				<div class="btn-group input-medium">
-        	<button type="button" class="btn btn-sm <?php echo $auz_no; ?>" style="width:50%;" id="btn-auz-no" onClick="toggleAuz(0)">ไม่ได้</button>
-          <button type="button" class="btn btn-sm <?php echo $auz_yes; ?>" style="width:50%;" id="btn-auz-yes" onClick="toggleAuz(1)">ได้</button>
+					<button type="button" class="btn btn-sm <?php echo $auz_yes; ?>" style="width:50%;" id="btn-auz-yes" onClick="toggleAuz(1)">YES</button>
+        	<button type="button" class="btn btn-sm <?php echo $auz_no; ?>" style="width:50%;" id="btn-auz-no" onClick="toggleAuz(0)">NO</button>
         </div>
         <span class="help-block">อนุญาติให้สต็อกติดลบได้</span>
         <input type="hidden" name="ALLOW_UNDER_ZERO" id="allow-under-zero" value="<?php echo $ALLOW_UNDER_ZERO; ?>" />
@@ -35,12 +35,12 @@
 
 
 			<div class="col-sm-3">
-        <span class="form-control left-label">รับสินค้าเกินใบสั่งซื้อ</span>
+        <span class="form-control left-label">Allow to receive exceeds PO</span>
       </div>
       <div class="col-sm-9">
 				<div class="btn-group input-medium">
-        	<button type="button" class="btn btn-sm <?php echo $over_po_yes; ?>" style="width:50%;" id="btn-ovpo-yes" onClick="toggleOverPo(1)">ได้</button>
-          <button type="button" class="btn btn-sm <?php echo $over_po_no; ?>" style="width:50%;" id="btn-ovpo-no" onClick="toggleOverPo(0)">ไม่ได้</button>
+        	<button type="button" class="btn btn-sm <?php echo $over_po_yes; ?>" style="width:50%;" id="btn-ovpo-yes" onClick="toggleOverPo(1)">YES</button>
+          <button type="button" class="btn btn-sm <?php echo $over_po_no; ?>" style="width:50%;" id="btn-ovpo-no" onClick="toggleOverPo(0)">NO</button>
         </div>
         <span class="help-block">อนุญาติให้รับสินค้าเกินใบสั่งซื้อหรือไม่</span>
         <input type="hidden" name="ALLOW_RECEIVE_OVER_PO" id="allow-receive-over-po" value="<?php echo $ALLOW_RECEIVE_OVER_PO; ?>" />
@@ -49,7 +49,7 @@
 
 
     	<div class="col-sm-3">
-        <span class="form-control left-label">รับสินค้าเกินไปสั่งซื้อ(%)</span>
+        <span class="form-control left-label">Receive over PO limit(%)</span>
       </div>
       <div class="col-sm-9">
         <input type="text" class="form-control input-sm input-small text-center" name="RECEIVE_OVER_PO"  value="<?php echo $RECEIVE_OVER_PO; ?>" />
@@ -58,12 +58,12 @@
 
 
 			<div class="col-sm-3">
-        <span class="form-control left-label">ต้องอนุมัติก่อนรับสินค้าทุกครั้ง</span>
+        <span class="form-control left-label">Must be approved before receiving the product every time</span>
       </div>
       <div class="col-sm-9">
 				<div class="btn-group input-medium">
-        	<button type="button" class="btn btn-sm <?php echo $strict_receive_yes; ?>" style="width:50%;" id="btn-request-yes" onClick="toggleRequest(1)">ทุกครั้ง</button>
-          <button type="button" class="btn btn-sm <?php echo $strict_receive_no; ?>" style="width:50%;" id="btn-request-no" onClick="toggleRequest(0)">ไม่ต้อง</button>
+        	<button type="button" class="btn btn-sm <?php echo $strict_receive_yes; ?>" style="width:50%;" id="btn-request-yes" onClick="toggleRequest(1)">YES</button>
+          <button type="button" class="btn btn-sm <?php echo $strict_receive_no; ?>" style="width:50%;" id="btn-request-no" onClick="toggleRequest(0)">NO</button>
         </div>
         <span class="help-block">หากระบุเป็น "ทุกครั้ง" จะไม่สามารถดึงใบสั่งซื้อมารับสินค้าตรงๆได้ ต้องรับสินค้าผ่านใบขออนุมัติรับสินค้าเท่านั้นและต้องได้รับอนุมัติก่อน</span>
         <input type="hidden" name="STRICT_RECEIVE_PO" id="strict-receive-po" value="<?php echo $STRICT_RECEIVE_PO; ?>" />
@@ -72,12 +72,12 @@
 
 
 			<div class="col-sm-3">
-        <span class="form-control left-label">การรับสินค้าเกิน Due</span>
+        <span class="form-control left-label">Receive Overdue</span>
       </div>
       <div class="col-sm-9">
 				<div class="btn-group input-medium">
-        	<button type="button" class="btn btn-sm <?php echo $receive_due_yes; ?>" style="width:50%;" id="btn-receive-yes" onClick="toggleReceiveDue(1)">รับ</button>
-          <button type="button" class="btn btn-sm <?php echo $receive_due_no; ?>" style="width:50%;" id="btn-receive-no" onClick="toggleReceiveDue(0)">ไม่รับ</button>
+        	<button type="button" class="btn btn-sm <?php echo $receive_due_yes; ?>" style="width:50%;" id="btn-receive-yes" onClick="toggleReceiveDue(1)">YES</button>
+          <button type="button" class="btn btn-sm <?php echo $receive_due_no; ?>" style="width:50%;" id="btn-receive-no" onClick="toggleReceiveDue(0)">NO</button>
         </div>
         <span class="help-block">รับหรือไม่รับสินค้าจากใบสั่งซื้อที่เกิน Due date ในใบสั่งซื้อ</span>
       	<input type="hidden" name="RECEIVE_OVER_DUE" id="receive-over-due" value="<?php echo $RECEIVE_OVER_DUE; ?>" />
@@ -85,7 +85,7 @@
       <div class="divider-hidden"></div>
 
 			<div class="col-sm-3">
-        <span class="form-control left-label">เกินกำหนดรับได้(วัน)</span>
+        <span class="form-control left-label">Receive Orverdue Limit (days)</span>
       </div>
       <div class="col-sm-9">
         <input type="text" class="form-control input-sm input-small text-center" name="PO_VALID_DAYS"  value="<?php echo $PO_VALID_DAYS; ?>" />
@@ -94,7 +94,7 @@
       <div class="divider-hidden"></div>
 
 			<div class="col-sm-3">
-        <span class="form-control left-label">รหัสคลังซื้อ-ขาย เริ่มต้น</span>
+        <span class="form-control left-label">Default Sale Warehouse</span>
       </div>
       <div class="col-sm-9">
         <input type="text" class="form-control input-sm input-large" id="default-warehouse" name="DEFAULT_WAREHOUSE" value="<?php echo $DEFAULT_WAREHOUSE; ?>" required/>
@@ -102,7 +102,7 @@
       <div class="divider-hidden"></div>
 
       <div class="col-sm-3">
-        <span class="form-control left-label">รหัสคลังสินค้าระหว่างทำ</span>
+        <span class="form-control left-label">WIP Warehouse</span>
       </div>
       <div class="col-sm-9">
         <input type="text" class="form-control input-sm input-large" id="transform-warehouse" name="TRANSFORM_WAREHOUSE" value="<?php echo $TRANSFORM_WAREHOUSE; ?>" required/>
@@ -110,7 +110,7 @@
       <div class="divider-hidden"></div>
 
 			<div class="col-sm-3">
-        <span class="form-control left-label">รหัสคลังยืมสินค้า</span>
+        <span class="form-control left-label">Lend Warehouse</span>
       </div>
       <div class="col-sm-9">
         <input type="text" class="form-control input-sm input-large" id="lend-warehouse" name="LEND_WAREHOUSE" value="<?php echo $LEND_WAREHOUSE; ?>" />
@@ -119,12 +119,12 @@
 
 
 			<div class="col-sm-3">
-        <span class="form-control left-label">คุมสต็อกฝากขายแท้</span>
+        <span class="form-control left-label">Limit amount per consignment(TR)</span>
       </div>
       <div class="col-sm-9">
 				<div class="btn-group input-medium">
-        	<button type="button" class="btn btn-sm <?php echo $wt_btn_no; ?>" style="width:50%;" id="btn-wt-no" onClick="toggleLimitWT(0)">ไม่คุม</button>
-          <button type="button" class="btn btn-sm <?php echo $wt_btn_yes; ?>" style="width:50%;" id="btn-wt-yes" onClick="toggleLimitWT(1)">คุม</button>
+					<button type="button" class="btn btn-sm <?php echo $wt_btn_yes; ?>" style="width:50%;" id="btn-wt-yes" onClick="toggleLimitWT(1)">YES</button>
+        	<button type="button" class="btn btn-sm <?php echo $wt_btn_no; ?>" style="width:50%;" id="btn-wt-no" onClick="toggleLimitWT(0)">NO</button>
         </div>
         <span class="help-block">ควมคุมมูลค่า(ทุน)สินค้าคงเหลือในคลังฝากขายแท้ไม่ให้เกินกว่าที่กำหนด</span>
         <input type="hidden" name="LIMIT_CONSIGN" id="limit-consign" value="<?php echo $LIMIT_CONSIGN; ?>" />
@@ -132,12 +132,12 @@
       <div class="divider-hidden"></div>
 
 			<div class="col-sm-3">
-        <span class="form-control left-label">คุมสต็อกฝากขายแท้เทียม</span>
+        <span class="form-control left-label">Limit amount per consignment(INV)</span>
       </div>
       <div class="col-sm-9">
 				<div class="btn-group input-medium">
-        	<button type="button" class="btn btn-sm <?php echo $wc_btn_no; ?>" style="width:50%;" id="btn-wc-no" onClick="toggleLimitWC(0)">ไม่คุม</button>
-          <button type="button" class="btn btn-sm <?php echo $wc_btn_yes; ?>" style="width:50%;" id="btn-wc-yes" onClick="toggleLimitWC(1)">คุม</button>
+					<button type="button" class="btn btn-sm <?php echo $wc_btn_yes; ?>" style="width:50%;" id="btn-wc-yes" onClick="toggleLimitWC(1)">YES</button>
+        	<button type="button" class="btn btn-sm <?php echo $wc_btn_no; ?>" style="width:50%;" id="btn-wc-no" onClick="toggleLimitWC(0)">NO</button>
         </div>
         <span class="help-block">ควมคุมมูลค่า(ทุน)สินค้าคงเหลือในคลังฝากขายแท้ไม่ให้เกินกว่าที่กำหนด</span>
         <input type="hidden" name="LIMIT_CONSIGNMENT" id="limit-consignment" value="<?php echo $LIMIT_CONSIGNMENT; ?>" />
@@ -159,12 +159,12 @@
       <div class="divider-hidden"></div>
 
 			<div class="col-sm-3">
-        <span class="form-control left-label">ต้องอนุมัติก่อนโอนสินค้าทุกครั้ง</span>
+        <span class="form-control left-label">Must be approved before transferring goods every time.</span>
       </div>
       <div class="col-sm-9">
 				<div class="btn-group input-medium">
-        	<button type="button" class="btn btn-sm <?php echo $strict_transfer_yes; ?>" style="width:50%;" id="btn-transfer-yes" onClick="toggleTransfer(1)">ทุกครั้ง</button>
-          <button type="button" class="btn btn-sm <?php echo $strict_transfer_no; ?>" style="width:50%;" id="btn-transfer-no" onClick="toggleTransfer(0)">ไม่ต้อง</button>
+        	<button type="button" class="btn btn-sm <?php echo $strict_transfer_yes; ?>" style="width:50%;" id="btn-transfer-yes" onClick="toggleTransfer(1)">YES</button>
+          <button type="button" class="btn btn-sm <?php echo $strict_transfer_no; ?>" style="width:50%;" id="btn-transfer-no" onClick="toggleTransfer(0)">NO</button>
         </div>
         <span class="help-block"></span>
         <input type="hidden" name="STRICT_TRANSFER" id="strict-transfer" value="<?php echo $STRICT_TRANSFER; ?>" />
@@ -172,12 +172,12 @@
       <div class="divider-hidden"></div>
 
 			<div class="col-sm-3">
-        <span class="form-control left-label">เอกสารกลุ่มโอนคลังหมดอายุทุกสิ้นเดือน</span>
+        <span class="form-control left-label">Documents in the inventory transfer group expire at the end of every month.</span>
       </div>
       <div class="col-sm-9">
 				<div class="btn-group input-medium">
-        	<button type="button" class="btn btn-sm <?php echo $eom_yes; ?>" style="width:50%;" id="btn-eom-yes" onClick="toggleTransferEOM(1)">เปิด</button>
-          <button type="button" class="btn btn-sm <?php echo $eom_no; ?>" style="width:50%;" id="btn-eom-no" onClick="toggleTransferEOM(0)">ปิด</button>
+        	<button type="button" class="btn btn-sm <?php echo $eom_yes; ?>" style="width:50%;" id="btn-eom-yes" onClick="toggleTransferEOM(1)">YES</button>
+          <button type="button" class="btn btn-sm <?php echo $eom_no; ?>" style="width:50%;" id="btn-eom-no" onClick="toggleTransferEOM(0)">NO</button>
         </div>
         <span class="help-block">กำหนดให้เอกสารหมดอายุทุกๆ สิ้นเดือนหรือไม่</span>
         <input type="hidden" name="TRANSFER_EXPIRE_EOM" id="transfer-eom" value="<?php echo $TRANSFER_EXPIRE_EOM; ?>" />
@@ -185,7 +185,7 @@
       <div class="divider-hidden"></div>
 
 			<div class="col-sm-3">
-        <span class="form-control left-label">อายุเอกสารกลุ่มโอนคลัง(วัน)</span>
+        <span class="form-control left-label">Age of documents in the transfer group (days)</span>
       </div>
       <div class="col-sm-9">
         <input type="number" class="form-control input-sm input-small text-center" name="TRANSFER_EXPIRATION"  value="<?php echo $TRANSFER_EXPIRATION; ?>" />
@@ -197,7 +197,7 @@
       <div class="col-sm-9 col-sm-offset-3">
 				<?php if($this->pm->can_add OR $this->pm->can_edit) : ?>
         <button type="button" class="btn btn-sm btn-success input-small" onClick="updateConfig('inventoryForm')">
-          <i class="fa fa-save"></i> บันทึก
+          <i class="fa fa-save"></i> Save
         </button>
 				<?php endif; ?>
       </div>

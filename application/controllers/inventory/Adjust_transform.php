@@ -6,7 +6,7 @@ class Adjust_transform extends PS_Controller
   public $menu_code = 'ICTFAJ';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = '';
-	public $title = 'ตัดยอดแปรสภาพ';
+	public $title = 'Adjust transform stock';
   public $filter;
   public $error;
 
@@ -90,20 +90,20 @@ class Adjust_transform extends PS_Controller
           if(! $this->adjust_transform_model->add($ds))
           {
             $sc = FALSE;
-            $this->error = "เพิ่มเอกสารไม่สำเร็จ กรุณาลองใหม่อีกครั้ง";
+            $this->error = "Failed to add document Please try again.";
           }
         }
         else
         {
           $sc = FALSE;
-          $this->error = "รหัสโซนไม่ถูกต้อง";
+          $this->error = "Invalid bin location";
         }
 
       }
       else
       {
         $sc = FALSE;
-        $this->error = "คุณไม่มีสิทธิ์ในการเพิ่มเอกสารใหม่";
+        $this->error = "You do not have permission to perform this operation";
       }
     }
     else
@@ -140,7 +140,7 @@ class Adjust_transform extends PS_Controller
   {
     if($this->adjust_transform_model->is_exists_code($code))
     {
-      echo "เลขที่เอกสารซ้ำ";
+      echo "Duplicated document number";
     }
     else
     {
@@ -176,26 +176,26 @@ class Adjust_transform extends PS_Controller
           if(! $this->adjust_transform_model->update($code, $arr))
           {
             $sc = FALSE;
-            $this->error = "ปรับปรุงข้อมูลไม่สำเร็จ";
+            $this->error = "Failed to update data";
           }
         }
         else
         {
           $sc = FALSE;
-          $this->error = "เลขที่เอกสารไม่ถูกต้อง";
+          $this->error = "Invalid document number";
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "โซนไม่ถูกต้อง";
+        $this->error = "Invalid bin location";
       }
 
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสาร";
+      $this->error = "Document number not found";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -253,7 +253,7 @@ class Adjust_transform extends PS_Controller
 	                      if(! $this->adjust_transform_model->add_detail($arr))
 	                      {
 	                        $sc = FALSE;
-	                        $this->error = "เพิ่มรายการไม่สำเร็จ {$item->product_code} : {$item->qty}";
+	                        $this->error = "Failed to add item {$item->product_code} : {$item->qty}";
 	                        break;
 	                      }
 											}
@@ -267,7 +267,7 @@ class Adjust_transform extends PS_Controller
                       if(!$this->adjust_transform_model->update($code, $arr))
                       {
                         $sc = FALSE;
-                        $this->error = "Update Reference ไม่สำเร็จ";
+                        $this->error = "Failed to update reference";
                       }
 
                       //--- update reference on transform order
@@ -276,7 +276,7 @@ class Adjust_transform extends PS_Controller
                         if(! $this->transform_model->update_reference($transform_code, $code))
                         {
                           $sc = FALSE;
-                          $this->error = "Update Transform Reference ไม่สำเร็จ";
+                          $this->error = "Update Transform Reference failed";
                         }
                       }
 
@@ -310,26 +310,26 @@ class Adjust_transform extends PS_Controller
                   else
                   {
                     $sc = FALSE;
-                    $this->error = "ไม่พบรายการสินค้า";
+                    $this->error = "No item found";
                   }
 
                 }
                 else
                 {
                   $sc = FALSE;
-                  $this->error = "{$transform_code} ถูกต้ดยอดไปแล้ว ({$transform->reference})";
+                  $this->error = "{$transform_code} already cut off stock ({$transform->reference})";
                 }
               }
               else
               {
                 $sc = FALSE;
-                $this->error = "{$transform_code} ยังรับเข้าไม่ครบหรือยังไม่ถูกปิด";
+                $this->error = "{$transform_code} not been complete or not been closed";
               }
             }
             else
             {
               $sc = FALSE;
-              $this->error = "ไม่พบเอกสารเบิกแปรสภาพ : {{$transform_code}}";
+              $this->error = "Document not found : {{$transform_code}}";
             }
           }
 
@@ -337,19 +337,19 @@ class Adjust_transform extends PS_Controller
         else
         {
           $sc = FALSE;
-          $this->error = "เอกสารถูกบันทึกไปแล้ว";
+          $this->error = "The document has not been saved.";
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "เลขที่เอกสารไม่ถูกต้อง";
+        $this->error = "Invalid document number";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสาร";
+      $this->error = "Document number not found";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -442,7 +442,7 @@ class Adjust_transform extends PS_Controller
                 if(! $this->adjust_transform_model->cancle_details($code))
                 {
                   $sc = FALSE;
-                  $this->error = "ยกเลิกรายการไม่สำเร็จ";
+                  $this->error = "Failed to cancel items";
                 }
 
                 //--- change doc status to 2 Cancled
@@ -451,7 +451,7 @@ class Adjust_transform extends PS_Controller
                   if(! $this->adjust_transform_model->change_status($code, 2))
                   {
                     $sc = FALSE;
-                    $this->error = "ยกเลิกเอกสารไม่สำเร็จ";
+                    $this->error = "Failed to cancel document";
                   }
                 }
 
@@ -476,26 +476,26 @@ class Adjust_transform extends PS_Controller
             else
             {
               $sc = FALSE;
-              $this->error = "เอกสารเข้า SAP แล้วไม่สามารถยกเลิกได้";
+              $this->error = "The document already in SAP cannot be edited.";
             }
           }
           else
           {
             $sc = FALSE;
-            $this->error = "เอกสารเข้า SAP แล้วไม่อนุญาติให้แก้ไข";
+            $this->error = "The document already in SAP cannot be edited.";
           }
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "เลขที่เอกสารไม่ถูกต้อง";
+        $this->error = "Invalid document number";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "เลขที่เอกสารไม่ถูกต้อง";
+      $this->error = "Invalid document number";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -518,7 +518,7 @@ class Adjust_transform extends PS_Controller
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสาร";
+      $this->error = "Document number not found";
     }
 
     return $sc;
@@ -541,7 +541,7 @@ class Adjust_transform extends PS_Controller
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสาร";
+      $this->error = "Document number not found";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -622,13 +622,13 @@ class Adjust_transform extends PS_Controller
       else
       {
         $sc = FALSE;
-        $this->error = "เลขที่เอกสารไม่ถูกต้อง";
+        $this->error = "Invalid document number";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบตัวแปรที่ร้องขอ";
+      $this->error = "Missing required parameter";
     }
 
     echo $sc === TRUE ? json_encode($ds) : $this->error;

@@ -8,7 +8,7 @@
     <div class="col-sm-6 col-xs-12 padding-5">
     	<p class="pull-right">
       <?php if($this->pm->can_add) : ?>
-        <button type="button" class="btn btn-sm btn-success" onclick="addNew()"><i class="fa fa-plus"></i> เพิมใหม่</button>
+        <button type="button" class="btn btn-sm btn-success" onclick="addNew()"><i class="fa fa-plus"></i> Add New</button>
       <?php endif; ?>
       </p>
     </div>
@@ -17,26 +17,26 @@
 <form id="searchForm" method="post" action="<?php echo current_url(); ?>">
 <div class="row">
   <div class="col-sm-2 col-xs-6 padding-5">
-    <label>ธนาคาร</label>
+    <label>Bank</label>
     <select class="form-control input-sm" name="bank_code" id="bank_code" onchange="getSearch()">
-        <option value="all">ทั้งหมด</option>
+        <option value="all">All</option>
         <?php echo select_bank($bank_code); ?>
     </select>
   </div>
 
   <div class="col-sm-2 col-xs-6 padding-5">
-    <label>ชื่อบัญชี</label>
+    <label>Bank Account</label>
     <input type="text" class="form-control input-sm text-center search" name="account_name" value="<?php echo $account_name; ?>" autofocus />
   </div>
 
   <div class="col-sm-2 col-xs-6 padding-5">
-    <label>เลขที่บัญชี</label>
+    <label>Account No</label>
     <input type="text" class="form-control input-sm text-center search" name="account_no" value="<?php echo $account_no; ?>" />
   </div>
 
 
   <div class="col-sm-2 col-xs-6 padding-5">
-    <label>สาขา</label>
+    <label>Branch</label>
     <input type="text" class="form-control input-sm text-center search" name="branch" value="<?php echo $branch; ?>" />
   </div>
 
@@ -60,11 +60,11 @@
 				<tr>
 					<th class="width-5 middle text-center">#</th>
 					<th class="width-5 middle text-center"></th>
-					<th class="width-15 middle">ธนาคาร</th>
-					<th class="width-20 middle">ชื่อบัญชี</th>
-					<th class="width-20 middle">เลขบัญชี</th>
-					<th class="width-15 middle">สาขา</th>
-					<th class="width-5 middle text-center">สถานะ</th>
+					<th class="width-15 middle">Bank</th>
+					<th class="width-20 middle">Bank Account</th>
+					<th class="width-20 middle">Account No</th>
+					<th class="width-15 middle">Branch</th>
+					<th class="width-5 middle text-center">Status</th>
 					<th class="width-10 middle"></th>
 				</tr>
 			</thead>

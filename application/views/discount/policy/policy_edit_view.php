@@ -5,9 +5,9 @@
     </div>
     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 padding-5">
     	<p class="pull-right top-p">
-        <button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+        <button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
       <?php if($this->pm->can_add OR $this->pm->can_edit) : ?>
-        <button type="button" class="btn btn-sm btn-primary" onclick="getActiveRuleList()">เพิ่มเงื่อนไข</button>
+        <button type="button" class="btn btn-sm btn-primary" onclick="getActiveRuleList()">Add Rule</button>
       <?php endif; ?>
       </p>
     </div>
@@ -22,7 +22,7 @@
     <div class="modal-content">
       <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      <h4 class="modal-title">เลือกกฎส่วนลด</h4>
+      <h4 class="modal-title">Discount Rules</h4>
       </div>
       <div class="modal-body" id="rule-body">
         <div class="row">
@@ -34,8 +34,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-sm btn-primary" id="btn-add-rule" onclick="addRule()" disabled><i class="fa fa-plus"></i> เพิ่มในนโยบาย</button>
-        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">ปิด</button>
+        <button type="button" class="btn btn-sm btn-primary" id="btn-add-rule" onclick="addRule()" disabled><i class="fa fa-plus"></i> Add To List</button>
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -45,17 +45,17 @@
 <table class="table table-striped tablesorter margin-bottom-0" id="myTable">
   <thead>
     <tr>
-      <th class="width-5">เลือก</th>
-      <th class="width-25">รหัส</th>
-      <th class="width-50">ชื่อกฏ</th>
-      <th class="width-20">แก้ไขล่าสุด</th>
+      <th class="width-5"></th>
+      <th class="width-25">Code</th>
+      <th class="width-50">Description</th>
+      <th class="width-20">Last Update</th>
     </tr>
   </thead>
   <tbody>
 {{#each this}}
   {{#if nodata}}
     <tr>
-      <td colspan="4" class="text-center">ไม่พบรายการ</td>
+      <td colspan="4" class="text-center">Not found</td>
     </tr>
   {{else}}
     <tr class="font-size-12">

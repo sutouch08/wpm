@@ -5,7 +5,7 @@ class Transport extends PS_Controller{
 	public $menu_code = 'DBTRSP'; //--- Add/Edit Users
 	public $menu_group_code = 'DB';
 	public $menu_sub_group_code = 'TRANSPORT'; //--- System security
-	public $title = 'เชื่อมโยงขนส่ง';
+	public $title = 'Courier Link';
 
   public function __construct()
   {
@@ -91,21 +91,21 @@ class Transport extends PS_Controller{
 
 				if($this->transport_model->add($arr))
 				{
-					set_message('เพิ่มรายการเรียบร้อยแล้ว');
+					set_message('Add data successfully');
 				}
 				else
 				{
-					set_error('เพิ่มรายการไม่สำเร็จ');
+					set_error('Failed to add data');
 				}
 			}
 			else
 			{
-				set_error("{$name} มีในระบบอยู่แล้ว");
+				set_error("{$name} already exists");
 			}
 		}
 		else
 		{
-			set_error('ไม่พบข้อมูลในฟอร์ม');
+			set_error('No data found');
 		}
 
 		redirect($this->home.'/add_new');
@@ -149,21 +149,21 @@ class Transport extends PS_Controller{
 
 				if($this->transport_model->update($id, $arr))
 				{
-					set_message('ปรับปรุงรายการเรียบร้อยแล้ว');
+					set_message('Update data successfully');
 				}
 				else
 				{
-					set_error('ปรับปรุงรายการไม่สำเร็จ');
+					set_error('Failed to update data');
 				}
 			}
 			else
 			{
-				set_error("{$name} มีในระบบอยู่แล้ว");
+				set_error("{$name} already exists");
 			}
 		}
 		else
 		{
-			set_error('ไม่พบข้อมูลในฟอร์ม');
+			set_error('already exists');
 		}
 
 		redirect($this->home.'/edit/'.$id);
@@ -177,16 +177,16 @@ class Transport extends PS_Controller{
 		{
 			if($this->transport_model->delete($id))
 			{
-				set_message('ลบรายการเรียบร้อยแล้ว');
+				set_message('Data has been deleted.');
 			}
 			else
 			{
-				set_error('ลบรายการไม่สำเร็จ');
+				set_error('Failed to delete data');
 			}
 		}
 		else
 		{
-			set_error('คุณไม่มีอำนาจในการลบ');
+			set_error('You do not have the right to delete');
 		}
 
 		redirect($this->home);

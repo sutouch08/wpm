@@ -6,13 +6,13 @@ class Return_order extends PS_Controller
   public $menu_code = 'ICRTOR';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'RETURN';
-	public $title = 'คืนสินค้า(ลดหนี้ขาย)';
+	public $title = 'Goods return';
   public $filter;
   public $error;
 	public $wms;
 	public $isAPI;
   public $segment = 4;
-  public $required_remark = 1;
+  public $required_remark = 0;
 
   public function __construct()
   {
@@ -67,68 +67,67 @@ class Return_order extends PS_Controller
   }
 
 
-
-
   public function add_details($code)
   {
     $sc = TRUE;
+    $data = json_decode(file_get_contents('php://input'));
 
-    if($this->input->post())
+    if( ! empty($data))
     {
       //--- start transection
       $this->db->trans_begin();
 
       $doc = $this->return_order_model->get($code);
+
       if(!empty($doc))
       {
-        $qtys = $this->input->post('qty');
-        $item = $this->input->post('item');
-        $sold_qtys = $this->input->post('sold_qty');
-        $prices = $this->input->post('price');
-        $discounts = $this->input->post('discount');
-				$orders = $this->input->post('order');
-
-        $vat = getConfig('SALE_VAT_RATE'); //--- 0.07
+        $vat_rate = getConfig('SALE_VAT_RATE'); //--- 0.07
 
         //--- drop old detail
         $this->return_order_model->drop_details($code);
 
-        if(count($qtys) > 0)
+        foreach($data as $rs)
         {
-          foreach($qtys as $row => $qty)
+          if($rs->qty > 0)
           {
-            if($qty > 0)
+            $rate = $rs->rate > 0 ? $rs->rate : 1;
+            $disc_amount = $rs->discount == 0 ? 0 : $rs->price * ($rs->discount * 0.01);
+            $amount = $rs->qty * ($rs->price - $disc_amount);
+            $arr = array(
+              'return_code' => $code,
+              'invoice_code' => $doc->invoice,
+              'order_code' => get_null($rs->order_code),
+              'product_code' => $rs->product_code,
+              'product_name' => $rs->product_name,
+              'sold_qty' => $rs->inv_qty,
+              'qty' => $rs->qty,
+              'currency' => $rs->currency,
+              'rate' => $rate,
+              'receive_qty' => $rs->qty,
+              'price' => $rs->price,
+              'discount_percent' => $rs->discount,
+              'amount' => $amount,
+              'totalFrgn' => convertFC($amount, $rate, 1),
+              'vat_amount' => get_vat_amount($amount, $vat_rate)
+            );
+
+            if($this->return_order_model->add_detail($arr) === FALSE)
             {
-              $price = round($prices[$row], 2);
-              $discount = $discounts[$row];
-              $disc_amount = $discount == 0 ? 0 : $qty * ($price * ($discount * 0.01));
-              $amount = ($qty * $price) - $disc_amount;
-              $arr = array(
-                'return_code' => $code,
-                'invoice_code' => $doc->invoice,
-								'order_code' => get_null($orders[$row]),
-                'product_code' => $item[$row],
-                'product_name' => $this->products_model->get_name($item[$row]),
-                'sold_qty' => $sold_qtys[$row],
-                'qty' => $qty,
-								'receive_qty' => ($doc->is_wms == 1 ? ($doc->api == 1? 0 : $qty) : $qty),
-                'price' => $price,
-                'discount_percent' => $discount,
-                'amount' => $amount,
-                'vat_amount' => get_vat_amount($amount)
-              );
+              $sc = FALSE;
+              $this->error = 'Add item failed';
+              break;
+            }
+          } //--- end if qty > 0
+        } //--- end foreach
 
-              if($this->return_order_model->add_detail($arr) === FALSE)
-              {
-                $sc = FALSE;
-                $this->error = 'บันทึกรายการไม่สำเร็จ';
-                break;
-              }
-            } //--- end if qty > 0
-          } //--- end foreach
-        }//-- end if count($qtys)
-
-        $this->return_order_model->set_status($code, 1);
+        if( $sc === TRUE)
+        {
+          if( ! $this->return_order_model->set_status($code, 1))
+          {
+            $sc = FALSE;
+            $this->error = "Save document failed";
+          }
+        }
 
         if($sc === TRUE)
         {
@@ -143,31 +142,28 @@ class Return_order extends PS_Controller
       {
         //--- empty document
         $sc = FALSE;
-        set_error('ไม่พบเลขที่เอกสาร');
+        set_error('Document not found.');
       }
     }
     else
     {
       $sc = FALSE;
-      set_error('ไม่พบจำนวนในการรับคืน');
+      set_error('No return items found.');
     }
 
-    if($sc === TRUE)
-    {
-      set_message('Success');
-      redirect($this->home.'/view_detail/'.$code);
-    }
-    else
-    {
-      redirect($this->home.'/edit/'.$code);
-    }
+    $arr = array(
+      'status' => $sc === TRUE ? 'success' : 'failed',
+      'message' => $sc === TRUE ? 'success' : $this->error
+    );
 
+    echo json_encode($arr);
   }
 
+  
   public function delete_detail($id)
   {
     $rs = $this->return_order_model->delete_detail($id);
-    echo $rs === TRUE ? 'success' : 'ลบรายการไม่สำเร็จ';
+    echo $rs === TRUE ? 'success' : 'Delete item failed';
   }
 
 
@@ -190,20 +186,20 @@ class Return_order extends PS_Controller
         if( ! $this->return_order_model->update($code, $arr))
         {
           $sc = FALSE;
-          $this->error = 'ยกเลิกการบันทึกไม่สำเร็จ';
+          $this->error = 'Failed to cancel save.';
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "กรุณายกเลิกเอกสาร ลดหนี้เลขที่ {$docNum} ใน SAP ก่อนยกเลิกการบันทึก";
+        $this->error = "Please cancel the document Debit No. {$docNum} in SAP before canceling the save.";
       }
 
     }
     else
     {
       $sc = FALSE;
-      $this->error = 'คุณไม่มีสิทธิ์ในการยกเลิกการบันทึก';
+      $this->error = 'You do not have the right to cancel the recording.';
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -269,7 +265,7 @@ class Return_order extends PS_Controller
                     if($this->movement_model->add($arr) === FALSE)
                     {
                       $sc = FALSE;
-                      $this->error = 'บันทึก movement ไม่สำเร็จ';
+                      $this->error = 'Failed to save movement';
                     }
                   }
 
@@ -282,7 +278,7 @@ class Return_order extends PS_Controller
               else
               {
                 $sc = FALSE;
-                $this->error = "ไม่พบรายการรับคืน";
+                $this->error = "Return item not found";
               }
             }
 					}
@@ -313,7 +309,7 @@ class Return_order extends PS_Controller
                 else
                 {
                   $sc = FALSE;
-                  $this->error = "อนุมัติสำเร็จ แต่ส่งข้อมูลเข้า WMS ไม่สำเร็จ กรุณา refresh หน้าจอแล้วกดส่งข้อมูลอีกครั้ง";
+                  $this->error = "approved successfully but failed to send data to WMS, please refresh the screen and press send again";
                 }
               }
               else
@@ -323,7 +319,7 @@ class Return_order extends PS_Controller
                 if(! $export)
                 {
                   $sc = FALSE;
-                  $this->error = "อนุมัติสำเร็จ แต่ส่งข้อมูลไป SAP ไม่สำเร็จ กรุณา refresh หน้าจอแล้วกดส่งข้อมูลอีกครั้ง";
+                  $this->error = "approved successfully but failed to send data to SAP, please refresh the screen and press submit again.";
                 }
               }
             }
@@ -338,13 +334,13 @@ class Return_order extends PS_Controller
 			else
 			{
 				$sc = FALSE;
-				$this->error = 'เลขที่เอกสารไม่ถูกต้อง';
+				$this->error = 'The document number is invalid.';
 			}
     }
     else
     {
 			$sc = FALSE;
-			$this->error = 'คุณไม่มีสิทธิ์อนุมัติ';
+			$this->error = 'You do not have permission to approve';
     }
 
 		echo $sc === TRUE ? 'success' : $this->error;
@@ -414,7 +410,7 @@ class Return_order extends PS_Controller
                 if($this->movement_model->add($arr) === FALSE)
                 {
                   $sc = FALSE;
-                  $this->error = 'บันทึก movement ไม่สำเร็จ';
+                  $this->error = 'Failed to save movement';
                 }
               }
 
@@ -428,7 +424,7 @@ class Return_order extends PS_Controller
           else
           {
             $sc = FALSE;
-            $this->error = "ไม่พบรายการรับคืน";
+            $this->error = "Return item not found";
           }
         }
 
@@ -456,7 +452,7 @@ class Return_order extends PS_Controller
             else
             {
               $sc = FALSE;
-              $this->error = "ยืนยันสำเร็จ แต่ส่งข้อมูลเข้า WMS ไม่สำเร็จ กรุณา refresh หน้าจอแล้วกดส่งข้อมูลอีกครั้ง";
+              $this->error = "Successful confirmation, but failed to send data to WMS, please refresh the screen and press send again.";
             }
           }
           else
@@ -466,7 +462,7 @@ class Return_order extends PS_Controller
             if(! $export)
             {
               $sc = FALSE;
-              $this->error = "อนุมัติสำเร็จ แต่ส่งข้อมูลไป SAP ไม่สำเร็จ กรุณา refresh หน้าจอแล้วกดส่งข้อมูลอีกครั้ง";
+              $this->error = "approved successfully but failed to send data to SAP, please refresh the screen and press submit again.";
             }
           }
         }
@@ -480,7 +476,7 @@ class Return_order extends PS_Controller
     else
     {
       $sc = FALSE;
-      $this->error = 'เลขที่เอกสารไม่ถูกต้อง';
+      $this->error = 'Invalid document number';
     }
 
 
@@ -533,19 +529,19 @@ class Return_order extends PS_Controller
         else
         {
 					$sc = FALSE;
-          $this->error = 'ยกเลิกอนุมัติเอกสารไม่สำเร็จ';
+          $this->error = 'Failed to cancel the approval of the document.';
         }
       }
 			else
 			{
 				$sc = FALSE;
-				$this->error = "เอกสารเข้า SAP แล้ว กรุณายกเลิกเอกสารใน SAP ก่อน";
+				$this->error = "The document already in SAP. Please cancel the document in SAP before cancel the document.";
 			}
     }
     else
     {
 			$sc = FALSE;
-      $this->error = 'คุณไม่มีสิทธิ์อนุมัติ';
+      $this->error = 'You do not have permission to approve';
     }
 
 		echo $sc === TRUE ? 'success' : $this->error;
@@ -560,66 +556,77 @@ class Return_order extends PS_Controller
 
   public function add()
   {
+    $sc = TRUE;
+
     if($this->input->post('date_add'))
     {
       $date_add = db_date($this->input->post('date_add'), TRUE);
       $invoice = trim($this->input->post('invoice'));
       $customer_code = trim($this->input->post('customer_code'));
-			$is_wms = trim($this->input->post('is_wms'));
 			$zone_code = trim($this->input->post('zone_code'));
-			$api = $this->input->post('api');
       $remark = trim($this->input->post('remark'));
-
-			if($is_wms == 1)
-			{
-				$zone_code = getConfig('WMS_ZONE');
-			}
 
 			$zone = $this->zone_model->get($zone_code);
 
-      if($this->input->post('code'))
+      $iv = $this->return_order_model->get_invoice($invoice, $customer_code);
+
+      if( ! empty($iv))
       {
-        $code = trim($this->input->post('code'));
+        if($iv->CANCELED == 'N')
+        {
+          $code = $this->get_new_code($date_add);
+
+          $must_accept = empty($zone->user_id) ? 0 : 1;
+
+          $arr = array(
+            'code' => $code,
+            'bookcode' => getConfig('BOOK_CODE_RETURN_ORDER'),
+            'DocCur' => $iv->DocCur,
+            'DocRate' => $iv->DocRate,
+            'invoice' => $invoice,
+            'customer_code' => $customer_code,
+            'warehouse_code' => $zone->warehouse_code,
+            'zone_code' => $zone->code,
+            'user' => $this->_user->uname,
+            'date_add' => $date_add,
+            'remark' => $remark,
+            'is_wms' => 0,
+            'api' => 1,
+            'must_accept' => $must_accept
+          );
+
+          if( ! $this->return_order_model->add($arr))
+          {
+            $sc = FALSE;
+            $this->error = "Failed to add document Please try again.";
+          }
+        }
+        else
+        {
+          $sc = FALSE;
+          $this->error = "Invoice already cancelled";
+        }
       }
       else
       {
-        $code = $this->get_new_code($date_add);
+        $sc = FALSE;
+        $this->error = "Invalid invoice number OR Invalid customer";
       }
 
-      $must_accept = empty($zone->user_id) ? 0 : 1;
-
-      $arr = array(
-        'code' => $code,
-        'bookcode' => getConfig('BOOK_CODE_RETURN_ORDER'),
-        'invoice' => $invoice,
-        'customer_code' => $customer_code,
-        'warehouse_code' => $zone->warehouse_code,
-        'zone_code' => $zone->code,
-        'user' => $this->_user->uname,
-        'date_add' => $date_add,
-        'remark' => $remark,
-				'is_wms' => $is_wms,
-				'api' => $api,
-        'must_accept' => $must_accept
-      );
-
-      $rs = $this->return_order_model->add($arr);
-
-      if($rs === TRUE)
-      {
-        redirect($this->home.'/edit/'.$code);
-      }
-      else
-      {
-        set_error("เพิ่มเอกสารไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
-        redirect($this->home.'/add_new');
-      }
     }
     else
     {
-      set_error("ไม่พบข้อมูลเอกสารหรือฟอร์มว่างเปล่า กรุณาตรวจสอบ");
-      redirect($this->home.'/add_new');
+      $sc = FALSE;
+      set_error("Document data not found or form is blank, please check.");
     }
+
+    $arr = array(
+      'status' => $sc === TRUE ? 'success' : 'failed',
+      'message' => $sc === TRUE ? 'success' : $this->error,
+      'code' => $sc === TRUE ? $code : NULL
+    );
+
+    echo json_encode($arr);
   }
 
 
@@ -630,42 +637,25 @@ class Return_order extends PS_Controller
     $doc->zone_name = $this->zone_model->get_name($doc->zone_code);
     $doc->warehouse_name = $this->warehouse_model->get_name($doc->warehouse_code);
     $details = $this->return_order_model->get_details($code);
-
-    $detail = array();
       //--- ถ้าไม่มีรายละเอียดให้ไปดึงจากใบกำกับมา
     if(empty($details))
     {
       $details = $this->return_order_model->get_invoice_details($doc->invoice);
-      if(!empty($details))
-      {
-        //--- ถ้าได้รายการ ให้ทำการเปลี่ยนรหัสลูกค้าให้ตรงกับเอกสาร
-        $cust = $this->return_order_model->get_customer_invoice($doc->invoice);
-        if(!empty($cust))
-        {
-          $this->return_order_model->update($doc->code, array('customer_code' => $cust->customer_code));
-        }
-        //--- เปลี่ยนข้อมูลที่จะแสดงให้ตรงกันด้วย
-        $doc->customer_code = $cust->customer_code;
-        $doc->customer_name = $cust->customer_name;
 
+      if(! empty($details))
+      {
         foreach($details as $rs)
         {
           if($rs->qty > 0)
           {
-            $dt = new stdClass();
-            $dt->id = 0;
-            $dt->invoice_code = $doc->invoice;
-						$dt->order_code = $rs->order_code;
-            $dt->barcode = $this->products_model->get_barcode($rs->product_code);
-            $dt->product_code = $rs->product_code;
-            $dt->product_name = $rs->product_name;
-            $dt->sold_qty = round($rs->qty, 2);
-            $dt->discount_percent = round($rs->discount, 2);
-            $dt->qty = round($rs->qty, 2);
-            $dt->price = round(add_vat($rs->price), 2);
-            $dt->amount = round((get_price_after_discount($dt->price, $dt->discount_percent) * $rs->qty), 2);
-
-            $detail[] = $dt;
+            $rs->id = 0;
+            $rs->invoice_code = $doc->invoice;
+            $rs->barcode = $this->products_model->get_barcode($rs->product_code);
+            $rs->sold_qty = round($rs->qty, 2);
+            $rs->discount_percent = round($rs->discount, 2);
+            $rs->qty = round($rs->qty, 2);
+            $rs->price = round(add_vat($rs->price), 2);
+            $rs->amount = round((get_price_after_discount($rs->price, $rs->discount_percent) * $rs->qty), 2);
           }
         }
       }
@@ -677,27 +667,26 @@ class Return_order extends PS_Controller
         $returned_qty = $this->return_order_model->get_returned_qty($doc->invoice, $rs->product_code);
         $qty = $rs->sold_qty - ($returned_qty - $rs->qty);
 
-				$dt = new stdClass();
-				$dt->id = $rs->id;
-				$dt->invoice_code = $doc->invoice;
-				$dt->order_code = $rs->order_code;
-				$dt->barcode = $this->products_model->get_barcode($rs->product_code);
-				$dt->product_code = $rs->product_code;
-				$dt->product_name = $rs->product_name;
-				$dt->sold_qty = $qty;
-				$dt->discount_percent = $rs->discount_percent;
-				$dt->qty = $rs->qty;
-				$dt->price = round($rs->price,2);
-				$dt->amount = round($rs->amount,2);
-
-				$detail[] = $dt;
+				$rs->id = $rs->id;
+				$rs->invoice_code = $doc->invoice;
+				$rs->order_code = $rs->order_code;
+				$rs->barcode = $this->products_model->get_barcode($rs->product_code);
+				$rs->product_code = $rs->product_code;
+				$rs->product_name = $rs->product_name;
+				$rs->sold_qty = $qty;
+				$rs->discount_percent = $rs->discount_percent;
+				$rs->qty = $rs->qty;
+				$rs->price = round($rs->price,2);
+        $rs->currency = $rs->currency;
+        $rs->rate = $rs->rate;
+				$rs->amount = round($rs->amount,2);
       }
     }
 
 
     $ds = array(
       'doc' => $doc,
-      'details' => $detail
+      'details' => $details
     );
 
     if($doc->status == 0)
@@ -723,28 +712,22 @@ class Return_order extends PS_Controller
       $invoice = trim($this->input->post('invoice'));
       $customer_code = $this->input->post('customer_code');
 			$zone_code = $this->input->post('zone_code');
-			$is_wms = $this->input->post('is_wms');
-			$api = $this->input->post('api');
-
-			if($is_wms == 1)
-			{
-				$zone_code = getConfig('WMS_ZONE');
-			}
-
+			$DocCur = $this->input->post('doc_currency');
+      $DocRate = $this->input->post('doc_rate') <= 0 ? 1 : $this->input->post('doc_rate');
       $zone = $this->zone_model->get($zone_code);
-
       $remark = $this->input->post('remark');
-
       $must_accept = empty($zone->user_id) ? 0 : 1;
+
+      $doc = $this->return_order_model->get($code);
 
       $arr = array(
         'date_add' => $date_add,
+        'DocCur' => $DocCur,
+        'DocRate' => $DocRate,
         'invoice' => $invoice,
         'customer_code' => $customer_code,
         'warehouse_code' => $zone->warehouse_code,
         'zone_code' => $zone->code,
-				'is_wms' => $is_wms,
-				'api' => $api,
         'remark' => $remark,
         'must_accept' => $must_accept,
         'update_user' => $this->_user->uname
@@ -753,16 +736,27 @@ class Return_order extends PS_Controller
       if($this->return_order_model->update($code, $arr) === FALSE)
       {
         $sc = FALSE;
-        $message = 'ปรับปรุงข้อมูลไม่สำเร็จ';
+        $this->error = 'Update failed';
+      }
+
+      if($doc->invoice != $invoice)
+      {
+        $this->return_order_model->remove_details($code);
       }
     }
     else
     {
       $sc = FALSE;
-      $message = 'ไม่พบเลขที่เอกสาร';
+      $this->error = 'Document number not found';
     }
 
-    echo $sc === TRUE ? 'success' : $message;
+    $arr = array(
+      'status' => $sc === TRUE ? 'success' : 'failed',
+      'message' => $sc === TRUE ? 'success' : $this->error,
+      'reload' => $doc->invoice == $invoice ? 'N' : 'Y'
+    );
+
+    echo json_encode($arr);
   }
 
 
@@ -790,7 +784,7 @@ class Return_order extends PS_Controller
     if(empty($details))
     {
       $sc = FALSE;
-      $message = 'ไม่พบข้อมูล';
+      $message = 'No data found';
     }
 
     if(!empty($details))
@@ -819,6 +813,34 @@ class Return_order extends PS_Controller
     echo $sc === TRUE ? json_encode($ds) : $message;
   }
 
+
+
+  public function get_open_invoice_list($customer_code)
+  {
+    $ds = array();
+    $txt = trim($_REQUEST['term']);
+    $customer_code = $customer_code == "no_customer_selected" ? NULL : urldecode($customer_code);
+
+    $result = $this->return_order_model->get_open_invoice_list($txt, $customer_code);
+
+    if( ! empty($result))
+    {
+      foreach($result as $rs)
+      {
+        $arr = array(
+          'label' => $rs->DocNum,
+          'invoice' => $rs->DocNum,
+          'customer_code' => $rs->CardCode,
+          'customer_name' => $rs->CardName
+        );
+
+        array_push($ds, $arr);
+      }
+    }
+
+    echo json_encode($ds);
+
+  }
 
 
 
@@ -916,7 +938,7 @@ class Return_order extends PS_Controller
 					else
 					{
 						$sc = FALSE;
-						$this->error = "กรุณายกเลิกเอกสารใน SAP ก่อนดำเนินการ";
+						$this->error = "Please cancel the document in SAP before proceeding.";
 					}
 				}
 				else
@@ -925,12 +947,12 @@ class Return_order extends PS_Controller
 
 					if($doc->status == 3)
 					{
-						$this->error = "เอกสารอยู่ระหว่างการรับเข้าไม่อนุญาติให้ยกเลิก";
+						$this->error = "The document is in the process of being admitted, not allowed to cancel.";
 					}
 
 					if($doc->status == 2)
 					{
-						$this->error = "เอกสารถูกยกเลิกไปแล้ว";
+						$this->error = "The document has been cancelled.";
 					}
 				}
 			}
@@ -943,7 +965,7 @@ class Return_order extends PS_Controller
     else
     {
       $sc = FALSE;
-      $this->error = 'คุณไม่มีสิทธิ์ในการยกเลิกเอกสาร';
+      $this->error = 'You do not have the right to cancel the document.';
     }
 
     echo $sc === TRUE ? 'success' : $this->error;

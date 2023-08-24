@@ -281,6 +281,12 @@ class Return_order_model extends CI_Model
 	}
 
 
+  public function remove_details($code)
+  {
+    return $this->db->where('return_code', $code)->delete('return_order_detail');
+  }
+  
+
 	public function drop_not_valid_details($code)
 	{
 		return $this->db->where('return_code', $code)->where('valid', 0)->delete('return_order_detail');
@@ -305,13 +311,54 @@ class Return_order_model extends CI_Model
   }
 
 
+  public function get_invoice($invoice, $customer_code)
+  {
+    $rs = $this->ms
+    ->select('DocEntry, DocNum, CANCELED, CardCode, DocCur, DocRate')
+    ->where('DocNum', $invoice)
+    ->where('CardCode', $customer_code)
+    ->get('OINV');
+
+    if($rs->num_rows() === 1)
+    {
+      return $rs->row();
+    }
+
+    return NULL;
+  }
+
+
+  public function get_open_invoice_list($search_text, $cardCode)
+  {
+    $this->ms->select('DocNum, CardCode, CardName')->where('CANCELED', 'N');
+
+    if( ! empty($cardCode))
+    {
+      $this->ms->where('CardCode', $cardCode);
+    }
+
+    if($search_text != '*')
+    {
+      $this->ms->like('DocNum', $search_text);
+    }
+
+    $rs = $this->ms->order_by('DocNum', 'DESC')->limit(50, 0)->get('OINV');
+
+    if($rs->num_rows() > 0)
+    {
+      return $rs->result();
+    }
+
+    return NULL;
+  }
 
   public function get_invoice_details($invoice)
   {
-    $qr = "SELECT ivd.DocEntry, ivd.U_ECOMNO AS order_code, iv.DocNum, iv.NumAtCard,
+    $qr = "SELECT ivd.DocEntry, ivd.U_ECOMNO AS order_code,
+    iv.DocNum, iv.NumAtCard, iv.DocCur, iv.DocRate,
     ivd.ItemCode AS product_code, ivd.Dscription AS product_name,
     (SELECT SUM(Quantity) FROM INV1 WHERE DocEntry = ivd.DocEntry AND ItemCode = ivd.ItemCode AND U_ECOMNO = ivd.U_ECOMNO GROUP BY U_ECOMNO) AS qty,
-    ivd.PriceBefDi AS price, ivd.DiscPrcnt AS discount
+    ivd.PriceBefDi AS price, ivd.DiscPrcnt AS discount, ivd.Currency AS currency, ivd.Rate as rate
     FROM INV1 AS ivd
     LEFT JOIN OINV AS iv ON ivd.DocEntry = iv.DocEntry
     WHERE iv.DocNum = '{$invoice}'";

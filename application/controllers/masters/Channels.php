@@ -5,7 +5,7 @@ class Channels extends PS_Controller
 {
   public $menu_code = 'DBCHAN';
 	public $menu_group_code = 'DB';
-	public $title = 'ช่องทางการขาย';
+	public $title = 'Sales channels';
 
   public function __construct()
   {

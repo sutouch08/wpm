@@ -6,7 +6,7 @@ class Order_payment extends PS_Controller
   public $menu_code = 'ACPMCF';
 	public $menu_group_code = 'AC';
   public $menu_sub_group_code = '';
-	public $title = 'ตรวจสอบยอดชำระเงิน';
+	public $title = 'Payment Validation';
   public $filter;
 	public $wms;
 	public $error;
@@ -208,7 +208,7 @@ class Order_payment extends PS_Controller
     else
     {
       $sc = FALSE;
-      $this->error = 'ไม่พบรายการชำระเงิน';
+      $this->error = 'No payment found';
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -265,7 +265,7 @@ class Order_payment extends PS_Controller
     else
     {
       $sc = FALSE;
-      $message = 'ไม่พบรายการชำระเงิน';
+      $message = 'No payment found';
     }
 
     echo $sc === TRUE ? 'success' : $message;
@@ -323,13 +323,13 @@ class Order_payment extends PS_Controller
       else
       {
         $sc = FALSE;
-        $message = 'ไม่พบรายการชำระเงิน';
+        $message = 'No payment found';
       }
     }
     else
     {
       $sc = FALSE;
-      $message = 'ไม่พบตัวแปร id กรุณา reload หน้าเว็บแล้วลองใหม่';
+      $message = 'Missing required parameter : ID';
     }
 
     echo $sc === TRUE ? 'success' : $message;

@@ -8,10 +8,10 @@
 						</th>
 					</tr>
           <tr>
-          	<th class="width-10 text-center">ลำดับ</th>
-            <th class="width-20 text-center">บาร์โค้ด</th>
-            <th class="text-center">สินค้า</th>
-            <th class="width-10 text-center">จำนวน</th>
+          	<th class="width-10 text-center">#</th>
+            <th class="width-20 text-center">Barcode</th>
+            <th class="text-center">Items</th>
+            <th class="width-10 text-center">Qty</th>
           </tr>
           </thead>
 
@@ -26,15 +26,15 @@
       	<thead>
           <tr>
           	<th colspan="5" class="text-center">
-             รายการใน Temp
+             Transfer Temp
             </th>
             </tr>
           	<tr>
-            	<th class="width-5 text-center">ลำดับ</th>
-              <th class="width-15 text-center">บาร์โค้ด</th>
-              <th class="width-45 text-center">สินค้า</th>
-              <th class="width-25 text-center">ต้นทาง</th>
-              <th class="width-10 text-center">จำนวน</th>
+            	<th class="width-5 text-center">#</th>
+              <th class="width-15 text-center">Barcode</th>
+              <th class="width-45 text-center">Items</th>
+              <th class="width-25 text-center">From Location</th>
+              <th class="width-10 text-center">Qty</th>
             </tr>
           </thead>
           <tbody id="temp-list">
@@ -48,16 +48,16 @@
   	<table class="table table-striped border-1">
     	<thead>
       	<tr>
-        	<th colspan="7" class="text-center">รายการโอนย้าย</th>
+        	<th colspan="7" class="text-center">Transfered Items</th>
         </tr>
 
 				<tr>
-        	<th class="width-5 text-center">ลำดับ</th>
-          <th class="width-15">บาร์โค้ด</th>
-          <th class="width-20">สินค้า</th>
-          <th class="width-25">ต้นทาง</th>
-          <th class="width-25">ปลายทาง</th>
-          <th class="width-10 text-center">จำนวน</th>
+        	<th class="width-5 text-center">#</th>
+          <th class="width-15">Barcode</th>
+          <th class="width-20">Items</th>
+          <th class="width-25">From Location</th>
+          <th class="width-25">To Location</th>
+          <th class="width-10 text-center">Qty</th>
           <th class="width-5"></th>
         </tr>
       </thead>
@@ -111,13 +111,13 @@
 <?php 	  $total_qty += $rs->qty; ?>
 <?php		endforeach;			?>
 				<tr>
-					<td colspan="5" class="middle text-right"><strong>รวม</strong></td>
+					<td colspan="5" class="middle text-right"><strong>Total</strong></td>
 					<td class="middle text-center" id="total"><?php echo number($total_qty); ?></td>
 					<td></td>
 				</tr>
 <?php	else : ?>
  				<tr>
-        	<td colspan="7" class="text-center"><h4>ไม่พบรายการ</h4></td>
+        	<td colspan="7" class="text-center"><h4>No iitem found</h4></td>
         </tr>
 <?php	endif; ?>
       </tbody>
@@ -131,7 +131,7 @@
 	{{#if nodata}}
 		<tr>
 			<td colspan="6" class="text-center">
-				<h4>ไม่พบสินค้าในโซน</h4>
+				<h4>No item found</h4>
 			</td>
 		</tr>
 	{{else}}
@@ -154,7 +154,7 @@
 {{#each this}}
 	{{#if nodata}}
 	<tr>
-		<td colspan="6" class="text-center"><h4>ไม่พบรายการ</h4></td>
+		<td colspan="6" class="text-center"><h4>No item found</h4></td>
 	</tr>
 	{{else}}
 
@@ -181,12 +181,12 @@
 {{#each this}}
 	{{#if nodata}}
 	<tr>
-		<td colspan="7" class="text-center"><h4>ไม่พบรายการ</h4></td>
+		<td colspan="7" class="text-center"><h4>No item found</h4></td>
 	</tr>
 	{{else}}
 		{{#if @last}}
 			<tr>
-				<td colspan="5" class="text-right"><strong>รวม</strong></td>
+				<td colspan="5" class="text-right"><strong>Total</strong></td>
 				<td class="middle text-center" id="total">{{ total }}</td>
 				<td></td>
 			</tr>

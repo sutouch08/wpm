@@ -3,17 +3,17 @@
   	<table class="table table-striped border-1">
     	<thead>
       	<tr>
-        	<th colspan="7" class="text-center">รายการโอนย้าย</th>
+        	<th colspan="7" class="text-center">Transfered Items</th>
         </tr>
 
       	<tr>
-        	<th class="width-5 text-center">ลำดับ</th>
-          <th class="width-15">บาร์โค้ด</th>
-          <th class="width-20">สินค้า</th>
-          <th class="width-20">ต้นทาง</th>
-          <th class="width-20">ปลายทาง</th>
-          <th class="width-10 text-right">จำนวนออก</th>
-					<th class="width-10 text-right">จำนวนเข้า</th>
+        	<th class="width-5 text-center">#</th>
+          <th class="width-15">Barcode</th>
+          <th class="width-20">Items</th>
+          <th class="width-20">From Location</th>
+          <th class="width-20">To Location</th>
+          <th class="width-10 text-right">Move Out</th>
+					<th class="width-10 text-right">Move In</th>
         </tr>
       </thead>
 
@@ -58,13 +58,13 @@
 <?php 		$total_receive += $receive_qty; ?>
 <?php		endforeach;			?>
 				<tr>
-					<td colspan="5" class="middle text-right"><strong>รวม</strong></td>
+					<td colspan="5" class="middle text-right"><strong>Total</strong></td>
 					<td class="middle text-right"><strong><?php echo number($total_qty); ?></strong></td>
 					<td class="middle text-right"><strong><?php echo number($total_receive); ?></strong></td>
 				</tr>
 <?php	else : ?>
  				<tr>
-        	<td colspan="7" class="text-center"><h4>ไม่พบรายการ</h4></td>
+        	<td colspan="7" class="text-center"><h4>No item found</h4></td>
         </tr>
 <?php	endif; ?>
       </tbody>
@@ -75,12 +75,12 @@
 
 		<?php if( ! empty($doc->must_accept == 1 &&  ! empty($accept_list))) : ?>
 			<?php if($doc->is_accept == 1 && $doc->accept_by != NULL) : ?>
-				<p class="green">ยืนยันโดย : <?php echo $doc->display_name; ?> @ <?php echo thai_date($doc->accept_on, TRUE); ?><br/>
+				<p class="green">Accepted by : <?php echo $doc->display_name; ?> @ <?php echo thai_date($doc->accept_on, TRUE); ?><br/>
 					Note : <?php echo $doc->accept_remark; ?></p>
 			<?php else : ?>
 				<?php foreach($accept_list as $ac) : ?>
 					<?php if($ac->is_accept == 1) : ?>
-						<p class="green">ยืนยันโดย : <?php echo $ac->display_name; ?> @ <?php echo thai_date($ac->accept_on, TRUE); ?></p>
+						<p class="green">Accepted by : <?php echo $ac->display_name; ?> @ <?php echo thai_date($ac->accept_on, TRUE); ?></p>
 					<?php endif; ?>
 				<?php endforeach; ?>
 			<?php endif; ?>
@@ -90,10 +90,10 @@
 	<?php if( ! empty($approve_logs)) : ?>
 			<?php foreach($approve_logs as $logs) : ?>
 				<?php if($logs->approve == 1) : ?>
-					<p class="green">อนุมัติโดย : <?php echo $logs->approver; ?> @ <?php echo thai_date($logs->date_upd, TRUE); ?></p>
+					<p class="green">Approved by : <?php echo $logs->approver; ?> @ <?php echo thai_date($logs->date_upd, TRUE); ?></p>
 				<?php endif; ?>
 				<?php if($logs->approve == 3) : ?>
-					<p class="red">Rejected โดย : <?php echo $logs->approver; ?> @ <?php echo thai_date($logs->date_upd, TRUE); ?></p>
+					<p class="red">Rejected by : <?php echo $logs->approver; ?> @ <?php echo thai_date($logs->date_upd, TRUE); ?></p>
 				<?php endif; ?>
 			<?php endforeach; ?>
 	<?php endif; ?>

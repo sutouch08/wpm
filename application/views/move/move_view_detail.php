@@ -3,16 +3,16 @@
   	<table class="table table-striped border-1">
     	<thead>
       	<tr>
-        	<th colspan="6" class="text-center">รายการโอนย้าย</th>
+        	<th colspan="6" class="text-center">Moved Items</th>
         </tr>
 
       	<tr>
-        	<th class="width-5 text-center">ลำดับ</th>
-          <th class="width-15">บาร์โค้ด</th>
-          <th class="width-20">สินค้า</th>
-          <th class="width-25">ต้นทาง</th>
-          <th class="width-25">ปลายทาง</th>
-          <th class="width-15 text-center">จำนวน</th>
+        	<th class="width-5 text-center">#</th>
+          <th class="width-15">Barcode</th>
+          <th class="width-20">Items</th>
+          <th class="width-25">From Location</th>
+          <th class="width-25">To Location</th>
+          <th class="width-15 text-center">Qty</th>
         </tr>
       </thead>
 
@@ -50,12 +50,12 @@
 <?php     $total_qty += $rs->qty; ?>
 <?php		endforeach;			?>
 				<tr>
-					<td colspan="5" class="middle text-right"><strong>รวม</strong></td>
+					<td colspan="5" class="middle text-right"><strong>Total</strong></td>
 					<td class="middle text-center"><strong><?php echo number($total_qty); ?></strong></td>
 				</tr>
 <?php	else : ?>
  				<tr>
-        	<td colspan="6" class="text-center"><h4>ไม่พบรายการ</h4></td>
+        	<td colspan="6" class="text-center"><h4>No items found</h4></td>
         </tr>
 <?php	endif; ?>
       </tbody>
@@ -67,12 +67,12 @@
 	<div class="row">
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5">
 	<?php if($doc->is_accept == 1 && $doc->accept_by != NULL) : ?>
-		<p class="green">ยืนยันโดย : <?php echo $doc->display_name; ?> @ <?php echo thai_date($doc->accept_on, TRUE); ?><br/>
+		<p class="green">Accepted by : <?php echo $doc->display_name; ?> @ <?php echo thai_date($doc->accept_on, TRUE); ?><br/>
 			Note : <?php echo $doc->accept_remark; ?></p>
 	<?php else : ?>
 		<?php foreach($accept_list as $ac) : ?>
 			<?php if($ac->is_accept == 1) : ?>
-				<p class="green">ยืนยันโดย : <?php echo $ac->display_name; ?> @ <?php echo thai_date($ac->accept_on, TRUE); ?></p>
+				<p class="green">Accepted by : <?php echo $ac->display_name; ?> @ <?php echo thai_date($ac->accept_on, TRUE); ?></p>
 			<?php endif; ?>
 		<?php endforeach; ?>
 	<?php endif; ?>

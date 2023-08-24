@@ -5,7 +5,7 @@ class Current_stock_consignment extends PS_Controller
   public $menu_code = 'RICSCM';
 	public $menu_group_code = 'RE';
   public $menu_sub_group_code = 'REINVT';
-	public $title = 'รายงานสินค้าคงเหลือปัจจุบัน (ฝากขายเทียม)';
+	public $title = 'Current Inventory Report (consignment)';
   public $filter;
   public function __construct()
   {
@@ -226,7 +226,7 @@ class Current_stock_consignment extends PS_Controller
     }
     else
     {
-      echo "ไม่พบรหัสสินค้า";
+      echo "No items found";
     }
   }
 

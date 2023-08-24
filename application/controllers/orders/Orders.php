@@ -10,9 +10,7 @@ class Orders extends PS_Controller
   public $filter;
   public $error;
   public $isAPI;
-	public $wms; //--- wms database;
 	public $logs; //--- logs database;
-  public $sync_chatbot_stock = FALSE;
   public $log_delete = TRUE;
 
   public function __construct()
@@ -41,7 +39,6 @@ class Orders extends PS_Controller
     $this->load->helper('warehouse');
 
     $this->filter = getConfig('STOCK_FILTER');
-    $this->isAPI = is_true(getConfig('WMS_API'));
   }
 
 
@@ -69,8 +66,7 @@ class Orders extends PS_Controller
       'sort_by' => get_filter('sort_by', 'order_sort_by', ''),
       'stated' => get_filter('stated', 'stated', ''),
       'startTime' => get_filter('startTime', 'startTime', ''),
-      'endTime' => get_filter('endTime', 'endTime', ''),
-			'wms_export' => get_filter('wms_export', 'wms_export', 'all')
+      'endTime' => get_filter('endTime', 'endTime', '')
     );
 
     $state = array(
@@ -264,7 +260,6 @@ class Orders extends PS_Controller
           'remark' => addslashes($this->input->post('remark')),
 					'id_address' => $id_address,
 					'id_sender' => $this->sender_model->get_main_sender($customer->code),
-					'is_wms' => $wh->is_wms,
 					'transformed' => $this->input->post('transformed')
         );
 
@@ -300,8 +295,6 @@ class Orders extends PS_Controller
   public function add_detail($order_code)
   {
     $auz = getConfig('ALLOW_UNDER_ZERO');
-		$this->sync_chatbot_stock = getConfig('SYNC_CHATBOT_STOCK') == 1 ? TRUE : FALSE;
-		$chatbot_warehouse_code = getConfig('CHATBOT_WAREHOUSE_CODE');
     $dfCurrency = getConfig('CURRENCY');
 		$sync_stock = array();
     $result = TRUE;
@@ -414,18 +407,6 @@ class Orders extends PS_Controller
                 $error = "Error : Insert fail";
                 $err_qty++;
               }
-              else
-              {
-								//---- update chatbot stock
-                if($item->count_stock == 1 && $item->is_api == 1 && $this->sync_chatbot_stock)
-                {
-									if($order->warehouse_code == $chatbot_warehouse_code)
-									{
-										$sync_stock[] = $item->code;
-									}
-                }
-              }
-
             }
             else  //--- ถ้ามีรายการในออเดอร์อยู่แล้ว
             {
@@ -466,20 +447,6 @@ class Orders extends PS_Controller
                 $error = "Error : Update Fail";
                 $err_qty++;
               }
-              else
-              {
-								//---- update chatbot stock
-                if($item->count_stock == 1 && $item->is_api == 1 && $this->sync_chatbot_stock)
-                {
-									if($order->warehouse_code == $chatbot_warehouse_code)
-									{
-										$sync_stock[] = $item->code;
-										// $inventory = $this->get_sell_stock($item->code, $chatbot_warehouse_code);
-										// array_push($sync_stock, array('productCode' => $item->code, 'inventory' => $inventory));
-									}
-                }
-              }
-
             }	//--- end if isExistsDetail
           }
           else 	// if getStock
@@ -489,11 +456,6 @@ class Orders extends PS_Controller
           } 	//--- if getStock
         }	//--- if qty > 0
       }
-
-			if($this->sync_chatbot_stock && !empty($sync_stock))
-			{
-				$this->update_chatbot_stock($sync_stock);
-			}
 
       if($result === TRUE)
       {
@@ -510,67 +472,37 @@ class Orders extends PS_Controller
   public function remove_detail($id)
   {
 		$sc = TRUE;
+
     $detail = $this->orders_model->get_detail($id);
+
 		if(!empty($detail))
 		{
 			$order = $this->orders_model->get($detail->order_code);
+
 			if(!empty($order))
 			{
 				//--- อนุญาติให้ลบได้แค่ 2 สถานะ
 				if($order->state == 1 OR $order->state == 3)
 				{
-					if($order->state == 3 && $order->is_wms == 1)
-					{
-						$sc = FALSE;
-						$this->error = "Delete failed : Orders are being fulfilled at the Pioneer inventory, item modifications are not allowed.";
-					}
-					else
-					{
-						if(! $this->orders_model->remove_detail($id))
-						{
-							$sc = FALSE;
-							$this->error = "Delete filed";
-						}
-            else
+          if(! $this->orders_model->remove_detail($id))
+          {
+            $sc = FALSE;
+            $this->error = "Delete filed";
+          }
+          else
+          {
+            if($this->log_delete)
             {
-              if($this->log_delete)
-              {
-                $arr = array(
-                  'order_code' => $detail->order_code,
-                  'product_code' => $detail->product_code,
-                  'qty' => $detail->qty,
-                  'user' => $this->_user->uname
-                );
+              $arr = array(
+                'order_code' => $detail->order_code,
+                'product_code' => $detail->product_code,
+                'qty' => $detail->qty,
+                'user' => $this->_user->uname
+              );
 
-                $this->orders_model->log_delete($arr);
-              }
-
-							$this->sync_chatbot_stock = getConfig('SYNC_CHATBOT_STOCK') == 1 ? TRUE : FALSE;
-
-							$sync_stock = array();
-
-							if($this->sync_chatbot_stock && $detail->is_count == 1)
-							{
-								$item = $this->products_model->get($detail->product_code);
-								if(!empty($item))
-								{
-									if($item->is_api == 1)
-									{
-										$chatbot_warehouse_code = getConfig('CHATBOT_WAREHOUSE_CODE');
-										$arr = array($item->code);
-											// array(
-											// 	'productCode' => $item->code,
-											// 	'inventory' => $this->get_sell_stock($item->code, $chatbot_warehouse_code)
-											// )
-										//);
-
-										$this->update_chatbot_stock($arr);
-									}
-								}
-							}
+              $this->orders_model->log_delete($arr);
             }
-					}
-
+          }
 				}
 				else
 				{
@@ -682,8 +614,6 @@ class Orders extends PS_Controller
       }
       else
       {
-				$wh = $this->warehouse_model->get($this->input->post('warehouse_code'));
-
         $ds = array(
           'DocCur' => $DocCur,
           'DocRate' => $DocRate,
@@ -695,9 +625,8 @@ class Orders extends PS_Controller
           'sale_code' => $sale_code,
           'is_term' => $has_term,
           'date_add' => db_date($this->input->post('date_add')),
-          'warehouse_code' => $wh->code,
+          'warehouse_code' => $this->input->post('warehouse_code'),
           'remark' => $this->input->post('remark'),
-					'is_wms' => $wh->is_wms,
 					'transformed' => $this->input->post('transformed'),
           'status' => 0,
 					'id_address' => NULL,
@@ -1677,35 +1606,6 @@ class Orders extends PS_Controller
   }
 
 
-	public function print_wms_return_request($code)
-	{
-		$this->wms = $this->load->database('wms', TRUE);
-		$this->load->model('rest/V1/wms_temp_order_model');
-		$this->load->model('masters/warehouse_model');
-		$this->load->library('xprinter');
-
-		$order = $this->orders_model->get($code);
-		$order->customer_name = $this->customers_model->get_name($order->customer_code);
-		$order->warehouse_name = $this->warehouse_model->get_name($order->warehouse_code);
-		$details = $this->wms_temp_order_model->get_details_by_code($code);
-
-		if(!empty($details))
-		{
-			foreach($details as $rs)
-			{
-				$item = $this->products_model->get($rs->product_code);
-				$rs->product_name = $item->name;
-			}
-		}
-
-		$ds = array(
-			'order' => $order,
-			'details' => $details
-		);
-
-		$this->load->view('print/print_wms_return_request', $ds);
-	}
-
   public function get_sell_stock($item_code, $warehouse = NULL, $zone = NULL)
   {
     $sell_stock = $this->stock_model->get_sell_stock($item_code, $warehouse, $zone);
@@ -1742,7 +1642,8 @@ class Orders extends PS_Controller
           "price"	=> number_format($rs->price, 2),
           "qty"	=> number_format($rs->qty),
           "discount"	=> discountLabel($rs->discount1, $rs->discount2, $rs->discount3),
-          "amount"	=> number_format($rs->total_amount, 2)
+          "amount"	=> number_format($rs->total_amount, 2),
+          "currency" => $rs->currency
         );
 
         array_push($ds, $arr);
@@ -1762,7 +1663,8 @@ class Orders extends PS_Controller
             "shipping_fee"	=> number($order->shipping_fee,2),
             "service_fee"	=> number($order->service_fee, 2),
             "total_amount" => number($total_amount, 2),
-            "net_amount"	=> number($netAmount,2)
+            "net_amount"	=> number($netAmount,2),
+            "currency" => $order->DocCur
           );
       array_push($ds, $arr);
       $sc = json_encode($ds);
@@ -1792,11 +1694,7 @@ class Orders extends PS_Controller
 	      $pay_amount = $amount - $bDisc;
 
 				$ds = array(
-					'pay_amount' => $pay_amount,
-					'id_sender' => empty($order->id_sender) ? FALSE : $order->id_sender,
-					'id_address' => empty($order->id_address) ? FALSE : $order->id_address,
-					'is_wms' => is_true($order->is_wms),
-					'isAPI' => $this->isAPI
+					'pay_amount' => $pay_amount
 				);
 			}
 			else
@@ -2360,44 +2258,6 @@ class Orders extends PS_Controller
 
       if(! empty($order))
       {
-				if($this->isAPI && $order->state >= 3 && $order->is_wms && $state != 9 && !$this->_SuperAdmin)
-				{
-					echo "Orders sent to WMS system are not allowed to revert.";
-					exit;
-				}
-
-        //---- ถ้าเป็น wms ก่อนยกเลิกให้เช็คก่อนว่ามีออเดอร์เข้ามาที่ SAP แล้วหรือยัง ถ้ายังไม่มียกเลิกได้
-        if($this->isAPI && $order->is_wms && $order->wms_export == 1 && $state == 9)
-        {
-          $this->wms = $this->load->database('wms', TRUE);
-					$this->load->model('rest/V1/wms_temp_order_model');
-
-					if($order->role == 'S' OR $order->role == 'C' OR $order->role == 'P' OR $order->role == 'U')
-	        {
-	          $sap = $this->orders_model->get_sap_doc_num($order->code);
-						if(!empty($sap))
-						{
-							echo "It cannot be canceled because the order has already been shipped.";
-							exit;
-						}
-	        }
-
-
-					//---
-	        if($order->role == 'T' OR $order->role == 'L' OR $order->role == 'Q' OR $order->role == 'N')
-	        {
-						$this->load->model('inventory/transfer_model');
-						$sap = $this->transfer_model->get_sap_transfer_doc($code);
-						if(! empty($sap))
-						{
-							echo "It cannot be canceled because the order has already been shipped.";
-							exit;
-						}
-	        }
-
-        } //--- end if isAPI
-
-
         if($order->role == 'S' OR $order->role == 'C' OR $order->role == 'P' OR $order->role == 'U')
         {
           $sap = $this->orders_model->get_sap_doc_num($order->code);
@@ -2465,7 +2325,7 @@ class Orders extends PS_Controller
             }
             else if($state == 9)
             {
-              if(! $this->cancle_order($code, $order->role, $order->state, $order->is_wms, $order->wms_export, $reason) )
+              if(! $this->cancle_order($code, $order->role, $order->state, $reason) )
               {
                 $sc = FALSE;
               }
@@ -2476,7 +2336,7 @@ class Orders extends PS_Controller
           {
             if($state == 9)
             {
-              if(! $this->cancle_order($code, $order->role, $order->state, $order->is_wms, $order->wms_export, $reason) )
+              if(! $this->cancle_order($code, $order->role, $order->state, $reason) )
               {
                 $sc = FALSE;
               }
@@ -2485,30 +2345,6 @@ class Orders extends PS_Controller
 
           if($sc === TRUE)
           {
-						if($this->isAPI && $state == 3 && $order->is_wms)
-						{
-							$arr = array();
-
-							if(!empty($this->input->post('id_sender')))
-							{
-								$arr['id_sender'] = $this->input->post('id_sender');
-							}
-							else
-							{
-								echo "Please specify the sender.";
-								exit;
-							}
-
-							if(!empty($this->input->post('tracking')))
-							{
-								$arr['shipping_code'] = trim($this->input->post('tracking'));
-							}
-
-							if(!empty($arr))
-							{
-								$this->orders_model->update($order->code, $arr);
-							}
-						}
 
             $rs = $this->orders_model->change_state($code, $state);
 
@@ -2525,7 +2361,6 @@ class Orders extends PS_Controller
                 $sc = FALSE;
                 $this->error = "Add state failed";
               }
-
             }
             else
             {
@@ -2542,56 +2377,6 @@ class Orders extends PS_Controller
           {
             $this->db->trans_rollback();
           }
-
-					//---- export
-					if($this->isAPI && $sc === TRUE && $state == 3 && $order->state < 3 && $order->is_wms)
-					{
-						$this->wms = $this->load->database('wms', TRUE);
-						$this->load->library('wms_order_api');
-
-						$ex = $this->wms_order_api->export_order($code);
-
-						if(! $ex)
-						{
-              $this->error = "Failed to send data to WMS <br/> (".$this->wms_order_api->error.")";
-              $txt = "998 : This order no {$code} was already processed by PLC operation.";
-
-              if($this->wms_order_api->error == $txt)
-      				{
-      					if($order->wms_export != 1)
-      					{
-      						$arr = array(
-      							'wms_export' => 1,
-      							'wms_export_error' => NULL
-      						);
-
-      						$this->orders_model->update($code, $arr);
-      					}
-      				}
-      				else
-      				{
-      					if($order->wms_export != 1)
-      					{
-      						$sc = FALSE;
-      						$arr = array(
-      							'wms_export' => 3,
-      							'wms_export_error' => $this->wms_order_api->error
-      						);
-
-      						$this->orders_model->update($code, $arr);
-      					}
-      				}
-						}
-						else
-						{
-							$arr = array(
-								'wms_export' => 1,
-								'wms_export_error' => NULL
-							);
-
-							$this->orders_model->update($code, $arr);
-						}
-					}
         }
       }
       else
@@ -2794,7 +2579,7 @@ class Orders extends PS_Controller
   }
 
 
-  public function cancle_order($code, $role, $state, $is_wms = 0, $wms_export = 0, $cancle_reason = NULL)
+  public function cancle_order($code, $role, $state, $cancle_reason = NULL)
   {
     $this->load->model('inventory/prepare_model');
     $this->load->model('inventory/qc_model');
@@ -2821,28 +2606,6 @@ class Orders extends PS_Controller
 			$this->orders_model->add_cancle_reason($reason);
 		}
 
-
-    if($sc === TRUE)
-		{
-			if($this->isAPI && $is_wms && $wms_export == 1)
-			{
-				$this->wms = $this->load->database('wms', TRUE);
-				$this->load->library('wms_order_cancle_api');
-				$ex = $this->wms_order_cancle_api->send_data($code, $reason);
-
-				if(! $ex)
-				{
-					$this->error = "Failed to send data to WMS. <br/> (".$this->wms_order_cancle_api->error.")";
-					$txt = "ORDER_NO {$code} already canceled.";
-					$err = "ORDER_NO {$code} doesn't exists in system.";
-					if($this->wms_order_cancle_api->error != $txt && $this->wms_order_cancle_api->error != $err)
-					{
-						$sc = FALSE;
-						$this->error = $this->wms_order_cancle_api->error;
-					}
-				}
-			}
-		}
 
     if($state > 3 && $sc === TRUE)
     {
@@ -3018,52 +2781,7 @@ class Orders extends PS_Controller
           }
         }
       }
-
-			if($sc === TRUE)
-			{
-				//--- update chatbot stock
-        $this->sync_chatbot_stock = getConfig('SYNC_CHATBOT_STOCK') == 1 ? TRUE : FALSE;
-
-				if($this->sync_chatbot_stock)
-				{
-					$chatbot_warehouse_code = getConfig('CHATBOT_WAREHOUSE_CODE');
-					$order = $this->orders_model->get($code);
-					$warehouse_code = empty($order) ? "" : $order->warehouse_code;
-
-					if($chatbot_warehouse_code == $warehouse_code)
-					{
-						$details = $this->orders_model->get_order_details($code);
-
-						if(!empty($details))
-						{
-
-							$sync_stock = array();
-
-							foreach($details as $detail)
-							{
-								if($detail->is_count == 1)
-								{
-									$item = $this->products_model->get($detail->product_code);
-									if(!empty($item) && $item->is_api)
-									{
-										$sync_stock[] = $item->code;
-										// $qty = $this->get_sell_stock($item->code, $chatbot_warehouse_code);
-										// array_push($sync_stock, array("productCode" => $item->code, "inventory" => $qty));
-									}
-								}
-							}
-
-							if(!empty($sync_stock))
-							{
-								$this->update_chatbot_stock($sync_stock);
-							}
-						}
-					}
-
-				}
-			}
     }
-
 
     return $sc;
   }
@@ -3185,181 +2903,6 @@ class Orders extends PS_Controller
   }
 
 
-	public function cancle_wms_shipped_order()
-	{
-		$sc = TRUE;
-		$code = $this->input->post('order_code');
-		$reason = trim($this->input->post('cancle_reason'));
-
-		if(!empty($code))
-		{
-			$order = $this->orders_model->get($code);
-
-			if(!empty($order))
-			{
-				if($sc === TRUE)
-				{
-					//--- check status wms is shipped ?
-
-					//---- cancle
-					$is_wms = 0; //--- ทำเหมือนว่าไม่เป็นออเดอร์ที่ warrix
-					$wms_export = 0; //--- ทำเหมือนว่าไม่ได้ส่งไป wms
-
-					$rs = $this->cancle_order($code, $order->role, $order->state, $is_wms, $wms_export, $reason);
-
-					if($rs === TRUE)
-					{
-						$arr = array(
-							'state' => 9,
-							'is_cancled' => 1,
-							'cancle_date' => now(),
-							'date_upd' => $this->_user->uname
-						);
-
-						if(!$this->orders_model->update($code, $arr))
-						{
-							$sc = FALSE;
-							$this->error = "Cancle order failed";
-						}
-
-						if($sc === TRUE)
-						{
-							$arr = array(
-								'order_code' => $code,
-								'state' => 9,
-								'update_user' => $this->_user->uname
-							);
-
-							if(! $this->order_state_model->add_state($arr) )
-							{
-								$sc = FALSE;
-								$this->error = "Add state failed";
-							}
-						}
-
-					}
-
-
-					if($rs === TRUE)
-					{
-						//-- Send data to WMS
-						$this->wms = $this->load->database('wms', TRUE);
-						$this->load->model('rest/V1/wms_temp_order_model');
-						$this->load->library('wms_receive_api');
-
-						//$details = $this->orders_model->get_order_details($code);
-						$details = $this->wms_temp_order_model->get_details_by_code($code); //--- เอามาจาก wms temp delivery
-
-						if(!empty($details))
-						{
-							foreach($details as $rs)
-							{
-								$item = $this->products_model->get($rs->product_code);
-								$rs->product_name = $item->name;
-								$rs->unit_code = $item->unit_code;
-								$rs->is_count = $item->count_stock;
-							}
-
-							$ex = $this->wms_receive_api->export_return_request($order, $details);
-
-							if(! $ex)
-							{
-								$sc = FALSE;
-								$this->error = $this->wms_receive_api->error;
-							}
-						}
-						else
-						{
-							$sc = FALSE;
-							$this->error = "Item not found to be returned";
-						}
-
-					}
-					else
-					{
-						$sc = FALSE;
-						$this->error = "Unsuccessful order cancellation";
-					}
-				}
-			}
-			else
-			{
-				$sc = FALSE;
-				$this->error = "Invalid Order code";
-			}
-		}
-		else
-		{
-			$sc = FALSE;
-			$this->error = "Missing required parameter : order code";
-		}
-
-		echo $sc === TRUE ? "success" : $this->error;
-	}
-
-
-	public function send_return_request()
-	{
-		$sc = TRUE;
-		$code = $this->input->post('order_code');
-
-		$order = $this->orders_model->get($code);
-		if(!empty($order))
-		{
-			if($order->state == 9)
-			{
-				//-- Send data to WMS
-				$this->wms = $this->load->database('wms', TRUE);
-				$this->load->model('rest/V1/wms_temp_order_model');
-				$this->load->library('wms_receive_api');
-
-				// $details = $this->orders_model->get_order_details($code);
-				$details = $this->wms_temp_order_model->get_details_by_code($code); //--- เอามาจาก wms temp delivery
-
-				if(!empty($details))
-				{
-					foreach($details as $rs)
-					{
-						$item = $this->products_model->get($rs->product_code);
-						$rs->product_name = $item->name;
-						$rs->unit_code = $item->unit_code;
-						$rs->is_count = $item->count_stock;
-					}
-
-					$ex = $this->wms_receive_api->export_return_request($order, $details);
-
-					if(! $ex)
-					{
-						$sc = FALSE;
-						$this->error = $this->wms_receive_api->error;
-					}
-
-					if($ex && $order->is_cancled == 0)
-					{
-						$arr = array(
-							'is_cancled' => 1
-						);
-
-						$this->orders_model->update($order->code, $arr);
-					}
-				}
-				else
-				{
-					$sc = FALSE;
-					$this->error = "Item not found to be returned";
-				}
-			}
-		}
-		else
-		{
-			$sc = FALSE;
-			$this->error = "Missing required parameter : code";
-		}
-
-		echo $sc === TRUE ? 'success' : $this->error;
-	}
-
-
   public function update_gp()
   {
     $code = $this->input->post('code');
@@ -3461,7 +3004,7 @@ class Orders extends PS_Controller
             $price_c = $price;
   					$discAmount = 0;
             $step = array($detail->discount1, $detail->discount2, $detail->discount3);
-
+            $i = 0;
             foreach($step as $discText)
             {
               $discText = str_replace(' ', '', $discText);
@@ -3473,7 +3016,7 @@ class Orders extends PS_Controller
               $discLabel[$i] = count($disc) == 1 ? $disc[0] : number($disc[0], 2).'%';
               $discAmount += $discount;
               $price_c -= $discount;
-
+              $i++;
             }
 
             $total_discount = $detail->qty * $discAmount; //---- ส่วนลดรวม
@@ -3569,34 +3112,6 @@ class Orders extends PS_Controller
   }
 
 
-
-
-  public function set_order_wms()
-	{
-		$code = trim($this->input->post('order_code'));
-		if(!empty($code))
-		{
-			$arr = array(
-				'is_wms' => 1
-			);
-
-			if(! $this->orders_model->update($code, $arr))
-			{
-				echo "failed";
-			}
-			else
-			{
-				echo "success";
-			}
-		}
-		else
-		{
-			echo "no order code";
-		}
-	}
-
-
-
   public function get_summary()
   {
     $this->load->model('masters/bank_model');
@@ -3618,28 +3133,6 @@ class Orders extends PS_Controller
     $reserv_stock = $this->orders_model->get_reserv_stock($item);
     $availableStock = $sell_stock - $reserv_stock;
     return $availableStock < 0 ? 0 : $availableStock;
-  }
-
-
-  public function update_web_stock($code, $old_code)
-  {
-    if(getConfig('SYNC_WEB_STOCK') == 1)
-    {
-      $this->load->library('api');
-      $qty = $this->get_sell_stock($code);
-      $item = empty($old_code) ? $code : $old_code;
-      $this->api->update_web_stock($item, $qty);
-    }
-  }
-
-	public function update_chatbot_stock(array $ds = array())
-  {
-    if($this->sync_chatbot_stock && !empty($ds))
-    {
-			$this->logs = $this->load->database('logs', TRUE);
-      $this->load->library('chatbot_api');
-      $this->chatbot_api->sync_stock($ds);
-    }
   }
 
 
@@ -3676,8 +3169,7 @@ class Orders extends PS_Controller
       'state_9',
       'stated',
       'startTime',
-      'endTime',
-			'wms_export'
+      'endTime'
     );
 
     clear_filter($filter);
@@ -3734,86 +3226,5 @@ class Orders extends PS_Controller
     }
   }
 
-
-	public function send_to_wms()
-	{
-		$sc = TRUE;
-		$code = $this->input->post('code');
-		$order = $this->orders_model->get($code);
-		if(!empty($order))
-		{
-			$this->wms = $this->load->database('wms', TRUE);
-			$this->load->library('wms_order_api');
-
-			$rs = $this->wms_order_api->export_order($code);
-
-			if(! $rs)
-			{
-				$this->error = "ส่งข้อมูลไป WMS ไม่สำเร็จ <br/> (".$this->wms_order_api->error.")";
-				$txt = "998 : This order no {$code} was already processed by PLC operation.";
-				if($this->wms_order_api->error == $txt)
-				{
-					if($order->wms_export != 1)
-					{
-						$arr = array(
-							'wms_export' => 1,
-							'wms_export_error' => NULL
-						);
-
-						$this->orders_model->update($code, $arr);
-					}
-				}
-				else
-				{
-					if($order->wms_export != 1)
-					{
-						$sc = FALSE;
-						$arr = array(
-							'wms_export' => 3,
-							'wms_export_error' => $this->wms_order_api->error
-						);
-
-						$this->orders_model->update($code, $arr);
-					}
-				}
-			}
-			else
-			{
-				$arr = array(
-					'wms_export' => 1,
-					'wms_export_error' => NULL
-				);
-
-				$this->orders_model->update($code, $arr);
-			}
-		}
-		else
-		{
-			$sc = FALSE;
-			$this->error = "Missing required parameter : code";
-		}
-
-		echo $sc === TRUE ? 'success' : $this->error;
-	}
-
-
-
-
-	public function get_wms_status($code)
-	{
-		$status = FALSE;
-		$this->load->library('wms_order_status_api');
-		$rs = $this->wms_order_status_api->get_wms_status($code);
-
-		if(!empty($rs))
-		{
-			if($rs->SERVICE_RESULT->RESULT_STAUS === 'SUCCESS')
-			{
-				$status = $rs->SERVICE_RESULT->RESULT_DETAIL->ORDERS->ORDER->ORDER_STATUS;
-			}
-		}
-
-		return $status;
-	}
-}
+} //-- end class
 ?>

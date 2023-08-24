@@ -75,44 +75,6 @@
     </div>
   </div>
 
-<!--
-	<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
-		<label>WMS</label>
-		<select class="form-control input-sm" name="wms_export" onchange="getSearch()">
-			<option value="all">All</option>
-			<option value="0" <?php echo is_selected('0', $wms_export); ?>>ยังไม่ส่ง</option>
-			<option value="1" <?php echo is_selected('1', $wms_export); ?>>ส่งแล้ว</option>
-			<option value="3" <?php echo is_selected('3', $wms_export); ?>>Error</option>
-		</select>
-	</div>
--->
-	<!--
-	<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
-		<label class="display-block">สถานะ</label>
-		<select class="form-control input-sm" name="stated">
-			<option value="">เลือกสถานะ</option>
-			<option value="3" <?php echo is_selected($stated, '3'); ?>>รอจัดสินค้า</option>
-			<option value="4" <?php echo is_selected($stated, '4'); ?>>กำลังจัดสินค้า</option>
-			<option value="5" <?php echo is_selected($stated, '5'); ?>>รอตรวจ</option>
-			<option value="6" <?php echo is_selected($stated, '6'); ?>>กำลังตรวจ</option>
-			<option value="7" <?php echo is_selected($stated, '7'); ?>>รอเปิดบิล</option>
-		</select>
-	</div>
-
-	<div class="col-sm-1 col-1-harf  col-xs-6 padding-5">
-		<label class="display-block">เริ่มต้น</label>
-		<select class="form-control input-sm" name="startTime">
-			<?php echo selectTime($startTime); ?>
-		</select>
-	</div>
-
-	<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
-		<label class="display-block">สิ้นสุด</label>
-		<select class="form-control input-sm" name="endTime">
-			<?php echo selectTime($endTime); ?>
-		</select>
-	</div>
--->
 	<div class="col-lg-2-harf col-md-3-harf col-sm-3-harf col-xs-6 padding-5">
 		<label>Warehouse</label>
 		<select class="form-control input-sm" name="warehouse" onchange="getSearch()">
@@ -164,9 +126,9 @@
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5">
 		<button type="button" id="btn-state-1" class="btn btn-sm margin-bottom-5 <?php echo $btn['state_1']; ?>" onclick="toggleState(1)">Pending</button>
 		<button type="button" id="btn-state-2" class="btn btn-sm margin-bottom-5 <?php echo $btn['state_2']; ?>" onclick="toggleState(2)">Waiting for payment</button>
-		<button type="button" id="btn-state-3" class="btn btn-sm margin-bottom-5 <?php echo $btn['state_3']; ?>" onclick="toggleState(3)">Waiting for pick</button>
+		<button type="button" id="btn-state-3" class="btn btn-sm margin-bottom-5 <?php echo $btn['state_3']; ?>" onclick="toggleState(3)">Waiting to pick</button>
 		<button type="button" id="btn-state-4" class="btn btn-sm margin-bottom-5 <?php echo $btn['state_4']; ?>" onclick="toggleState(4)">Picking</button>
-		<button type="button" id="btn-state-5" class="btn btn-sm margin-bottom-5 <?php echo $btn['state_5']; ?>" onclick="toggleState(5)">Waiting for pack </button>
+		<button type="button" id="btn-state-5" class="btn btn-sm margin-bottom-5 <?php echo $btn['state_5']; ?>" onclick="toggleState(5)">Waiting to pack </button>
 		<button type="button" id="btn-state-6" class="btn btn-sm margin-bottom-5 <?php echo $btn['state_6']; ?>" onclick="toggleState(6)">Packing</button>
 		<button type="button" id="btn-state-7" class="btn btn-sm margin-bottom-5 <?php echo $btn['state_7']; ?>" onclick="toggleState(7)">Ready to ship</button>
 		<button type="button" id="btn-state-8" class="btn btn-sm margin-bottom-5 <?php echo $btn['state_8']; ?>" onclick="toggleState(8)">Shipped</button>

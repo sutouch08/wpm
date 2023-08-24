@@ -6,7 +6,7 @@ class Temp_consignment_goods_receipt extends PS_Controller
   public $menu_code = 'TECMGN';
 	public $menu_group_code = 'TE';
   public $menu_sub_group_code = 'TECONSIGNMENT';
-	public $title = 'ตรวจสอบ Goods Receipt ฝากขายเทียม';
+	public $title = 'Goods Receipt Consignment Temp';
   public $filter;
   public function __construct()
   {

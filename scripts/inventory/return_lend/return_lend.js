@@ -3,13 +3,13 @@ var HOME = BASE_URL + 'inventory/return_lend/';
 
 function goDelete(code) {
 	swal({
-		title: "คุณแน่ใจ ?",
-		text: "ต้องการยกเลิก '"+code+"' หรือไม่ ?",
+		title: "Are you sure ?",
+		text: "Do you want to cancel '"+code+"' ?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#DD6B55",
-		confirmButtonText: 'ใช่, ฉันต้องการ',
-		cancelButtonText: 'ไม่ใช่',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: true
 		}, function(){
 			$('#cancle-code').val(code);
@@ -107,7 +107,8 @@ function goBack(){
 
 function leave(){
 	swal({
-		title: 'ยกเลิกข้อมูลนี้ ?',
+		title: 'Do you want to leave ?',
+		text:'Unsave data will be lost',
 		type: 'warning',
 		showCancelButton: true,
 		cancelButtonText: 'No',

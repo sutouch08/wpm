@@ -104,7 +104,7 @@ class Product_style_model extends CI_Model
   public function get_sap_style($code)
   {
     $rs = $this->ms->distinct()
-    ->select('OITM.U_MODEL, OITM.U_GROUP, OITM.U_MAJOR')
+    ->select('OITM.U_MODEL, OITM.U_GROUP, U_MainGroup, OITM.U_MAJOR')
     ->select('OITM.U_CATE, OITM.U_SUBTYPE, OITM.U_TYPE')
     ->select('OITM.U_BRAND, OITM.U_YEAR, OITM.InvntItem, OITM.InvntryUom')
     ->select('ITM1.Price AS cost, ITM2.Price AS price')

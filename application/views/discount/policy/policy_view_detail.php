@@ -5,7 +5,7 @@
   </div>
   <div class="col-lg-6 col-md-6 col-sm-4 col-xs-3 padding-5">
     	<p class="pull-right top-p">
-        <button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+        <button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
       </p>
     </div>
 </div><!-- End Row -->

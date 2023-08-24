@@ -6,7 +6,7 @@ class Address extends PS_Controller
   public $menu_code = 'DBADDR';
 	public $menu_group_code = 'DB';
   public $menu_sub_group_code = 'CUSTOMER';
-	public $title = 'ที่อยู่จัดส่ง';
+	public $title = 'Shipping Address';
   public $filter;
   public function __construct()
   {

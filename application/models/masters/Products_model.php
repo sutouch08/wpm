@@ -48,7 +48,7 @@ class Products_model extends CI_Model
   public function get_sap_list($date_add, $date_upd, $limit, $offset)
   {
     $rs = $this->ms
-    ->select('OITM.ItemCode, OITM.ItemName, OITM.CodeBars, OITM.U_MODEL, OITM.U_COLOR, OITM.U_SIZE, OITM.U_GROUP, OITM.U_MAJOR')
+    ->select('OITM.ItemCode, OITM.ItemName, OITM.CodeBars, OITM.U_MODEL, OITM.U_COLOR, OITM.U_SIZE, OITM.U_GROUP, OITM.U_MainGroup, OITM.U_MAJOR')
     ->select('OITM.U_CATE, OITM.U_SUBTYPE, OITM.U_TYPE, OITM.U_BRAND, OITM.U_YEAR')
     ->select('OITM.InvntItem, OITM.InvntryUom, OITM.U_OLDCODE, ITM1.Price AS cost, ITM2.Price AS price')
     ->from('OITM')
@@ -989,6 +989,14 @@ class Products_model extends CI_Model
 
 		return NULL;
 	}
+
+
+  public function get_items_last_sync()
+  {
+    $rs = $this->db->select_max('last_sync')->get('products');
+
+    return $rs->row()->last_sync;
+  }
 
 }
 ?>

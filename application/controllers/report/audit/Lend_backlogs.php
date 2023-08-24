@@ -5,7 +5,7 @@ class Lend_backlogs extends PS_Controller
   public $menu_code = 'RALNBL';
 	public $menu_group_code = 'RE';
   public $menu_sub_group_code = 'REAUDIT';
-	public $title = 'รายงานสินค้ายืมยังไม่คืน';
+	public $title = 'Report of borrowed goods that have not been returned';
   public $filter;
   public function __construct()
   {
@@ -116,10 +116,10 @@ class Lend_backlogs extends PS_Controller
 		$token = $this->input->post('token');
 
 		//---  Report title
-    $report_title = "รายงานสินค้ายืมยังไม่คืน (วันที่พิมพ์รายงาน : ".date('d/m/Y H:i').")";
-    $emp_title = 'ผู้ยืม :  '. ($allEmp == 1 ? 'ทั้งหมด' : $empName);
-    $pd_title = 'สินค้า :  '. ($allPd == 1 ? 'ทั้งหมด' : '('.$pdFrom.') - ('.$pdTo.')');
-		$date_title = 'วันที่เอกสาร : '.thai_date($fromDate, '/').' - '.thai_date($toDate, '/');
+    $report_title = "Report of borrowed goods that have not been returned (Print date : ".date('d/m/Y H:i').")";
+    $emp_title = 'Lender :  '. ($allEmp == 1 ? 'All' : $empName);
+    $pd_title = 'Product :  '. ($allPd == 1 ? 'All' : '('.$pdFrom.') - ('.$pdTo.')');
+		$date_title = 'Document Date : '.thai_date($fromDate, '/').' - '.thai_date($toDate, '/');
 
 		$arr = array(
 			'allEmp' => $allEmp,
@@ -153,16 +153,16 @@ class Lend_backlogs extends PS_Controller
 		$row = 5;
 
     $this->excel->getActiveSheet()->setCellValue('A'.$row, '#');
-    $this->excel->getActiveSheet()->setCellValue('B'.$row, 'ผู้ยืม');
-    $this->excel->getActiveSheet()->setCellValue('C'.$row, 'ผู้รับ');
-    $this->excel->getActiveSheet()->setCellValue('D'.$row, 'ผู้ทำรายการ');
-    $this->excel->getActiveSheet()->setCellValue('E'.$row, 'เลขที่เอกสาร');
-    $this->excel->getActiveSheet()->setCellValue('F'.$row, 'รหัสสินค้า');
-    $this->excel->getActiveSheet()->setCellValue('G'.$row, 'ราคา');
-    $this->excel->getActiveSheet()->setCellValue('H'.$row, 'ยืม');
-    $this->excel->getActiveSheet()->setCellValue('I'.$row, 'คืน');
-    $this->excel->getActiveSheet()->setCellValue('J'.$row, 'คงค้าง');
-    $this->excel->getActiveSheet()->setCellValue('K'.$row, 'มูลค่าคงค้าง');
+    $this->excel->getActiveSheet()->setCellValue('B'.$row, 'Lender');
+    $this->excel->getActiveSheet()->setCellValue('C'.$row, 'Returnee');
+    $this->excel->getActiveSheet()->setCellValue('D'.$row, 'List Maker');
+    $this->excel->getActiveSheet()->setCellValue('E'.$row, 'Document No');
+    $this->excel->getActiveSheet()->setCellValue('F'.$row, 'Item Code');
+    $this->excel->getActiveSheet()->setCellValue('G'.$row, 'Price');
+    $this->excel->getActiveSheet()->setCellValue('H'.$row, 'Lended Qty');
+    $this->excel->getActiveSheet()->setCellValue('I'.$row, 'Returnned Qty');
+    $this->excel->getActiveSheet()->setCellValue('J'.$row, 'Outstanding Qty');
+    $this->excel->getActiveSheet()->setCellValue('K'.$row, 'Outstanding Amount');
 
     //---- กำหนดความกว้างของคอลัมภ์
     $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
@@ -204,7 +204,7 @@ class Lend_backlogs extends PS_Controller
 
 		$re = $row - 1;
 
-		$this->excel->getActiveSheet()->setCellValue("A{$row}", 'รวม');
+		$this->excel->getActiveSheet()->setCellValue("A{$row}", 'Total');
 		$this->excel->getActiveSheet()->mergeCells("A{$row}:G{$row}");
 		$this->excel->getActiveSheet()->getStyle("A{$row}")->getAlignment()->setHorizontal('right');
 

@@ -44,19 +44,19 @@ function goUseKeyboard(){
 
 
 function goDelete(code, status){
-  var title = 'ต้องการยกเลิก '+ code +' หรือไม่ ?';
+  var title = 'Do you want to cancel '+ code +' ?';
   if(status == 1){
-    title = 'หากต้องการยกเลิก คุณต้องยกเลิกเอกสารนี้ใน SAP ก่อน ต้องการยกเลิก '+ code +' หรือไม่ ?';
+    title = 'To cancel You must first cancel this document in SAP. Do you want to cancel '+ code +' ?';
   }
 
 	swal({
-		title: 'คุณแน่ใจ ?',
+		title: 'Are you sure ?',
 		text: title,
 		type: 'warning',
 		showCancelButton: true,
 		comfirmButtonColor: '#DD6855',
-		confirmButtonText: 'ใช่ ฉันต้องการ',
-		cancelButtonText: 'ไม่ใช่',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: true
 	}, function() {
 
@@ -73,7 +73,6 @@ function goDelete(code, status){
           setTimeout(() => {
             swal({
               title:'Success',
-              text: 'ยกเลิกเอกสารเรียบร้อยแล้ว',
               type: 'success',
               timer: 1000
             });
@@ -85,7 +84,7 @@ function goDelete(code, status){
 				}
         else {
           setTimeout(() => {
-            swal("ข้อผิดพลาด", rs, "error");
+            swal("Error!", rs, "error");
           }, 200);
 				}
 			}

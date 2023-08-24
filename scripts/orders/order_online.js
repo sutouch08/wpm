@@ -25,7 +25,7 @@ function viewPaymentDetail()
 			load_out();
 			var rs = $.trim(rs);
 			if( rs == 'fail' ){
-				swal('ข้อผิดพลาด', 'ไม่พบข้อมูล', 'error');
+				swal('Error!', 'No information found.', 'error');
 			}else{
 				var source 	= $("#detailTemplate").html();
 				var data		= $.parseJSON(rs);
@@ -106,32 +106,32 @@ function submitPayment()
 	var payHour			= $("#payHour").val();
 	var payMin			= $("#payMin").val();
 	if( order_code == '' ){
-		swal('ข้อผิดพลาด', 'ไม่พบไอดีออเดอร์กรุณาออกจากหน้านี้แล้วเข้าใหม่อีกครั้ง', 'error');
+		swal('Error !', 'Order ID not found, please log out of this page and log in again.', 'error');
 		return false;
 	}
 
 	if( id_account == '' ){
-		swal('ข้อผิดพลาด', 'ไม่พบข้อมูลบัญชีธนาคาร กรุณาออกจากหน้านี้แล้วลองแจ้งชำระอีกครั้ง', 'error');
+		swal('Error !', 'Bank account information not found Please leave this page and try paying again.', 'error');
 		return false;
 	}
 
 	if(acc_no == ''){
-		swal('ข้อผิดพลาด', 'ไม่พลเลขที่บัญชี กรุณาออกจากหน้านี้แล้วลองใหม่อีกครั้ง', 'error');
+		swal('Error !', 'Account number not found Please leave this page and try again.', 'error');
 		return false;
 	}
 
 	if( image == '' ){
-		swal('ข้อผิดพลาด', 'ไม่สามารถอ่านข้อมูลรูปภาพที่แนบได้ กรุณาแนบไฟล์ใหม่อีกครั้ง', 'error');
+		swal('Error !', 'Unable to read attached image data. Please attach the file again.', 'error');
 		return false;
 	}
 
 	if( payAmount == 0 || isNaN( parseFloat(payAmount) ) || parseFloat(payAmount) < parseFloat(orderAmount) ){
-		swal("ข้อผิดพลาด", "ยอดชำระไม่ถูกต้อง", 'error');
+		swal("Error", "Payment amount is incorrect", 'error');
 		return false;
 	}
 
 	if( !isDate(payDate) ){
-		swal('วันที่ไม่ถูกต้อง');
+		swal('Invalid date');
 		return false;
 	}
 
@@ -161,8 +161,7 @@ function submitPayment()
 			if( rs == 'success')
 			{
 				swal({
-					title : 'สำเร็จ',
-					text : 'แจ้งชำระเงินเรียบร้อยแล้ว',
+					title : 'Success',
 					type: 'success',
 					timer: 1000
 				});
@@ -175,11 +174,11 @@ function submitPayment()
 			}
 			else if( rs == 'fail' )
 			{
-				swal("ข้อผิดพลาด", "ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่อีกครั้ง", "error");
+				swal("Error !", "Data cannot be saved. Please try again.", "error");
 			}
 			else
 			{
-				swal("ข้อผิดพลาด", rs, "error");
+				swal("Error !", rs, "error");
 			}
 		}
 	});
@@ -193,7 +192,7 @@ function readURL(input)
    if (input.files && input.files[0]) {
         var reader = new FileReader();
         reader.onload = function (e) {
-          $('#previewImg').html('<img id="previewImg" src="'+e.target.result+'" width="200px" alt="รูปสลิปของคุณ" />');
+          $('#previewImg').html('<img id="previewImg" src="'+e.target.result+'" width="200px" alt="picture of your slip" />');
         }
         reader.readAsDataURL(input.files[0]);
     }
@@ -213,13 +212,13 @@ $("#image").change(function(){
 		var size		= file.size;
 		if(file.type != 'image/png' && file.type != 'image/jpg' && file.type != 'image/gif' && file.type != 'image/jpeg' )
 		{
-			swal("รูปแบบไฟล์ไม่ถูกต้อง", "กรุณาเลือกไฟล์นามสกุล jpg, jpeg, png หรือ gif เท่านั้น", "error");
+			swal("Invalid file format", "Please select only jpg, jpeg, png or gif file extensions.", "error");
 			$(this).val('');
 			return false;
 		}
 		if( size > 2000000 )
 		{
-			swal("ขนาดไฟล์ใหญ่เกินไป", "ไฟล์แนบต้องมีขนาดไม่เกิน 2 MB", "error");
+			swal("File size is too large", "Attachments must be less than 2 MB in size.", "error");
 			$(this).val('');
 			return false;
 		}
@@ -263,7 +262,7 @@ function removeFile()
 $("#payAmount").focusout(function(e) {
 	if( $(this).val() != '' && isNaN(parseFloat($(this).val())) )
 	{
-		swal('กรุณาระบุยอดเงินเป็นตัวเลขเท่านั้น');
+		swal('Please enter the amount in numbers only.');
 	}
 });
 
@@ -306,7 +305,7 @@ function payOnThis(id, acc_no)
 			var rs = $.trim(rs);
 			if( rs == 'fail' )
 			{
-				swal('ข้อผิดพลาด', 'ไม่พบข้อมูลที่ต้องการ กรุณาลองใหม่', 'error');
+				swal('Error !', "Can't find the information you are looking for, please try again.", 'error');
 			}else{
 				var ds = rs.split(' | ');
 				var logo 	= '<img src="'+ ds[0] +'" width="50px" height="50px" />';
@@ -341,18 +340,6 @@ function payOrder()
 			if(isJson(rs)) {
 				var ds = $.parseJSON(rs);
 
-				if(ds.isAPI && ds.is_wms) {
-					if(!ds.id_address) {
-						swal("กรุณาระบุที่อยู่จัดส่ง");
-						return false;
-					}
-
-					if(!ds.id_sender) {
-						swal("กรุณาระบุผู้จัดส่ง");
-						return false;
-					}
-				}
-
 				$("#orderAmount").val(ds.pay_amount);
 				$("#payAmountLabel").text("ยอดชำระ "+ addCommas(ds.pay_amount) +" บาท");
 				$("#selectBankModal").modal('show');
@@ -373,13 +360,13 @@ function payOrder()
 function removeAddress(id)
 {
 	swal({
-		title: 'ต้องการลบที่อยู่ ?',
-		text: 'คุณแน่ใจว่าต้องการลบที่อยู่นี้ โปรดจำไว้ว่าการกระทำนี้ไม่สามารถกู้คืนได้',
+		title: 'Delete address ?',
+		text: 'Do you really want to delete this address ? This action cannot be undone.',
 		type: 'warning',
 		showCancelButton: true,
 		confirmButtonColor: '#DD6855',
-		confirmButtonText: 'ใช่ ลบเลย',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
 		}, function(){
 			$.ajax({
@@ -392,10 +379,14 @@ function removeAddress(id)
 				success: function(rs){
 					var rs = $.trim(rs);
 					if( rs == 'success' ){
-						swal({ title : "สำเร็จ", text: "ลบรายการเรียบร้อยแล้ว", timer: 1000, type: "success" });
+						swal({
+							title : "Deleted",
+							timer: 1000,
+							type: "success"
+						});
 						reloadAddressTable();
 					}else{
-						swal("ข้อผิดพลาด!!", "ลบรายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง", "error");
+						swal("Error !!!", "Delete failed. Please try again.", "error");
 					}
 				}
 			});
@@ -433,7 +424,7 @@ function editAddress(id)
 				$("#alias").val(ds.alias);
 				$("#addressModal").modal('show');
 			}else{
-				swal("ข้อผิดพลาด!", "ไม่พบข้อมูลที่อยู่", "error");
+				swal("Error !!", "Address not found.", "error");
 			}
 		}
 	});
@@ -446,7 +437,7 @@ function setSender()
 	var id_sender = $('#id_sender').val();
 
 	if(id_sender == "" ) {
-		swal("กรุณาเลือกผู้จัดส่ง");
+		swal("Please specify sender");
 		return false;
 	}
 
@@ -565,7 +556,7 @@ function reloadAddressTable()
 				var output 	= $("#adrs");
 				render(source, data, output);
 			}else{
-				$("#adrs").html('<tr><td colspan="7" align="center">ไม่พบที่อยู่</td></tr>');
+				$("#adrs").html('<tr><td colspan="7" align="center">Not found</td></tr>');
 			}
 		}
 	});
@@ -591,41 +582,37 @@ function saveAddress()
 
 
 	if( name == '' ){
-		swal('กรุณาระบุชื่อผู้รับ');
+		swal('Please specify consignee');
 		return false;
 	}
 
 	if( addr.length == 0 ){
-		swal('กรุณาระบุที่อยู่');
+		swal('Please specify address');
 		return false;
 	}
 
 	if(subdistrict.length == 0){
-		swal('กรุณาระบุตำบล');
+		swal('Please specify subdistrict');
 		return false;
 	}
 
 
 	if(district.length == 0){
-		swal('กรุณาระบุอำเภอ');
+		swal('Please specify district');
 		return false;
 	}
 
 	if(province.length == 0){
-		swal('กรุณาระบุจังหวัด');
+		swal('Please specify province');
 		return false;
 	}
 
 
 	if( alias == '' ){
-		swal('กรุณาตั้งชื่อให้ที่อยู่');
+		swal('Alaias name is required');
 		return false;
 	}
 
-	// if( email != '' && ! validEmail(email) ){
-	// 	swal("อีเมล์ไม่ถูกต้องกรุณาตรวจสอบ");
-	// 	return false;
-	// }
 
 	var ds = [];
 
@@ -659,7 +646,7 @@ function saveAddress()
 				clearAddressField();
 			}else{
 				swal({
-					title:'ข้อผิดพลาด',
+					title:'Error !',
 					text:rs,
 					type:'error'
 				});

@@ -17,22 +17,22 @@
   </div>
   <div class="col-lg-6 col-md-8 col-sm-8 col-xs-12 padding-5">
     <p class="pull-right top-p">
-			<button type="button" class="btn btn-sm btn-warning top-btn" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+			<button type="button" class="btn btn-sm btn-warning top-btn" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
 			<?php if($doc->status != 2 && $this->pm->can_delete) : ?>
-				<button type="button" class="btn btn-sm btn-danger top-btn" onclick="goDelete('<?php echo $doc->code; ?>')"><i class="fa fa-trash"></i> ยกเลิก</button>
+				<button type="button" class="btn btn-sm btn-danger top-btn" onclick="goDelete('<?php echo $doc->code; ?>')"><i class="fa fa-trash"></i> Cancel</button>
 			<?php endif; ?>
 			<?php if($doc->status == 1) : ?>
-			<button type="button" class="btn btn-sm btn-success top-btn" onclick="doExport()"><i class="fa fa-send"></i> ส่งข้อมูลไป SAP </button>
+			<button type="button" class="btn btn-sm btn-success top-btn" onclick="doExport()"><i class="fa fa-send"></i> Send to SAP </button>
 			<?php endif; ?>
 			<?php if($this->isAPI && $doc->is_wms == 1 && $doc->status == 3) : ?>
 				<button type="button" class="btn btn-sm btn-success top-btn" onclick="sendToWms()"><i class="fa fa-send"></i> Send to WMS</button>
 			<?php endif; ?>
 			<?php if($doc->status == 4 && ($doc->owner == $this->_user->uname OR $canAccept)) : ?>
-				<button type="button" class="btn btn-sm btn-success top-btn" onclick="accept()"><i class="fa fa-check-circle"></i> ยืนยันการรับสินค้า</button>
+				<button type="button" class="btn btn-sm btn-success top-btn" onclick="accept()"><i class="fa fa-check-circle"></i> Accept</button>
 			<?php endif; ?>
-			<button type="button" class="btn btn-sm btn-info top-btn" onclick="printReturn()"><i class="fa fa-print"></i> พิมพ์</button>
+			<button type="button" class="btn btn-sm btn-info top-btn" onclick="printReturn()"><i class="fa fa-print"></i> Print</button>
 			<?php if($doc->is_wms && ($doc->status == 3 OR $doc->status == 1)) : ?>
-			<button type="button" class="btn btn-sm btn-info top-btn" onclick="printWmsReturn()"><i class="fa fa-print"></i> พิมพ์ใบส่งของ</button>
+			<button type="button" class="btn btn-sm btn-info top-btn" onclick="printWmsReturn()"><i class="fa fa-print"></i> Packing list</button>
 			<?php endif; ?>
     </p>
   </div>
@@ -40,62 +40,62 @@
 <hr />
 <div class="row">
   <div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-4 padding-5">
-  	<label>เลขที่เอกสาร</label>
+  	<label>Doc No.</label>
     <input type="text" class="form-control input-sm text-center" value="<?php echo $doc->code; ?>" disabled />
   </div>
 	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-3 padding-5">
-  	<label>วันที่</label>
+  	<label>Date</label>
     <input type="text" class="form-control input-sm text-center" value="<?php echo thai_date($doc->date_add); ?>" readonly disabled />
   </div>
 	<div class="col-lg-4 col-md-3-harf col-sm-3-harf col-xs-5 padding-5">
-		<label>ผู้ยืม</label>
+		<label>Borrower</label>
 		<input type="text" class="form-control input-sm" value="<?php echo $doc->empName; ?>" disabled/>
 	</div>
 
 	<div class="col-lg-3-harf col-md-3 col-sm-3 col-xs-6 padding-5">
-		<label>ผู้รับคืน</label>
+		<label>Operator</label>
 		<input type="text" class="form-control input-sm"  value="<?php echo $doc->display_name; ?>" disabled/>
 	</div>
 	<div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-6 padding-5">
-		<label>ใบยืมสินค้า</label>
+		<label>Lend code</label>
 		<input type="text" class="form-control input-sm text-center" value="<?php echo $doc->lend_code; ?>" disabled />
 	</div>
 
 	<div class="divider-hidden"></div>
 
 	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-4 padding-5">
-		<label>รหัสโซน[ยืม]</label>
+		<label>From Bin[Borrower]</label>
 		<input type="text" class="form-control input-sm" value="<?php echo $doc->from_zone; ?>" disabled />
 	</div>
 
 	<div class="col-lg-4 col-md-4 col-sm-4 col-xs-8 padding-5">
-		<label>ชื่อโซน[ยืม]</label>
+		<label class="not-show">ชื่อโซน[ยืม]</label>
 		<input type="text" class="form-control input-sm" value="<?php echo $doc->from_zone_name; ?>" disabled />
 	</div>
 	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-4 padding-5">
-		<label>รหัสโซน[รับคืน]</label>
+		<label>To Bin[Receive]</label>
 		<input type="text" class="form-control input-sm" value="<?php echo $doc->to_zone; ?>" disabled />
 	</div>
 	<div class="col-lg-4 col-md-4 col-sm-4 col-xs-8 padding-5">
-		<label>เข้าโซน[รับคืน]</label>
+		<label class="not-show">เข้าโซน[รับคืน]</label>
 		<input type="text" class="form-control input-sm" value="<?php echo $doc->to_zone_name; ?>" disabled />
 	</div>
 	<?php if($doc->status == 2) : ?>
 		<div class="col-lg-7 col-md-7 col-sm-7 col-xs-8 padding-5">
-			<label>หมายเหตุ</label>
+			<label>Remark</label>
 			<input type="text" class="form-control input-sm" value="<?php echo $doc->remark; ?>" disabled/>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-4 padding-5">
-			<label>เหตุผลในการยกเลิก</label>
+			<label>Cancel reason</label>
 			<input type="text" class="form-control input-sm text-center" value="<?php echo $doc->cancle_reason; ?>" disabled />
 		</div>
 		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-4 padding-5">
-			<label>ยกเลิกโดย</label>
+			<label>Cancelled by</label>
 			<input type="text" class="form-control input-sm text-center" value="<?php echo $doc->cancle_user; ?>" disabled />
 		</div>
 	<?php else : ?>
 		<div class="col-lg-10-harf col-md-10-harf col-sm-10-harf col-xs-8 padding-5">
-			<label>หมายเหตุ</label>
+			<label>Remark</label>
 			<input type="text" class="form-control input-sm" value="<?php echo $doc->remark; ?>" disabled/>
 		</div>
 		<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
@@ -135,13 +135,13 @@ else
 			<thead>
 				<tr>
 					<th class="fix-width-40 middle text-center">#</th>
-					<th class="min-width-150 middle">รหัส</th>
-					<th class="min-width-200 middle">สินค้า</th>
-					<th class="fix-width-100 middle text-center">ยืม</th>
-					<th class="fix-width-100 middle text-center">คืนแล้ว<br/>(รวมครั้งนี้)</th>
-					<th class="fix-width-100 middle text-center">ยอดคืน<br/>(ครั้งนี้)</th>
-					<th class="fix-width-100 middle text-center">ยอดรับ<br/>(ครั้งนี้)</th>
-					<th class="fix-width-100 middle text-center">คงเหลือ</th>
+					<th class="min-width-150 middle">Item code</th>
+					<th class="min-width-200 middle">Description</th>
+					<th class="fix-width-100 middle text-center">Lended</th>
+					<th class="fix-width-100 middle text-center">Returned<br/>(include this time)</th>
+					<th class="fix-width-100 middle text-center">Return<br/>(This time)</th>
+					<th class="fix-width-100 middle text-center">Received<br/>(This time)</th>
+					<th class="fix-width-100 middle text-center">Outstanding</th>
 				</tr>
 			</thead>
 			<tbody id="result">
@@ -184,7 +184,7 @@ else
 			  </tr>
 <?php else : ?>
 				<tr>
-					<td colspan="8" class="text-center">--- ไม่พบรายการ ---</td>
+					<td colspan="8" class="text-center">--- Not found ---</td>
 				</tr>
 <?php endif; ?>
 			</tbody>
@@ -198,8 +198,8 @@ else
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5">
 		<?php if($doc->must_accept == 1 && $doc->is_accept == 1) : ?>
-			<span class="green display-block">ยืนยันการรับโดย : <?php echo $doc->accept_by; ?> @ <?php echo thai_date($doc->accept_on, TRUE); ?></span>
-			<span class="green display-block">หมายเหตุ : <?php echo $doc->accept_remark; ?></span>
+			<span class="green display-block">Accept by : <?php echo $doc->accept_by; ?> @ <?php echo thai_date($doc->accept_on, TRUE); ?></span>
+			<span class="green display-block">Remark : <?php echo $doc->accept_remark; ?></span>
 		<?php endif; ?>
 	</div>
 </div>

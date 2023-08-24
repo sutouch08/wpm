@@ -95,7 +95,7 @@ class Consign_check extends PS_Controller
 			if($is_wms == 1 && $this->consign_check_model->is_not_close_exists($zone->code))
 			{
 				$sc = FALSE;
-				$this->error = "เพิ่มเอกสารไม่สำเร็จ เนื่องจากพบเอกสารกระทบยอดของโซนนี้ที่ยังไม่ปิด";
+				$this->error = "Failed to add document because found a reconciliation document of this zone that has not yet been closed";
 			}
 			else
 			{
@@ -149,7 +149,7 @@ class Consign_check extends PS_Controller
 	              if( ! $this->consign_check_model->add_detail($ds))
 	              {
 	                $sc = FALSE;
-	                $this->error = "เพิ่มยอดตั้งต้นไม่สำเร็จ";
+	                $this->error = "Failed to add initial stock";
 	              }
 
 	            } //-- edn foreach
@@ -158,13 +158,13 @@ class Consign_check extends PS_Controller
 	        else
 	        {
 	          $sc = FALSE;
-	          $this->error = "คลังสินค้าไม่ถูกต้อง";
+	          $this->error = "Invalid warehouse";
 	        }
 	      }
 	      else
 	      {
 	        $sc = FALSE;
-	        $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+	        $this->error = "Failed to add document";
 	      }
 
 	      if($sc === FALSE)
@@ -201,7 +201,7 @@ class Consign_check extends PS_Controller
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบข้อมูล";
+      $this->error = "No data found";
     }
 
     if($sc === TRUE)
@@ -291,7 +291,7 @@ class Consign_check extends PS_Controller
     if(empty($pd))
     {
       $sc = FALSE;
-      $this->error = "ไม่พบสินค้าในระบบ กรุณาตรวจสอบบาร์โค้ด";
+      $this->error = "No item found please check barcode";
     }
     else
     {
@@ -301,27 +301,27 @@ class Consign_check extends PS_Controller
       if(empty($ds))
       {
         $sc = FALSE;
-        $this->error = "ไม่พบสินค้า '{$pd->code}' ในโซน";
+        $this->error = "'{$pd->code}' not exists in location";
       }
       else
       {
         if($ds->stock_qty < ($ds->qty + $qty))
         {
           $sc = FALSE;
-          $this->error = "{$pd->code} : จำนวนสินค้าเกินกว่ายอดที่มีในโซน";
+          $this->error = "{$pd->code} : check qty more than stock balance in specify location";
         }
         else
         {
           if( ! $this->consign_check_model->update_check_detail($code, $pd->code, $qty))
           {
             $sc = FALSE;
-            $this->error = "{$pd->code} : บันทึกจำนวนตรวจนับไม่สำเร็จ";
+            $this->error = "{$pd->code} : Failed to record the number of checks";
           }
 
           if( ! $this->consign_check_model->update_box_qty($id_box, $code, $pd->code, $qty))
           {
             $sc = FALSE;
-            $this->error = "{$pd->code} : บันทึกยอดตรวจนับลงกล่องไม่สำเร็จ";
+            $this->error = "{$pd->code} : Failed to save the check count to the box.";
           }
         }
       }
@@ -351,7 +351,7 @@ class Consign_check extends PS_Controller
       foreach($details as $rs)
       {
         $arr = array(
-          'box' => 'กล่องที่ '.$rs->box_no,
+          'box' => 'Box No. '.$rs->box_no,
           'qty' => $rs->qty,
           'id_box' => $rs->id_box,
           'pdCode' => $rs->product_code
@@ -387,13 +387,13 @@ class Consign_check extends PS_Controller
       if( ! $this->consign_check_model->update_check_detail($code, $product_code, $qty))
       {
         $sc = FALSE;
-        $this->error = "{$pd->code} : ปรับปรุงตรวจนับไม่สำเร็จ";
+        $this->error = "{$pd->code} : Failed to update the number of checks";
       }
 
       if( ! $this->consign_check_model->delete_box_qty($id_box, $code, $product_code))
       {
         $sc = FALSE;
-        $this->error = "{$pd->code} : ปรับปรุงยอดตรวจนับในกล่องไม่สำเร็จ";
+        $this->error = "{$pd->code} : Failed to update box count";
       }
 
       $this->db->trans_complete();
@@ -433,7 +433,7 @@ class Consign_check extends PS_Controller
     else
     {
       $sc = FALSE;
-      $this->error = "เพิ่มกล่องใหม่ไม่สำเร็จ";
+      $this->error = "Failed to add new box";
     }
 
     echo $sc === TRUE ? json_encode($arr) : $this->error;
@@ -453,7 +453,7 @@ class Consign_check extends PS_Controller
         $arr = array(
           'id_box' => $rs->id,
           'barcode' => $rs->code,
-          'box_no' => 'กล่องที่ '.$rs->box_no
+          'box_no' => 'Box No. '.$rs->box_no
         );
 
         array_push($ds, $arr);
@@ -482,7 +482,7 @@ class Consign_check extends PS_Controller
       if(! $this->consign_check_model->change_status($code, 1))
       {
         $sc = FALSE;
-        $this->error = "ปิดการตรวจนับไม่สำเร็จ กรุณาลองใหม่อีกครั้ง";
+        $this->error = "Failed to closed counting stock. Please try again";
       }
     }
     else
@@ -491,15 +491,15 @@ class Consign_check extends PS_Controller
 
       if($doc->valid == 1)
       {
-        $this->error = "เอกสารถูกดึงไปตัดยอดขายแล้ว";
+        $this->error = "Documents have been pulled to cut off sales.";
       }
 			else if($doc->is_wms == 1 && $doc->status == 0)
 			{
-				$this->error = "เอกสารต้องดำเนินการบนระบบ WMS ไม่สามารถบันทึกเองได้";
+				$this->error = "Documents must be processed on the WMS system, cannot be saved manually.";
 			}
 			else if($doc->status != 0)
       {
-        $this->error = $doc->status == 2 ? "เอกสารถูกยกเลิกไปแล้ว" : ($doc->status == 3 ? "เอกสารอยู่ระหว่างดำเนินการบนระบบ WMS ไม่สามารถบันทึกเองได้" : "เอกสารถูกบันทึกไปแล้ว");
+        $this->error = $doc->status == 2 ? "The document has been cancelled." : ($doc->status == 3 ? "Documents in progress on WMS system cannot be saved manually." : "The document has been saved.");
       }
     }
 
@@ -521,7 +521,7 @@ class Consign_check extends PS_Controller
       if(! $this->consign_check_model->change_status($code, 0))
       {
         $sc = FALSE;
-        $this->error = "เปิดการตรวจนับไม่สำเร็จ กรุณาลองใหม่อีกครั้ง";
+        $this->error = "Failed to open count Please try again.";
       }
     }
     else
@@ -529,12 +529,12 @@ class Consign_check extends PS_Controller
       $sc = FALSE;
       if($doc->valid == 1)
       {
-        $this->error = "เอกสารถูกดึงไปตัดยอดขายแล้ว";
+        $this->error = "Documents have been pulled to cut off sales.";
       }
 
       if($doc->status == 2)
       {
-        $this->error = "เอกสารถูกยกเลิกไปแล้ว";
+        $this->error = "The document has been cancelled.";
       }
     }
 
@@ -561,7 +561,7 @@ class Consign_check extends PS_Controller
     if( ! $this->consign_check_model->update($code, $arr))
     {
       $sc = FALSE;
-      $this->error = "ปรับปรุงข้อมูลไม่สำเร็จ";
+      $this->error = "Failed to update data";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -630,7 +630,7 @@ class Consign_check extends PS_Controller
               if( ! $this->consign_check_model->add_detail($ds))
               {
                 $sc = FALSE;
-                $this->error = "เพิ่มยอดตั้งต้นไม่สำเร็จ";
+                $this->error = "Failed to update initial amount";
               }
             }
 
@@ -652,7 +652,7 @@ class Consign_check extends PS_Controller
       else
       {
         $sc = FALSE;
-        $this->error = "คลังสินค้าไม่ถูกต้อง : {$doc->warehouse_code}";
+        $this->error = "Invalid warehouse : {$doc->warehouse_code}";
       }
     }
 
@@ -682,7 +682,7 @@ class Consign_check extends PS_Controller
         if( ! $this->consign_check_model->delete_all_box_details($code))
         {
           $sc = FALSE;
-          $this->error = "ลบรายการสินค้าในกล่องไม่สำเร็จ";
+          $this->error = "Failed to delete item in box";
         }
 
         //--- 2. ลบกล่องทั้งหมด
@@ -691,7 +691,7 @@ class Consign_check extends PS_Controller
           if( ! $this->consign_check_model->delete_all_box($code))
           {
             $sc = FALSE;
-            $this->error = "ลบกล่องไม่สำเร็จ";
+            $this->error = "Failed to delete box";
           }
         }
 
@@ -701,7 +701,7 @@ class Consign_check extends PS_Controller
           if( ! $this->consign_check_model->delete_all_details($code))
           {
             $sc = FALSE;
-            $this->error = "ลบรายการตั้งต้นและรายการตรวจนับไม่สำเร็จ";
+            $this->error = "Failed to delete initial items and count items.";
           }
         }
 
@@ -717,13 +717,13 @@ class Consign_check extends PS_Controller
       else
       {
         $sc = FALSE;
-        $this->error = "ไม่สามารถลบข้อมูลได้ เนื่องจากเอกสารถูกบันทึกแล้ว";
+        $this->error = "Data cannot be deleted. because the document has been saved";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่สามารถลบข้อมูลได้เนื่องจากมีการดึงไปตัดยอดขายแล้ว";
+      $this->error = "The data cannot be deleted because it has already been pulled to cut off sales.";
     }
 
     return $sc;
@@ -750,14 +750,14 @@ class Consign_check extends PS_Controller
         if( ! $this->consign_check_model->change_status($code, 2))
         {
           $sc = FALSE;
-          $this->error = "เปลี่ยนสถานะเอกสารไม่สำเร็จ";
+          $this->error = "Failed to change document status";
         }
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "คุณไม่มีสิทธิ์ในการยกเลิกเอกสาร";
+      $this->error = "You do not permission to perform this operation";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;

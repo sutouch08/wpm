@@ -19,37 +19,37 @@
 <form id="searchForm" method="post" action="<?php echo current_url(); ?>">
 <div class="row">
   <div class="col-lg-1-harf col-md-2 col-sm-3 col-xs-6 padding-5">
-    <label>เลขที่เอกสาร</label>
+    <label>Doc No.</label>
     <input type="text" class="form-control input-sm search" name="code"  value="<?php echo $code; ?>" />
   </div>
 
   <div class="col-lg-2 col-md-2 col-sm-3 col-xs-6 padding-5">
-    <label>ลูกค้า</label>
+    <label>Customer</label>
     <input type="text" class="form-control input-sm search" name="customer" value="<?php echo $customer; ?>" />
   </div>
 
 	<div class="col-lg-1-harf col-md-2 col-sm-3 col-xs-6 padding-5">
-    <label>พนักงาน</label>
+    <label>User</label>
     <input type="text" class="form-control input-sm search" name="user" value="<?php echo $user; ?>" />
   </div>
 
 	<div class="col-lg-2 col-md-2-harf col-sm-3 col-xs-6 padding-5">
-    <label>ช่องทาง</label>
+    <label>Channels</label>
     <select class="form-control input-sm" name="channels" onchange="getSearch()">
-			<option value="all">ทั้งหมด</option>
+			<option value="all">All</option>
 			<?php echo select_channels($channels); ?>
 		</select>
   </div>
 
 	<div class="col-lg-3 col-md-3-harf col-sm-4 col-xs-6 padding-5">
-    <label>เลขที่บัญชี</label>
+    <label>Account No</label>
 		<select class="form-control input-sm" name="account" onchange="getSearch()">
-      <option value="">ทั้งหมด</option>
+      <option value="">All</option>
       <?php echo select_bank_account($account); ?>
     </select>
   </div>
 	<div class="col-lg-2 col-md-2-harf col-sm-3 col-xs-6 padding-5">
-    <label>วันที่</label>
+    <label>Date</label>
     <div class="input-daterange input-group">
       <input type="text" class="form-control input-sm width-50 text-center from-date" name="from_date" id="fromDate" value="<?php echo $from_date; ?>" />
       <input type="text" class="form-control input-sm width-50 text-center" name="to_date" id="toDate" value="<?php echo $to_date; ?>" />
@@ -58,10 +58,10 @@
   </div>
 
   <div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-6 padding-5">
-    <label>สถานะ</label>
+    <label>Status</label>
 		<select class="form-control input-sm" name="valid" onchange="getSearch()">
-      <option value="0" <?php echo is_selected($valid, '0'); ?>>รอตรวจสอบ</option>
-      <option value="1" <?php echo is_selected($valid, '1'); ?>>ยืนยันแล้ว</option>
+      <option value="0" <?php echo is_selected($valid, '0'); ?>>Pending</option>
+      <option value="1" <?php echo is_selected($valid, '1'); ?>>Confirmed</option>
     </select>
   </div>
 
@@ -82,15 +82,15 @@
 		<table class="table table-striped table-hover border-1" style="min-width:1050px;">
 			<thead>
 				<tr>
-					<th class="fix-width-60 middle text-center">ลำดับ</th>
-					<th class="fix-width-120 middle">เลขที่เอกสาร</th>
-          <th class="fix-width-100 middle">ช่องทาง</th>
-					<th class="fix-width-200 middle">ลูกค้า</th>
-          <th class="fix-width-120 middle hidden-md">พนักงาน</th>
-					<th class="fix-width-100 middle text-center">วันที่</th>
-					<th class="fix-width-100 middle text-center">เวลา</th>
-					<th class="fix-width-100 middle text-right">ยอดเงิน</th>
-					<th class="fix-width-120 middle text-center">เลขที่บัญชี</th>
+					<th class="fix-width-60 middle text-center">#</th>
+					<th class="fix-width-120 middle">Document No</th>
+          <th class="fix-width-100 middle">Channels</th>
+					<th class="fix-width-200 middle">Customer</th>
+          <th class="fix-width-120 middle hidden-md">User</th>
+					<th class="fix-width-100 middle text-center">Date</th>
+					<th class="fix-width-100 middle text-center">Time</th>
+					<th class="fix-width-100 middle text-right">Amount</th>
+					<th class="fix-width-120 middle text-center">Account No</th>
 					<th class="fix-width-80"></th>
 				</tr>
 			</thead>

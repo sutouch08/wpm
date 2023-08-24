@@ -6,7 +6,7 @@
   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 padding-5">
   	<p class="pull-right top-p">
     <?php if($this->pm->can_add) : ?>
-      <button type="button" class="btn btn-sm btn-success" onclick="newProfile()"><i class="fa fa-plus"></i> เพิมใหม่</button>
+      <button type="button" class="btn btn-sm btn-success" onclick="newProfile()"><i class="fa fa-plus"></i> Add New</button>
     <?php endif; ?>
     </p>
   </div>
@@ -37,9 +37,9 @@
 		<table class="table table-striped table-bordered table-hover">
 			<thead>
 				<tr>
-					<th class="fix-width-60 text-center">ลำดับ</th>
-					<th class="min-width-100">ชื่อ</th>
-					<th class="fix-width-100 text-center">สมาชิก</th>
+					<th class="fix-width-60 text-center">#</th>
+					<th class="min-width-100">Name</th>
+					<th class="fix-width-100 text-center">Members</th>
 					<th class="fix-width-100"></th>
 				</tr>
 			</thead>

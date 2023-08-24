@@ -15,7 +15,7 @@ class Sync_data_new extends CI_Controller
     parent::__construct();
     $this->ms = $this->load->database('ms', TRUE); //--- SAP database
     $this->mc = $this->load->database('mc', TRUE); //--- Temp Database
-		$this->cn = $this->load->database('cn', TRUE);
+		//$this->cn = $this->load->database('cn', TRUE);
     $this->load->model('sync_data_model');
     $this->date = date('Y-d-m H:i:s');
   }
@@ -39,7 +39,7 @@ class Sync_data_new extends CI_Controller
 
 		$this->syncSponsorInvCode();
 
-		$this->syncConsignmentInvCode();
+		//$this->syncConsignmentInvCode();
 
 		$this->syncOrderTransformInvCode();
 
@@ -63,7 +63,7 @@ class Sync_data_new extends CI_Controller
 
 		$this->syncConsignSoldInvCode();
 
-		$this->syncConsignmentSoldInvCode();
+		//$this->syncConsignmentSoldInvCode();
 
 		$this->syncReturnConsignmentOrderCode();
 
@@ -841,40 +841,40 @@ class Sync_data_new extends CI_Controller
     $this->sync_data_model->add_logs($logs);
   }
 
-	public function syncConsignmentSoldInvCode()
-  {
-    $this->load->model('account/consignment_order_model');
-    $ds = $this->consignment_order_model->get_non_inv_code($this->limit);
-    $count = 0;
-    $update = 0;
-
-    if(!empty($ds))
-    {
-      foreach($ds as $rs)
-      {
-        $count++;
-        $inv = $this->consignment_order_model->get_sap_doc_num($rs->code);
-
-        if(!empty($inv))
-        {
-          $this->consignment_order_model->update_inv($rs->code, $inv);
-          $update++;
-        }
-
-      }
-    }
-
-
-    $logs = array(
-      'sync_item' => 'WD',
-      'get_item' => $count,
-      'update_item' => $update
-    );
-
-    //--- add logs
-    $this->sync_data_model->add_logs($logs);
-
-  }
+	// public function syncConsignmentSoldInvCode()
+  // {
+  //   $this->load->model('account/consignment_order_model');
+  //   $ds = $this->consignment_order_model->get_non_inv_code($this->limit);
+  //   $count = 0;
+  //   $update = 0;
+  //
+  //   if(!empty($ds))
+  //   {
+  //     foreach($ds as $rs)
+  //     {
+  //       $count++;
+  //       $inv = $this->consignment_order_model->get_sap_doc_num($rs->code);
+  //
+  //       if(!empty($inv))
+  //       {
+  //         $this->consignment_order_model->update_inv($rs->code, $inv);
+  //         $update++;
+  //       }
+  //
+  //     }
+  //   }
+  //
+  //
+  //   $logs = array(
+  //     'sync_item' => 'WD',
+  //     'get_item' => $count,
+  //     'update_item' => $update
+  //   );
+  //
+  //   //--- add logs
+  //   $this->sync_data_model->add_logs($logs);
+  //
+  // }
 
 
 	public function syncReturnConsignmentOrderCode()

@@ -1,37 +1,37 @@
 <div class="row">
   <div class="col-sm-1 col-1-harf padding-5 first">
-    <label>เลขที่เอกสาร</label>
+    <label>Doc No</label>
     <input type="text" class="form-control input-sm text-center" value="<?php echo $doc->code; ?>" disabled />
   </div>
 
   <div class="col-sm-1 col-1-harf padding-5">
-    <label>วันที่</label>
+    <label>Date</label>
     <input type="text" class="form-control input-sm text-center edit" name="date" id="date" value="<?php echo thai_date($doc->date_add); ?>" readonly required disabled />
   </div>
 
   <div class="col-sm-4 col-4-harf padding-5">
-    <label>คลังต้นทาง</label>
+    <label>From Warehouse</label>
     <input type="text" class="form-control input-sm edit" name="from_warehouse" id="from_warehouse" value="<?php echo $doc->from_warehouse_name; ?>" required disabled/>
   </div>
 
 	<div class="col-sm-4 col-4-harf padding-5 last">
-    <label>คลังปลายทาง</label>
+    <label>To Warehouse</label>
 		<input type="text" class="form-control input-sm edit" name="to_warehouse" id="to_warehouse" value="<?php echo $doc->to_warehouse_name; ?>" required disabled/>
   </div>
 
   <?php if($doc->status == 0) : ?>
   <div class="col-sm-11 padding-5 first">
-    <label>หมายเหตุ</label>
+    <label>Remark</label>
     <input type="text" class="form-control input-sm edit" name="remark" id="remark" value="<?php echo $doc->remark; ?>" disabled>
   </div>
   <div class="col-sm-1 padding-5 last">
     <label class="display-block not-show">Submit</label>
-    <button type="button" class="btn btn-xs btn-warning btn-block" id="btn-edit" onclick="getEdit()"><i class="fa fa-pencil"></i> แก้ไข</button>
-		<button type="button" class="btn btn-xs btn-success btn-block hide" id="btn-update" onclick="update()"><i class="fa fa-save"></i> บันทึก</button>
+    <button type="button" class="btn btn-xs btn-warning btn-block" id="btn-edit" onclick="getEdit()"><i class="fa fa-pencil"></i> Edit</button>
+		<button type="button" class="btn btn-xs btn-success btn-block hide" id="btn-update" onclick="update()"><i class="fa fa-save"></i> Update</button>
   </div>
   <?php else : ?>
     <div class="col-sm-12 padding-5 first last">
-      <label>หมายเหตุ</label>
+      <label>Remark</label>
       <input type="text" class="form-control input-sm edit" name="remark" id="remark" value="<?php echo $doc->remark; ?>" disabled>
     </div>
   <?php endif; ?>

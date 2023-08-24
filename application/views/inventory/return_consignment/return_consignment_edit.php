@@ -7,12 +7,12 @@
 	</div>
     <div class="col-sm-6">
       <p class="pull-right top-p">
-				<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+				<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
 				<?php if(($this->pm->can_add OR $this->pm->can_edit) && $doc->status == 0) : ?>
-				<button type="button" class="btn btn-sm btn-success" onclick="save()"><i class="fa fa-save"></i> บันทึก</button>
+				<button type="button" class="btn btn-sm btn-success" onclick="save()"><i class="fa fa-save"></i> Save</button>
 			<?php endif; ?>
 	<?php if($doc->status == 1 && $this->pm->can_approve) : ?>
-				<button type="button" class="btn btn-sm btn-primary" id="btn-approve" onclick="approve()"><i class="fa fa-save"></i> อนุมัติ</button>
+				<button type="button" class="btn btn-sm btn-primary" id="btn-approve" onclick="approve()"><i class="fa fa-save"></i> Approve</button>
 	<?php endif; ?>
       </p>
     </div>
@@ -22,23 +22,23 @@
 
 <div class="row">
     <div class="col-sm-1 col-1-harf col-xs-6 padding-5">
-    	<label>เลขที่เอกสาร</label>
+    	<label>Doc No.</label>
         <input type="text" class="form-control input-sm text-center" value="<?php echo $doc->code; ?>" disabled />
     </div>
 		<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
-    	<label>วันที่</label>
+    	<label>Date</label>
       <input type="text" class="form-control input-sm text-center edit" name="date_add" id="dateAdd" value="<?php echo thai_date($doc->date_add, FALSE); ?>" readonly disabled/>
     </div>
 		<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
-			<label>รหัสลูกค้า</label>
+			<label>Customer</label>
 			<input type="text" class="form-control input-sm text-center edit" id="customerCode" value="<?php echo $doc->customer_code; ?>" disabled />
 		</div>
 		<div class="col-sm-5 col-xs-12 padding-5">
-			<label>ลูกค้า</label>
+			<label class="not-show">ลูกค้า</label>
 			<input type="text" class="form-control input-sm edit" name="customer" id="customer" value="<?php echo $doc->customer_name; ?>" disabled/>
 		</div>
 		<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
-			<label>เลขที่บิล[SAP]</label>
+			<label>Invoice[SAP]</label>
 			<input type="text" class="form-control input-sm text-center edit" name="invoice" id="invoice" value="<?php echo $doc->invoice; ?>" disabled />
 		</div>
 		<div class="col-sm-1 col-xs-6 padding-5">
@@ -47,19 +47,19 @@
 		</div>
 
 		<div class="col-sm-6 col-xs-12 padding-5">
-			<label>โซนฝากขาย</label>
+			<label>From location(Consignment)</label>
 			<input type="text" class="form-control input-sm edit" name="fromZone" id="fromZone" value="<?php echo $doc->from_zone_name; ?>" disabled />
 		</div>
 
 		<div class="col-sm-6 col-xs-12 padding-5">
-			<label>โซน[รับคืน]</label>
+			<label>To location(Receive)</label>
 			<input type="text" class="form-control input-sm edit" name="zone" id="zone" value="<?php echo $doc->zone_name; ?>" disabled />
 		</div>
 		<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
-			<label>รับที่</label>
+			<label>WMS</label>
 			<select class="form-control input-sm edit" name="is_wms" id="is_wms" onchange="toggleInterface()" disabled>
-				<option value="1" <?php echo is_selected("1", $doc->is_wms); ?>>Pioneer</option>
-				<option value="0" <?php echo is_selected("0", $doc->is_wms); ?>>Warrix</option>
+				<option value="0" <?php echo is_selected("0", $doc->is_wms); ?>>Yes</option>
+				<!--<option value="1" <?php echo is_selected("1", $doc->is_wms); ?>>Pioneer</option>-->
 			</select>
 		</div>
 		<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
@@ -70,14 +70,14 @@
 			</select>
 		</div>
     <div class="col-sm-8 col-xs-12 padding-5">
-    	<label>หมายเหตุ</label>
+    	<label>Remark</label>
         <input type="text" class="form-control input-sm edit" name="remark" id="remark" placeholder="ระบุหมายเหตุเอกสาร (ถ้ามี)" value="<?php echo $doc->remark; ?>" disabled />
     </div>
 		<div class="col-sm-1 col-xs-6 padding-5">
 			<label class="display-block not-show">save</label>
 			<?php 	if($doc->status == 0 && ($this->pm->can_add OR $this->pm->can_edit)) : ?>
-							<button type="button" class="btn btn-xs btn-warning btn-block" id="btn-edit" onclick="editHeader()">แก้ไข</button>
-							<button type="button" class="btn btn-xs btn-success btn-block hide" id="btn-update" onclick="updateHeader()">ปรับปรุง</button>
+							<button type="button" class="btn btn-xs btn-warning btn-block" id="btn-edit" onclick="editHeader()">Edit</button>
+							<button type="button" class="btn btn-xs btn-success btn-block hide" id="btn-update" onclick="updateHeader()">Update</button>
 			<?php	endif; ?>
 		</div>
 
@@ -94,30 +94,29 @@
 <hr class="margin-top-15"/>
 <div class="row">
 	<div class="col-sm-4 col-xs-12 padding-5">
-		<label>เลขที่บิล</label>
+		<label>Invoice</label>
 		<span id="invoice_list" class="form-control input-sm" disabled><?php echo $doc->invoice_list; ?></span>
 	</div>
 	<div class="col-sm-2 col-xs-6 padding-5">
-		<label>มูลค่าบิล</label>
+		<label>Amount</label>
 		<input type="number" class="form-control input-sm text-center" name="bill_amount" id="bill_amount" value="<?php echo $doc->invoice_amount; ?>" disabled />
 	</div>
 	<div class="col-sm-2 col-xs-6 padding-5">
-		<label>เพิ่มบิล[SAP]</label>
-		<input type="text" class="form-control input-sm text-center" id="invoice-box" placeholder="ดึงใบกำกับเพิ่มเติม" />
+		<label>Add Invoice[SAP]</label>
+		<input type="text" class="form-control input-sm text-center" id="invoice-box" placeholder="" />
 	</div>
 	<div class="col-sm-1 col-xs-12 padding-5">
 		<label class="display-block not-show">btn</label>
-		<button type="button" class="btn btn-xs btn-info btn-block" onclick="add_invoice()">เพิ่มบิล</button>
+		<button type="button" class="btn btn-xs btn-info btn-block" onclick="add_invoice()">Add</button>
 	</div>
-	<div class="col-md-1 col-sm-1 hidden-xs"></div>
 
 	<div class="divider visible-xs"></div>
 
-	<div class="col-md-2 col-sm-3 col-xs-12 padding-5">
+	<div class="col-md-3 col-sm-3 col-xs-12 padding-5">
 		<?php if(($this->pm->can_add OR $this->pm->can_edit) && $doc->status == 0) : ?>
 			<label class="display-block not-show">btn</label>
 			<button type="button" class="btn btn-xs btn-primary btn-block" onclick="load_stock_in_zone()">
-				โหลดสินค้าในโซน
+				Load all products
 			</button>
 		<?php endif; ?>
 	</div>
@@ -135,18 +134,18 @@
 		<table class="table table-striped border-1" style="margin-bottom:0px; min-width:900px;">
 			<thead>
 				<tr>
-					<th class="width-5 text-center">ลำดับ</th>
+					<th class="width-5 text-center">#</th>
 					<th class="width-5 text-center">
 					<input type="checkbox" id="chk-all" class="ace" onchange="toggleCheckAll($(this))"/>
 					<span class="lbl"></span>
 					</th>
-					<th class="width-10">บาร์โค้ด</th>
-					<th class="">สินค้า</th>
-					<th class="width-8 text-center">อ้างอิง</th>
-					<th class="width-8 text-right">ราคา</th>
-					<th class="width-8 text-right">ส่วนลด(%)</th>
-					<th class="width-8 text-right">คืน</th>
-					<th class="width-8 text-right">มูลค่า</th>
+					<th class="width-10">Barcode</th>
+					<th class="">Items</th>
+					<th class="width-8 text-center">Reference</th>
+					<th class="width-8 text-right">Price</th>
+					<th class="width-8 text-right">GP(%)</th>
+					<th class="width-8 text-right">Qty</th>
+					<th class="width-8 text-right">Amount</th>
 					<th class="width-5"></th>
 				</tr>
 			</thead>
@@ -218,7 +217,7 @@
 			</tbody>
 			<tfoot>
 				<tr>
-					<td colspan="7" class="middle text-right">รวม</td>
+					<td colspan="7" class="middle text-right">Total</td>
 					<td class="middle widht-10 text-right" id="total-qty"><?php echo number($total_qty); ?></td>
 					<td class="middle width-10 text-right" id="total-amount"><?php echo number($total_amount, 2); ?></td>
 					<td class="width-5"></td>
@@ -276,7 +275,7 @@
 		</td>
 		<input type="hidden" id="barcode_{{barcode}}" value="{{no}}"/>
 		<input type="hidden" name="item[{{no}}]" id="item_{{no}}" value="{{code}}"/>
-		<input type="hidden" name="item_name[{{no}}]" id="item_name_{{no}}" value="{{name}}"/>		
+		<input type="hidden" name="item_name[{{no}}]" id="item_name_{{no}}" value="{{name}}"/>
 	</tr>
 </script>
 <script src="<?php echo base_url(); ?>scripts/inventory/return_consignment/return_consignment.js?v=<?php echo date('Ymd'); ?>"></script>

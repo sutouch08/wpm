@@ -5,7 +5,7 @@ class Sender extends PS_Controller{
 	public $menu_code = 'DBSEND'; //--- Add/Edit Users
 	public $menu_group_code = 'DB';
 	public $menu_sub_group_code = 'TRANSPORT'; //--- System security
-	public $title = 'เพิ่ม/แก้ไข ขนส่ง';
+	public $title = 'Courier';
 
   public function __construct()
   {
@@ -92,19 +92,19 @@ class Sender extends PS_Controller{
 						if(! $this->sender_model->add($arr))
 						{
 							$sc = FALSE;
-							$this->error = "เพิ่มรายการไม่สำเร็จ";
+							$this->error = "Failed to add data";
 						}
 					}
 					else
 					{
 						$sc = FALSE;
-						$this->error = "ชื่อซ้ำ กรุณากำหนดชื่อใหม่";
+						$this->error = "Duplicated name";
 					}
 				}
 				else
 				{
 					$sc = FALSE;
-					$this->error = "รหัสซ้ำ กรุณากำหนดรหัสใหม่";
+					$this->error = "Duplicated code";
 				}
 			}
 			else
@@ -164,19 +164,19 @@ class Sender extends PS_Controller{
 						if(! $this->sender_model->update($id, $arr))
 						{
 							$sc = FALSE;
-							$this->error = "แก้ไขรายการไม่สำเร็จ";
+							$this->error = "Failed to update data";
 						}
 					}
 					else
 					{
 						$sc = FALSE;
-						$this->error = "ชื่อซ้ำ กรุณากำหนดชื่อใหม่";
+						$this->error = "Duplicated name";
 					}
 				}
 				else
 				{
 					$sc = FALSE;
-					$this->error = "รหัสซ้ำ กรุณากำหนดรหัสใหม่";
+					$this->error = "Duplicated code";
 				}
 			}
 			else
@@ -204,16 +204,16 @@ class Sender extends PS_Controller{
 		{
 			if($this->sender_model->delete($id))
 			{
-				set_message('ลบรายการเรียบร้อยแล้ว');
+				set_message('Data has been deleted.');
 			}
 			else
 			{
-				set_error('ลบรายการไม่สำเร็จ');
+				set_error('Failed to delete data');
 			}
 		}
 		else
 		{
-			set_error('คุณไม่มีอำนาจในการลบ');
+			set_error('You do not have the right to delete');
 		}
 
 		redirect($this->home);

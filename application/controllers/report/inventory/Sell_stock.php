@@ -5,7 +5,7 @@ class Sell_stock extends PS_Controller
   public $menu_code = 'RICSST';
 	public $menu_group_code = 'RE';
   public $menu_sub_group_code = 'REINVT';
-	public $title = 'รายงานสินค้าคงเหลือ(หักยอดจอง)';
+	public $title = 'Available Inventory report';
   public $filter;
   public function __construct()
   {
@@ -48,8 +48,8 @@ class Sell_stock extends PS_Controller
 
     //---  Report title
     $sc['reportDate'] = thai_date(date('Y-m-d'),FALSE, '/');
-    $sc['whList']   = $allWhouse == 1 ? 'ทั้งหมด' : $wh_list;
-    $sc['productList']   = $allProduct == 1 ? 'ทั้งหมด' : '('.$pdFrom.') - ('.$pdTo.')';
+    $sc['whList']   = $allWhouse == 1 ? 'All' : $wh_list;
+    $sc['productList']   = $allProduct == 1 ? 'All' : '('.$pdFrom.') - ('.$pdTo.')';
 
     $result = $this->inventory_report_model->get_current_stock_balance($allProduct, $pdFrom, $pdTo, $allWhouse, $warehouse);
 
@@ -63,7 +63,7 @@ class Sell_stock extends PS_Controller
 
       if($count > $limit)
       {
-        echo 'ผลลัพธ์ของรายงานมีมากกว่า '.number($limit).' รายการ กรุณาส่งออกเป็นไฟล์ Excel แทนการแสดงผลหน้าจอ';
+        echo "The amount of data is too large to be displayed. Please export data instead of screen display.";
         exit;
       }
 
@@ -143,9 +143,9 @@ class Sell_stock extends PS_Controller
 
 
     //---  Report title
-    $report_title = 'รายงานสินค้าคงเหลือ(หักยอดจอง) ณ วันที่  '.thai_date(date('Y-m-d'), '/');
-    $wh_title     = 'คลัง :  '. ($allWhouse == 1 ? 'ทั้งหมด' : $wh_list);
-    $pd_title     = 'สินค้า :  '. ($allProduct == 1 ? 'ทั้งหมด' : '('.$pdFrom.') - ('.$pdTo.')');
+    $report_title = 'Available Inventory report on '.thai_date(date('Y-m-d'), '/');
+    $wh_title     = 'คลัง :  '. ($allWhouse == 1 ? 'All' : $wh_list);
+    $pd_title     = 'สินค้า :  '. ($allProduct == 1 ? 'All' : '('.$pdFrom.') - ('.$pdTo.')');
 
     $result = $this->inventory_report_model->get_current_stock_balance($allProduct, $pdFrom, $pdTo, $allWhouse, $warehouse);
 
@@ -164,13 +164,13 @@ class Sell_stock extends PS_Controller
     $this->excel->getActiveSheet()->mergeCells('A3:G3');
 
     //--- set Table header
-    $this->excel->getActiveSheet()->setCellValue('A4', 'ลำดับ');
-    $this->excel->getActiveSheet()->setCellValue('B4', 'รหัส');
-    $this->excel->getActiveSheet()->setCellValue('C4', 'รหัสเก่า');
-    $this->excel->getActiveSheet()->setCellValue('D4', 'สินค้า');
-    $this->excel->getActiveSheet()->setCellValue('E4', 'ทุน');
-    $this->excel->getActiveSheet()->setCellValue('F4', 'จำนวน');
-    $this->excel->getActiveSheet()->setCellValue('G4', 'มูลค่า');
+    $this->excel->getActiveSheet()->setCellValue('A4', 'No');
+    $this->excel->getActiveSheet()->setCellValue('B4', 'Item Code');
+    $this->excel->getActiveSheet()->setCellValue('C4', 'Old Code');
+    $this->excel->getActiveSheet()->setCellValue('D4', 'Description');
+    $this->excel->getActiveSheet()->setCellValue('E4', 'Cost');
+    $this->excel->getActiveSheet()->setCellValue('F4', 'Qty');
+    $this->excel->getActiveSheet()->setCellValue('G4', 'Amount');
 
     $row = 5;
     if(!empty($result))
@@ -200,7 +200,7 @@ class Sell_stock extends PS_Controller
 
       $res = $row -1;
 
-      $this->excel->getActiveSheet()->setCellValue('A'.$row, 'รวม');
+      $this->excel->getActiveSheet()->setCellValue('A'.$row, 'Total');
       $this->excel->getActiveSheet()->mergeCells('A'.$row.':E'.$row);
       $this->excel->getActiveSheet()->setCellValue('F'.$row, '=SUM(F5:F'.$res.')');
       $this->excel->getActiveSheet()->setCellValue('G'.$row, '=SUM(G5:G'.$res.')');

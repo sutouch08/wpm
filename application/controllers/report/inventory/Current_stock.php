@@ -5,7 +5,7 @@ class Current_stock extends PS_Controller
   public $menu_code = 'RICSTC';
 	public $menu_group_code = 'RE';
   public $menu_sub_group_code = 'REINVT';
-	public $title = 'รายงานสินค้าคงเหลือปัจจุบัน';
+	public $title = 'Current Inventory Report';
   public $filter;
   public function __construct()
   {
@@ -232,12 +232,12 @@ class Current_stock extends PS_Controller
 				echo json_encode($ds);
 			}
 			else {
-				echo "ไม่พบรหัสสินค้า";
+				echo "No items found";
 			}
     }
     else
     {
-      echo "ไม่พบรหัสสินค้า";
+      echo "No items found";
     }
   }
 

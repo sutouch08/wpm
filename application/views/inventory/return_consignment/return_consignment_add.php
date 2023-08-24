@@ -7,7 +7,7 @@
 	</div>
     <div class="col-sm-6 col-xs-6 padding-5">
       <p class="pull-right top-p">
-				<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+				<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
       </p>
     </div>
 </div>
@@ -15,23 +15,23 @@
 
 <div class="row">
     <div class="col-sm-1 col-1-harf col-xs-6 padding-5">
-    	<label>เลขที่เอกสาร</label>
+    	<label>Doc No</label>
         <input type="text" class="form-control input-sm text-center" disabled />
     </div>
 		<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
-    	<label>วันที่</label>
+    	<label>Date</label>
       <input type="text" class="form-control input-sm text-center" name="date_add" id="dateAdd" value="<?php echo date('d-m-Y'); ?>" readonly />
     </div>
 		<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
-			<label>รหัสลูกค้า</label>
+			<label>Customer</label>
 			<input type="text" class="form-control input-sm text-center" id="customerCode" value="" />
 		</div>
 		<div class="col-sm-5 col-xs-12 padding-5">
-			<label>ลูกค้า</label>
+			<label class="not-show">ลูกค้า</label>
 			<input type="text" class="form-control input-sm" id="customer" value="" />
 		</div>
 		<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
-			<label>เลขที่บิล[SAP]</label>
+			<label>Invoice[SAP]</label>
 			<input type="text" class="form-control input-sm text-center" name="invoice" id="invoice" value="" />
 		</div>
 		<div class="col-sm-1 col-xs-6 padding-5">
@@ -39,10 +39,10 @@
 			<input type="number" class="form-control input-sm text-center" name="gp" id="gp" value="" />
 		</div>
 		<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
-			<label>รับที่</label>
+			<label>WMS</label>
 			<select class="form-control input-sm" name="is_wms" id="is_wms" onchange="toggleInterface()">
-				<option value="1">Pioneer</option>
-				<option value="0">Warrix</option>
+				<option value="0">No</option>
+				<!--	<option value="1">Pioneer</option> -->
 			</select>
 		</div>
 		<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
@@ -53,22 +53,22 @@
 			</select>
 		</div>
 		<div class="col-sm-5 col-xs-12 padding-5">
-			<label>โซนฝากขาย</label>
+			<label>From location (Consignment)</label>
 			<input type="text" class="form-control input-sm" name="fromZone" id="fromZone" />
 		</div>
 		<div class="col-sm-4 col-xs-12 padding-5">
-			<label>โซน[รับคืน]</label>
+			<label>To location (Receive)</label>
 			<input type="text" class="form-control input-sm" name="zone" id="zone" value="" />
 		</div>
 
     <div class="col-sm-11 col-xs-12 padding-5">
-    	<label>หมายเหตุ</label>
-        <input type="text" class="form-control input-sm" name="remark" id="remark" placeholder="ระบุหมายเหตุเอกสาร (ถ้ามี)" />
+    	<label>Remark</label>
+        <input type="text" class="form-control input-sm" name="remark" id="remark" />
     </div>
 		<div class="col-sm-1 col-xs-6 padding-5">
 			<label class="display-block not-show">save</label>
 			<?php 	if($this->pm->can_add) : ?>
-			<button type="button" class="btn btn-xs btn-success btn-block" onclick="addNew()"><i class="fa fa-plus"></i> เพิ่ม</button>
+			<button type="button" class="btn btn-xs btn-success btn-block" onclick="addNew()"><i class="fa fa-plus"></i> Add</button>
 			<?php	endif; ?>
 		</div>
 </div>

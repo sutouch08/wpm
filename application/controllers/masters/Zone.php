@@ -294,14 +294,14 @@ class Zone extends PS_Controller
       else
       {
         $sc = FALSE;
-        $this->error = "ไม่พบข้อมูล";
+        $this->error = "No data found";
       }
 
     }
     else
     {
       $sc = FALSE;
-      $this->error = "คุณไม่มีสิทธิ์ในการเพิ่มข้อมูล";
+      $this->error = "you do not have permission to perform this operation";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -318,13 +318,13 @@ class Zone extends PS_Controller
       if( ! $this->zone_model->delete_employee($id))
       {
         $sc = FALSE;
-        $this->error = "ลบรายการไม่สำเร็จ";
+        $this->error = "Failed to delete data";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "คุณไม่มีสิทธิ์ลบข้อมูล";
+      $this->error = "You do not have permission to perform this operation";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -406,13 +406,13 @@ class Zone extends PS_Controller
       if($zone === FALSE)
       {
         $sc = FALSE;
-        $this->error = "ไม่พบโซน";
+        $this->error = "Not found";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "รหัสโซนหรือรหัสคลังไม่ถูกต้อง : {$code} | {$warehouse_code}";
+      $this->error = "Bin location code or warehouse code is invalid : {$code} | {$warehouse_code}";
     }
 
     echo $sc === TRUE ? json_encode($zone) : 'not_exists';
@@ -443,13 +443,13 @@ class Zone extends PS_Controller
     //--- set Table header
 
 
-    $this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-    $this->excel->getActiveSheet()->setCellValue('B1', 'รหัสโซน');
-    $this->excel->getActiveSheet()->setCellValue('C1', 'ชื่อโซน');
-    $this->excel->getActiveSheet()->setCellValue('D1', 'รหัสคลัง');
-    $this->excel->getActiveSheet()->setCellValue('E1', 'คลังสินค้า');
-    $this->excel->getActiveSheet()->setCellValue('F1', 'รหัสเก่า');
-    $this->excel->getActiveSheet()->setCellValue('G1', 'เจ้าของโซน');
+    $this->excel->getActiveSheet()->setCellValue('A1', 'No');
+    $this->excel->getActiveSheet()->setCellValue('B1', 'Bin code');
+    $this->excel->getActiveSheet()->setCellValue('C1', 'Bin name');
+    $this->excel->getActiveSheet()->setCellValue('D1', 'Warehouse code');
+    $this->excel->getActiveSheet()->setCellValue('E1', 'Warehouse name');
+    $this->excel->getActiveSheet()->setCellValue('F1', 'Old code');
+    $this->excel->getActiveSheet()->setCellValue('G1', 'Owner');
 
 
     //---- กำหนดความกว้างของคอลัมภ์

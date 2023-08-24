@@ -8,22 +8,22 @@
     </div>
     <div class="col-sm-9">
     	<p class="pull-right top-p">
-				<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+				<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
 		    <?php if($doc->status == 1) : ?>
-		      <button type="button" class="btn btn-sm btn-info" onclick="doExport()"><i class="fa fa-send"></i> ส่งข้อมูลไป SAP</button>
+		      <button type="button" class="btn btn-sm btn-info" onclick="doExport()"><i class="fa fa-send"></i> Send to SAP</button>
 
 		    <?php endif; ?>
 		    <?php if($doc->status == 1 && $this->pm->can_add OR $this->pm->can_edit) : ?>
 
 		      <?php if($doc->status == 0 && $barcode === TRUE) : ?>
-		        <button type="button" class="btn btn-sm btn-primary" onclick="goUseKeyboard()">คีย์มือ</button>
+		        <button type="button" class="btn btn-sm btn-primary" onclick="goUseKeyboard()">Manual key in</button>
 		      <?php endif; ?>
 
 		      <?php if($doc->status == 0 && $barcode === FALSE) : ?>
-		        <button type="button" class="btn btn-sm btn-primary" onclick="goUseBarcode()">ใช้บาร์โค้ด</button>
+		        <button type="button" class="btn btn-sm btn-primary" onclick="goUseBarcode()">Barcode scanner</button>
 		      <?php endif; ?>
 					<?php if($doc->status == 0 && ($this->pm->can_add OR $this->pm->can_edit)) : ?>
-		      <button type="button" class="btn btn-sm btn-success" onclick="save()"><i class="fa fa-save"></i> บันทึก</button>
+		      <button type="button" class="btn btn-sm btn-success" onclick="save()"><i class="fa fa-save"></i> Save</button>
 					<?php endif; ?>
 		    <?php endif; ?>
       </p>

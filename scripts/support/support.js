@@ -69,12 +69,12 @@ function approve()
 		var id_sender = $('#id_sender').val();
 
 		if(id_address == "") {
-			swal("กรุณาระบุที่อยู่จัดส่ง");
+			swal("Please specify delivery address.");
 			return false;
 		}
 
 		if(id_sender == "") {
-			swal("กรุณาระบุผู้จัดส่ง");
+			swal("Please specify the sender.");
 			return false;
 		}
 	}
@@ -123,7 +123,6 @@ function unapprove()
       if(rs === 'success'){
         swal({
           title:'Success',
-          text:'ยกเลิกการอนุมัติแล้ว',
           type:'success',
           timer:1000
         });
@@ -154,23 +153,23 @@ function change_state(){
 
 	if(is_wms) {
 		if(state == 3 && id_address == "") {
-			swal("กรุณาระบุที่อยู่จัดส่ง");
+			swal("Please specify delivery address.");
 			return false;
 		}
 
 		if(state == 3 && id_sender == "") {
-			swal("กรุณาระบุผู้จัดส่ง");
+			swal("Please specify the sender.");
 			return false;
 		}
 
 		if($('#sender option:selected').data('tracking') == 1) {
 			if(trackingNo != tracking) {
-				swal("กรุณากดบันทึก Tracking No");
+				swal("Please save 'Tracking No'");
 				return false;
 			}
 
 			if(trackingNo.length === 0) {
-				swal("กรุณาระบุ Tracking No");
+				swal("Please specify Tracking No");
 				return false;
 			}
 		}

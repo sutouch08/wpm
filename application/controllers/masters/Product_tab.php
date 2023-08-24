@@ -5,7 +5,7 @@ class Product_tab extends PS_Controller
   public $menu_code = 'DBPTAB';
 	public $menu_group_code = 'DB';
   public $menu_sub_group_code = 'PRODUCT';
-	public $title = 'เพิ่ม/แก้ไข แถบแสดงสินค้า';
+	public $title = 'Product Tab';
   public $error = '';
 
   public function __construct()
@@ -79,21 +79,21 @@ class Product_tab extends PS_Controller
 
         if($this->product_tab_model->add($arr))
         {
-          set_message("เพิ่มแถบสินค้าเรียบร้อยแล้ว");
+          set_message("Add data successfully");
         }
         else
         {
-          set_error("เพิ่มแถบสินค้าไม่สำเร็จ");
+          set_error("Failed to add data");
         }
       }
       else
       {
-        set_error("ชื่อแถบซ้ำ กรุณาใช้ชื่อแถบอื่น");
+        set_error("already exists");
       }
     }
     else
     {
-      set_error("กรุณาระบุชื่อแถบสินค้า");
+      set_error("Please specify name");
     }
 
     redirect($this->home.'/add_new');
@@ -123,21 +123,21 @@ class Product_tab extends PS_Controller
 
         if(! $this->product_tab_model->update($id, $arr))
         {
-          set_error('แก้ไขข้อมูลไม่สำเร็จ');
+          set_error('Failed to update data');
         }
         else
         {
-          set_message('แก้ไขข้อมูลเรียบร้อยแล้ว');
+          set_message('Update data successfully');
         }
       }
       else
       {
-        set_error('ชื่อซ้ำ กรุณาใช้ชื่ออื่น');
+        set_error('Duplicated');
       }
     }
     else
     {
-      set_error('กรุณาระบุชื่อแถบสินค้า');
+      set_error('Please specify name');
     }
 
     redirect($this->home.'/edit/'.$id);
@@ -153,13 +153,13 @@ class Product_tab extends PS_Controller
       if( ! $this->product_tab_model->delete($id))
       {
         $sc = FALSE;
-        $this->error = "ลบแถบสินค้าไม่สำเร็จ";
+        $this->error = "Failed to delete data";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่สามารถลบแถบได้เนื่องจากมีแถบลูกค้างอยู่";
+      $this->error = "This tab cannot be delete becuase child tab exists";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;

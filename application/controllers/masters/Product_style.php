@@ -6,7 +6,7 @@ class Product_style extends PS_Controller
   public $menu_code = 'DBPDST';
 	public $menu_group_code = 'DB';
   public $menu_sub_group_code = 'PRODUCT';
-	public $title = 'เพิ่ม/แก้ไข รุ่นสินค้า';
+	public $title = 'Product Model';
 
   public function __construct()
   {
@@ -64,7 +64,6 @@ class Product_style extends PS_Controller
   {
     $data['code'] = $this->session->flashdata('code');
     $data['name'] = $this->session->flashdata('name');
-    $this->title = 'เพิ่ม รุ่นสินค้า';
     $this->load->view('masters/product_style/product_style_add_view', $data);
   }
 
@@ -84,7 +83,7 @@ class Product_style extends PS_Controller
       if($this->product_style_model->is_exists($code) === TRUE)
       {
         $sc = FALSE;
-        set_error("'".$code."' มีในระบบแล้ว");
+        set_error("'".$code."' already exists");
       }
 
 
@@ -93,12 +92,12 @@ class Product_style extends PS_Controller
       {
         if($this->product_style_model->add($ds) === TRUE)
         {
-          set_message('เพิ่มข้อมูลเรียบร้อยแล้ว');
+          set_message('Add data successfully');
         }
         else
         {
           $sc = FALSE;
-          set_error('เพิ่มข้อมูลไม่สำเร็จ');
+          set_error('Failed to add data');
         }
       }
 
@@ -110,7 +109,7 @@ class Product_style extends PS_Controller
     }
     else
     {
-      set_error('ไม่พบข้อมูล');
+      set_error('No data found');
     }
 
     redirect($this->home.'/add_new');
@@ -120,7 +119,6 @@ class Product_style extends PS_Controller
 
   public function edit($code)
   {
-    $this->title = 'แก้ไข รุ่นสินค้า';
     $rs = $this->product_style_model->get($code);
     $data = array(
       'code' => $rs->code,
@@ -151,19 +149,19 @@ class Product_style extends PS_Controller
       if($this->product_style_model->is_exists($code, $old_code) === TRUE)
       {
         $sc = FALSE;
-        set_error("'".$code."' มีอยู่ในระบบแล้ว โปรดใช้รหัสอื่น");
+        set_error("'".$code."' already exists");
       }
 
       if($sc === TRUE)
       {
         if($this->product_style_model->update($old_code, $ds) === TRUE)
         {
-          set_message('ปรับปรุงข้อมูลเรียบร้อยแล้ว');
+          set_message('Update data successfully');
         }
         else
         {
           $sc = FALSE;
-          set_error('ปรับปรุงข้อมูลไม่สำเร็จ');
+          set_error('Failed to update data');
         }
       }
 
@@ -171,7 +169,7 @@ class Product_style extends PS_Controller
     else
     {
       $sc = FALSE;
-      set_error('ไม่พบข้อมูล');
+      set_error('No data found');
     }
 
     if($sc === FALSE)
@@ -190,16 +188,16 @@ class Product_style extends PS_Controller
     {
       if($this->product_style_model->delete($code))
       {
-        set_message('ลบข้อมูลเรียบร้อยแล้ว');
+        set_message('Failed to delete data');
       }
       else
       {
-        set_error('ลบข้อมูลไม่สำเร็จ');
+        set_error('Data has been deleted.');
       }
     }
     else
     {
-      set_error('ไม่พบข้อมูล');
+      set_error('No data found');
     }
 
     redirect($this->home);

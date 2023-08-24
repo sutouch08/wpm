@@ -5,7 +5,7 @@ class Warehouse extends PS_Controller
   public $menu_code = 'DBWRHS';
 	public $menu_group_code = 'DB';
   public $menu_sub_group_code = 'WAREHOUSE';
-	public $title = 'เพิ่ม/แก้ไข คลังสินค้า';
+	public $title = 'Warehouse';
   public $segment = 4;
 
   public function __construct()
@@ -67,7 +67,7 @@ class Warehouse extends PS_Controller
     }
     else
     {
-      set_error("คุณไม่มีสิทธิ์แก้ไขคลังสินค้า");
+      set_error("You do not have the right to change warehouse data");
       redirect($this->home);
     }
   }
@@ -104,13 +104,13 @@ class Warehouse extends PS_Controller
       }
       else
       {
-        set_error('ไม่พบรหัสคลังสินค้า');
+        set_error('No data found');
         redirect($this->home);
       }
     }
     else
     {
-      set_error('คุณไม่มีสิทธิ์แก้ไขคลังสินค้า');
+      set_error('You do not have the right to change warehouse data');
       redirect($this->home);
     }
   }
@@ -126,27 +126,27 @@ class Warehouse extends PS_Controller
       if($this->warehouse_model->has_zone($code))
       {
         $sc = FALSE;
-        $this->error = 'ไม่สามารถลบคลังได้เนื่องจากยังมีโซนอยู่';
+        $this->error = 'The warehouse cannot be deleted because there are location in it.';
       }
       //--- check warehouse in SAP if exists reject action
       else if($this->warehouse_model->is_sap_exists($code))
       {
         $sc = FALSE;
-        $this->error = 'ไม่สามารถลบคลังได้เนื่องจากยังไม่ได้ลบคลังใน SAP';
+        $this->error = 'The warehouse cannot be deleted because warehouse still in SAP';
       }
       else
       {
         if($this->warehouse_model->delete($code) === FALSE)
         {
           $sc = FALSE;
-          $this->error = 'ลบคลังไม่สำเร็จ';
+          $this->error = 'Failed to delete data';
         }
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = 'คุณไม่มีสิทธิ์ลบคลังสินค้า';
+      $this->error = 'You do not have the right to delete';
     }
 
     echo $sc === TRUE ? 'success' : $this->error;

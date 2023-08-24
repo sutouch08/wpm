@@ -6,7 +6,7 @@
     <div class="col-lg-6 col-md-6 col-sm-4 col-xs-3 padding-5">
     	<p class="pull-right top-p">
       <?php if($this->pm->can_add) : ?>
-        <button type="button" class="btn btn-sm btn-success" onclick="goAdd()"><i class="fa fa-plus"></i> เพิมใหม่</button>
+        <button type="button" class="btn btn-sm btn-success" onclick="goAdd()"><i class="fa fa-plus"></i> Add New</button>
       <?php endif; ?>
       </p>
     </div>
@@ -15,25 +15,25 @@
 <form id="searchForm" method="post" action="<?php echo current_url(); ?>">
 <div class="row">
   <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4 padding-5">
-    <label>เลขที่นโยบาย</label>
+    <label>Code</label>
     <input type="text" class="form-control input-sm" name="policy_code" id="policy_code" value="<?php echo $code; ?>" />
   </div>
 
   <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4 padding-5">
-    <label>ชื่อนโยบาย</label>
+    <label>Name</label>
     <input type="text" class="form-control input-sm" name="policy_name" id="policy_name" value="<?php echo $name; ?>" />
   </div>
   <div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-4 padding-5">
-    <label>สถานะ</label>
+    <label>Status</label>
     <select class="form-control input-sm" name="active" id="active" onchange="getSearch()">
-      <option value="2" <?php echo is_selected(2, $active); ?>>ทั้งหมด</option>
-      <option value="1" <?php echo is_selected(1, $active); ?>>ใช้งาน</option>
-      <option value="0" <?php echo is_selected(0, $active); ?>>ไม่ใช้งาน</option>
+      <option value="2" <?php echo is_selected(2, $active); ?>>All</option>
+      <option value="1" <?php echo is_selected(1, $active); ?>>Active</option>
+      <option value="0" <?php echo is_selected(0, $active); ?>>Inactive</option>
     </select>
   </div>
 
   <div class="col-lg-2 col-md-3 col-sm-3 col-xs-6 padding-5">
-    <label>ช่วงวันที่</label>
+    <label>Start - End</label>
 		<div class="input-daterange input-group">
 			<input type="text" class="form-control input-sm width-50 text-center from-date" name="start_date" id="fromDate" value="<?php echo $start_date; ?>" />
 			<input type="text" class="form-control input-sm width-50 text-center" name="end_date" id="toDate" value="<?php echo $end_date; ?>" />
@@ -59,12 +59,12 @@
 		<table class="table table-striped table-hover border-1">
 			<thead>
 				<tr>
-					<th class="width-5 middle text-center">ลำดับ</th>
-					<th class="width-15 middle">รหัส</th>
-					<th class="width-40 middle">ชื่อ</th>
-					<th class="width-10 middle text-center">เริ่มต้น</th>
-					<th class="width-10 middle text-center">สิ้นสุด</th>
-					<th class="width-5 middle text-center">สถานะ</th>
+					<th class="width-5 middle text-center">#</th>
+					<th class="width-15 middle">Code</th>
+					<th class="width-40 middle">Name</th>
+					<th class="width-10 middle text-center">Start</th>
+					<th class="width-10 middle text-center">End</th>
+					<th class="width-5 middle text-center">Start</th>
 					<th class=""></th>
 				</tr>
 			</thead>

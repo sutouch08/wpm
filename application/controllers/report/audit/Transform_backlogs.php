@@ -5,7 +5,7 @@ class Transform_backlogs extends PS_Controller
   public $menu_code = 'RAWQBL';
 	public $menu_group_code = 'RE';
   public $menu_sub_group_code = 'REAUDIT';
-	public $title = 'รายงานสินค้าแปรสภาพค้างรับ';
+	public $title = 'Receive transform backlogs';
   public $filter;
   public function __construct()
   {
@@ -115,10 +115,10 @@ class Transform_backlogs extends PS_Controller
 		$token = $this->input->post('token');
 
 		//---  Report title
-    $report_title = "รายงานสินค้าแปรสภาพค้างร้บ (วันที่พิมพ์รายงาน : ".date('d/m/Y H:i').")";
-    $emp_title = 'ผู้เบิก :  '. ($allUser == 1 ? 'ทั้งหมด' : $dname);
-    $pd_title = 'สินค้า :  '. ($allPd == 1 ? 'ทั้งหมด' : '('.$pdFrom.') - ('.$pdTo.')');
-		$date_title = 'วันที่เอกสาร : '.((empty($fromDate) OR empty($toDate)) ? 'ทั้งหมด' : thai_date($fromDate, '/').' - '.thai_date($toDate, '/'));
+    $report_title = "Receive transform backlogs (Print date : ".date('d/m/Y H:i').")";
+    $emp_title = 'Owner :  '. ($allUser == 1 ? 'All' : $dname);
+    $pd_title = 'Items :  '. ($allPd == 1 ? 'All' : '('.$pdFrom.') - ('.$pdTo.')');
+		$date_title = 'Document date : '.((empty($fromDate) OR empty($toDate)) ? 'All' : thai_date($fromDate, '/').' - '.thai_date($toDate, '/'));
 
 		$arr = array(
 			'allUser' => $allUser,
@@ -136,7 +136,7 @@ class Transform_backlogs extends PS_Controller
     $this->load->library('excel');
 
     $this->excel->setActiveSheetIndex(0);
-    $this->excel->getActiveSheet()->setTitle('WQ-WV ค้างรับ');
+    $this->excel->getActiveSheet()->setTitle('WQ-WV Backlogs');
 
     //--- set report title header
     $this->excel->getActiveSheet()->setCellValue('A1', $report_title);
@@ -152,17 +152,17 @@ class Transform_backlogs extends PS_Controller
 		$row = 5;
 
     $this->excel->getActiveSheet()->setCellValue('A'.$row, '#');
-    $this->excel->getActiveSheet()->setCellValue('B'.$row, 'ผู้เบิก(User)');
-    $this->excel->getActiveSheet()->setCellValue('C'.$row, 'ผู้ทำรายการ');
-    $this->excel->getActiveSheet()->setCellValue('D'.$row, 'วันที่');
-    $this->excel->getActiveSheet()->setCellValue('E'.$row, 'เลขที่เอกสาร');
-    $this->excel->getActiveSheet()->setCellValue('F'.$row, 'รหัสสินค้า(เบิก)');
-    $this->excel->getActiveSheet()->setCellValue('G'.$row, 'รหัสสินค้า(รับ)');
-    $this->excel->getActiveSheet()->setCellValue('H'.$row, 'ราคา');
-    $this->excel->getActiveSheet()->setCellValue('I'.$row, 'เบิก');
-    $this->excel->getActiveSheet()->setCellValue('J'.$row, 'รับ');
-    $this->excel->getActiveSheet()->setCellValue('K'.$row, 'ค้างรับ');
-    $this->excel->getActiveSheet()->setCellValue('L'.$row, 'มูลค่าคงรับ');
+    $this->excel->getActiveSheet()->setCellValue('B'.$row, 'Owner(User)');
+    $this->excel->getActiveSheet()->setCellValue('C'.$row, 'Maker');
+    $this->excel->getActiveSheet()->setCellValue('D'.$row, 'Date');
+    $this->excel->getActiveSheet()->setCellValue('E'.$row, 'Document No');
+    $this->excel->getActiveSheet()->setCellValue('F'.$row, 'Item Code(Orignal)');
+    $this->excel->getActiveSheet()->setCellValue('G'.$row, 'Item Code(Transformed)');
+    $this->excel->getActiveSheet()->setCellValue('H'.$row, 'Price');
+    $this->excel->getActiveSheet()->setCellValue('I'.$row, 'Send');
+    $this->excel->getActiveSheet()->setCellValue('J'.$row, 'Received');
+    $this->excel->getActiveSheet()->setCellValue('K'.$row, 'Balance Qty');
+    $this->excel->getActiveSheet()->setCellValue('L'.$row, 'Balance Amount');
 
     //---- กำหนดความกว้างของคอลัมภ์
     $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
@@ -221,7 +221,7 @@ class Transform_backlogs extends PS_Controller
 		$this->excel->getActiveSheet()->setCellValue("L{$row}", "=SUM(L6:L{$re})");
 
     setToken($token);
-    $file_name = "รายงานสินค้าแปรสภาพค้างรับ_".date('dmY').".xlsx";
+    $file_name = "Receive transform backlogs_".date('dmY').".xlsx";
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); /// form excel 2007 XLSX
     header('Content-Disposition: attachment;filename="'.$file_name.'"');
     $writer = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');

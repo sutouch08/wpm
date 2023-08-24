@@ -139,6 +139,9 @@ class Transform extends PS_Controller
 			$this->load->model('masters/warehouse_model');
 
       $book_code = getConfig('BOOK_CODE_TRANSFORM');
+      $DocCur = getConfig('CURRENCY');
+      $DocRate = 1.00;
+
       $date_add = db_date($this->input->post('date'));
       if($this->input->post('code'))
       {
@@ -157,6 +160,8 @@ class Transform extends PS_Controller
         'code' => $code,
         'role' => $role,
         'bookcode' => $book_code,
+        'DocCur' => $DocCur,
+        'DocRate' => $DocRate,
         'customer_code' => $this->input->post('customerCode'),
         'user' => $this->_user->uname,
         'remark' => $this->input->post('remark'),

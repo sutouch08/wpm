@@ -5,7 +5,7 @@ class Document_running extends PS_Controller
   public $menu_code = 'RADRUN';
 	public $menu_group_code = 'RE';
   public $menu_sub_group_code = 'REAUDIT';
-	public $title = 'รายงานทะเบียนคุมเอกสารแยกตามประเภท';
+	public $title = 'Document control registration report classified by type';
   public $filter;
 	public $wms;
 	public $limit = 2000;
@@ -56,13 +56,13 @@ class Document_running extends PS_Controller
 			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
 
 			//--- set Table header
-			$this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-			$this->excel->getActiveSheet()->setCellValue('B1', 'วันที่');
-			$this->excel->getActiveSheet()->setCellValue('C1', 'เลขที่');
+			$this->excel->getActiveSheet()->setCellValue('A1', 'No');
+			$this->excel->getActiveSheet()->setCellValue('B1', 'Date');
+			$this->excel->getActiveSheet()->setCellValue('C1', 'Document No');
 			$this->excel->getActiveSheet()->setCellValue('D1', 'SAP DO');
-			$this->excel->getActiveSheet()->setCellValue('E1', 'ช่องทางขาย');
-			$this->excel->getActiveSheet()->setCellValue('F1', 'สถานะ');
-			$this->excel->getActiveSheet()->setCellValue('G1', 'หมายเหตุ');
+			$this->excel->getActiveSheet()->setCellValue('E1', 'Sales Channels');
+			$this->excel->getActiveSheet()->setCellValue('F1', 'State');
+			$this->excel->getActiveSheet()->setCellValue('G1', 'Remark');
 
 			$data = $this->document_model->getOrder('S', $fromDate, $toDate);
 
@@ -109,12 +109,12 @@ class Document_running extends PS_Controller
 			$this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
 			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
 
-			$this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-			$this->excel->getActiveSheet()->setCellValue('B1', 'วันที่');
-			$this->excel->getActiveSheet()->setCellValue('C1', 'เลขที่');
+			$this->excel->getActiveSheet()->setCellValue('A1', 'No');
+			$this->excel->getActiveSheet()->setCellValue('B1', 'Date');
+			$this->excel->getActiveSheet()->setCellValue('C1', 'Document No');
 			$this->excel->getActiveSheet()->setCellValue('D1', 'SAP DO');
-			$this->excel->getActiveSheet()->setCellValue('E1', 'สถานะ');
-			$this->excel->getActiveSheet()->setCellValue('F1', 'หมายเหตุ');
+			$this->excel->getActiveSheet()->setCellValue('E1', 'Status');
+			$this->excel->getActiveSheet()->setCellValue('F1', 'Remark');
 
 			$data = $this->document_model->getOrder('P', $fromDate, $toDate);
 
@@ -161,12 +161,12 @@ class Document_running extends PS_Controller
 			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
 
 
-			$this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-			$this->excel->getActiveSheet()->setCellValue('B1', 'วันที่');
-			$this->excel->getActiveSheet()->setCellValue('C1', 'เลขที่');
+			$this->excel->getActiveSheet()->setCellValue('A1', 'No');
+			$this->excel->getActiveSheet()->setCellValue('B1', 'Date');
+			$this->excel->getActiveSheet()->setCellValue('C1', 'Document No');
 			$this->excel->getActiveSheet()->setCellValue('D1', 'SAP DO');
-			$this->excel->getActiveSheet()->setCellValue('E1', 'สถานะ');
-			$this->excel->getActiveSheet()->setCellValue('F1', 'หมายเหตุ');
+			$this->excel->getActiveSheet()->setCellValue('E1', 'Status');
+			$this->excel->getActiveSheet()->setCellValue('F1', 'Remark');
 
 			$data = $this->document_model->getOrder('U', $fromDate, $toDate);
 
@@ -213,12 +213,12 @@ class Document_running extends PS_Controller
 			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
 
 
-			$this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-			$this->excel->getActiveSheet()->setCellValue('B1', 'วันที่');
-			$this->excel->getActiveSheet()->setCellValue('C1', 'เลขที่');
+			$this->excel->getActiveSheet()->setCellValue('A1', 'No');
+			$this->excel->getActiveSheet()->setCellValue('B1', 'Date');
+			$this->excel->getActiveSheet()->setCellValue('C1', 'Document No');
 			$this->excel->getActiveSheet()->setCellValue('D1', 'SAP DO');
-			$this->excel->getActiveSheet()->setCellValue('E1', 'สถานะ');
-			$this->excel->getActiveSheet()->setCellValue('F1', 'หมายเหตุ');
+			$this->excel->getActiveSheet()->setCellValue('E1', 'Status');
+			$this->excel->getActiveSheet()->setCellValue('F1', 'Remark');
 
 			$data = $this->document_model->getOrder('C', $fromDate, $toDate);
 
@@ -264,12 +264,12 @@ class Document_running extends PS_Controller
 			$this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
 			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
 
-			$this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-			$this->excel->getActiveSheet()->setCellValue('B1', 'วันที่');
-			$this->excel->getActiveSheet()->setCellValue('C1', 'เลขที่');
+			$this->excel->getActiveSheet()->setCellValue('A1', 'No');
+			$this->excel->getActiveSheet()->setCellValue('B1', 'Date');
+			$this->excel->getActiveSheet()->setCellValue('C1', 'Document No');
 			$this->excel->getActiveSheet()->setCellValue('D1', 'SAP DO');
-			$this->excel->getActiveSheet()->setCellValue('E1', 'สถานะ');
-			$this->excel->getActiveSheet()->setCellValue('F1', 'หมายเหตุ');
+			$this->excel->getActiveSheet()->setCellValue('E1', 'Status');
+			$this->excel->getActiveSheet()->setCellValue('F1', 'Remark');
 
 			$data = $this->document_model->getOrder('N', $fromDate, $toDate);
 
@@ -315,12 +315,12 @@ class Document_running extends PS_Controller
 			$this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
 			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
 
-			$this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-			$this->excel->getActiveSheet()->setCellValue('B1', 'วันที่');
-			$this->excel->getActiveSheet()->setCellValue('C1', 'เลขที่');
+			$this->excel->getActiveSheet()->setCellValue('A1', 'No');
+			$this->excel->getActiveSheet()->setCellValue('B1', 'Date');
+			$this->excel->getActiveSheet()->setCellValue('C1', 'Document No');
 			$this->excel->getActiveSheet()->setCellValue('D1', 'SAP TR');
-			$this->excel->getActiveSheet()->setCellValue('E1', 'สถานะ');
-			$this->excel->getActiveSheet()->setCellValue('F1', 'หมายเหตุ');
+			$this->excel->getActiveSheet()->setCellValue('E1', 'Status');
+			$this->excel->getActiveSheet()->setCellValue('F1', 'Remark');
 
 			$data = $this->document_model->getOrder('T', $fromDate, $toDate);
 
@@ -365,12 +365,12 @@ class Document_running extends PS_Controller
 			$this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
 			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
 
-			$this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-			$this->excel->getActiveSheet()->setCellValue('B1', 'วันที่');
-			$this->excel->getActiveSheet()->setCellValue('C1', 'เลขที่');
+			$this->excel->getActiveSheet()->setCellValue('A1', 'No');
+			$this->excel->getActiveSheet()->setCellValue('B1', 'Date');
+			$this->excel->getActiveSheet()->setCellValue('C1', 'Document No');
 			$this->excel->getActiveSheet()->setCellValue('D1', 'SAP TR');
-			$this->excel->getActiveSheet()->setCellValue('E1', 'สถานะ');
-			$this->excel->getActiveSheet()->setCellValue('F1', 'หมายเหตุ');
+			$this->excel->getActiveSheet()->setCellValue('E1', 'Status');
+			$this->excel->getActiveSheet()->setCellValue('F1', 'Remark');
 
 			$data = $this->document_model->getOrder('Q', $fromDate, $toDate);
 
@@ -416,12 +416,12 @@ class Document_running extends PS_Controller
 			$this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
 			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
 
-			$this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-			$this->excel->getActiveSheet()->setCellValue('B1', 'วันที่');
-			$this->excel->getActiveSheet()->setCellValue('C1', 'เลขที่');
+			$this->excel->getActiveSheet()->setCellValue('A1', 'No');
+			$this->excel->getActiveSheet()->setCellValue('B1', 'Date');
+			$this->excel->getActiveSheet()->setCellValue('C1', 'Document No');
 			$this->excel->getActiveSheet()->setCellValue('D1', 'SAP TR');
-			$this->excel->getActiveSheet()->setCellValue('E1', 'สถานะ');
-			$this->excel->getActiveSheet()->setCellValue('F1', 'หมายเหตุ');
+			$this->excel->getActiveSheet()->setCellValue('E1', 'Status');
+			$this->excel->getActiveSheet()->setCellValue('F1', 'Remark');
 
 			$data = $this->document_model->getOrder('L', $fromDate, $toDate);
 
@@ -467,12 +467,12 @@ class Document_running extends PS_Controller
 			$this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
 			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
 
-			$this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-			$this->excel->getActiveSheet()->setCellValue('B1', 'วันที่');
-			$this->excel->getActiveSheet()->setCellValue('C1', 'เลขที่');
+			$this->excel->getActiveSheet()->setCellValue('A1', 'No');
+			$this->excel->getActiveSheet()->setCellValue('B1', 'Date');
+			$this->excel->getActiveSheet()->setCellValue('C1', 'Document No');
 			$this->excel->getActiveSheet()->setCellValue('D1', 'SAP DO');
-			$this->excel->getActiveSheet()->setCellValue('E1', 'สถานะ');
-      $this->excel->getActiveSheet()->setCellValue('F1', 'หมายเหตุ');
+			$this->excel->getActiveSheet()->setCellValue('E1', 'Status');
+      $this->excel->getActiveSheet()->setCellValue('F1', 'Remark');
 
 			$data = $this->document_model->WM($fromDate, $toDate);
 
@@ -517,12 +517,12 @@ class Document_running extends PS_Controller
 			$this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
 			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
 
-			$this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-			$this->excel->getActiveSheet()->setCellValue('B1', 'วันที่');
-			$this->excel->getActiveSheet()->setCellValue('C1', 'เลขที่');
+			$this->excel->getActiveSheet()->setCellValue('A1', 'No');
+			$this->excel->getActiveSheet()->setCellValue('B1', 'Date');
+			$this->excel->getActiveSheet()->setCellValue('C1', 'Document No');
 			$this->excel->getActiveSheet()->setCellValue('D1', 'SAP DO');
-			$this->excel->getActiveSheet()->setCellValue('E1', 'สถานะ');
-      $this->excel->getActiveSheet()->setCellValue('F1', 'หมายเหตุ');
+			$this->excel->getActiveSheet()->setCellValue('E1', 'Status');
+      $this->excel->getActiveSheet()->setCellValue('F1', 'Remark');
 
 			$data = $this->document_model->WD($fromDate, $toDate);
 
@@ -567,12 +567,12 @@ class Document_running extends PS_Controller
 			$this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
 			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
 
-			$this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-			$this->excel->getActiveSheet()->setCellValue('B1', 'วันที่');
-			$this->excel->getActiveSheet()->setCellValue('C1', 'เลขที่');
+			$this->excel->getActiveSheet()->setCellValue('A1', 'No');
+			$this->excel->getActiveSheet()->setCellValue('B1', 'Date');
+			$this->excel->getActiveSheet()->setCellValue('C1', 'Document No');
 			$this->excel->getActiveSheet()->setCellValue('D1', 'SAP GRPO');
-			$this->excel->getActiveSheet()->setCellValue('E1', 'สถานะ');
-      $this->excel->getActiveSheet()->setCellValue('F1', 'หมายเหตุ');
+			$this->excel->getActiveSheet()->setCellValue('E1', 'Status');
+      $this->excel->getActiveSheet()->setCellValue('F1', 'Remark');
 
 			$data = $this->document_model->WR($fromDate, $toDate);
 
@@ -618,12 +618,12 @@ class Document_running extends PS_Controller
 			$this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
 			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
 
-			$this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-			$this->excel->getActiveSheet()->setCellValue('B1', 'วันที่');
-			$this->excel->getActiveSheet()->setCellValue('C1', 'เลขที่');
+			$this->excel->getActiveSheet()->setCellValue('A1', 'No');
+			$this->excel->getActiveSheet()->setCellValue('B1', 'Date');
+			$this->excel->getActiveSheet()->setCellValue('C1', 'Document No');
 			$this->excel->getActiveSheet()->setCellValue('D1', 'SAP TR');
-			$this->excel->getActiveSheet()->setCellValue('E1', 'สถานะ');
-      $this->excel->getActiveSheet()->setCellValue('F1', 'หมายเหตุ');
+			$this->excel->getActiveSheet()->setCellValue('E1', 'Status');
+      $this->excel->getActiveSheet()->setCellValue('F1', 'Remark');
 
 			$data = $this->document_model->WW($fromDate, $toDate);
 
@@ -668,13 +668,13 @@ class Document_running extends PS_Controller
 			$this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
 			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
 
-			$this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-			$this->excel->getActiveSheet()->setCellValue('B1', 'วันที่');
-			$this->excel->getActiveSheet()->setCellValue('C1', 'เลขที่');
+			$this->excel->getActiveSheet()->setCellValue('A1', 'No');
+			$this->excel->getActiveSheet()->setCellValue('B1', 'Date');
+			$this->excel->getActiveSheet()->setCellValue('C1', 'Document No');
 			$this->excel->getActiveSheet()->setCellValue('D1', 'Base Ref');
 			$this->excel->getActiveSheet()->setCellValue('E1', 'SAP Goods Issue');
-			$this->excel->getActiveSheet()->setCellValue('F1', 'สถานะ');
-      $this->excel->getActiveSheet()->setCellValue('G1', 'หมายเหตุ');
+			$this->excel->getActiveSheet()->setCellValue('F1', 'Status');
+      $this->excel->getActiveSheet()->setCellValue('G1', 'Remark');
 
 			$data = $this->document_model->WG($fromDate, $toDate);
 
@@ -720,13 +720,13 @@ class Document_running extends PS_Controller
 			$this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
 			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
 
-			$this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-			$this->excel->getActiveSheet()->setCellValue('B1', 'วันที่');
-			$this->excel->getActiveSheet()->setCellValue('C1', 'เลขที่');
+			$this->excel->getActiveSheet()->setCellValue('A1', 'No');
+			$this->excel->getActiveSheet()->setCellValue('B1', 'Date');
+			$this->excel->getActiveSheet()->setCellValue('C1', 'Document No');
 			$this->excel->getActiveSheet()->setCellValue('D1', 'Base Ref');
 			$this->excel->getActiveSheet()->setCellValue('E1', 'SAP Goods Issue');
-			$this->excel->getActiveSheet()->setCellValue('F1', 'สถานะ');
-      $this->excel->getActiveSheet()->setCellValue('G1', 'หมายเหตุ');
+			$this->excel->getActiveSheet()->setCellValue('F1', 'Status');
+      $this->excel->getActiveSheet()->setCellValue('G1', 'Remark');
 
 			$data = $this->document_model->RT($fromDate, $toDate);
 
@@ -772,13 +772,13 @@ class Document_running extends PS_Controller
 			$this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
 			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
 
-			$this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-			$this->excel->getActiveSheet()->setCellValue('B1', 'วันที่');
-			$this->excel->getActiveSheet()->setCellValue('C1', 'เลขที่');
+			$this->excel->getActiveSheet()->setCellValue('A1', 'No');
+			$this->excel->getActiveSheet()->setCellValue('B1', 'Date');
+			$this->excel->getActiveSheet()->setCellValue('C1', 'Document No');
 			$this->excel->getActiveSheet()->setCellValue('D1', 'Base Ref');
 			$this->excel->getActiveSheet()->setCellValue('E1', 'SAP TR');
-			$this->excel->getActiveSheet()->setCellValue('F1', 'สถานะ');
-      $this->excel->getActiveSheet()->setCellValue('G1', 'หมายเหตุ');
+			$this->excel->getActiveSheet()->setCellValue('F1', 'Status');
+      $this->excel->getActiveSheet()->setCellValue('G1', 'Remark');
 
 			$data = $this->document_model->RN($fromDate, $toDate);
 
@@ -824,13 +824,13 @@ class Document_running extends PS_Controller
 			$this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
 			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
 
-			$this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-			$this->excel->getActiveSheet()->setCellValue('B1', 'วันที่');
-			$this->excel->getActiveSheet()->setCellValue('C1', 'เลขที่');
+			$this->excel->getActiveSheet()->setCellValue('A1', 'No');
+			$this->excel->getActiveSheet()->setCellValue('B1', 'Date');
+			$this->excel->getActiveSheet()->setCellValue('C1', 'Document No');
 			$this->excel->getActiveSheet()->setCellValue('D1', 'Base Ref');
 			$this->excel->getActiveSheet()->setCellValue('E1', 'SAP SM');
-			$this->excel->getActiveSheet()->setCellValue('F1', 'สถานะ');
-      $this->excel->getActiveSheet()->setCellValue('G1', 'หมายเหตุ');
+			$this->excel->getActiveSheet()->setCellValue('F1', 'Status');
+      $this->excel->getActiveSheet()->setCellValue('G1', 'Remark');
 
 			$data = $this->document_model->SM($fromDate, $toDate);
 
@@ -876,13 +876,13 @@ class Document_running extends PS_Controller
 			$this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
 			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
 
-			$this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-			$this->excel->getActiveSheet()->setCellValue('B1', 'วันที่');
-			$this->excel->getActiveSheet()->setCellValue('C1', 'เลขที่');
+			$this->excel->getActiveSheet()->setCellValue('A1', 'No');
+			$this->excel->getActiveSheet()->setCellValue('B1', 'Date');
+			$this->excel->getActiveSheet()->setCellValue('C1', 'Document No');
 			$this->excel->getActiveSheet()->setCellValue('D1', 'Base Ref');
 			$this->excel->getActiveSheet()->setCellValue('E1', 'SAP SM');
-			$this->excel->getActiveSheet()->setCellValue('F1', 'สถานะ');
-      $this->excel->getActiveSheet()->setCellValue('G1', 'หมายเหตุ');
+			$this->excel->getActiveSheet()->setCellValue('F1', 'Status');
+      $this->excel->getActiveSheet()->setCellValue('G1', 'Remark');
 
 			$data = $this->document_model->CN($fromDate, $toDate);
 
@@ -928,13 +928,13 @@ class Document_running extends PS_Controller
 			$this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
 			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
 
-			$this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-			$this->excel->getActiveSheet()->setCellValue('B1', 'วันที่');
-			$this->excel->getActiveSheet()->setCellValue('C1', 'เลขที่');
+			$this->excel->getActiveSheet()->setCellValue('A1', 'No');
+			$this->excel->getActiveSheet()->setCellValue('B1', 'Date');
+			$this->excel->getActiveSheet()->setCellValue('C1', 'Document No');
 			$this->excel->getActiveSheet()->setCellValue('D1', 'SAP Goods Issue');
 			$this->excel->getActiveSheet()->setCellValue('E1', 'SAP Goods Receipt');
-			$this->excel->getActiveSheet()->setCellValue('F1', 'สถานะ');
-      $this->excel->getActiveSheet()->setCellValue('G1', 'หมายเหตุ');
+			$this->excel->getActiveSheet()->setCellValue('F1', 'Status');
+      $this->excel->getActiveSheet()->setCellValue('G1', 'Remark');
 
 			$data = $this->document_model->WA($fromDate, $toDate);
 
@@ -980,14 +980,14 @@ class Document_running extends PS_Controller
 			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(15);
       $this->excel->getActiveSheet()->getColumnDimension('H')->setWidth(15);
 
-			$this->excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
-			$this->excel->getActiveSheet()->setCellValue('B1', 'วันที่');
-			$this->excel->getActiveSheet()->setCellValue('C1', 'เลขที่');
+			$this->excel->getActiveSheet()->setCellValue('A1', 'No');
+			$this->excel->getActiveSheet()->setCellValue('B1', 'Date');
+			$this->excel->getActiveSheet()->setCellValue('C1', 'Document No');
 			$this->excel->getActiveSheet()->setCellValue('D1', 'Base ref');
 			$this->excel->getActiveSheet()->setCellValue('E1', 'SAP Goods Issue');
 			$this->excel->getActiveSheet()->setCellValue('F1', 'SAP Goods Receipt');
-			$this->excel->getActiveSheet()->setCellValue('G1', 'สถานะ');
-      $this->excel->getActiveSheet()->setCellValue('H1', 'หมายเหตุ');
+			$this->excel->getActiveSheet()->setCellValue('G1', 'Status');
+      $this->excel->getActiveSheet()->setCellValue('H1', 'Remark');
 
 			$data = $this->document_model->AC($fromDate, $toDate);
 
@@ -1017,7 +1017,7 @@ class Document_running extends PS_Controller
 
 
     setToken($token);
-    $file_name = "รายงานทะเบียนคุมเอกสารแยกตามประเภท ".date('Ymd').".xlsx";
+    $file_name = "Document control registration report classified by type ".date('Ymd').".xlsx";
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); /// form excel 2007 XLSX
     header('Content-Disposition: attachment;filename="'.$file_name.'"');
     $writer = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');

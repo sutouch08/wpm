@@ -5,7 +5,7 @@ class Inbound_document_audit extends PS_Controller
   public $menu_code = 'RAIXIB';
 	public $menu_group_code = 'RE';
   public $menu_sub_group_code = 'REAUDIT';
-	public $title = 'รายงาน กระทบเลขที่เอกสารขาเข้า IX-WMS-SAP';
+	public $title = 'Incoming document number reconciliation report IX-WMS-SAP';
   public $filter;
 	public $wms;
 	public $limit = 2000;
@@ -38,10 +38,10 @@ class Inbound_document_audit extends PS_Controller
 		);
 
 		$stateName = array(
-			'0' => "ยังไม่บันทึก",
-			'1' => "รับเข้าแล้ว",
-			'2' => "ยกเลิก",
-			'3' => "รอรับสินค้า"
+			'0' => "Draft",
+			'1' => "Received",
+			'2' => "Cancelled",
+			'3' => "Pending"
 		);
 
     $allDoc = $this->input->get('allDoc');
@@ -119,7 +119,7 @@ class Inbound_document_audit extends PS_Controller
 		      {
 						if($no > $this->limit)
 						{
-							echo "จำนวนรายการมากกว่า {$this->limit} กรุณาส่งออกเป็นไฟล์แทนการแสดงผล";
+							echo "number of items over {$this->limit} Please export as a file instead of rendering.";
 							exit;
 						}
 
@@ -177,11 +177,11 @@ class Inbound_document_audit extends PS_Controller
 			"WW" => "TR" //---- OWTR
 		);
 
-		$stateName = array(
-			'0' => "ยังไม่บันทึก",
-			'1' => "รับเข้าแล้ว",
-			'2' => "ยกเลิก",
-			'3' => "รอรับสินค้า"
+    $stateName = array(
+			'0' => "Draft",
+			'1' => "Received",
+			'2' => "Cancelled",
+			'3' => "Pending"
 		);
 
     $allDoc = $this->input->post('allDoc');
@@ -256,11 +256,11 @@ class Inbound_document_audit extends PS_Controller
       'toDate' => to_date($toDate)
     );
 
-    $title = "รายงาน กระทบเลขที่เอกสารขาเข้า IX-WMS-SAP ";
+    $title = "Report affecting the number of incoming documents IX-WMS-SAP ";
 		$dateTitle = "วันที่ (".thai_date($fromDate, FALSE, '/').") - (".thai_date($toDate, FALSE, '/').")";
-    $docTitle = $allDoc == 1 ? 'ทั้งหมด' : "{$docFrom} - {$docTo}";
-    $roleTitle = $allRole == 1 ? 'ทั้งหมด' : $role_in;
-    $stateTitle = $allState == 1 ? 'ทั้งหมด' : $state_in;
+    $docTitle = $allDoc == 1 ? 'All' : "{$docFrom} - {$docTo}";
+    $roleTitle = $allRole == 1 ? 'All' : $role_in;
+    $stateTitle = $allState == 1 ? 'All' : $state_in;
 
     //--- load excel library
     $this->load->library('excel');
@@ -273,16 +273,16 @@ class Inbound_document_audit extends PS_Controller
     $this->excel->getActiveSheet()->mergeCells('A1:I1');
 		$this->excel->getActiveSheet()->setCellValue('A2', $dateTitle);
     $this->excel->getActiveSheet()->mergeCells('A2:I2');
-    $this->excel->getActiveSheet()->setCellValue('A3', "เลขที่เอกสาร : {$docTitle}");
+    $this->excel->getActiveSheet()->setCellValue('A3', "Document No : {$docTitle}");
     $this->excel->getActiveSheet()->mergeCells('A3:I3');
-    $this->excel->getActiveSheet()->setCellValue('A4', "ประเภทเอกสาร : {$roleTitle}");
+    $this->excel->getActiveSheet()->setCellValue('A4', "Document Type : {$roleTitle}");
     $this->excel->getActiveSheet()->mergeCells('A4:I4');
-    $this->excel->getActiveSheet()->setCellValue('A5', "สถานะเอกสาร : {$stateTitle}");
+    $this->excel->getActiveSheet()->setCellValue('A5', "Document Status : {$stateTitle}");
     $this->excel->getActiveSheet()->mergeCells('A5:I5');
 
     //--- set Table header
-    $this->excel->getActiveSheet()->setCellValue('A6', 'ลำดับ');
-    $this->excel->getActiveSheet()->setCellValue('B6', 'วันที่');
+    $this->excel->getActiveSheet()->setCellValue('A6', 'No');
+    $this->excel->getActiveSheet()->setCellValue('B6', 'Date');
     $this->excel->getActiveSheet()->setCellValue('C6', 'IX');
     $this->excel->getActiveSheet()->setCellValue('D6', 'Type(IX)');
     $this->excel->getActiveSheet()->setCellValue('E6', 'WMS');

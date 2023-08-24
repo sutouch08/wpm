@@ -9,16 +9,18 @@
 <div class="row">
 <div class="col-sm-2 padding-right-0" style="padding-top:15px;">
 <ul id="myTab1" class="setting-tabs">
-  <li class="li-block active"><a href="#general" data-toggle="tab">ทั่วไป</a></li>
-	<li class="li-block"><a href="#company" data-toggle="tab">ข้อมูลบริษัท</a></li>
-	<li class="li-block"><a href="#system" data-toggle="tab">ระบบ</a></li>
-	<li class="li-block"><a href="#inventory" data-toggle="tab">คลังสินค้า</a></li>
-  <li class="li-block"><a href="#order" data-toggle="tab">ออเดอร์</a></li>
-  <li class="li-block"><a href="#document" data-toggle="tab">เลขที่เอกสาร</a></li>
-	<li class="li-block"><a href="#bookcode" data-toggle="tab">เล่มเอกสาร</a></li>
-	<li class="li-block"><a href="#SAP" data-toggle="tab">ข้อมูล SAP</a></li>
-	<li class="li-block"><a href="#WMS" data-toggle="tab">ข้อมูล WMS</a></li>
+  <li class="li-block active"><a href="#general" data-toggle="tab">General</a></li>
+	<li class="li-block"><a href="#company" data-toggle="tab">Company</a></li>
+	<li class="li-block"><a href="#system" data-toggle="tab">System</a></li>
+	<li class="li-block"><a href="#inventory" data-toggle="tab">Inventory</a></li>
+  <li class="li-block"><a href="#order" data-toggle="tab">Orders</a></li>
+  <li class="li-block"><a href="#document" data-toggle="tab">Documents</a></li>
+	<li class="li-block"><a href="#bookcode" data-toggle="tab">Book Code</a></li>
+	<li class="li-block"><a href="#SAP" data-toggle="tab">SAP</a></li>
+	<!--
+	<li class="li-block"><a href="#WMS" data-toggle="tab">WMS</a></li>
 	<li class="li-block"><a href="#chatbot" data-toggle="tab">ข้อมูล CHATBOT</a></li>
+-->
 
 </ul>
 </div>
@@ -47,9 +49,9 @@
 
 <?php $this->load->view('setting/setting_inventory'); ?>
 
-<?php $this->load->view('setting/setting_wms'); ?>
+<?php //$this->load->view('setting/setting_wms'); ?>
 
-<?php $this->load->view('setting/setting_chatbot'); ?>
+<?php //$this->load->view('setting/setting_chatbot'); ?>
 
 
 </div>

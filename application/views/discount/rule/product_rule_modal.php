@@ -4,7 +4,7 @@
     <div class="modal-content">
       <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      <h4 class="modal-title">รุ่นสินค้าที่กำหนด</h4>
+      <h4 class="modal-title">Model</h4>
       </div>
       <div class="modal-body" id="style-list-body">
         <ul style="list-style-type:none;" id="style-list">
@@ -30,7 +30,7 @@
         </ul>
       </div>
       <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

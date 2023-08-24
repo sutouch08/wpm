@@ -6,7 +6,7 @@ class Temp_consignment_goods_issue extends PS_Controller
   public $menu_code = 'TECMGI';
 	public $menu_group_code = 'TE';
   public $menu_sub_group_code = 'TECONSIGNMENT';
-	public $title = 'ตรวจสอบ Goods Issue ฝากขายเทียม';
+	public $title = 'Goods Issue Consignment Temp';
   public $filter;
   public function __construct()
   {

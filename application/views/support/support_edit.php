@@ -10,37 +10,37 @@
   <div class="col-sm-9 col-xs-12 padding-5">
   	<p class="pull-right" style="margin-bottom:1px;">
 			<?php if(empty($approve_view)) : ?>
-			<button type="button" class="btn btn-xs btn-warning top-btn" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
-			<button type="button" class="btn btn-xs btn-default top-btn" onclick="printOrderSheet()"><i class="fa fa-print"></i> พิมพ์</button>
+			<button type="button" class="btn btn-xs btn-warning top-btn" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
+			<button type="button" class="btn btn-xs btn-default top-btn" onclick="printOrderSheet()"><i class="fa fa-print"></i> Print</button>
 			<?php endif; ?>
 
 		<?php if(empty($approve_view)) : ?>
 			<?php if($order->state < 4 && $isAdmin && $order->never_expire == 0) : ?>
-			<button type="button" class="btn btn-xs btn-primary top-btn" onclick="setNotExpire(1)">ยกเว้นการหมดอายุ</button>
+			<button type="button" class="btn btn-xs btn-primary top-btn" onclick="setNotExpire(1)">Skip expiration</button>
 			<?php endif; ?>
 			<?php if($order->state < 4 && $isAdmin && $order->never_expire == 1) : ?>
-				<button type="button" class="btn btn-xs btn-info top-btn" onclick="setNotExpire(0)">ไม่ยกเว้นการหมดอายุ</button>
+				<button type="button" class="btn btn-xs btn-info top-btn" onclick="setNotExpire(0)">Unskip expiration</button>
 			<?php endif; ?>
 			<?php if($isAdmin && $order->is_expired == 1) : ?>
-				<button type="button" class="btn btn-xs btn-warning top-btn" onclick="unExpired()">ทำให้ไม่หมดอายุ</button>
+				<button type="button" class="btn btn-xs btn-warning top-btn" onclick="unExpired()">Rollback expiration</button>
 			<?php endif; ?>
 
 			<?php if(($order->is_wms == 0 && $order->state < 4) OR ($order->is_wms == 1 && $order->state < 3)) : ?>
 				<?php if($order->is_expired == 0 && ($this->pm->can_add OR $this->pm->can_edit)) : ?>
-					<button type="button" class="btn btn-xs btn-yellow top-btn" onclick="editDetail()"><i class="fa fa-pencil"></i> แก้ไขรายการ</button>
+					<button type="button" class="btn btn-xs btn-yellow top-btn" onclick="editDetail()"><i class="fa fa-pencil"></i> Edit items</button>
 				<?php endif; ?>
 			<?php endif; ?>
 
 			<?php if($order->status == 0) : ?>
-				<button type="button" class="btn btn-xs btn-success top-btn" onclick="saveOrder()"><i class="fa fa-save"></i> บันทึก</button>
+				<button type="button" class="btn btn-xs btn-success top-btn" onclick="saveOrder()"><i class="fa fa-save"></i> Save</button>
 			<?php endif; ?>
 		<?php endif; ?>
 
 			<?php if($order->state == 1 && $order->is_approved == 0 && $order->status == 1 && $order->is_expired == 0 && $this->pm->can_approve) : ?>
-					<button type="button" class="btn btn-xs btn-success top-btn" onclick="approve()"><i class="fa fa-check"></i> อนุมัติ</button>
+					<button type="button" class="btn btn-xs btn-success top-btn" onclick="approve()"><i class="fa fa-check"></i> Approve</button>
 			<?php endif; ?>
 			<?php if($order->state == 1 && $order->is_approved == 1 && $order->status == 1 && $order->is_expired == 0 && $this->pm->can_approve) : ?>
-					<button type="button" class="btn btn-xs btn-danger top-btn" onclick="unapprove()"><i class="fa fa-refresh"></i> ไม่อนุมัติ</button>
+					<button type="button" class="btn btn-xs btn-danger top-btn" onclick="unapprove()"><i class="fa fa-refresh"></i> Cancel approval</button>
 			<?php endif; ?>
 			<?php if($this->isAPI && $order->is_wms && $order->status == 1 && $order->is_expired == 0 && $order->state == 3) : ?>
 				<button type="button" class="btn btn-xs btn-success top-btn" onclick="sendToWMS()">Send to WMS</button>
@@ -68,12 +68,12 @@
 		<div class="col-sm-12 text-right padding-5 first last">
 			<?php if($logs->approve == 1) : ?>
 			  <span class="green">
-					อนุมัติโดย :
+					Approved by :
 					<?php echo $logs->approver; ?> @ <?php echo thai_date($logs->date_upd, TRUE); ?>
 				</span>
 			<?php else : ?>
 				<span class="red">
-				ยกเลิกโดย :
+				Cancelled approval by :
 				<?php echo $logs->approver; ?> @ <?php echo thai_date($logs->date_upd, TRUE); ?>
 			  </span>
 			<?php endif; ?>

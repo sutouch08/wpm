@@ -8,7 +8,7 @@
     <div class="col-sm-6">
     	<p class="pull-right">
       <?php if($this->pm->can_add) : ?>
-        <button type="button" class="btn btn-sm btn-success" onclick="addNew()"><i class="fa fa-plus"></i> เพิมใหม่</button>
+        <button type="button" class="btn btn-sm btn-success" onclick="addNew()"><i class="fa fa-plus"></i> Add New</button>
       <?php endif; ?>
       </p>
     </div>
@@ -17,20 +17,20 @@
 <form id="searchForm" method="post" action="<?php echo current_url(); ?>">
 <div class="row">
   <div class="col-sm-2">
-    <label>รหัส</label>
+    <label>Code</label>
     <input type="text" class="width-100" name="code" id="code" value="<?php echo $code; ?>" />
   </div>
 
   <div class="col-sm-2">
-    <label>ชื่อ</label>
+    <label>Name</label>
     <input type="text" class="width-100" name="name" id="name" value="<?php echo $name; ?>" />
   </div>
 
 	<div class="col-sm-2">
-    <label class="display-block not-show">เครดิต</label>
+    <label class="display-block not-show">Credit</label>
     <label>
 			<input type="checkbox" class="ace" id="term-check" <?php echo is_checked(1, $term); ?> onchange="check()"/>
-			<span class="lbl"> เครติต</span>
+			<span class="lbl"> is Credit</span>
 		</label>
   </div>
 
@@ -53,12 +53,12 @@
 		<table class="table table-striped table-bordered table-hover">
 			<thead>
 				<tr>
-					<th class="width-5 middle text-center">ลำดับ</th>
-					<th class="width-15 middle">รหัส</th>
-					<th class="width-30 middle">ชื่อ</th>
-					<th class="width-10 middle text-center">เครติด</th>
+					<th class="width-5 middle text-center">#</th>
+					<th class="width-15 middle">Code</th>
+					<th class="width-30 middle">Name</th>
+					<th class="width-10 middle text-center">isCredit</th>
 					<th class="width-10 middle text-center">Default</th>
-          <th class="width-15 middle">ปรับปรุงล่าสุด</th>
+          <th class="width-15 middle">Last update</th>
 					<th></th>
 				</tr>
 			</thead>

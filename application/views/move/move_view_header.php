@@ -1,16 +1,16 @@
 <div class="row">
   <div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-6 padding-5">
-    <label>เลขที่เอกสาร</label>
+    <label>Doc No.</label>
     <input type="text" class="form-control input-sm text-center" value="<?php echo $doc->code; ?>" disabled />
   </div>
 
   <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
-    <label>วันที่</label>
+    <label>Date</label>
     <input type="text" class="form-control input-sm text-center edit" name="date" id="date" value="<?php echo thai_date($doc->date_add); ?>" readonly required disabled />
   </div>
 
   <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-    <label>คลังต้นทาง</label>
+    <label>From WH.</label>
     <input type="text" class="form-control input-sm" id="from_warehouse_code" value="<?php echo $doc->from_warehouse; ?>" disabled />
   </div>
 
@@ -20,7 +20,7 @@
   </div>
 
   <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-    <label>คลังปลายทาง</label>
+    <label>To WH.</label>
     <input type="text" class="form-control input-sm" id="to_warehouse_code" value="<?php echo $doc->to_warehouse; ?>" disabled />
   </div>
 
@@ -30,11 +30,11 @@
   </div>
 
   <div class="col-lg-9 col-md-9 col-sm-8 col-xs-12 padding-5">
-    <label>หมายเหตุ</label>
+    <label>Remark</label>
     <input type="text" class="form-control input-sm edit" name="remark" id="remark" value="<?php echo $doc->remark; ?>" disabled>
   </div>
   <div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-6 padding-5">
-    <label>สถานะ</label>
+    <label>Status</label>
     <input type="text" class="form-control input-sm text-center" value="<?php echo showStatus($doc->is_expire, $doc->status); ?>" disabled />
   </div>
   <div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-6 padding-5">
@@ -66,7 +66,7 @@ function showStatus($is_expire, $status)
 {
   if($is_expire == 1)
   {
-    return "หมดอายุ";
+    return "Expired";
   }
 
   $text = "Unknow";
@@ -74,16 +74,16 @@ function showStatus($is_expire, $status)
   switch($status)
   {
     case 0 :
-      $text = "ยังไม่บันทึก";
+      $text = "Draft";
       break;
     case 1 :
-      $text = "บันทึกแล้ว";
+      $text = "Saved";
       break;
     case 2 :
-      $text = "ยกเลิก";
+      $text = "Cancelled";
       break;
     case 4 :
-      $text = "รอยืนยัน";
+      $text = "Required Acceptance";
       break;
   }
 

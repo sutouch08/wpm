@@ -132,25 +132,25 @@ function addOrder(){
   var warehouse = $('#warehouse').val();
 
   if(customer_code.length == 0 || customer_name.length == 0){
-    swal('ชื่อผู้รับไม่ถูกต้อง');
+    swal('Invalid requester');
     return false;
   }
 
   if(!isDate(date_add))
   {
-    swal('วันที่ไม่ถูกต้อง');
+    swal('Invalid date');
     console.log('date error');
     return false;
   }
 
   if(empName.length == 0)
   {
-    swal('ชื่อผู้เบิกไม่ถูกต้อง');
+    swal('Invalid receiver');
     return false;
   }
 
   if(warehouse.length == 0){
-    swal('กรุณาเลือกคลัง');
+    swal('Please select warehouse');
     return false;
   }
 
@@ -171,10 +171,10 @@ function validateOrder(){
 
   if(arr.length == 2){
     if(arr[0] !== prefix){
-      swal('Prefix ต้องเป็น '+prefix);
+      swal('Prefix must be '+prefix);
       return false;
     }else if(arr[1].length != (4 + runNo)){
-      swal('Run Number ไม่ถูกต้อง');
+      swal('Run Number is invalid');
       return false;
     }else{
       $.ajax({
@@ -196,7 +196,7 @@ function validateOrder(){
     }
 
   }else{
-    swal('เลขที่เอกสารไม่ถูกต้อง');
+    swal('Invalid document number');
     return false;
   }
 }
@@ -296,13 +296,13 @@ function updateDetailTable(){
 
 function removeDetail(id, name){
 	swal({
-		title: "คุณแน่ใจ ?",
-		text: "ต้องการลบ '" + name + "' หรือไม่ ?",
+		title: "Are you sure ?",
+		text: "Do you want to delete '" + name + "' ?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#DD6B55",
-		confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
 		}, function(){
 			$.ajax({
@@ -447,24 +447,24 @@ function validUpdate(){
 
 	//---- ตรวจสอบวันที่
 	if( ! isDate(date_add) ){
-		swal("วันที่ไม่ถูกต้อง");
+		swal("Invalid date");
 		return false;
 	}
 
 	//--- ตรวจสอบลูกค้า
 	if( customer_code.length == 0 || customer_name == "" ){
-		swal("ชื่อลูกค้าไม่ถูกต้อง");
+		swal("Invalid requester");
 		return false;
 	}
 
   if(user_ref == ""){
-    swal('กรุณาระบุผู้เบิก[ผู้สั่งงาน]');
+    swal('Invalid receiver');
     return false;
   }
 
   if(warehouse.length == 0)
   {
-    swal('กรุณาเลือกคลัง');
+    swal('Please select warehouse');
     return false;
   }
 
@@ -534,31 +534,7 @@ function changeState(){
 		var tracking = $('#tracking').val();
 		var is_wms = $('#is_wms').val();
 		var cancle_reason = $.trim($('#cancle-reason').val());
-
-		if(is_wms) {
-			if(state == 3 && id_address == "") {
-				swal("กรุณาระบุที่อยู่จัดส่ง");
-				return false;
-			}
-
-			if(state == 3 && id_sender == "") {
-				swal("กรุณาระบุผู้จัดส่ง");
-				return false;
-			}
-
-			if($('#sender option:selected').data('tracking') == 1) {
-				if(trackingNo != tracking) {
-					swal("กรุณากดบันทึก Tracking No");
-					return false;
-				}
-
-				if(trackingNo.length === 0) {
-					swal("กรุณาระบุ Tracking No");
-					return false;
-				}
-			}
-		}
-
+		
 		if(state == 9 && cancle_reason == "") {
 			$('#cancle-modal').modal('show');
 			return false;

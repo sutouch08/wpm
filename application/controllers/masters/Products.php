@@ -5,7 +5,7 @@ class Products extends PS_Controller
   public $menu_code = 'DBPROD';
 	public $menu_group_code = 'DB';
   public $menu_sub_group_code = 'PRODUCT';
-	public $title = 'เพิ่ม/แก้ไข รายการสินค้า';
+	public $title = 'Product Model';
   public $error = '';
 	public $wms;
 	public $wms_export_item;
@@ -249,7 +249,7 @@ class Products extends PS_Controller
 
       if($this->product_style_model->is_exists($code))
       {
-        set_error("'".$code."' มีในระบบแล้ว");
+        set_error("'".$code."' already exists");
       }
       else
       {
@@ -268,7 +268,7 @@ class Products extends PS_Controller
         }
         else
         {
-          set_error("เพิ่มข้อมูลไม่สำเร็จ");
+          set_error("Failed to add data");
           $this->session->set_userdata($ds);
           redirect($this->home.'/add_new');
         }
@@ -325,7 +325,7 @@ class Products extends PS_Controller
     }
     else
     {
-      set_error("ไม่พบข้อมูล '".$code."' ในระบบ");
+      set_error("{$code} not exists");
       redirect($this->home);
     }
   }
@@ -378,6 +378,9 @@ class Products extends PS_Controller
 
   public function update_style()
   {
+    print_r($this->input->post());
+
+    exit();
     if($this->input->post('code'))
     {
       $code = $this->input->post('code'); //--- style code
@@ -481,11 +484,11 @@ class Products extends PS_Controller
           }
         }
 
-        set_message('ปรับปรุงเรียบร้อยแล้ว');
+        set_message('Update data successfully');
       }
       else
       {
-        set_error('ปรับปรุงข้อมูลไม่สำเร็จ');
+        set_error('Failed to update data');
       }
 
       redirect($this->home.'/edit/'.$code.'/styleTab');
@@ -493,7 +496,7 @@ class Products extends PS_Controller
     }
     else
     {
-      set_error("ไม่พบข้อมูลสินค้า");
+      set_error("No data found");
       redirect($this->home);
     }
   }
@@ -525,25 +528,25 @@ class Products extends PS_Controller
       if($sc === TRUE && $this->products_model->is_exists($code, $old_code) === TRUE)
       {
         $sc = FALSE;
-        set_error("'".$code."' มีอยู่ในระบบแล้ว โปรดใช้รหัสอื่น");
+        set_error("'".$code."' already exists");
       }
 
       if($sc === TRUE && $this->products_model->is_exists_name($name, $old_name) === TRUE)
       {
         $sc = FALSE;
-        set_error("'".$name."' มีอยู่ในระบบแล้ว โปรดใช้ชื่ออื่น");
+        set_error("'".$name."' already exists");
       }
 
       if($sc === TRUE)
       {
         if($this->products_model->update($old_code, $ds) === TRUE)
         {
-          set_message('ปรับปรุงข้อมูลเรียบร้อยแล้ว');
+          set_message('Update data successfully');
         }
         else
         {
           $sc = FALSE;
-          set_error('ปรับปรุงข้อมูลไม่สำเร็จ');
+          set_error('Failed to update data');
         }
       }
 
@@ -551,7 +554,7 @@ class Products extends PS_Controller
     else
     {
       $sc = FALSE;
-      set_error('ไม่พบข้อมูล');
+      set_error('No data found');
     }
 
     if($sc === FALSE)
@@ -587,13 +590,13 @@ class Products extends PS_Controller
       else
       {
         $sc = FALSE;
-        $this->error = "ไม่พบไซส์";
+        $this->error = "Size not exists";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบรหัสสินค้า";
+      $this->error = "Item Code not found";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -626,13 +629,13 @@ class Products extends PS_Controller
       else
       {
         $sc = FALSE;
-        $this->error = "ไม่พบไซส์";
+        $this->error = "Size not exists";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบรหัสสินค้า";
+      $this->error = "Item Code not found";
     }
 
     if($sc === TRUE)
@@ -962,19 +965,19 @@ class Products extends PS_Controller
         else
         {
           $sc = FALSE;
-          $this->error = "ไม่พบรหัสรุ่นเก่า กรุณาตรวจสอบ";
+          $this->error = "Old code not found please check";
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "ไม่พบข้อมูลรุ่นสินค้า";
+        $this->error = "No data foundรุ่นสินค้า";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบข้อมูลรุ่นสินค้า";
+      $this->error = "Code not found";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -992,19 +995,19 @@ class Products extends PS_Controller
         if(! $this->products_model->delete_item($item))
         {
           $sc = FALSE;
-          $message = "ลบรายการไม่สำเร็จ";
+          $message = "Failed to delete data";
         }
       }
       else
       {
         $sc = FALSE;
-        $message = "ไม่สามารถลบ {$item} ได้ เนื่องจากสินค้ามี Transcetion เกิดขึ้นแล้ว";
+        $message = "{$item} cannot be deleted because the item already has a transcetion.";
       }
     }
     else
     {
       $sc = FALSE;
-      $message = 'ไม่พบข้อมูล';
+      $message = 'No data found';
     }
 
     echo $sc === TRUE ? 'success' : $message;
@@ -1022,7 +1025,7 @@ class Products extends PS_Controller
       if($this->products_model->is_exists_style($style) === TRUE)
       {
         $sc = FALSE;
-        $message = 'ไม่สามารถลบรุ่นสินค้าได้เนื่องจากมีรายการสินค้าที่เชื่อมโยงอยู่';
+        $message = 'The product model could not be deleted because there was a list of associated products.';
       }
       else
       {
@@ -1030,14 +1033,14 @@ class Products extends PS_Controller
         if($rs !== TRUE)
         {
           $sc = FALSE;
-          $message = 'ลบข้อมูลรุ่นสินค้าไม่สำเร็จ';
+          $message = 'Failed to delete data';
         }
       }
     }
     else
     {
       $sc = FALSE;
-      $message = 'ไม่พบข้อมูลสินค้า';
+      $message = 'No data found';
     }
 
     echo $sc === TRUE ? 'success' : $message;
@@ -1183,7 +1186,7 @@ class Products extends PS_Controller
     }
     else
     {
-      echo 'ไม่พบรายการที่ไม่มีบาร์โค้ด';
+      echo 'Items without barcodes were not found.';
     }
   }
 

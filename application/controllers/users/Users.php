@@ -120,13 +120,13 @@ class Users extends PS_Controller{
 			else
 			{
 				$sc = FALSE;
-				$this->error = "ไม่สามารถลบ user ได้ เนื่องจากมี transection ในระบบแล้ว";
+				$this->error = "Unable to delete user because there is already a transection in the system.";
 			}
 		}
 		else
 		{
 			$sc = FALSE;
-			$this->error = "ไม่พบ User ที่ต้องการลบ";
+			$this->error = "The user you want to delete cannot be found.";
 		}
 
 		echo $sc === TRUE ? 'success' : $this->error;
@@ -405,11 +405,11 @@ class Users extends PS_Controller{
 					if($gp->pm)
 					{
 						$this->excel->getActiveSheet()->setCellValue("A{$row}", $gp->name);
-						$this->excel->getActiveSheet()->setCellValue("B{$row}", 'ดู');
-						$this->excel->getActiveSheet()->setCellValue("C{$row}", 'เพิ่ม');
-						$this->excel->getActiveSheet()->setCellValue("D{$row}", 'แก้ไข');
-						$this->excel->getActiveSheet()->setCellValue("E{$row}", 'ลบ');
-						$this->excel->getActiveSheet()->setCellValue("F{$row}", 'อนุมัติ');
+						$this->excel->getActiveSheet()->setCellValue("B{$row}", 'View');
+						$this->excel->getActiveSheet()->setCellValue("C{$row}", 'Add');
+						$this->excel->getActiveSheet()->setCellValue("D{$row}", 'Edit');
+						$this->excel->getActiveSheet()->setCellValue("E{$row}", 'Delete');
+						$this->excel->getActiveSheet()->setCellValue("F{$row}", 'Approve');
 
 
 						$color = array(
@@ -557,11 +557,11 @@ class Users extends PS_Controller{
 					foreach($ds as $rs)
 					{
 						$this->excel->getActiveSheet()->setCellValue("A{$row}", $rs['name']);
-						$this->excel->getActiveSheet()->setCellValue("B{$row}", 'ดู');
-						$this->excel->getActiveSheet()->setCellValue("C{$row}", 'เพิ่ม');
-						$this->excel->getActiveSheet()->setCellValue("D{$row}", 'แก้ไข');
-						$this->excel->getActiveSheet()->setCellValue("E{$row}", 'ลบ');
-						$this->excel->getActiveSheet()->setCellValue("F{$row}", 'อนุมัติ');
+						$this->excel->getActiveSheet()->setCellValue("B{$row}", 'View');
+						$this->excel->getActiveSheet()->setCellValue("C{$row}", 'Add');
+						$this->excel->getActiveSheet()->setCellValue("D{$row}", 'Edit');
+						$this->excel->getActiveSheet()->setCellValue("E{$row}", 'Delete');
+						$this->excel->getActiveSheet()->setCellValue("F{$row}", 'Approve');
 
 
 						$color = array(

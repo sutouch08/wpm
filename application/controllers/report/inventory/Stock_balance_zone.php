@@ -5,7 +5,7 @@ class Stock_balance_zone extends PS_Controller
   public $menu_code = 'RICSBZ';
 	public $menu_group_code = 'RE';
   public $menu_sub_group_code = 'REINVT';
-	public $title = 'รายงานสินค้าคงเหลือ แยกตามโซน (SAP)';
+	public $title = 'Inventory report by zone (SAP)';
   public $filter;
   public $error;
   public function __construct()
@@ -55,9 +55,9 @@ class Stock_balance_zone extends PS_Controller
 
     //---  Report title
     $ds['reportDate'] = thai_date(date('Y-m-d'),FALSE, '/');
-    $ds['whList']   = $allWhouse == 1 ? 'ทั้งหมด' : $wh_list;
-    $ds['zoneList'] = $allZone == 1 ? 'ทั้งหมด' : $zoneCode." - ".$zoneName;
-    $ds['productList']   = $allProduct == 1 ? 'ทั้งหมด' : '('.$pdFrom.') - ('.$pdTo.')';
+    $ds['whList']   = $allWhouse == 1 ? 'All' : $wh_list;
+    $ds['zoneList'] = $allZone == 1 ? 'All' : $zoneCode." - ".$zoneName;
+    $ds['productList']   = $allProduct == 1 ? 'All' : '('.$pdFrom.') - ('.$pdTo.')';
 
     $bs = array();
 
@@ -68,7 +68,7 @@ class Stock_balance_zone extends PS_Controller
       if(count($result) > 2000)
       {
         $sc = FALSE;
-        $this->error = "ข้อมูลมีปริมาณมากเกินกว่าจะแสดงผลได้ กรุณาส่งออกข้อมูลแทนการแสดงผลหน้าจอ";
+        $this->error = "The amount of data is too large to be displayed. Please export data instead of screen display.";
       }
       else
       {
@@ -149,10 +149,10 @@ class Stock_balance_zone extends PS_Controller
     }
 
     //---  Report title
-    $report_title = "รายงานสินค้าคงเหลือแยกตามโซน ณ วันที่ ".date('d/m/Y');
-    $whList = $allWhouse == 1 ? 'ทั้งหมด' : $wh_list;
-    $zoneList = $allZone == 1 ? 'ทั้งหมด' : $zoneCode." - ".$zoneName;
-    $productList  = $allProduct == 1 ? 'ทั้งหมด' : '('.$pdFrom.') - ('.$pdTo.')';
+    $report_title = "Inventory report by zone (SAP) on ".date('d/m/Y');
+    $whList = $allWhouse == 1 ? 'All' : $wh_list;
+    $zoneList = $allZone == 1 ? 'All' : $zoneCode." - ".$zoneName;
+    $productList  = $allProduct == 1 ? 'All' : '('.$pdFrom.') - ('.$pdTo.')';
 
     $bs = array();
 
@@ -167,26 +167,26 @@ class Stock_balance_zone extends PS_Controller
     //--- set report title header
     $this->excel->getActiveSheet()->setCellValue('A1', $report_title);
     $this->excel->getActiveSheet()->mergeCells('A1:G1');
-    $this->excel->getActiveSheet()->setCellValue('A2', 'คลัง');
+    $this->excel->getActiveSheet()->setCellValue('A2', 'Warehouse');
     $this->excel->getActiveSheet()->setCellValue('B2', $whList);
     $this->excel->getActiveSheet()->mergeCells('B2:G2');
-    $this->excel->getActiveSheet()->setCellValue('A3', 'โซน');
+    $this->excel->getActiveSheet()->setCellValue('A3', 'Zone');
     $this->excel->getActiveSheet()->setCellValue('B3', $zoneList);
     $this->excel->getActiveSheet()->mergeCells('B3:G3');
-    $this->excel->getActiveSheet()->setCellValue('A4', 'สินค้า');
+    $this->excel->getActiveSheet()->setCellValue('A4', 'Items');
     $this->excel->getActiveSheet()->setCellValue('B4', $productList);
     $this->excel->getActiveSheet()->mergeCells('B4:G4');
 
     //--- set Table header
-    $this->excel->getActiveSheet()->setCellValue('A5', 'ลำดับ');
-    $this->excel->getActiveSheet()->setCellValue('B5', 'รหัสคลัง');
-    $this->excel->getActiveSheet()->setCellValue('C5', 'รหัสโซน');
-    $this->excel->getActiveSheet()->setCellValue('D5', 'ชื่อโซน');
-    $this->excel->getActiveSheet()->setCellValue('E5', 'รหัสสินค้า');
-    $this->excel->getActiveSheet()->setCellValue('F5', 'ชื่อสินค้า');
-    $this->excel->getActiveSheet()->setCellValue('G5', 'ราคาขาย');
-    $this->excel->getActiveSheet()->setCellValue('H5', 'จำนวน');
-    $this->excel->getActiveSheet()->setCellValue('I5', 'มูลค่า');
+    $this->excel->getActiveSheet()->setCellValue('A5', 'No');
+    $this->excel->getActiveSheet()->setCellValue('B5', 'Warehouse');
+    $this->excel->getActiveSheet()->setCellValue('C5', 'Zone Code');
+    $this->excel->getActiveSheet()->setCellValue('D5', 'Zone name');
+    $this->excel->getActiveSheet()->setCellValue('E5', 'Item Code');
+    $this->excel->getActiveSheet()->setCellValue('F5', 'Description');
+    $this->excel->getActiveSheet()->setCellValue('G5', 'Price');
+    $this->excel->getActiveSheet()->setCellValue('H5', 'Qty');
+    $this->excel->getActiveSheet()->setCellValue('I5', 'Amount');
 
     $row = 6;
     if(!empty($result))
@@ -209,7 +209,7 @@ class Stock_balance_zone extends PS_Controller
       }
 
       $ro = $row - 1;
-      $this->excel->getActiveSheet()->setCellValue('A'.$row, 'รวม');
+      $this->excel->getActiveSheet()->setCellValue('A'.$row, 'Total');
       $this->excel->getActiveSheet()->mergeCells('A'.$row.':G'.$row);
       $this->excel->getActiveSheet()->setCellValue('H'.$row, "=SUM(H6:H{$ro})");
       $this->excel->getActiveSheet()->setCellValue('I'.$row, "=SUM(I6:I{$ro})");

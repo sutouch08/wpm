@@ -190,7 +190,7 @@ function inputQtyInit(){
 
 		if(qty > limit)
 		{
-			swal('โอนได้ไม่เกิน ' + limit);
+			swal('exceeds limit ' + limit);
 			$(this).val(limit);
 		}
 	})
@@ -278,7 +278,7 @@ function getZoneTo(){
 
 				}else{
 
-					swal("ข้อผิดพลาด", rs, "error");
+					swal("Error", rs, "error");
 
 					//---	ลบไอดีโซนปลายทาง
 					$("#to_zone_code").val("");
@@ -324,7 +324,7 @@ $("#barcode-item-to").keyup(function(e) {
 		var transfer_code = $("#transfer_code").val();
 
 		if( zone_code.length == 0 ){
-			swal("กรุณาระบุโซนปลายทาง");
+			swal("Please specify destination");
 			return false;
 		}
 
@@ -335,7 +335,7 @@ $("#barcode-item-to").keyup(function(e) {
 		$(this).val('');
 
 		if( isNaN(curQty) ){
-			swal("สินค้าไม่ถูกต้อง");
+			swal("Invalid product");
 			return false;
 		}
 
@@ -366,12 +366,12 @@ $("#barcode-item-to").keyup(function(e) {
 							$("#qty-to").val(1);
 							$("#barcode-item-to").focus();
 						}else{
-							swal("ข้อผิดพลาด", rs, "error");
+							swal("Error", rs, "error");
 						}
 					}
 				});
 			}else{
-				swal("จำนวนในโซนไม่เพียงพอ");
+				swal("Insufficient balance in the location");
 			}
 		}
 	}
@@ -456,7 +456,7 @@ function getZoneFrom(){
 					getProductInZone();
 
 				}else{
-					swal("ข้อผิดพลาด", rs, "error");
+					swal("Error", rs, "error");
 
 					//---	ลบไอดีโซนต้นทาง
 					$("#from_zone_code").val("");
@@ -495,7 +495,7 @@ $("#barcode-item-from").keyup(function(e) {
 
 		//---	ตรวจสอบว่ายิงบาร์โค้ดโซนมาแล้วหรือยัง
 		if( zone_code.length == 0 ){
-			swal("กรุณาระบุโซนปลายทาง");
+			swal("Please specify destination");
 			return false;
 		}
 
@@ -552,12 +552,12 @@ $("#barcode-item-from").keyup(function(e) {
 
 						}else{
 
-							swal("ข้อผิดพลาด", rs, "error");
+							swal("Error", rs, "error");
 						}
 					}
 				});
 			}else{
-				swal("จำนวนในโซนไม่เพียงพอ");
+				swal("Insufficient balance in the location");
 			}
 		}
 	}

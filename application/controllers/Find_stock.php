@@ -4,7 +4,7 @@ class Find_stock extends PS_Controller
 {
   public $menu_code = 'SOFNST';
 	public $menu_group_code = 'SO';
-	public $title = 'ค้นหาสินค้าคงเหลือ';
+	public $title = 'Available Items';
   public $error = '';
 
   public function __construct()

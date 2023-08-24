@@ -10,55 +10,55 @@ $currency = getConfig('CURRENTCY');
   <div class="col-sm-12">
     <table class="table table-striped table-bordered">
       <tr class="">
-        <td class="width-15 middle text-right"><strong>รหัสกฎ</strong></td>
+        <td class="width-15 middle text-right"><strong>Rule No</strong></td>
         <td class="width-20 middle"><?php echo $rule->code; ?></td>
-        <td class="width-15 middle text-right"><strong>ชื่อกฏ</strong></td>
+        <td class="width-15 middle text-right"><strong>Rule Name</strong></td>
         <td class="width-50 middle" ><?php echo $rule->name; ?></td>
       </tr>
       <tr>
-        <td class="middle text-right"><strong>รหัสนโยบาย</strong></td>
+        <td class="middle text-right"><strong>Policy No</strong></td>
         <td class="middle"><?php echo empty($policy) ? '' : $policy->code; ?></td>
-        <td class="middle text-right"><strong>ชื่อนโยบาย</strong></td>
+        <td class="middle text-right"><strong>Policy Name</strong></td>
         <td class="middle" ><?php echo empty($policy) ? '' : $policy->name; ?></td>
       </tr>
       <tr class="">
-        <td class="middle text-right"><strong>วันที่เพิ่ม</strong></td>
+        <td class="middle text-right"><strong>Created at</strong></td>
         <td class="middle"><?php echo thai_date($rule->date_add); ?></td>
-        <td class="middle text-right"><strong>พนักงาน</strong></td>
+        <td class="middle text-right"><strong>User</strong></td>
         <td class="middle" ><?php echo $this->user_model->get_name($rule->user); ?></td>
       </tr>
       <tr>
-        <td class="middle text-right"><strong>วันที่ปรับปรุง</strong></td>
+        <td class="middle text-right"><strong>Update at</strong></td>
         <td class="middle"><?php echo thai_date($rule->date_upd); ?></td>
-        <td class="middle text-right"><strong>พนักงาน</strong></td>
+        <td class="middle text-right"><strong>User</strong></td>
         <td class="middle" ><?php echo $this->user_model->get_name($rule->update_user); ?></td>
       </tr>
       <tr class="">
-        <td class="middle text-right"><strong>ส่วนลด</strong></td>
+        <td class="middle text-right"><strong>Discount</strong></td>
         <td class="middle">
           <?php echo $rule->item_disc; ?>
           <?php echo ($rule->item_disc_unit == 'amount' ? $currency : '%'); ?>
         </td>
-        <td class="middle text-right"><strong>กำหนดราคา</strong></td>
+        <td class="middle text-right"><strong>Net Price</strong></td>
         <td class="middle"><?php echo ($rule->item_price > 0 ? number($rule->item_price, 2).' '.$currency : 'No'); ?></td>
       </tr>
       <tr>
-        <td class="middle text-right"><strong>จำนวนขั้นต่ำ</strong></td>
+        <td class="middle text-right"><strong>Min - Qty</strong></td>
         <td class="middle"><?php echo ($rule->qty > 0 ? number($rule->qty) : 'No'); ?></td>
-        <td class="middle text-right"><strong>มูลค่าขั้นต่ำ</strong></td>
+        <td class="middle text-right"><strong>Min - Amount</strong></td>
         <td class="middle"><?php echo ($rule->amount > 0 ? number($rule->amount, 2).' '.$currency : 'No'); ?></td>
       </tr>
       <tr>
-        <td class="middle text-right"><strong>รวมยอดได้</strong></td>
+        <td class="middle text-right"><strong>Can group</strong></td>
         <td class="middle"><?php echo $rule->canGroup == 1 ? 'Yes' : 'No'; ?></td>
       </tr>
 
       <tr>
-        <td colspan="4" class="text-center"><strong>ลูกค้า</strong></td>
+        <td colspan="4" class="text-center"><strong>Customer</strong></td>
       </tr>
       <?php if($rule->all_customer == 1) : ?>
       <tr class="">
-        <td class="middle text-right"><strong>ลูกค้า</strong></td>
+        <td class="middle text-right"><strong>Customer</strong></td>
         <td colspan="3"><?php echo 'ทั้งหมด'; ?></td>
       </tr>
       <?php endif; ?>
@@ -67,7 +67,7 @@ $currency = getConfig('CURRENTCY');
       <?php   $qs = $this->discount_rule_model->getCustomerRuleList($id_rule); ?>
       <?php   if($qs->num_rows() > 0) : ?>
         <tr class="">
-          <td class="middle text-right"><strong>รายชื่อลูกค้า</strong></td>
+          <td class="middle text-right"><strong>Customer List</strong></td>
           <td class="middle" colspan="3">
           <?php $i = 1; ?>
         <?php   foreach($qs->result() as $rs) : ?>
@@ -82,7 +82,7 @@ $currency = getConfig('CURRENTCY');
       <?php   $qs = $this->discount_rule_model->getCustomerGroupRule($id_rule); ?>
       <?php   if($qs->num_rows() > 0) : ?>
         <tr class="">
-          <td class="middle text-right"><strong>กลุ่มลูกค้า</strong></td>
+          <td class="middle text-right"><strong>Customer List</strong></td>
           <td class="middle" colspan="3">
           <?php $i = 1; ?>
         <?php   foreach($qs->result() as $rs) : ?>
@@ -98,7 +98,7 @@ $currency = getConfig('CURRENTCY');
       <?php   $qs = $this->discount_rule_model->getCustomerTypeRule($id_rule); ?>
       <?php   if($qs->num_rows() > 0) : ?>
         <tr class="">
-          <td class="middle text-right"><strong>ชนิดลูกค้า</strong></td>
+          <td class="middle text-right"><strong>Type</strong></td>
           <td class="middle" colspan="3">
           <?php $i = 1; ?>
         <?php   foreach($qs->result() as $rs) : ?>
@@ -113,7 +113,7 @@ $currency = getConfig('CURRENTCY');
       <?php   $qs = $this->discount_rule_model->getCustomerKindRule($id_rule); ?>
       <?php   if($qs->num_rows() > 0) : ?>
         <tr class="">
-          <td class="middle text-right"><strong>ประเภทลูกค้า</strong></td>
+          <td class="middle text-right"><strong>Kind</strong></td>
           <td class="middle" colspan="3">
           <?php $i = 1; ?>
         <?php   foreach($qs->result() as $rs) : ?>
@@ -128,7 +128,7 @@ $currency = getConfig('CURRENTCY');
       <?php   $qs = $this->discount_rule_model->getCustomerAreaRule($id_rule); ?>
       <?php   if($qs->num_rows() > 0) : ?>
         <tr class="">
-          <td class="middle text-right"><strong>เขตลูกค้า</strong></td>
+          <td class="middle text-right"><strong>Region</strong></td>
           <td class="middle" colspan="3">
           <?php $i = 1; ?>
         <?php   foreach($qs->result() as $rs) : ?>
@@ -143,7 +143,7 @@ $currency = getConfig('CURRENTCY');
       <?php   $qs = $this->discount_rule_model->getCustomerClassRule($id_rule); ?>
       <?php   if($qs->num_rows() > 0) : ?>
         <tr class="">
-          <td class="middle text-right"><strong>เกรดลูกค้า</strong></td>
+          <td class="middle text-right"><strong>Grade</strong></td>
           <td class="middle" colspan="3">
           <?php $i = 1; ?>
         <?php   foreach($qs->result() as $rs) : ?>
@@ -156,11 +156,11 @@ $currency = getConfig('CURRENTCY');
       <!---------- จบเกรดลูกค้า ----------->
       <?php endif; ?>
       <tr>
-        <td colspan="4" class="text-center"><strong>สินค้า</strong></td>
+        <td colspan="4" class="text-center"><strong>Products</strong></td>
       </tr>
       <?php if($rule->all_product == 1) : ?>
       <tr class="">
-        <td class="middle text-right"><strong>สิ้นค้าทั้งหมด</strong></td>
+        <td class="middle text-right"><strong>All Products</strong></td>
         <td colspan="3"><?php echo 'Yes'; ?></td>
       </tr>
       <?php endif; ?>
@@ -170,7 +170,7 @@ $currency = getConfig('CURRENTCY');
       <?php   $qs = $this->discount_rule_model->getProductStyleRule($id_rule); ?>
       <?php   if($qs->num_rows() > 0) : ?>
         <tr class="">
-          <td class="middle text-right"><strong>รุ่นสินค้า</strong></td>
+          <td class="middle text-right"><strong>Model</strong></td>
           <td class="middle" colspan="3">
           <?php $i = 1; ?>
         <?php   foreach($qs->result() as $rs) : ?>
@@ -186,7 +186,7 @@ $currency = getConfig('CURRENTCY');
       <?php   $qs = $this->discount_rule_model->getProductGroupRule($id_rule); ?>
       <?php   if($qs->num_rows() > 0) : ?>
         <tr class="">
-          <td class="middle text-right"><strong>กลุ่มสินค้า</strong></td>
+          <td class="middle text-right"><strong>Group</strong></td>
           <td class="middle" colspan="3">
           <?php $i = 1; ?>
         <?php   foreach($qs->result() as $rs) : ?>
@@ -201,7 +201,7 @@ $currency = getConfig('CURRENTCY');
       <?php   $qs = $this->discount_rule_model->getProductSubGroupRule($id_rule); ?>
       <?php   if($qs->num_rows() > 0) : ?>
         <tr class="">
-          <td class="middle text-right"><strong>กลุ่มย่อยสินค้า</strong></td>
+          <td class="middle text-right"><strong>Sub Group</strong></td>
           <td class="middle" colspan="3">
           <?php $i = 1; ?>
         <?php   foreach($qs->result() as $rs) : ?>
@@ -216,7 +216,7 @@ $currency = getConfig('CURRENTCY');
       <?php   $qs = $this->discount_rule_model->getProductTypeRule($id_rule); ?>
       <?php   if($qs->num_rows() > 0) : ?>
         <tr class="">
-          <td class="middle text-right"><strong>ชนิดสินค้า</strong></td>
+          <td class="middle text-right"><strong>Type</strong></td>
           <td class="middle" colspan="3">
           <?php $i = 1; ?>
         <?php   foreach($qs->result() as $rs) : ?>
@@ -231,7 +231,7 @@ $currency = getConfig('CURRENTCY');
       <?php   $qs = $this->discount_rule_model->getProductKindRule($id_rule); ?>
       <?php   if($qs->num_rows() > 0) : ?>
         <tr class="">
-          <td class="middle text-right"><strong>ประเภทสินค้า</strong></td>
+          <td class="middle text-right"><strong>Kind</strong></td>
           <td class="middle" colspan="3">
           <?php $i = 1; ?>
         <?php   foreach($qs->result() as $rs) : ?>
@@ -246,7 +246,7 @@ $currency = getConfig('CURRENTCY');
       <?php   $qs = $this->discount_rule_model->getProductCategoryRule($id_rule); ?>
       <?php   if($qs->num_rows() > 0) : ?>
         <tr class="">
-          <td class="middle text-right"><strong>หมวดหมู่สินค้า</strong></td>
+          <td class="middle text-right"><strong>Category</strong></td>
           <td class="middle" colspan="3">
           <?php $i = 1; ?>
         <?php   foreach($qs->result() as $rs) : ?>
@@ -261,7 +261,7 @@ $currency = getConfig('CURRENTCY');
       <?php   $qs = $this->discount_rule_model->getProductBrandRule($id_rule); ?>
       <?php   if($qs->num_rows() > 0) : ?>
         <tr class="">
-          <td class="middle text-right"><strong>ยี่ห้อสินค้า</strong></td>
+          <td class="middle text-right"><strong>Brand</strong></td>
           <td class="middle" colspan="3">
           <?php $i = 1; ?>
         <?php   foreach($qs->result() as $rs) : ?>
@@ -276,7 +276,7 @@ $currency = getConfig('CURRENTCY');
       <?php   $qs = $this->discount_rule_model->getProductYearRule($id_rule); ?>
       <?php   if($qs->num_rows() > 0) : ?>
         <tr class="">
-          <td class="middle text-right"><strong>ปีสินค้า</strong></td>
+          <td class="middle text-right"><strong>Year</strong></td>
           <td class="middle" colspan="3">
           <?php $i = 1; ?>
         <?php   foreach($qs->result() as $rs) : ?>
@@ -291,13 +291,13 @@ $currency = getConfig('CURRENTCY');
     <?php endif; ?>
 
     <tr>
-      <td colspan="4" class="text-center"><strong>ช่องทางการขายและการชำระเงิน</strong></td>
+      <td colspan="4" class="text-center"><strong>Sales channels and payments</strong></td>
     </tr>
     <tr class="">
-      <td class="middle text-right"><strong>ช่องทางขาย</strong></td>
+      <td class="middle text-right"><strong>Sales channels</strong></td>
       <td colspan="3">
         <?php if($rule->all_channels == 1) : ?>
-            ทั้งหมด
+            All
         <?php else : ?>
           <?php $qs = $this->discount_rule_model->getChannelsRule($id_rule); ?>
           <?php if($qs->num_rows() > 0) : ?>
@@ -311,10 +311,10 @@ $currency = getConfig('CURRENTCY');
       </td>
     </tr>
     <tr class="">
-      <td class="middle text-right"><strong>การชำระเงิน</strong></td>
+      <td class="middle text-right"><strong>Payments</strong></td>
       <td colspan="3">
         <?php if($rule->all_payment == 1) : ?>
-            ทั้งหมด
+            All
         <?php else : ?>
           <?php $qs = $this->discount_rule_model->getPaymentRule($id_rule); ?>
           <?php if($qs->num_rows() > 0) : ?>

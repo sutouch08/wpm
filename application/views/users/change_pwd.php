@@ -37,7 +37,7 @@
   </div>
 
 	<div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">รหัสผ่านปัจจุบัน</label>
+    <label class="col-sm-3 control-label no-padding-right">Current Password</label>
     <div class="col-xs-12 col-sm-3">
 			<span class="input-icon input-icon-right width-100">
         <input type="password" name="cu-pwd" id="cu-pwd" class="width-100" autofocus />
@@ -48,7 +48,7 @@
   </div>
 
   <div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">รหัสผ่านใหม่</label>
+    <label class="col-sm-3 control-label no-padding-right">New password</label>
     <div class="col-xs-12 col-sm-3">
 			<span class="input-icon input-icon-right width-100">
         <input type="password" name="pwd" id="pwd" class="width-100" />
@@ -59,7 +59,7 @@
   </div>
 
 	<div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">ยืนยันรหัสผ่านใหม่</label>
+    <label class="col-sm-3 control-label no-padding-right">Confirm password</label>
     <div class="col-xs-12 col-sm-3">
 			<span class="input-icon input-icon-right width-100">
         <input type="password" name="cm-pwd" id="cm-pwd" class="width-100" required />
@@ -76,7 +76,7 @@
     <label class="col-sm-3 control-label no-padding-right"></label>
     <div class="col-xs-12 col-sm-3">
       <p class="pull-right">
-        <button type="button" class="btn btn-sm btn-success" onclick="changePassword()"><i class="fa fa-save"></i> เปลี่ยนรหัสผ่าน</button>
+        <button type="button" class="btn btn-sm btn-success" onclick="changePassword()"><i class="fa fa-save"></i> Change password</button>
       </p>
     </div>
     <div class="help-block col-xs-12 col-sm-reset inline">
@@ -120,7 +120,7 @@
     <label class="col-sm-3 control-label no-padding-right"></label>
     <div class="col-xs-12 col-sm-3">
       <p class="pull-right">
-        <button type="button" class="btn btn-sm btn-success" onclick="change_skey()"><i class="fa fa-save"></i> เปลี่ยนรหัสลับ</button>
+        <button type="button" class="btn btn-sm btn-success" onclick="change_skey()"><i class="fa fa-save"></i> Change PIN</button>
       </p>
     </div>
     <div class="help-block col-xs-12 col-sm-reset inline">

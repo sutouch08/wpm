@@ -5,7 +5,7 @@ class Receive_po_by_doc extends PS_Controller
   public $menu_code = 'RPURPO';
 	public $menu_group_code = 'RE';
   public $menu_sub_group_code = 'REPO';
-	public $title = 'รายงาน การรับสินค้าแยกตามเอกสาร';
+	public $title = 'Goods Receipt Report by Document';
   public $filter;
   public function __construct()
   {
@@ -180,11 +180,11 @@ class Receive_po_by_doc extends PS_Controller
       $invoiceFrom = $sp;
     }
 
-    $title = "รายงาน การรับสินค้า แยกตามเลขที่เอกสาร วันที่ (".thai_date($fromDate, FALSE, '/').") - (".thai_date($toDate, FALSE, '/').")";
-    $document = $allDoc == 1 ? 'ทั้งหมด' : "{$docFrom} - {$docTo}";
-    $vendor = $allVendor == 1 ? 'ทั้งหมด' : "{$vendorFrom} - {$vendorTo}";
-    $po = $allPO == 1 ? 'ทั้งหมด' : "{$poFrom} - {$poTo}";
-    $invoice = $allInvoice == 1 ? 'ทั้งหมด' : "{$invoiceFrom} - {$invoiceTo}";
+    $title = "Goods Receipt Report by Document on (".thai_date($fromDate, FALSE, '/').") - (".thai_date($toDate, FALSE, '/').")";
+    $document = $allDoc == 1 ? 'All' : "{$docFrom} - {$docTo}";
+    $vendor = $allVendor == 1 ? 'All' : "{$vendorFrom} - {$vendorTo}";
+    $po = $allPO == 1 ? 'All' : "{$poFrom} - {$poTo}";
+    $invoice = $allInvoice == 1 ? 'All' : "{$invoiceFrom} - {$invoiceTo}";
 
     $arr = array(
       'allDoc' => $allDoc,
@@ -214,25 +214,25 @@ class Receive_po_by_doc extends PS_Controller
     //--- set report title header
     $this->excel->getActiveSheet()->setCellValue('A1', $title);
     $this->excel->getActiveSheet()->mergeCells('A1:I1');
-    $this->excel->getActiveSheet()->setCellValue('A2', "เลขที่เอกสาร : {$document}");
+    $this->excel->getActiveSheet()->setCellValue('A2', "Document No : {$document}");
     $this->excel->getActiveSheet()->mergeCells('A2:I2');
-    $this->excel->getActiveSheet()->setCellValue('A3', "รหัสผู้ขาย : {$vendor}");
+    $this->excel->getActiveSheet()->setCellValue('A3', "Vendor : {$vendor}");
     $this->excel->getActiveSheet()->mergeCells('A3:I3');
-    $this->excel->getActiveSheet()->setCellValue('A4', "ใบสั่งซื้อ : {$po}");
+    $this->excel->getActiveSheet()->setCellValue('A4', "PO : {$po}");
     $this->excel->getActiveSheet()->mergeCells('A4:I4');
-    $this->excel->getActiveSheet()->setCellValue('A5', "ใบส่งของ : {$invoice}");
+    $this->excel->getActiveSheet()->setCellValue('A5', "Invoice : {$invoice}");
     $this->excel->getActiveSheet()->mergeCells('A5:I5');
 
     //--- set Table header
-    $this->excel->getActiveSheet()->setCellValue('A6', 'ลำดับ');
-    $this->excel->getActiveSheet()->setCellValue('B6', 'วันที่');
-    $this->excel->getActiveSheet()->setCellValue('C6', 'เลขที่เอกสาร');
-    $this->excel->getActiveSheet()->setCellValue('D6', 'ใบสั่งซื้อ');
-    $this->excel->getActiveSheet()->setCellValue('E6', 'ใบส่งของ');
+    $this->excel->getActiveSheet()->setCellValue('A6', 'No');
+    $this->excel->getActiveSheet()->setCellValue('B6', 'Date');
+    $this->excel->getActiveSheet()->setCellValue('C6', 'Document No');
+    $this->excel->getActiveSheet()->setCellValue('D6', 'PO No');
+    $this->excel->getActiveSheet()->setCellValue('E6', 'Invoice');
     $this->excel->getActiveSheet()->setCellValue('F6', 'SAP No.');
-    $this->excel->getActiveSheet()->setCellValue('G6', 'ผู้ขาย');
-    $this->excel->getActiveSheet()->setCellValue('H6', 'จำนวน');
-    $this->excel->getActiveSheet()->setCellValue('I6', 'มูลค่า');
+    $this->excel->getActiveSheet()->setCellValue('G6', 'Vendor');
+    $this->excel->getActiveSheet()->setCellValue('H6', 'Qty');
+    $this->excel->getActiveSheet()->setCellValue('I6', 'Amount');
 
     $row = 7;
     if(!empty($result))
@@ -259,7 +259,7 @@ class Receive_po_by_doc extends PS_Controller
 
 
 
-      $this->excel->getActiveSheet()->setCellValue('A'.$row, 'รวม');
+      $this->excel->getActiveSheet()->setCellValue('A'.$row, 'Total');
       $this->excel->getActiveSheet()->mergeCells('A'.$row.':G'.$row);
       $this->excel->getActiveSheet()->setCellValue('H'.$row, $totalQty);
       $this->excel->getActiveSheet()->setCellValue('I'.$row, $totalAmount);
@@ -273,7 +273,7 @@ class Receive_po_by_doc extends PS_Controller
     }
 
     setToken($token);
-    $file_name = "รายงานการรับสินค้าแยกตามเอกสาร.xlsx";
+    $file_name = "Goods Receipt Report by Document.xlsx";
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); /// form excel 2007 XLSX
     header('Content-Disposition: attachment;filename="'.$file_name.'"');
     $writer = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');

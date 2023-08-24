@@ -6,7 +6,7 @@ class Temp_transfer extends PS_Controller
   public $menu_code = 'TETRCK';
 	public $menu_group_code = 'TE';
   public $menu_sub_group_code = 'TETRANSFER';
-	public $title = 'ตรวจสอบ WW-WQ-MV-WL';
+	public $title = 'Transfer WW-WQ-MV-WL';
   public $filter;
 
   public function __construct()
@@ -64,7 +64,7 @@ class Temp_transfer extends PS_Controller
 				{
 					$code = $rs->U_ECOMNO;
 				}
-				
+
         $rs->onhand = $this->stock_model->get_stock_zone($rs->F_FROM_BIN, $rs->ItemCode);
       }
     }

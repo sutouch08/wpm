@@ -6,7 +6,7 @@ class Temp_receive_po extends PS_Controller
   public $menu_code = 'TERCCK';
 	public $menu_group_code = 'TE';
   public $menu_sub_group_code = 'TERECEIPT';
-	public $title = 'ตรวจสอบ รับเข้า-ถังกลาง';
+	public $title = 'Goods Receipt PO';
   public $filter;
   public function __construct()
   {

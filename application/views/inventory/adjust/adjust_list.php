@@ -1,57 +1,57 @@
 <?php $this->load->view('include/header'); ?>
 <div class="row">
-	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 padding-5">
-    <h3 class="title">
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
+    <h3 class="title title-xs">
       <?php echo $this->title; ?>
     </h3>
   </div>
-	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 padding-5">
-			<p class="pull-right top-p">
-			<?php if($this->pm->can_add) : ?>
-				<button type="button" class="btn btn-sm btn-success" onclick="goAdd()"><i class="fa fa-plus"></i> เพิ่มใหม่</button>
-			<?php endif; ?>
-			</p>
-		</div>
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
+		<p class="pull-right top-p">
+		<?php if($this->pm->can_add) : ?>
+			<button type="button" class="btn btn-sm btn-success" onclick="goAdd()"><i class="fa fa-plus"></i> New</button>
+		<?php endif; ?>
+		</p>
+	</div>
 </div><!-- End Row -->
 <hr class="padding-5"/>
 <form id="searchForm" method="post" action="<?php echo current_url(); ?>">
 <div class="row">
   <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>เลขที่เอกสาร</label>
+    <label>Doc No.</label>
     <input type="text" class="form-control input-sm search" name="code"  value="<?php echo $code; ?>" />
   </div>
 
   <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>อ้างถึง</label>
+    <label>Reference</label>
     <input type="text" class="form-control input-sm search" name="reference" value="<?php echo $reference; ?>" />
   </div>
 
   <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>พนักงาน</label>
+    <label>User</label>
     <input type="text" class="form-control input-sm search" name="user" value="<?php echo $user; ?>" />
   </div>
 
 	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-		<label>การอนุมัติ</label>
+		<label>Approval</label>
 		<select class="form-control input-sm" name="isApprove" onchange="getSearch()">
-			<option value="all">ทั้งหมด</option>
-			<option value="0" <?php echo is_selected($isApprove, "0"); ?>>รออนุมัติ</option>
-			<option value="1" <?php echo is_selected($isApprove, "1"); ?>>อนุมัติแล้ว</option>
+			<option value="all">All</option>
+			<option value="0" <?php echo is_selected($isApprove, "0"); ?>>Pending</option>
+			<option value="1" <?php echo is_selected($isApprove, "1"); ?>>Approved</option>
 		</select>
 	</div>
 
 	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>สถานะ</label>
+    <label>Status</label>
 		<select class="form-control input-sm" name="status" onchange="getSearch()">
-			<option value="all" <?php echo is_selected($status, 'all'); ?>>ทั้งหมด</option>
-			<option value="0" <?php echo is_selected($status, '0'); ?>>ยังไม่บันทึก</option>
-      <option value="1" <?php echo is_selected($status, '1'); ?>>บันทึกแล้ว</option>
-      <option value="2" <?php echo is_selected($status, '2'); ?>>ยกเลิก</option>
+			<option value="all" <?php echo is_selected($status, 'all'); ?>>All</option>
+			<option value="0" <?php echo is_selected($status, '0'); ?>>Draft</option>
+      <option value="1" <?php echo is_selected($status, '1'); ?>>Saved</option>
+      <option value="2" <?php echo is_selected($status, '2'); ?>>Cancelled</option>
 		</select>
   </div>
 
 	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>วันที่</label>
+    <label>Date</label>
     <div class="input-daterange input-group">
       <input type="text" class="form-control input-sm width-50 text-center from-date" name="from_date" id="fromDate" value="<?php echo $from_date; ?>" />
       <input type="text" class="form-control input-sm width-50 text-center" name="to_date" id="toDate" value="<?php echo $to_date; ?>" />
@@ -61,9 +61,9 @@
 	<div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-6 padding-5">
 		<label>SAP</label>
 		<select name="sap" class="form-control input-sm" onchange="getSearch()">
-			<option value="all">ทั้งหมด</option>
-			<option value="0" <?php echo is_selected('0', $sap); ?>>ยังไม่เข้า</option>
-			<option value="1" <?php echo is_selected('1', $sap); ?>>เข้าแล้ว</option>
+			<option value="all">All</option>
+			<option value="0" <?php echo is_selected('0', $sap); ?>>NO</option>
+			<option value="1" <?php echo is_selected('1', $sap); ?>>YES</option>
 		</select>
 	</div>
 
@@ -91,14 +91,14 @@
     <table class="table table-striped border-1">
       <thead>
         <tr>
-          <th class="fix-width-50 text-center">ลำดับ</th>
-          <th class="fix-width-100 text-center">วันที่</th>
-          <th class="fix-width-120">เลขที่เอกสาร</th>
-          <th class="fix-width-150">อ้างถึง</th>
-          <th class="fix-width-150">พนักงาน</th>
-          <th class="max-width-200">หมายเหตุ</th>
-          <th class="fix-width-50 text-center">สถานะ</th>
-					<th class="fix-width-50 text-center">อนุมัติ</th>
+          <th class="fix-width-50 text-center">#</th>
+          <th class="fix-width-100 text-center">Date</th>
+          <th class="fix-width-120">Document No.</th>
+          <th class="fix-width-150">Reference</th>
+          <th class="fix-width-150">User</th>
+          <th class="max-width-200">Remark</th>
+          <th class="fix-width-50 text-center">Status</th>
+					<th class="fix-width-50 text-center">Approval</th>
 					<th class="fix-width-100"></th>
         </tr>
       </thead>
@@ -161,7 +161,7 @@
 <?php endforeach; ?>
 <?php else : ?>
       <tr>
-        <td colspan="9" class="text-center"><h4>ไม่พบรายการ</h4></td>
+        <td colspan="9" class="text-center"><h4>Not found</h4></td>
       </tr>
 <?php endif; ?>
       </tbody>
@@ -169,7 +169,7 @@
   </div>
 </div>
 
-<script src="<?php echo base_url(); ?>scripts/inventory/adjust/adjust.js"></script>
-<script src="<?php echo base_url(); ?>scripts/inventory/adjust/adjust_list.js"></script>
+<script src="<?php echo base_url(); ?>scripts/inventory/adjust/adjust.js?v=<?php echo date('Ymd'); ?>"></script>
+<script src="<?php echo base_url(); ?>scripts/inventory/adjust/adjust_list.js<?php echo date('Ymd'); ?>"></script>
 
 <?php $this->load->view('include/footer'); ?>

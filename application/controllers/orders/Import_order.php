@@ -14,7 +14,6 @@ class Import_order extends CI_Controller
     parent::__construct();
     $this->ms = $this->load->database('ms', TRUE); //--- SAP database
     $this->mc = $this->load->database('mc', TRUE); //--- Temp Database
-		$this->wms = $this->load->database('wms', TRUE);
 
     $uid = get_cookie('uid');
 
@@ -33,8 +32,6 @@ class Import_order extends CI_Controller
     $this->load->model('stock/stock_model');
 
     $this->load->library('excel');
-
-		$this->isAPI = is_true(getConfig('WMS_API'));
 
   }
 
@@ -57,7 +54,6 @@ class Import_order extends CI_Controller
 			);
 
 			$this->load->library("upload", $config);
-			$this->load->library("wms_order_api");
 
 			if(! $this->upload->do_upload($file))
       {
@@ -115,12 +111,6 @@ class Import_order extends CI_Controller
 
 					//--- คลังสินค้า
 					$warehouse_code = getConfig('WEB_SITE_WAREHOUSE_CODE');
-          $chatbot_warehouse_code = getConfig('CHATBOT_WAREHOUSE_CODE');
-          $this->sync_chatbot_stock = getConfig('SYNC_CHATBOT_STOCK') == 1 ? TRUE : FALSE; //--- sync stock chatbot
-					$sync_items = array(); //--- ไว้เก็บรหัสสินค้าที่จะต้อง sync ตอนแรกอาจจะมีรหัสซ้ำ แต่จะทำให้ไม่ซ้ำก่อนแล้วค่อยไปดึงสต็อกแล้วใส่ไว้ใน sync_stock อีกที
-					$wh = $this->warehouse_model->get($warehouse_code);
-
-					$is_wms = empty($wh) ? 0 : $wh->is_wms;
 
           //---- กำหนดช่องทางขายสำหรับเว็บไซต์ เพราะมีลูกค้าแยกตามช่องทางการชำระเงินอีกที
           //---- เลยต้องกำหนดลูกค้าแยกตามช่องทางการชำระเงินต่างๆ สำหรับเว็บไซต์เท่านั้น
@@ -140,6 +130,9 @@ class Import_order extends CI_Controller
           $prefix = getConfig('PREFIX_SHIPPING_NUMBER');
 
           $shipping_item_code = getConfig('SHIPPING_ITEM_CODE');
+
+          $DocCur = getConfig('CURRENCY');
+          $DocRate = 1.0;
 
           $shipping_item = !empty($shipping_item_code) ? $this->products_model->get($shipping_item_code) : NULL;
 
@@ -193,7 +186,7 @@ class Import_order extends CI_Controller
 								'V' => 'Remark',
 								'W' => 'Carrier',
 								'X' => 'Warehouse code',
-								'Y' => 'Country'                
+								'Y' => 'Country'
               );
 
               foreach($headCol as $col => $field)
@@ -218,7 +211,9 @@ class Import_order extends CI_Controller
 							{
 								//--- check ref_code exists
 	              $date = PHPExcel_Style_NumberFormat::toFormattedString($rs['J'], 'YYYY-MM-DD');
-	              $date_add = db_date($date, TRUE);
+                $date = date('Y-m-d', strtotime($date));
+                $Y = date('Y', strtotime($date));
+	              $date_add = $Y == 1970 ? now() : db_date($date, TRUE);
 
 	              //---- order code from web site
 	              $ref_code = $rs['I'];
@@ -263,28 +258,6 @@ class Import_order extends CI_Controller
 
               if(empty($order_code) OR ($order_code != $orderCode))
               {
-								if($this->isAPI && $isWMS == 1 && !empty($orderCode) && $hold === FALSE)
-								{
-									if(!$this->wms_order_api->export_order($orderCode))
-									{
-										$arr = array(
-											'wms_export' => 3,
-											'wms_export_error' => $this->wms_order_api->error
-										);
-
-										$this->orders_model->update($orderCode, $arr);
-									}
-									else
-									{
-										$arr = array(
-											'wms_export' => 1,
-											'wms_export_error' => NULL
-										);
-
-										$this->orders_model->update($orderCode, $arr);
-									}
-								}
-
 								if(empty($order_code))
 								{
 									$order_code = $this->get_new_code($date_add);
@@ -369,6 +342,8 @@ class Import_order extends CI_Controller
                     'code' => $order_code,
                     'role' => $role,
                     'bookcode' => $bookcode,
+                    'DocCur' => $DocCur,
+                    'DocRate' => $DocRate,
                     'reference' => $ref_code,
                     'customer_code' => $customer_code,
                     'customer_ref' => $customer_ref,
@@ -386,7 +361,7 @@ class Import_order extends CI_Controller
                     'user' => $this->_user->uname,
                     'is_import' => 1,
 										'remark' => $remark,
-										'is_wms' => (!empty($xWh) ? $xWh->is_wms : $is_wms),
+										'is_wms' => 0,
 										'id_sender' => empty($rs['W']) ? NULL : $this->sender_model->get_id($rs['W'])
                   );
 
@@ -395,7 +370,6 @@ class Import_order extends CI_Controller
                   {
 										$orderCode = $order_code;
 										$hold = $state === 3 ? FALSE : TRUE;
-                    $isWMS = (!empty($xWh) ? $xWh->is_wms : $is_wms);
 
                     $arr = array(
                       'order_code' => $order_code,
@@ -433,12 +407,13 @@ class Import_order extends CI_Controller
                   else
                   {
                     $sc = FALSE;
-                    $message = $ref_code.': เพิ่มออเดอร์ไม่สำเร็จ';
+                    $message = $ref_code.': Add order failed.';
                   }
                 }
                 else
                 {
                   $order = $this->orders_model->get($order_code);
+
                   if($order->state <= 3)
                   {
                     //--- เตรียมข้อมูลสำหรับเพิ่มเอกสารใหม่
@@ -468,13 +443,13 @@ class Import_order extends CI_Controller
               if(empty($item))
               {
                 $sc = FALSE;
-                $message = 'ไม่พบข้อมูลสินค้าในระบบ : '.$rs['M'];
+                $message = 'Product code not found : '.$rs['M'];
                 break;
               }
               else if($item->active != 1)
               {
                 $sc = FALSE;
-                $message = 'สินค้าถูก Disactive : '.$rs['M'];
+                $message = 'Product Inactive : '.$rs['M'];
                 break;
               }
 
@@ -508,6 +483,8 @@ class Import_order extends CI_Controller
                   "style_code"		=> $item->style_code,
                   "product_code"	=> $item->code,
                   "product_name"	=> $item->name,
+                  "currency" => $DocCur,
+                  "rate" => $DocRate,
                   "cost"  => $item->cost,
                   "price"	=> $price,
                   "qty"		=> $qty,
@@ -516,6 +493,7 @@ class Import_order extends CI_Controller
                   "discount3" => 0,
                   "discount_amount" => $discount_amount,
                   "total_amount"	=> round($total_amount,2),
+                  "totalFrgn" => round($total_amount, 2),
                   "id_rule"	=> NULL,
                   "is_count" => $item->count_stock,
                   "is_import" => 1
@@ -524,20 +502,9 @@ class Import_order extends CI_Controller
                 if( $this->orders_model->add_detail($arr) === FALSE )
                 {
                   $sc = FALSE;
-                  $message = 'เพิ่มรายละเอียดรายการไม่สำเร็จ : '.$ref_code;
+                  $message = 'Add items failed : '.$ref_code;
                   break;
                 }
-								else
-								{
-									if($this->sync_chatbot_stock && ($warehouse_code == $chatbot_warehouse_code))
-									{
-										if($item->count_stock && $item->is_api)
-										{
-											$sync_items[] = $item->code;
-										}
-									}
-								}
-
               }
               else
               {
@@ -550,6 +517,8 @@ class Import_order extends CI_Controller
                     "style_code"		=> $item->style_code,
                     "product_code"	=> $item->code,
                     "product_name"	=> $item->name,
+                    "currency" => $DocCur,
+                    "rate" => $DocRate,
                     "cost"  => $item->cost,
                     "price"	=> $price,
                     "qty"		=> $qty,
@@ -558,6 +527,7 @@ class Import_order extends CI_Controller
                     "discount3" => 0,
                     "discount_amount" => $discount_amount,
                     "total_amount"	=> round($total_amount,2),
+                    "totalFrgn" => round($total_amount, 2),
                     "id_rule"	=> NULL,
                     "is_count" => $item->count_stock,
                     "is_import" => 1
@@ -566,19 +536,9 @@ class Import_order extends CI_Controller
                   if($this->orders_model->update_detail($od->id, $arr) === FALSE)
                   {
                     $sc = FALSE;
-                    $message = 'เพิ่มรายละเอียดรายการไม่สำเร็จ : '.$ref_code;
+                    $message = 'Add items failed : '.$ref_code;
                     break;
                   }
-									else
-									{
-										if($this->sync_chatbot_stock && ($warehouse_code == $chatbot_warehouse_code))
-										{
-											if($item->count_stock && $item->is_api)
-											{
-												$sync_items[] = $item->code;
-											}
-										}
-									}
                 } //--- enf force update
               } //--- end if exists detail
 
@@ -592,6 +552,7 @@ class Import_order extends CI_Controller
                 if($shipping_added != $order_code )
                 {
                   $shipping_exists = $this->orders_model->is_exists_detail($order_code, $shipping_item->code);
+
                   if($shipping_exists === FALSE)
                   {
                     //--- ถ้ายังไม่มีรายการอยู่ เพิ่มใหม่
@@ -600,6 +561,8 @@ class Import_order extends CI_Controller
                       "style_code"		=> $shipping_item->style_code,
                       "product_code"	=> $shipping_item->code,
                       "product_name"	=> $shipping_item->name,
+                      "currency" => $DocCur,
+                      "rate" => $DocRate,
                       "cost"  => $shipping_item->cost,
                       "price"	=> $shipping_fee,
                       "qty"		=> 1,
@@ -608,6 +571,7 @@ class Import_order extends CI_Controller
                       "discount3" => 0,
                       "discount_amount" => 0,
                       "total_amount"	=> $shipping_fee,
+                      "totalFrgn" => $shipping_fee,
                       "id_rule"	=> NULL,
                       "is_count" => $shipping_item->count_stock,
                       "is_import" => 1
@@ -616,7 +580,7 @@ class Import_order extends CI_Controller
                     if( $this->orders_model->add_detail($arr) === FALSE )
                     {
                       $sc = FALSE;
-                      $message = 'เพิ่มรายการ รายได้ค่าจัดส่ง ไม่สำเร็จ : '.$ref_code;
+                      $message = 'Add item Shipping fee Failed : '.$ref_code;
                       break;
                     }
                     else
@@ -636,7 +600,7 @@ class Import_order extends CI_Controller
                       if($this->orders_model->update_detail($od->id, $arr) === FALSE)
                       {
                         $sc = FALSE;
-                        $message = 'update ค่าจัดส่ง ไม่สำเร็จ : '.$ref_code;
+                        $message = 'Failed to update shipping fee : '.$ref_code;
                         break;
                       }
                       else
@@ -656,42 +620,11 @@ class Import_order extends CI_Controller
 
           } //--- end foreach
 
-					if($this->isAPI && $isWMS == 1 && !empty($orderCode) && $hold === FALSE)
-					{
-						if(!$this->wms_order_api->export_order($orderCode))
-						{
-							$arr = array(
-								'wms_export' => 3,
-								'wms_export_error' => $this->wms_order_api->error
-							);
-
-							$this->orders_model->update($orderCode, $arr);
-						}
-						else
-						{
-							$arr = array(
-								'wms_export' => 1,
-								'wms_export_error' => NULL
-							);
-
-							$this->orders_model->update($orderCode, $arr);
-						}
-					}
-
-					//--- sync chatbot stock
-					if($this->sync_chatbot_stock && ($warehouse_code == $chatbot_warehouse_code))
-					{
-						if(!empty($sync_items))
-						{
-							$sync_stock = array_unique($sync_items);
-							$this->update_chatbot_stock($sync_stock);
-						}
-					}
         }
         else
         {
           $sc = FALSE;
-          $message = "ไฟล์มีจำนวนรายการเกิน {$limit} บรรทัด";
+          $message = "The file has exceeded {$limit} line entries.";
         }
     } //-- end import success
 
@@ -705,16 +638,6 @@ class Import_order extends CI_Controller
     $reserv_stock = $this->orders_model->get_reserv_stock($item_code, $warehouse, $zone);
     $availableStock = $sell_stock - $reserv_stock;
 		return $availableStock < 0 ? 0 : $availableStock;
-  }
-
-	public function update_chatbot_stock(array $ds = array())
-  {
-    if($this->sync_chatbot_stock && !empty($ds))
-    {
-			$this->logs = $this->load->database('logs', TRUE);
-      $this->load->library('chatbot_api');
-      $this->chatbot_api->sync_stock($ds);
-    }
   }
 
 

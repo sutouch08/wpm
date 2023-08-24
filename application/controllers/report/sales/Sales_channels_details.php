@@ -5,7 +5,7 @@ class Sales_channels_details extends PS_Controller
   public $menu_code = 'RSOCDS';
 	public $menu_group_code = 'RE';
   public $menu_sub_group_code = 'RESALE';
-	public $title = 'รายงานออเดอร์ออนไลน์แสดงรายละเอียดการจัดส่ง(ไม่ใช่ยอดขาย)';
+	public $title = 'The online orders report shows delivery details (not sales).';
   public $filter;
   public function __construct()
   {
@@ -64,9 +64,9 @@ class Sales_channels_details extends PS_Controller
     }
 
     //---  Report title
-    $report_title = 'รายงาน ออเดอร์ออนไลน์ แสดงรายละเอียดการจัดส่ง วันที่ ' . thai_date($fromDate,'/') .' ถึง '.thai_date($toDate, '/');
-    $channels_title = 'ช่องทางการขาย : '.($allChannels == 1 ? 'ทั้งหมด' : $ch_title);
-    $pd_title     = 'สินค้า :  '. ($allProduct == 1 ? 'ทั้งหมด' : '('.$pdFrom.') - ('.$pdTo.')');
+    $report_title = 'The online orders report shows delivery details (not sales) on ' . thai_date($fromDate,'/') .' ถึง '.thai_date($toDate, '/');
+    $channels_title = 'Channels : '.($allChannels == 1 ? 'All' : $ch_title);
+    $pd_title     = 'Items :  '. ($allProduct == 1 ? 'All' : '('.$pdFrom.') - ('.$pdTo.')');
 
     //--- load excel library
     $this->load->library('excel');
@@ -81,34 +81,34 @@ class Sales_channels_details extends PS_Controller
     $this->excel->getActiveSheet()->mergeCells('A2:G2');
     $this->excel->getActiveSheet()->setCellValue('A3', $pd_title);
     $this->excel->getActiveSheet()->mergeCells('A3:G3');
-    $this->excel->getActiveSheet()->setCellValue('A4', 'วันที่เอกสาร : ('.thai_date($fromDate,'/') .') - ('.thai_date($toDate,'/').')');
+    $this->excel->getActiveSheet()->setCellValue('A4', 'Date : ('.thai_date($fromDate,'/') .') - ('.thai_date($toDate,'/').')');
     $this->excel->getActiveSheet()->mergeCells('A4:G4');
 
     //--- set Table header
 
 
-    $this->excel->getActiveSheet()->setCellValue('A5', 'ลำดับ');
-    $this->excel->getActiveSheet()->setCellValue('B5', 'วันที่');
-    $this->excel->getActiveSheet()->setCellValue('C5', 'เอกสาร');
-    $this->excel->getActiveSheet()->setCellValue('D5', 'อ้างอิง');
-    $this->excel->getActiveSheet()->setCellValue('E5', 'เลขที่จัดส่ง');
-    $this->excel->getActiveSheet()->setCellValue('F5', 'ชื่อลูกค้า');
-    $this->excel->getActiveSheet()->setCellValue('G5', 'ที่อยู่บรรทัด 1');
-    $this->excel->getActiveSheet()->setCellValue('H5', 'ที่อยู่บรรทัด 2');
-    $this->excel->getActiveSheet()->setCellValue('I5', 'อำเภอ');
-    $this->excel->getActiveSheet()->setCellValue('J5', 'จังหวัด');
-    $this->excel->getActiveSheet()->setCellValue('K5', 'รหัสไปรษณีย์');
-    $this->excel->getActiveSheet()->setCellValue('L5', 'เบอร์โทรศัพท์');
-    $this->excel->getActiveSheet()->setCellValue('M5', 'ช่องทางขาย');
-    $this->excel->getActiveSheet()->setCellValue('N5', 'ช่องทางการชำระเงิน');
-    $this->excel->getActiveSheet()->setCellValue('O5', 'สินค้า');
-    $this->excel->getActiveSheet()->setCellValue('P5', 'ราคา');
-    $this->excel->getActiveSheet()->setCellValue('Q5', 'จำนวน');
-    $this->excel->getActiveSheet()->setCellValue('R5', 'ส่วนลด');
-    $this->excel->getActiveSheet()->setCellValue('S5', 'มูลค่า');
-    $this->excel->getActiveSheet()->setCellValue('T5', 'ค่าจัดส่ง');
-    $this->excel->getActiveSheet()->setCellValue('U5', 'ค่าบริการ');
-    $this->excel->getActiveSheet()->setCellValue('V5', 'สถานะ');
+    $this->excel->getActiveSheet()->setCellValue('A5', 'No');
+    $this->excel->getActiveSheet()->setCellValue('B5', 'Date');
+    $this->excel->getActiveSheet()->setCellValue('C5', 'Document');
+    $this->excel->getActiveSheet()->setCellValue('D5', 'Reference');
+    $this->excel->getActiveSheet()->setCellValue('E5', 'Shipping No');
+    $this->excel->getActiveSheet()->setCellValue('F5', 'Customer');
+    $this->excel->getActiveSheet()->setCellValue('G5', 'Address 1');
+    $this->excel->getActiveSheet()->setCellValue('H5', 'Address 2');
+    $this->excel->getActiveSheet()->setCellValue('I5', 'District');
+    $this->excel->getActiveSheet()->setCellValue('J5', 'Province');
+    $this->excel->getActiveSheet()->setCellValue('K5', 'Post code');
+    $this->excel->getActiveSheet()->setCellValue('L5', 'Phone No');
+    $this->excel->getActiveSheet()->setCellValue('M5', 'Channels');
+    $this->excel->getActiveSheet()->setCellValue('N5', 'Payments');
+    $this->excel->getActiveSheet()->setCellValue('O5', 'Item');
+    $this->excel->getActiveSheet()->setCellValue('P5', 'Price');
+    $this->excel->getActiveSheet()->setCellValue('Q5', 'Qty');
+    $this->excel->getActiveSheet()->setCellValue('R5', 'Discount');
+    $this->excel->getActiveSheet()->setCellValue('S5', 'Amount');
+    $this->excel->getActiveSheet()->setCellValue('T5', 'Shipping fee');
+    $this->excel->getActiveSheet()->setCellValue('U5', 'Service fee');
+    $this->excel->getActiveSheet()->setCellValue('V5', 'Status');
 
     //---- กำหนดความกว้างของคอลัมภ์
     $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth(15);

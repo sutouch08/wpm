@@ -13,7 +13,7 @@
 <form class="form-horizontal" id="addForm" method="post" action="<?php echo $this->home."/add"; ?>">
 
 	<div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">รหัส</label>
+    <label class="col-sm-3 control-label no-padding-right">Code</label>
     <div class="col-xs-12 col-sm-3">
       <input type="text" name="code" id="code" class="width-100" value="<?php echo $code; ?>" autofocus required />
     </div>
@@ -23,7 +23,7 @@
 
 
   <div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">ชื่อ</label>
+    <label class="col-sm-3 control-label no-padding-right">Name</label>
     <div class="col-xs-12 col-sm-3">
 			<input type="text" name="name" id="name" class="width-100" value="<?php echo $name; ?>" required />
     </div>

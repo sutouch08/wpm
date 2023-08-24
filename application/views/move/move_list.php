@@ -9,7 +9,7 @@
   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
   	<p class="pull-right top-p">
     <?php if($this->pm->can_add) : ?>
-      <button type="button" class="btn btn-sm0 btn-success btn-top" onclick="addNew()"><i class="fa fa-plus"></i> เพิมใหม่</button>
+      <button type="button" class="btn btn-sm btn-success btn-top" onclick="addNew()"><i class="fa fa-plus"></i> New</button>
     <?php endif; ?>
     </p>
   </div>
@@ -18,57 +18,57 @@
 <form id="searchForm" method="post" action="<?php echo current_url(); ?>">
 <div class="row">
   <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>เลขที่เอกสาร</label>
+    <label>Doc No</label>
     <input type="text" class="form-control input-sm search" name="code"  value="<?php echo $code; ?>" />
   </div>
 
   <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>คลังต้นทาง</label>
+    <label>From WH</label>
     <input type="text" class="form-control input-sm search" name="from_warehouse" value="<?php echo $from_warehouse; ?>" />
   </div>
 
 	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>คลังปลายทาง</label>
+    <label>To WH</label>
     <input type="text" class="form-control input-sm search" name="to_warehouse" value="<?php echo $to_warehouse; ?>" />
   </div>
 
 	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
-    <label>พนักงาน</label>
+    <label>User</label>
     <input type="text" class="form-control input-sm search" name="user" value="<?php echo $user; ?>" />
   </div>
 
 	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-		<label>การยืนยัน</label>
+		<label>Acceptance</label>
 		<select class="form-control input-sm" name="must_accept" onchange="getSearch()">
-			<option value="all">ทั้งหมด</option>
-			<option value="1" <?php echo is_selected('1', $must_accept); ?>>ต้องยืนยัน</option>
-			<option value="0" <?php echo is_selected('0', $must_accept); ?>>ไม่ต้องยืนยัน</option>
+			<option value="all">All</option>
+			<option value="1" <?php echo is_selected('1', $must_accept); ?>>Required</option>
+			<option value="0" <?php echo is_selected('0', $must_accept); ?>>No required</option>
 		</select>
 	</div>
 
 	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-    <label>สถานะ</label>
+    <label>Status</label>
     <select class="form-control input-sm" name="status" onchange="getSearch()">
-			<option value="all">ทั้งหมด</option>
-			<option value="0" <?php echo is_selected('0', $status); ?>>ยังไม่บันทึก</option>
-			<option value="1" <?php echo is_selected('1', $status); ?>>บันทึกแล้ว</option>
-			<option value="2" <?php echo is_selected('2', $status); ?>>ยกเลิก</option>
-			<option value="4" <?php echo is_selected('4', $status); ?>>รอยืนยัน</option>
-			<option value="5" <?php echo is_selected('5', $status); ?>>หมดอายุ</option>
+			<option value="all">All</option>
+			<option value="0" <?php echo is_selected('0', $status); ?>>Draft</option>
+			<option value="1" <?php echo is_selected('1', $status); ?>>Saved</option>
+			<option value="2" <?php echo is_selected('2', $status); ?>>Cancelled</option>
+			<option value="4" <?php echo is_selected('4', $status); ?>>Required acceptacnen</option>
+			<option value="5" <?php echo is_selected('5', $status); ?>>Expired</option>
 		</select>
   </div>
 
 	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
     <label>SAP</label>
     <select class="form-control input-sm" name="is_export" onchange="getSearch()">
-			<option value="all">ทั้งหมด</option>
-			<option value="0" <?php echo is_selected("0", $is_export); ?>>ยังไม่ส่ง</option>
-			<option value="1" <?php echo is_selected('1', $is_export); ?>>ส่งออกแล้ว</option>
+			<option value="all">All</option>
+			<option value="0" <?php echo is_selected("0", $is_export); ?>>Not yet</option>
+			<option value="1" <?php echo is_selected('1', $is_export); ?>>Exported</option>
 		</select>
   </div>
 
 	<div class="col-lg-2 col-md-2-harf col-sm-3 col-xs-6 padding-5">
-    <label>วันที่</label>
+    <label>Date</label>
     <div class="input-group">
       <input type="text" class="form-control input-sm width-50 from-date" name="fromDate" id="fromDate" value="<?php echo $from_date; ?>" />
       <input type="text" class="form-control input-sm width-50" name="toDate" id="toDate" value="<?php echo $to_date; ?>" />
@@ -91,23 +91,23 @@
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5 table-responsive">
 		<p  class="pull-right top-p">
-			ว่างๆ = ปกติ, &nbsp;
-			<span class="blue">NC</span> = ยังไม่บันทึก, &nbsp;
-			<span class="orange">WC</span> = รอการยืนยัน, &nbsp;
-			<span class="red">CN</span> = ยกเลิก, &nbsp;
-			<span class="dark">EXP</span> = หมดอายุ &nbsp;
+			Empty = Normal, &nbsp;
+			<span class="blue">NC</span> = Draft, &nbsp;
+			<span class="orange">WC</span> = Waiting for acceptance, &nbsp;
+			<span class="red">CN</span> = Cancelled, &nbsp;
+			<span class="dark">EXP</span> = Expired &nbsp;
 		</p>
 		<table class="table table-striped table-hover border-1" style="min-width:970px;">
 			<thead>
 				<tr>
 					<th class="fix-width-120 middle"></th>
-					<th class="fix-width-40 middle">สถานะ</th>
-					<th class="fix-width-40 middle text-center">ลำดับ</th>
-					<th class="fix-width-100 middle text-center">วันที่</th>
-					<th class="fix-width-120 middle">เลขที่เอกสาร</th>
-					<th class="min-width-200 middle">ต้นทาง</th>
-					<th class="min-width-200 middle">ปลายทาง</th>
-					<th class="min-width-100 middle">พนักงาน</th>
+					<th class="fix-width-40 middle">Status</th>
+					<th class="fix-width-40 middle text-center">#</th>
+					<th class="fix-width-100 middle text-center">Date</th>
+					<th class="fix-width-120 middle">Document No</th>
+					<th class="min-width-200 middle">From Warehouse</th>
+					<th class="min-width-200 middle">To Warehouse</th>
+					<th class="min-width-100 middle">User</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -171,7 +171,6 @@
 					$('#row-'+code).remove();
 					swal({
 						title:'Success',
-						text:'ส่งข้อมูลไป SAP เรียบร้อยแล้ว',
 						type:'success',
 						timer:1000
 					});

@@ -31,24 +31,24 @@
 	</div>
   <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12 padding-5">
     	<p class="pull-right top-p">
-				<button type="button" class="btn btn-xs btn-warning top-btn" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+				<button type="button" class="btn btn-xs btn-warning top-btn" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
 				<?php if($doc->status == 4 && ($accept_user OR $canAccept)) : ?>
-					<button type="button" class="btn btn-xs btn-success top-btn" onclick="accept()"><i class="fa fa-check-circle"></i> ยืนยันการรับสินค้า</button>
+					<button type="button" class="btn btn-xs btn-success top-btn" onclick="accept()"><i class="fa fa-check-circle"></i> Accept transfer</button>
 				<?php endif; ?>
 		    <?php if($doc->status == 1) : ?>
 					<?php if($doc->is_wms == 0) : ?>
-					<button type="button" class="btn btn-xs btn-danger top-btn" onclick="unSave()"><i class="fa fa-exclamation-triangle"></i> ยกเลิกการบันทึก</button>
+					<button type="button" class="btn btn-xs btn-danger top-btn" onclick="unSave()"><i class="fa fa-exclamation-triangle"></i> Unsave</button>
 					<?php endif; ?>
-		      <button type="button" class="btn btn-xs btn-info top-btn" onclick="doExport()"><i class="fa fa-send"></i> ส่งข้อมูลไป SAP</button>
+		      <button type="button" class="btn btn-xs btn-info top-btn" onclick="doExport()"><i class="fa fa-send"></i> Send to SAP</button>
 		    <?php endif; ?>
 				<?php if($this->isAPI && $doc->is_wms == 1 && $doc->api == 1 && $doc->is_expire == 0 && ($doc->status == 3 OR $this->_SuperAdmin)) : ?>
 					<button type="button" class="btn btn-xs btn-success top-btn" onclick="sendToWms()"><i class="fa fa-send"></i> Send to WMS</button>
 				<?php endif; ?>
 				<?php if($doc->status == 0 && $doc->must_approve == 1 && $doc->is_approve == 0 && ($this->pm->can_approve OR $this->_SuperAdmin)) : ?>
-					<button type="button" class="btn btn-xs btn-success top-btn" onclick="doApprove()"><i class="fa fa-check-circle"></i> อนุมัติ</button>
-					<button type="button" class="btn btn-xs btn-danger top-btn" onclick="doReject()"><i class="fa fa-times-circle"></i> ไม่อนุมัติ</button>
+					<button type="button" class="btn btn-xs btn-success top-btn" onclick="doApprove()"><i class="fa fa-check-circle"></i> Approve</button>
+					<button type="button" class="btn btn-xs btn-danger top-btn" onclick="doReject()"><i class="fa fa-times-circle"></i> Reject</button>
 				<?php endif; ?>
-				<button type="button" class="btn btn-xs btn-primary top-btn" onclick="printTransfer()"><i class="fa fa-print"></i> ใบโอน</button>
+				<button type="button" class="btn btn-xs btn-primary top-btn" onclick="printTransfer()"><i class="fa fa-print"></i> Print</button>
 				<?php if($doc->is_wms == 1) : ?>
 				<button type="button" class="btn btn-xs btn-primary top-btn" onclick="printWmsTransfer()"><i class="fa fa-print"></i> ใบส่งของ</button>
 				<?php endif; ?>

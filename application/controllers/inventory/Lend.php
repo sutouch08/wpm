@@ -6,7 +6,7 @@ class Lend extends PS_Controller
   public $menu_code = 'ICLEND';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'REQUEST';
-	public $title = 'เบิกยืมสินค้า';
+	public $title = 'Lend product';
   public $filter;
   public $error;
 	public $isAPI;
@@ -136,6 +136,8 @@ class Lend extends PS_Controller
 			$this->load->model('masters/warehouse_model');
 
       $book_code = getConfig('BOOK_CODE_LEND');
+      $DocCur = getConfig('CURRENCY');
+      $DocRate = 1.00;
       $date_add = db_date($this->input->post('date'));
 
       if($this->input->post('code'))
@@ -157,6 +159,8 @@ class Lend extends PS_Controller
         'code' => $code,
         'role' => $role,
         'bookcode' => $book_code,
+        'DocCur' => $DocCur,
+        'DocRate' => $DocRate,
         'customer_code' => NULL,
         'user' => $this->_user->uname,
         'user_ref' => $this->input->post('user_ref'),
@@ -182,13 +186,13 @@ class Lend extends PS_Controller
       }
       else
       {
-        set_error('เพิ่มเอกสารไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+        set_error('Failed to add document Please try again.');
         redirect($this->home.'/add_new');
       }
     }
     else
     {
-      set_error('ไม่พบข้อมูลลูกค้า กรุณาตรวจสอบ');
+      set_error('Customer not found.');
       redirect($this->home.'/add_new');
     }
   }
@@ -273,20 +277,20 @@ class Lend extends PS_Controller
         if(! $this->orders_model->update($code, $ds))
         {
           $sc = FALSE;
-          $this->error = "ปรับปรุงข้อมูลไม่สำเร็จ";
+          $this->error = "Update failed.";
         }
 
       }
       else
       {
         $sc = FALSE;
-        $this->error = "เลขที่เอกสารไม่ถูกต้อง : {$code}";
+        $this->error = "Invalid document number : {$code}";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = 'ไม่พบเลขที่เอกสาร';
+      $this->error = 'Document number not found.';
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -322,7 +326,7 @@ class Lend extends PS_Controller
       if($rs === FALSE)
       {
         $sc = FALSE;
-        $message = 'บันทึกออเดอร์ไม่สำเร็จ';
+        $message = 'Failed to save document';
       }
     }
 
@@ -360,7 +364,7 @@ class Lend extends PS_Controller
     $code = $this->input->post('order_code');
     $option = $this->input->post('option');
     $rs = $this->orders_model->set_never_expire($code, $option);
-    echo $rs === TRUE ? 'success' : 'ทำรายการไม่สำเร็จ';
+    echo $rs === TRUE ? 'success' : 'Update failed.';
   }
 
 
@@ -368,7 +372,7 @@ class Lend extends PS_Controller
   {
     $code = $this->input->post('order_code');
     $rs = $this->orders_model->un_expired($code);
-    echo $rs === TRUE ? 'success' : 'ทำรายการไม่สำเร็จ';
+    echo $rs === TRUE ? 'success' : 'Update failed.';
   }
 
   public function clear_filter()

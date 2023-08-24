@@ -22,10 +22,10 @@ function getValidate() {
 
   if(arr.length == 2){
     if(arr[0] !== prefix){
-      swal('Prefix ต้องเป็น '+prefix);
+      swal('Prefix must be '+prefix);
       return false;
     }else if(arr[1].length != (4 + runNo)){
-      swal('Run Number ไม่ถูกต้อง');
+      swal('Run Number is invalid');
       return false;
     }else{
       $.ajax({
@@ -48,7 +48,7 @@ function getValidate() {
 
   }
   else {
-    swal('เลขที่เอกสารไม่ถูกต้อง');
+    swal('Invalid document number');
     return false;
   }
 }
@@ -80,32 +80,32 @@ function addTransfer() {
   //--- ตรวจสอบวันที่
   if( ! isDate(date_add))
   {
-    swal('วันที่ไม่ถูกต้อง');
+    swal('Invaid date');
     return false;
   }
 
   //--- ตรวจสอบคลังต้นทาง
   if(from_warehouse.length == 0 || from_warehouse_code == ''){
-    swal('คลังต้นทางไม่ถูกต้อง');
+    swal('Invalid source warehouse');
     return false;
   }
 
   //--- ตรวจสอบคลังปลายทาง
   if(to_warehouse_code == '' || to_warehouse.length == 0){
-    swal('คลังปลายทางไม่ถูกต้อง');
+    swal('Invalid destination warehouse');
     return false;
   }
 
   //--- ตรวจสอบว่าเป็นคนละคลังกันหรือไม่ (ต้องเป็นคนละคลังกัน)
   if( from_warehouse_code == to_warehouse_code) {
-    swal('คลังต้นทางต้องไม่ตรงกับคลังปลายทาง');
+    swal('Source and destination warehouse cannot be the same');
     return false;
   }
 
   if(reqRemark && remark.length < 10) {
     swal({
       title: 'Required',
-      text: "กรุณาระบุหมายเหตุอย่างน้อย 10 ตัวอักษร",
+      text: "Please specify at least 10 characters.",
       type:'warning'
     });
 
@@ -176,31 +176,31 @@ function update(){
 
   //--- ตรวจสอบไอดี
   if(code == ''){
-    swal('Error !', 'ไม่พบเลขที่เอกสาร', 'error');
+    swal('Error !', 'Document number not found', 'error');
     return false;
   }
 
   //--- ตรวจสอบวันที่
   if( ! isDate(date_add)){
-    swal('วันที่ไม่ถูกต้อง');
+    swal('Invalid date');
     return false;
   }
 
   //--- ตรวจสอบคลังต้นทาง
   if(from_warehouse == ''){
-    swal('กรุณาเลือกคลังต้นทาง');
+    swal('Please select warehouse');
     return false;
   }
 
   //--- ตรวจสอบคลังปลายทาง
   if(to_warehouse == ''){
-    swal('กรุณาเลือกคลังปลายทาง');
+    swal('Please select warehouse');
     return false;
   }
 
   //--- ตรวจสอบว่าเป็นคนละคลังกันหรือไม่ (ต้องเป็นคนละคลังกัน)
   if( from_warehouse == to_warehouse){
-    swal('คลังต้นทางต้องไม่ตรงกับคลังปลายทาง');
+    swal('Source and destination warehouse cannot be the same');
     return false;
   }
 
@@ -218,7 +218,7 @@ function update(){
         {
           swal({
             title:'Warning !',
-            text:'มีการทำรายการแล้วไม่สามารถเปลี่ยนคลังได้',
+            text:'The transaction has been made and cannot change the warehouse.',
             type:'warning'
           });
 
@@ -310,7 +310,7 @@ function save(){
       else{
         swal({
           title:'ข้อผิดพลาด !',
-          text:'พบรายการที่ยังไม่โอนเข้าปลายทาง กรุณาตรวจสอบ',
+          text:'Found an item that has not been transferred to the destination, please check.',
           type:'error'
         });
       }
@@ -335,7 +335,6 @@ function saveTransfer(code)
         if(ds.status == 'success') {
           swal({
             title:'Saved',
-            text: 'บันทึกเอกสารเรียบร้อยแล้ว',
             type:'success',
             timer:1000
           });
@@ -377,13 +376,13 @@ function saveTransfer(code)
 function unSave(){
   var code = $('#transfer_code').val();
   swal({
-		title: 'คำเตือน !!',
-		text: 'หากต้องการยกเลิกการบันทึก คุณต้องยกเลิกเอกสารนี้ใน SAP ก่อน ต้องการยกเลิกการบันทึก '+ code +' หรือไม่ ?',
+		title: 'Warning !!',
+		text: 'To cancel recording You must cancel this document in SAP first. Do you want to cancel the '+ code +' ?',
 		type: 'warning',
 		showCancelButton: true,
 		comfirmButtonColor: '#DD6855',
-		confirmButtonText: 'ใช่ ฉันต้องการ',
-		cancelButtonText: 'ไม่ใช่',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
 	}, function(){
 		$.ajax({
@@ -395,7 +394,6 @@ function unSave(){
 				if( rs == 'success' ){
 					swal({
 						title:'Success',
-						text: 'ดำเนินการเรียบร้อยแล้ว',
 						type: 'success',
 						timer: 1000
 					});
@@ -405,7 +403,7 @@ function unSave(){
 					}, 1200);
 
 				}else{
-					swal("ข้อผิดพลาด", rs, "error");
+					swal("Error!", rs, "error");
 				}
 			}
 		});

@@ -15,9 +15,9 @@
   </div>
   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
     <p class="pull-right top-p">
-			<button type="button" class="btn btn-sm btn-warning" onclick="leave()"><i class="fa fa-arrow-left"></i> กลับ</button>
+			<button type="button" class="btn btn-sm btn-warning" onclick="leave()"><i class="fa fa-arrow-left"></i> Back</button>
 			<?php if($this->pm->can_add) : ?>
-			<button type="button" class="btn btn-sm btn-success" onclick="getValidate()"><i class="fa fa-save"></i> บันทึก</button>
+			<button type="button" class="btn btn-sm btn-success" onclick="getValidate()"><i class="fa fa-save"></i> Save</button>
 			<?php	endif; ?>
     </p>
   </div>
@@ -27,7 +27,7 @@
 <form id="addForm">
 <div class="row">
 	<div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-3 padding-5">
-		<label>เลขที่เอกสาร</label>
+		<label>Doc No.</label>
 	<?php if($manual_code == 1) : ?>
 		<input type="text" class="form-control input-sm" name="code" id="code" value="" />
 	<?php else : ?>
@@ -35,67 +35,67 @@
 	<?php endif; ?>
 	</div>
 	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-3 padding-5">
-  	<label>วันที่</label>
+  	<label>Date</label>
     <input type="text" class="form-control input-sm text-center" name="date_add" id="dateAdd" value="<?php echo date('d-m-Y'); ?>" readonly />
   </div>
 	<div class="col-lg-3 col-md-3-harf col-sm-3-harf col-xs-6 padding-5">
-		<label>ผู้ยืม</label>
-		<input type="text" class="form-control input-sm edit" name="empName" id="empName" value="" placeholder="ชื่อผู้ยืม(พนักงาน)" required/>
+		<label>Borrower(Emp)</label>
+		<input type="text" class="form-control input-sm edit" name="empName" id="empName" value="" placeholder="" required/>
 	</div>
 	<div class="col-lg-6 col-md-5 col-sm-5 col-xs-12 padding-5">
-  	<label>หมายเหตุ</label>
-    <input type="text" class="form-control input-sm" name="remark" id="remark" placeholder="ระบุหมายเหตุเอกสาร (ถ้ามี)" />
+  	<label>Remark</label>
+    <input type="text" class="form-control input-sm" name="remark" id="remark" placeholder="" />
   </div>
 
 	<div class="divider-hidden"></div>
 
 	<div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-4 padding-5">
-		<label>ใบยืมสินค้า</label>
-		<input type="text" class="form-control input-sm text-center" name="lend_code" id="lend_code" value="" placeholder="ระบุเลขที่ใบยืมสินค้า" required>
+		<label>Lend code</label>
+		<input type="text" class="form-control input-sm text-center" name="lend_code" id="lend_code" value="" placeholder="" required>
 	</div>
 	<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-3 padding-5">
 		<label class="display-block not-show">doc</label>
-		<button type="button" class="btn btn-xs btn-success btn-block" id="btn-set-code" onclick="load_lend_details()">ดึงข้อมูล</button>
-		<button type="button" class="btn btn-xs btn-primary btn-block hide" id="btn-change-code" onclick="change_lend_code()">เปลี่ยน</button>
+		<button type="button" class="btn btn-xs btn-success btn-block" id="btn-set-code" onclick="load_lend_details()">Submit</button>
+		<button type="button" class="btn btn-xs btn-primary btn-block hide" id="btn-change-code" onclick="change_lend_code()">Change</button>
 	</div>
 	<div class="col-lg-2 col-md-2-harf col-sm-2-harf col-xs-5 padding-5">
-		<label>รหัสโซน</label>
+		<label>Bin Location</label>
 		<input type="text" class="form-control input-sm" name="zone_code" id="zone_code" value="" required />
 	</div>
 	<div class="col-lg-6-harf col-md-4-harf col-sm-4-harf col-xs-9 padding-5">
-		<label>โซน[รับคืน]</label>
+		<label class="not-show">โซน[รับคืน]</label>
 		<input type="text" class="form-control input-sm edit" name="zone" id="zone" value="" placeholder="กำหนดโซนที่จะรับสินค้าเข้า" required />
 	</div>
 	<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-3 padding-5">
 		<label class="display-block not-show">chang</label>
-		<button type="button" class="btn btn-xs btn-primary btn-block hide" id="btn-change-zone" onclick="changeZone()">เปลี่ยนโซน</button>
-		<button type="button" class="btn btn-xs btn-success btn-block" id="btn-set-zone" onclick="setZone()">ตกลง</button>
+		<button type="button" class="btn btn-xs btn-primary btn-block hide" id="btn-change-zone" onclick="changeZone()">Change</button>
+		<button type="button" class="btn btn-xs btn-success btn-block" id="btn-set-zone" onclick="setZone()">OK</button>
 	</div>
 </div>
 <div class="divider"></div>
 <div class="row">
 	<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-3 padding-5">
-		<label>จำนวน</label>
+		<label>Qty</label>
 		<input type="number" class="form-control input-sm text-center" id="qty" value="1">
 	</div>
 
 	<div class="col-lg-2 col-md-3 col-sm-3 col-xs-6 padding-5">
-		<label>บาร์โค้ดสินค้า</label>
-		<input type="text" class="form-control input-sm text-center" id="barcode" placeholder="ยิงบาร์โค้ดสินค้า">
+		<label>Barcode</label>
+		<input type="text" class="form-control input-sm text-center" id="barcode" placeholder="Product barcode">
 	</div>
 	<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-3 padding-5">
 		<label class="display-block not-show">barcode</label>
-		<button type="button" class="btn btn-xs btn-success btn-block" onclick="doReceive()">ตกลง</button>
+		<button type="button" class="btn btn-xs btn-success btn-block" onclick="doReceive()">OK</button>
 	</div>
 
 	<div class="col-lg-5 col-md-3 col-sm-3 col-xs-4">&nbsp;</div>
 	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
 		<label class="display-block not-show">add</label>
-		<button type="button" class="btn btn-xs btn-primary btn-block" onclick="receiveAll()">คืนทั้งหมด</button>
+		<button type="button" class="btn btn-xs btn-primary btn-block" onclick="receiveAll()">Return all</button>
 	</div>
 	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
 		<label class="display-block not-show">clear</label>
-		<button type="button" class="btn btn-xs btn-danger btn-block" onclick="clearAll()">เคลียร์ทั้งหมด</button>
+		<button type="button" class="btn btn-xs btn-danger btn-block" onclick="clearAll()">Clear all</button>
 	</div>
 </div>
 
@@ -106,12 +106,12 @@
 			<thead>
 				<tr>
 					<th class="fix-width-40 middle text-center">#</th>
-					<th class="fix-width-150 middle">บาร์โคด</th>
-					<th class="min-width-200 middle">สินค้า</th>
-					<th class="fix-width-100 middle text-center">ยืม</th>
-					<th class="fix-width-100 middle text-center">คืนแล้ว</th>
-					<th class="fix-width-100 middle text-center">ค้าง</th>
-					<th class="fix-width-100 middle text-center">ครั้งนี้</th>
+					<th class="fix-width-150 middle">Barcode</th>
+					<th class="min-width-200 middle">Items</th>
+					<th class="fix-width-100 middle text-center">Lended Qty</th>
+					<th class="fix-width-100 middle text-center">Returned Qty</th>
+					<th class="fix-width-100 middle text-center">Outstanding</th>
+					<th class="fix-width-100 middle text-center">Qty</th>
 				</tr>
 			</thead>
 			<tbody id="result">
@@ -129,7 +129,7 @@
 {{#each details}}
 	{{#if nodata}}
 		<tr>
-			<td colspan="7" class="middle text-center">ไม่พบข้อมูล</td>
+			<td colspan="7" class="middle text-center">Not found</td>
 		</tr>
 	{{else}}
 		{{#if @last}}
@@ -137,7 +137,7 @@
 				<td colspan="3" class="middle text-right">รวม</td>
 				<td class="middle text-center">{{totalLend}}</td>
 				<td class="middle text-center">{{totalReceived}}</td>
-				<td class="middle text-right">{{totalBacklogs}}</td>
+				<td class="middle text-center">{{totalBacklogs}}</td>
 				<td class="middle text-center" id="totalQty">0</td>
 			</tr>
 		{{else}}

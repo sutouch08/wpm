@@ -7,19 +7,19 @@
 	</div>
     <div class="col-sm-6">
       	<p class="pull-right top-p">
-			    <button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+			    <button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
 
 				<?php if($doc->status == 1 && $doc->is_approved == 0 && $this->pm->can_edit == 1) : ?>
-					<button type="button" class="btn btn-sm btn-danger" onclick="unsave()"><i class="fa fa-refresh"></i> ยกเลิกการบันทึก</button>
+					<button type="button" class="btn btn-sm btn-danger" onclick="unsave()"><i class="fa fa-refresh"></i> Unsave</button>
 				<?php endif; ?>
 				<?php if($doc->status == 1 && $doc->is_approved == 0 && $this->pm->can_approve == 1) : ?>
-					<button type="button" class="btn btn-sm btn-success" onclick="approve()"><i class="fa fa-check"></i> อนุมัติ</button>
+					<button type="button" class="btn btn-sm btn-success" onclick="approve()"><i class="fa fa-check"></i> Approve</button>
 				<?php endif; ?>
 				<?php if($doc->status == 1 && $doc->is_approved == 1 && $this->pm->can_approve == 1 && (empty($doc->issue_code) && empty($doc->receive_code))) : ?>
-					<button type="button" class="btn btn-sm btn-danger" onclick="unapprove()"><i class="fa fa-refresh"></i> ไม่อนุมัติ</button>
+					<button type="button" class="btn btn-sm btn-danger" onclick="unapprove()"><i class="fa fa-refresh"></i> Cancel approval</button>
 				<?php endif; ?>
 				<?php if($doc->status == 1 && $doc->is_approved == 1 && (empty($doc->issue_code) OR empty($doc->receive_code))) : ?>
-					<button type="button" class="btn btn-sm btn-success" onclick="send_to_sap()"><i class="fa fa-send"></i> ส่งข้อมูลไป SAP</button>
+					<button type="button" class="btn btn-sm btn-success" onclick="send_to_sap()"><i class="fa fa-send"></i> Send to SAP</button>
 				<?php endif; ?>
         </p>
     </div>
@@ -28,15 +28,15 @@
 
 <div class="row">
     <div class="col-sm-1 col-1-harf col-xs-6 padding-5 first">
-    	<label>เลขที่เอกสาร</label>
+    	<label>Doc No.</label>
         <input type="text" class="form-control input-sm text-center" value="<?php echo $doc->code; ?>" disabled />
     </div>
 		<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
-    	<label>วันที่</label>
+    	<label>Date</label>
       <input type="text" class="form-control input-sm text-center" id="date_add" value="<?php echo thai_date($doc->date_add) ?>" readonly disabled/>
     </div>
 		<div class="col-sm-3 col-xs-12 padding-5">
-			<label>อ้างถึง</label>
+			<label>Reference</label>
 			<input type="text" class="form-control input-sm" id="reference" value="<?php echo $doc->reference; ?>" disabled />
 		</div>
 		<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
@@ -48,11 +48,11 @@
 			<input type="text" class="form-control input-sm" id="receive_code" value="<?php echo $doc->receive_code; ?>" disabled />
 		</div>
 		<div class="col-sm-3 col-xs-12 padding-5 last">
-			<label>พนักงาน</label>
+			<label>User</label>
 			<input type="text" class="form-control input-sm" id="user" value="<?php echo $doc->user_name; ?>" disabled />
 		</div>
 		<div class="col-sm-12 col-xs-12 padding-5 first last">
-	   	<label>หมายเหตุ</label>
+	   	<label>Remark</label>
 	    <input type="text" class="form-control input-sm" id="remark" placeholder="ระบุหมายเหตุเอกสาร (ถ้ามี)" value="<?php echo $doc->remark; ?>" disabled/>
 	  </div>
     <input type="hidden" id="code" value="<?php echo $doc->code; ?>" />
@@ -70,7 +70,7 @@ if($doc->status == 2)
   <div class="col-sm-12 first last">
     <p class="pull-right top-p">
 		<?php if(! empty($doc->issue_code) OR ! empty($doc->receive_code)) : ?>
-      <span class="red">** เอกสารเข้าระบบ SAP แล้วไม่สามารถแก้ไขได้</span>
+      <span class="red">** Documents already in SAP cannot be edited.้</span>
 		<?php endif; ?>
     </p>
   </div>
@@ -78,12 +78,12 @@ if($doc->status == 2)
     <table class="table table-striped border-1">
       <thead>
         <tr>
-          <th class="width-5 text-center">ลำดับ</th>
-          <th class="width-20">รหัสสินค้า</th>
-          <th class="">สินค้า</th>
-          <th class="width-20 text-center">โซน</th>
-          <th class="width-10 text-center">เพิ่ม</th>
-          <th class="width-10 text-center">ลด</th>
+          <th class="width-5 text-center">#</th>
+          <th class="width-20">Item code</th>
+          <th class="">Description</th>
+          <th class="width-20 text-center">Bin location</th>
+          <th class="width-10 text-center">Increased</th>
+          <th class="width-10 text-center">Decreased</th>
         </tr>
       </thead>
       <tbody id="detail-table">
@@ -122,12 +122,12 @@ if($doc->status == 2)
 			<div class="col-sm-12 text-right">
 				<?php if($appr->approve == 1) : ?>
 					<span class="green">
-						อนุมัติโดย : <?php echo $appr->approver; ?> @ <?php echo thai_date($appr->date_upd, TRUE); ?>
+						Approved by : <?php echo $appr->approver; ?> @ <?php echo thai_date($appr->date_upd, TRUE); ?>
 					</span>
 				<?php endif; ?>
 				<?php if($appr->approve == 0) : ?>
 					<span class="red">
-						ยกเลิกการอนุมัติโดย : <?php echo $appr->approver; ?> @ <?php echo thai_date($appr->date_upd, TRUE); ?>
+						Cancelled approval by : <?php echo $appr->approver; ?> @ <?php echo thai_date($appr->date_upd, TRUE); ?>
 					</span>
 				<?php endif; ?>
 			</div>
@@ -164,6 +164,6 @@ if($doc->status == 2)
 </script>
 
 
-<script src="<?php echo base_url(); ?>scripts/inventory/adjust/adjust.js"></script>
-<script src="<?php echo base_url(); ?>scripts/inventory/adjust/adjust_add.js"></script>
+<script src="<?php echo base_url(); ?>scripts/inventory/adjust/adjust.js?v=<?php echo date('Ymd'); ?>"></script>
+<script src="<?php echo base_url(); ?>scripts/inventory/adjust/adjust_add.js?v=<?php echo date('Ymd'); ?>"></script>
 <?php $this->load->view('include/footer'); ?>

@@ -29,14 +29,14 @@
 	</div>
   <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12 padding-5">
   	<p class="pull-right top-p">
-			<button type="button" class="btn btn-sm btn-warning btn-top" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+			<button type="button" class="btn btn-sm btn-warning btn-top" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
 			<?php if($doc->status == 4 && ($accept_user OR $canAccept)) : ?>
-				<button type="button" class="btn btn-sm btn-success btn-top" onclick="accept()"><i class="fa fa-check-circle"></i> ยืนยันการรับสินค้า</button>
+				<button type="button" class="btn btn-sm btn-success btn-top" onclick="accept()"><i class="fa fa-check-circle"></i> Acceptance</button>
 			<?php endif; ?>
 	    <?php if($doc->status == 1) : ?>
-	      <button type="button" class="btn btn-sm btn-info btn-top" onclick="doExport()"><i class="fa fa-send"></i> ส่งข้อมูลไป SAP</button>
+	      <button type="button" class="btn btn-sm btn-info btn-top" onclick="doExport()"><i class="fa fa-send"></i> Send to SAP</button>
 	    <?php endif; ?>
-			<button type="button" class="btn btn-sm btn-primary btn-top" onclick="printMove()"><i class="fa fa-print"></i> พิมพ์</button>
+			<button type="button" class="btn btn-sm btn-primary btn-top" onclick="printMove()"><i class="fa fa-print"></i> Print</button>
     </p>
   </div>
 </div><!-- End Row -->

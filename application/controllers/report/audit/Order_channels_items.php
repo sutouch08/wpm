@@ -5,7 +5,7 @@ class Order_channels_items extends PS_Controller
   public $menu_code = 'RSODER';
 	public $menu_group_code = 'RE';
   public $menu_sub_group_code = 'RESALE';
-	public $title = 'รายงานออเดอร์แยกตามช่องทางขายแสดงรายการสินค้า';
+	public $title = 'The order report by sales channel shows the list of products.';
   public $filter;
   public function __construct()
   {
@@ -54,14 +54,14 @@ class Order_channels_items extends PS_Controller
     $post_state = $this->input->post('state');
 
     $state_name = array(
-      '1' => 'รอดำเนินการ',
-      '2' => 'รอชำระเงิน',
-      '3' => 'รอจัด',
-      '4' => 'กำลังจัด',
-      '5' => 'รอตรวจ',
-      '6' => 'กำลังตรวจ',
-      '7' => 'รอเปิดบิล',
-      '8' => 'เปิดบิลแล้ว'
+      '1' => 'Pending',
+      '2' => 'Waiting for payment',
+      '3' => 'Waiting to pick',
+      '4' => 'Picking',
+      '5' => 'Waiting to pack',
+      '6' => 'Packing',
+      '7' => 'Ready to ship',
+      '8' => 'Shipped'
     );
 
     $state = array();
@@ -84,12 +84,12 @@ class Order_channels_items extends PS_Controller
 
 
     //---  Report title
-    $report_title = "รายงานออเดอร์แยกตามช่องทางขายแสดงรายการสินค้า";
-    $wh_title     = 'คลัง :  '. ($allWarehouse == 1 ? 'ทั้งหมด' : $this->get_title($warehouse));
-    $pd_title     = 'สินค้า :  '. ($allProducts == 1 ? 'ทั้งหมด' : '('.$pdFrom.') - ('.$pdTo.')');
-    $ch_title = "ช่องทางขาย : ". ($allChannels == 1 ? 'ทั้งหมด' : $this->get_title($channels));
-    $pay_title = "การชำระเงิน : ". ($allPayments == 1 ? "ทั้งหมด" : $this->get_title($payments));
-    $state_title = "สถานะ : ".(empty($post_state) ? "ทั้งหมด" : $this->get_title($state_list));
+    $report_title = "The order report by sales channel shows the list of products.";
+    $wh_title     = 'Warehouse :  '. ($allWarehouse == 1 ? 'All' : $this->get_title($warehouse));
+    $pd_title     = 'Item Code :  '. ($allProducts == 1 ? 'All' : '('.$pdFrom.') - ('.$pdTo.')');
+    $ch_title = "Sales Channels : ". ($allChannels == 1 ? 'All' : $this->get_title($channels));
+    $pay_title = "Payments : ". ($allPayments == 1 ? "All" : $this->get_title($payments));
+    $state_title = "Status : ".(empty($post_state) ? "All" : $this->get_title($state_list));
 
     $ds = array(
       'allChannels' => $allChannels,
@@ -127,34 +127,34 @@ class Order_channels_items extends PS_Controller
     $this->excel->getActiveSheet()->mergeCells('A5:G5');
     $this->excel->getActiveSheet()->setCellValue('A6', $state_title);
     $this->excel->getActiveSheet()->mergeCells('A6:G6');
-    $this->excel->getActiveSheet()->setCellValue('A7', 'วันที่เอกสาร : ('.thai_date($fromDate,'/') .') - ('.thai_date($toDate,'/').')');
+    $this->excel->getActiveSheet()->setCellValue('A7', 'Document Date : ('.thai_date($fromDate,'/') .') - ('.thai_date($toDate,'/').')');
     $this->excel->getActiveSheet()->mergeCells('A7:G7');
 
     //--- set Table header
 
 
-    $this->excel->getActiveSheet()->setCellValue('A8', 'ลำดับ');
-    $this->excel->getActiveSheet()->setCellValue('B8', 'วันที่');
-    $this->excel->getActiveSheet()->setCellValue('C8', 'เอกสาร');
-    $this->excel->getActiveSheet()->setCellValue('D8', 'อ้างอิง');
-    $this->excel->getActiveSheet()->setCellValue('E8', 'เลขที่จัดส่ง');
-    $this->excel->getActiveSheet()->setCellValue('F8', 'ชื่อลูกค้า');
-    $this->excel->getActiveSheet()->setCellValue('G8', 'ที่อยู่บรรทัด 1');
-    $this->excel->getActiveSheet()->setCellValue('H8', 'ที่อยู่บรรทัด 2');
-    $this->excel->getActiveSheet()->setCellValue('I8', 'อำเภอ');
-    $this->excel->getActiveSheet()->setCellValue('J8', 'จังหวัด');
-    $this->excel->getActiveSheet()->setCellValue('K8', 'รหัสไปรษณีย์');
-    $this->excel->getActiveSheet()->setCellValue('L8', 'เบอร์โทรศัพท์');
-    $this->excel->getActiveSheet()->setCellValue('M8', 'ช่องทางขาย');
+    $this->excel->getActiveSheet()->setCellValue('A8', 'No');
+    $this->excel->getActiveSheet()->setCellValue('B8', 'Date');
+    $this->excel->getActiveSheet()->setCellValue('C8', 'Document');
+    $this->excel->getActiveSheet()->setCellValue('D8', 'Reference');
+    $this->excel->getActiveSheet()->setCellValue('E8', 'Shipping No');
+    $this->excel->getActiveSheet()->setCellValue('F8', 'Customer');
+    $this->excel->getActiveSheet()->setCellValue('G8', 'Address 1');
+    $this->excel->getActiveSheet()->setCellValue('H8', 'Address 2');
+    $this->excel->getActiveSheet()->setCellValue('I8', 'District');
+    $this->excel->getActiveSheet()->setCellValue('J8', 'Province');
+    $this->excel->getActiveSheet()->setCellValue('K8', 'Post Code');
+    $this->excel->getActiveSheet()->setCellValue('L8', 'Phone No');
+    $this->excel->getActiveSheet()->setCellValue('M8', 'Channels');
     $this->excel->getActiveSheet()->setCellValue('N8', 'ช่องทางการชำระเงิน');
-    $this->excel->getActiveSheet()->setCellValue('O8', 'สินค้า');
-    $this->excel->getActiveSheet()->setCellValue('P8', 'ราคา');
-    $this->excel->getActiveSheet()->setCellValue('Q8', 'จำนวน');
-    $this->excel->getActiveSheet()->setCellValue('R8', 'ส่วนลด');
-    $this->excel->getActiveSheet()->setCellValue('S8', 'มูลค่า');
-    $this->excel->getActiveSheet()->setCellValue('T8', 'ค่าจัดส่ง');
-    $this->excel->getActiveSheet()->setCellValue('U8', 'ค่าบริการ');
-    $this->excel->getActiveSheet()->setCellValue('V8', 'สถานะ');
+    $this->excel->getActiveSheet()->setCellValue('O8', 'Item Code');
+    $this->excel->getActiveSheet()->setCellValue('P8', 'Price');
+    $this->excel->getActiveSheet()->setCellValue('Q8', 'Qty');
+    $this->excel->getActiveSheet()->setCellValue('R8', 'Discount');
+    $this->excel->getActiveSheet()->setCellValue('S8', 'Amount');
+    $this->excel->getActiveSheet()->setCellValue('T8', 'Shipping fee');
+    $this->excel->getActiveSheet()->setCellValue('U8', 'Service fee');
+    $this->excel->getActiveSheet()->setCellValue('V8', 'Status');
 
     //---- กำหนดความกว้างของคอลัมภ์
     $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth(15);

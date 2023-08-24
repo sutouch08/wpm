@@ -1,7 +1,7 @@
 <form class="form-horizontal" id="addForm" method="post" action="<?php echo $this->home."/update"; ?>">
 
 	<div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">รหัส</label>
+    <label class="col-sm-3 control-label no-padding-right">Code</label>
     <div class="col-xs-12 col-sm-3">
       <input type="text" class="form-control input-sm" value="<?php echo $ds->code; ?>" disabled />
 			<input type="hidden" name="code" id="code" value="<?php echo $ds->code; ?>">
@@ -12,7 +12,7 @@
 
 
   <div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">ชื่อ</label>
+    <label class="col-sm-3 control-label no-padding-right">Name</label>
     <div class="col-xs-12 col-sm-7">
 			<input type="text" name="name" id="name" class="form-control input-sm" value="<?php echo $ds->name; ?>" required />
     </div>
@@ -20,7 +20,7 @@
   </div>
 
 	<div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">รหัสเก่า</label>
+    <label class="col-sm-3 control-label no-padding-right">Old code</label>
     <div class="col-xs-12 col-sm-3">
       <input type="text" class="form-control input-sm" name="old_code" id="old_code" value="<?php echo $ds->old_code; ?>" />
     </div>
@@ -28,17 +28,17 @@
   </div>
 
 	<div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">เลขประจำตัว/Tax ID</label>
+    <label class="col-sm-3 control-label no-padding-right">Tax ID</label>
     <div class="col-xs-12 col-sm-4">
 			<input type="text" name="Tax_Id" id="Tax_Id" class="width-100" value="<?php echo $ds->Tax_Id; ?>" />
     </div>
   </div>
 
 	<div class="form-group">
- 	 <label class="col-sm-3 control-label no-padding-right">รหัสบัญชีลูกหนี้</label>
+ 	 <label class="col-sm-3 control-label no-padding-right">Account Receivable Code</label>
  	 <div class="col-xs-12 col-sm-4">
  		 <select name="DebPayAcct" id="DebPayAcct" class="form-control" required>
-			 <option value="">เลือกรายการ</option>
+			 <option value="">Select</option>
  			 <?php echo select_DebPayAcct($ds->DebPayAcct); ?>
  		 </select>
  	 </div>
@@ -47,7 +47,7 @@
 
 
 	<div class="form-group">
- 	 <label class="col-sm-3 control-label no-padding-right">กลุ่มลูกหนี้</label>
+ 	 <label class="col-sm-3 control-label no-padding-right">Account Group Code</label>
  	 <div class="col-xs-12 col-sm-4">
  		 <select name="GroupCode" id="GroupCode" class="form-control" required>
  			 <?php echo select_GroupCode($ds->GroupCode); ?>
@@ -56,18 +56,18 @@
   </div>
 
 	<div class="form-group">
- 	 <label class="col-sm-3 control-label no-padding-right">รูปแบบ</label>
+ 	 <label class="col-sm-3 control-label no-padding-right">Account Type</label>
  	 <div class="col-xs-12 col-sm-4">
  		 <select name="cmpPrivate" id="cmpPrivate" class="form-control">
- 			<option value="C" <?php echo is_selected('C', $ds->cmpPrivate); ?>>บริษัท/ร้าน</option>
-			<option value="G" <?php echo is_selected('G', $ds->cmpPrivate); ?>>หน่วนงานรัฐ</option>
-			<option value="I" <?php echo is_selected('I', $ds->cmpPrivate); ?>>บุคคลทั่วไป</option>
+ 			<option value="C" <?php echo is_selected('C', $ds->cmpPrivate); ?>>Company</option>
+			<option value="G" <?php echo is_selected('G', $ds->cmpPrivate); ?>>Government</option>
+			<option value="I" <?php echo is_selected('I', $ds->cmpPrivate); ?>>Individual</option>
  		 </select>
  	 </div>
   </div>
 
 	<div class="form-group">
- 	 <label class="col-sm-3 control-label no-padding-right">รหัสกลุ่มเครดิต</label>
+ 	 <label class="col-sm-3 control-label no-padding-right">Payment Group</label>
  	 <div class="col-xs-12 col-sm-4">
  		 <select name="GroupNum" id="GroupNum" class="form-control">
  			 <?php echo select_GroupNum($ds->GroupNum); ?>
@@ -76,10 +76,10 @@
   </div>
 
 	<div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">กลุ่มลูกค้า</label>
+    <label class="col-sm-3 control-label no-padding-right">Group</label>
     <div class="col-xs-12 col-sm-4">
 			<select name="group" id="group" class="form-control" >
-				<option value="">เลือกรายการ</option>
+				<option value="">Select</option>
 				<?php echo select_customer_group($ds->group_code); ?>
 			</select>
     </div>
@@ -88,10 +88,10 @@
 
 
 	<div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">ประเภทลูกค้า</label>
+    <label class="col-sm-3 control-label no-padding-right">Kind</label>
     <div class="col-xs-12 col-sm-4">
 			<select name="kind" id="kind" class="form-control">
-				<option value="">เลือกรายการ</option>
+				<option value="">Select</option>
 				<?php echo select_customer_kind($ds->kind_code); ?>
 			</select>
     </div>
@@ -100,10 +100,10 @@
 
 
 	<div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">ชนิดลูกค้า</label>
+    <label class="col-sm-3 control-label no-padding-right">Type</label>
     <div class="col-xs-12 col-sm-4">
 			<select name="type" id="type" class="form-control">
-				<option value="">เลือกรายการ</option>
+				<option value="">Select</option>
 				<?php echo select_customer_type($ds->type_code); ?>
 			</select>
     </div>
@@ -113,10 +113,10 @@
 
 
 	<div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">เกรดลูกค้า</label>
+    <label class="col-sm-3 control-label no-padding-right">Grade</label>
     <div class="col-xs-12 col-sm-4">
 			<select name="class" id="class" class="form-control" >
-				<option value="">เลือกรายการ</option>
+				<option value="">Select</option>
 				<?php echo select_customer_class($ds->class_code); ?>
 			</select>
     </div>
@@ -125,10 +125,10 @@
 
 
 	<div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">พื้นที่ขาย</label>
+    <label class="col-sm-3 control-label no-padding-right">Region</label>
     <div class="col-xs-12 col-sm-4">
 			<select name="area" id="area" class="form-control">
-				<option value="">เลือกรายการ</option>
+				<option value="">Select</option>
 				<?php echo select_customer_area($ds->area_code); ?>
 			</select>
     </div>
@@ -137,7 +137,7 @@
 
 
 	<div class="form-group">
-	 <label class="col-sm-3 control-label no-padding-right">พนักงานขาย</label>
+	 <label class="col-sm-3 control-label no-padding-right">Sale Employee</label>
 	 <div class="col-xs-12 col-sm-4">
 		 <select name="sale" id="sale" class="form-control">
 			 <?php echo select_sale($ds->sale_code); ?>
@@ -146,7 +146,7 @@
 	</div>
 
 	<div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">วงเงินเครดิต</label>
+    <label class="col-sm-3 control-label no-padding-right">Credit Amount</label>
     <div class="col-xs-12 col-sm-3">
 			<input type="number" name="CreditLine" id="CreditLine" class="width-100" value="<?php echo round($ds->CreditLine,2); ?>" />
     </div>
@@ -154,7 +154,7 @@
 
 	<?php if($ds->CreditLine > 0) : ?>
 		<div class="form-group">
-	    <label class="col-sm-3 control-label no-padding-right">วงเงินคงเหลือ</label>
+	    <label class="col-sm-3 control-label no-padding-right">Create Balance</label>
 	    <div class="col-xs-12 col-sm-3">
 				<input type="number" class="width-100" value="<?php echo round($this->customers_model->get_credit($ds->code), 2); ?>" disabled/>
 	    </div>
@@ -170,10 +170,10 @@
 
 	<div class="form-group">
     <label class="col-sm-3 control-label no-padding-right">Over due</label>
-    <div class="col-xs-12 col-sm-4">
+    <div class="col-xs-12 col-sm-7">
 			<label class="margin-top-5">
 				<input type="checkbox" class="ace input-lg" name="skip_overdue" id="skip_overdue" value="1" <?php echo is_checked('1', $ds->skip_overdue); ?>>
-				<span class="lbl bigger-120"> ไม่ตรวจสอบยอดค้างชำระ</span>
+				<span class="lbl bigger-120"> Do not check outstanding balance</span>
 			</label>
     </div>
   </div>

@@ -5,7 +5,7 @@ class Stock_balance extends PS_Controller
   public $menu_code = 'RICSTB';
 	public $menu_group_code = 'RE';
   public $menu_sub_group_code = 'REINVT';
-	public $title = 'รายงานสินค้าคงเหลือ';
+	public $title = 'Inventory Report';
   public $filter;
   public function __construct()
   {
@@ -46,8 +46,8 @@ class Stock_balance extends PS_Controller
 
     //---  Report title
     $sc['reportDate'] = thai_date(date('Y-m-d'),FALSE, '/');
-    $sc['whList']   = $allWhouse == 1 ? 'ทั้งหมด' : $wh_list;
-    $sc['productList']   = $allProduct == 1 ? 'ทั้งหมด' : '('.$pdFrom.') - ('.$pdTo.')';
+    $sc['whList']   = $allWhouse == 1 ? 'All' : $wh_list;
+    $sc['productList']   = $allProduct == 1 ? 'All' : '('.$pdFrom.') - ('.$pdTo.')';
 
 
     $result = $this->inventory_report_model->get_current_stock_balance($allProduct, $pdFrom, $pdTo, $allWhouse, $warehouse);
@@ -130,9 +130,9 @@ class Stock_balance extends PS_Controller
 
 
     //---  Report title
-    $report_title = 'รายงานสินค้าคงเหลือ ณ วันที่  '.thai_date(date('Y-m-d'), '/');
-    $wh_title     = 'คลัง :  '. ($allWhouse == 1 ? 'ทั้งหมด' : $wh_list);
-    $pd_title     = 'สินค้า :  '. ($allProduct == 1 ? 'ทั้งหมด' : '('.$pdFrom.') - ('.$pdTo.')');
+    $report_title = 'Inventory Report On '.thai_date(date('Y-m-d'), '/');
+    $wh_title     = 'คลัง :  '. ($allWhouse == 1 ? 'All' : $wh_list);
+    $pd_title     = 'สินค้า :  '. ($allProduct == 1 ? 'All' : '('.$pdFrom.') - ('.$pdTo.')');
 
     $result = $this->inventory_report_model->get_current_stock_balance($allProduct, $pdFrom, $pdTo, $allWhouse, $warehouse);
 
@@ -151,13 +151,13 @@ class Stock_balance extends PS_Controller
     $this->excel->getActiveSheet()->mergeCells('A3:G3');
 
     //--- set Table header
-    $this->excel->getActiveSheet()->setCellValue('A4', 'ลำดับ');
-    $this->excel->getActiveSheet()->setCellValue('B4', 'บาร์โค้ด');
-    $this->excel->getActiveSheet()->setCellValue('C4', 'รหัส');
-    $this->excel->getActiveSheet()->setCellValue('D4', 'สินค้า');
-    $this->excel->getActiveSheet()->setCellValue('E4', 'ทุน');
-    $this->excel->getActiveSheet()->setCellValue('F4', 'จำนวน');
-    $this->excel->getActiveSheet()->setCellValue('G4', 'มูลค่า');
+    $this->excel->getActiveSheet()->setCellValue('A4', 'No');
+    $this->excel->getActiveSheet()->setCellValue('B4', 'Barcode');
+    $this->excel->getActiveSheet()->setCellValue('C4', 'Item Code');
+    $this->excel->getActiveSheet()->setCellValue('D4', 'Description');
+    $this->excel->getActiveSheet()->setCellValue('E4', 'Cost');
+    $this->excel->getActiveSheet()->setCellValue('F4', 'Qty');
+    $this->excel->getActiveSheet()->setCellValue('G4', 'Amount');
 
     $row = 5;
     if(!empty($result))
@@ -182,7 +182,7 @@ class Stock_balance extends PS_Controller
 
       $res = $row -1;
 
-      $this->excel->getActiveSheet()->setCellValue('A'.$row, 'รวม');
+      $this->excel->getActiveSheet()->setCellValue('A'.$row, 'Total');
       $this->excel->getActiveSheet()->mergeCells('A'.$row.':E'.$row);
       $this->excel->getActiveSheet()->setCellValue('F'.$row, '=SUM(F5:F'.$res.')');
       $this->excel->getActiveSheet()->setCellValue('G'.$row, '=SUM(G5:G'.$res.')');

@@ -4,18 +4,18 @@
     <table class='table table-bordered' style="margin-bottom:0px;">
       <thead>
         <tr>
-          <td colspan="6" align="center">ที่อยู่สำหรับจัดส่ง
+          <td colspan="6" align="center">Shipping Address
             <p class="pull-right top-p">
-              <button type="button" class="btn btn-info btn-xs" onClick="addNewAddress()"> เพิ่มที่อยู่ใหม่</button>
+              <button type="button" class="btn btn-info btn-xs" onClick="addNewAddress()"> Add New</button>
             </p>
           </td>
         </tr>
         <tr style="font-size:12px;">
-          <td align="center" width="10%">ชื่อเรียก</td>
-          <td width="12%">ผู้รับ</td>
-          <td width="35%">ที่อยู่</td>
-          <td width="15%">อีเมล์</td>
-          <td width="15%">โทรศัพท์</td>
+          <td align="center" width="10%">Alias</td>
+          <td width="12%">Consignee</td>
+          <td width="35%">Shipping Address</td>
+          <td width="15%">Email</td>
+          <td width="15%">Phone</td>
           <td ></td>
         </tr>
       </thead>
@@ -44,7 +44,7 @@
         </tr>
 <?php 	endforeach; ?>
 <?php else : ?>
-        <tr><td colspan="6" align="center">ไม่พบที่อยู่</td></tr>
+        <tr><td colspan="6" align="center">Not found</td></tr>
 <?php endif; ?>
       </tbody>
     </table>
@@ -59,7 +59,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title-site text-center" >เพิ่ม/แก้ไข ที่อยู่สำหรับจัดส่ง</h4>
+                <h4 class="modal-title-site text-center" >Add/Edit Shipping Address</h4>
             </div>
             <div class="modal-body">
             <form id="addAddressForm"	>
@@ -67,47 +67,47 @@
             <input type="hidden" name="customer_ref" id="customer_ref" value="<?php echo $ds->code; ?>" />
             <div class="row">
             	<div class="col-sm-12 col-xs-12">
-                	<label class="input-label">ชื่อ</label>
+                	<label class="input-label">Consignee</label>
                     <input type="text" class="form-control input-sm" name="Fname" id="Fname" placeholder="ชื่อผู้รับ (จำเป็น)" />
                 </div>
                 <div class="col-sm-12 col-xs-12">
-                	<label class="input-label">ที่อยู่</label>
+                	<label class="input-label">Address</label>
                     <input type="text" class="form-control input-sm" name="address" id="address1" placeholder="เลขที่, หมู่บ้าน, ถนน (จำเป็น)" />
                 </div>
 
                 <div class="col-sm-6 col-xs-12">
-                	<label class="input-label">ตำบล/แขวง</label>
+                	<label class="input-label">Sub District</label>
                     <input type="text" class="form-control input-sm" name="sub_district" id="sub_district" placeholder="ตำบล" />
                 </div>
                 <div class="col-sm-6 col-xs-12">
-                	<label class="input-label">อำเภอ/เขต</label>
+                	<label class="input-label">District</label>
                     <input type="text" class="form-control input-sm" name="district" id="district" placeholder="อำเภอ (จำเป็น)" />
                 </div>
                 <div class="col-sm-6 col-xs-12">
-                	<label class="input-label">จังหวัด</label>
+                	<label class="input-label">Province</label>
                     <input type="text" class="form-control input-sm" name="province" id="province" placeholder="จังหวัด (จำเป็น)" />
                 </div>
                 <div class="col-sm-6 col-xs-12">
-                	<label class="input-label">รหัสไปรษณีย์</label>
+                	<label class="input-label">Post code</label>
                     <input type="text" class="form-control input-sm" name="postcode" id="postcode" placeholder="รหัสไปรษณีย์" />
                 </div>
                 <div class="col-sm-6 col-xs-12">
-                	<label class="input-label">เบอร์โทรศัพท์</label>
+                	<label class="input-label">Phone</label>
                     <input type="text" class="form-control input-sm" name="phone" id="phone" placeholder="000 000 0000" />
                 </div>
                 <div class="col-sm-6 col-xs-12">
-                	<label class="input-label">อีเมล์</label>
+                	<label class="input-label">Email</label>
                     <input type="text" class="form-control input-sm" name="email" id="email" placeholder="someone@somesite.com" />
                 </div>
                 <div class="col-sm-6 col-xs-12">
-                	<label class="input-label">ชื่อเรียก</label>
+                	<label class="input-label">Alias</label>
                     <input type="text" class="form-control input-sm" name="alias" id="alias" placeholder="ใช้เรียกที่อยู่ เช่น บ้าน, ที่ทำงาน (จำเป็น)" />
                 </div>
             </div>
             </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-success" onClick="saveShipTo()" ><i class="fa fa-save"></i> บันทึก</button>
+                <button type="button" class="btn btn-sm btn-success" onClick="saveShipTo()" ><i class="fa fa-save"></i> Save</button>
             </div>
         </div>
     </div>

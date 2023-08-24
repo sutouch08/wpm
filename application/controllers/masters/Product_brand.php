@@ -6,7 +6,7 @@ class Product_brand extends PS_Controller
   public $menu_code = 'DBPDBR';
 	public $menu_group_code = 'DB';
   public $menu_sub_group_code = 'PRODUCT';
-	public $title = 'เพิ่ม/แก้ไข ยี่ห้อสินค้า';
+	public $title = 'Product Brand';
 
   public function __construct()
   {
@@ -66,7 +66,6 @@ class Product_brand extends PS_Controller
   {
     $data['code'] = $this->session->flashdata('code');
     $data['name'] = $this->session->flashdata('name');
-    $this->title = 'เพิ่ม ยี่ห้อสินค้า';
     $this->load->view('masters/product_brand/product_brand_add_view', $data);
   }
 
@@ -86,13 +85,13 @@ class Product_brand extends PS_Controller
       if($this->product_brand_model->is_exists($code) === TRUE)
       {
         $sc = FALSE;
-        set_error("'".$code."' มีในระบบแล้ว");
+        set_error("'".$code."' already exists");
       }
 
       if($this->product_brand_model->is_exists_name($name) === TRUE)
       {
         $sc = FALSE;
-        set_error("'".$name."' มีในระบบแล้ว");
+        set_error("'".$name."' already exists");
       }
 
       if($sc === TRUE)
@@ -100,12 +99,12 @@ class Product_brand extends PS_Controller
         if($this->product_brand_model->add($ds))
         {
           $this->export_to_sap($code, $code);
-          set_message('เพิ่มข้อมูลเรียบร้อยแล้ว');
+          set_message('Add data successfully');
         }
         else
         {
           $sc = FALSE;
-          set_error('เพิ่มข้อมูลไม่สำเร็จ');
+          set_error('Failed to add data');
         }
       }
 
@@ -118,7 +117,7 @@ class Product_brand extends PS_Controller
     }
     else
     {
-      set_error('ไม่พบข้อมูล');
+      set_error('No data found');
     }
 
     redirect($this->home.'/add_new');
@@ -128,7 +127,6 @@ class Product_brand extends PS_Controller
 
   public function edit($code)
   {
-    $this->title = 'แก้ไข ยี่ห้อสินค้า';
     $rs = $this->product_brand_model->get($code);
     $data = array(
       'code' => $rs->code,
@@ -160,13 +158,13 @@ class Product_brand extends PS_Controller
       if($sc === TRUE && $this->product_brand_model->is_exists($code, $old_code) === TRUE)
       {
         $sc = FALSE;
-        set_error("'".$code."' มีอยู่ในระบบแล้ว โปรดใช้รหัสอื่น");
+        set_error("'".$code."' already exists");
       }
 
       if($sc === TRUE && $this->product_brand_model->is_exists_name($name, $old_name) === TRUE)
       {
         $sc = FALSE;
-        set_error("'".$name."' มีอยู่ในระบบแล้ว โปรดใช้ชื่ออื่น");
+        set_error("'".$name."' already exists");
       }
 
       if($sc === TRUE)
@@ -174,12 +172,12 @@ class Product_brand extends PS_Controller
         if($this->product_brand_model->update($old_code, $ds) === TRUE)
         {
           $this->export_to_sap($code, $old_code);
-          set_message('ปรับปรุงข้อมูลเรียบร้อยแล้ว');
+          set_message('Update data successfully');
         }
         else
         {
           $sc = FALSE;
-          set_error('ปรับปรุงข้อมูลไม่สำเร็จ');
+          set_error('Failed to update data');
         }
       }
 
@@ -187,7 +185,7 @@ class Product_brand extends PS_Controller
     else
     {
       $sc = FALSE;
-      set_error('ไม่พบข้อมูล');
+      set_error('No data found');
     }
 
     if($sc === FALSE)
@@ -206,16 +204,16 @@ class Product_brand extends PS_Controller
     {
       if($this->product_brand_model->delete($code))
       {
-        set_message('ลบข้อมูลเรียบร้อยแล้ว');
+        set_message('Data has been deleted.');
       }
       else
       {
-        set_error('ลบข้อมูลไม่สำเร็จ');
+        set_error('Failed to delete data');
       }
     }
     else
     {
-      set_error('ไม่พบข้อมูล');
+      set_error('No data found');
     }
 
     redirect($this->home);

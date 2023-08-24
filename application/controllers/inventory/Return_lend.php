@@ -5,12 +5,12 @@ class Return_lend extends PS_Controller
   public $menu_code = 'ICRTLD';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'RETURN';
-	public $title = 'คืนสินค้าจากการยืม';
+	public $title = 'Return from lended';
   public $filter;
   public $error;
 	public $wms;
 	public $isAPI;
-  public $required_remark = 1;
+  public $required_remark = 0;
 
   public function __construct()
   {
@@ -107,13 +107,13 @@ class Return_lend extends PS_Controller
         if(empty($lend))
         {
           $sc = FALSE;
-          $this->error = "เลขที่เอกสารยืมสินค้าไม่ถูกต้อง";
+          $this->error = "Invalid document number";
         }
 
         if(empty($zone))
         {
           $sc = FALSE;
-          $this->error = "โซนรับสินค้าไม่ถูกต้อง";
+          $this->error = "Invalid bin location";
         }
       }
 
@@ -123,6 +123,7 @@ class Return_lend extends PS_Controller
         $from_warehouse = $this->zone_model->get_warehouse_code($lend->zone_code);
         $wh = $this->warehouse_model->get($zone->warehouse_code); //--- คลังปลายทาง
         $must_accept = empty($zone->user_id) ? 0 : 1;
+        $DocCur = getConfig('CURRENCY');
 
         $isManual = getConfig('MANUAL_DOC_CODE');
 
@@ -187,7 +188,7 @@ class Return_lend extends PS_Controller
                 if(! $this->return_lend_model->add_detail($ds))
                 {
                   $sc = FALSE;
-                  $this->error = "เพิ่มรายการไม่สำเร็จ : {$item->code}";
+                  $this->error = "Add item failed : {$item->code}";
                 }
                 else
                 {
@@ -224,7 +225,7 @@ class Return_lend extends PS_Controller
                       if( ! $this->return_lend_model->update_receive($header->lendCode, $item->code, $row->qty))
                       {
                         $sc = FALSE;
-                        $this->error = "Update ยอดรับไม่สำเร็จ {$item->code}";
+                        $this->error = "Update received qty failed : {$item->code}";
                       }
                     }
                   } //--- if must_accept
@@ -250,7 +251,7 @@ class Return_lend extends PS_Controller
         else
         {
           $sc = FALSE;
-          $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+          $this->error = "Failed to add document.";
         }
 
         if($sc === FALSE)
@@ -307,7 +308,7 @@ class Return_lend extends PS_Controller
 
                 $this->return_lend_model->update($code, $arr);
                 $ex = 0;
-                $this->error = "บันทึกข้อมูลสำเร็จ แต่ส่งข้อมูลไป SAP ไม่สำเร็จ";
+                $this->error = "save data successfully but failed to send data to SAP";
               }
               else
               {
@@ -424,7 +425,7 @@ class Return_lend extends PS_Controller
                       if( ! $this->return_lend_model->update_receive($doc->lend_code, $rs->product_code, $rs->receive_qty))
                       {
                         $sc = FALSE;
-                        $this->error = "Update ยอดรับไม่สำเร็จ {$rs->product_code}";
+                        $this->error = "Update received qty failed : {$rs->product_code}";
                       }
                     }
                   } //-- if receive qty > 0
@@ -493,7 +494,7 @@ class Return_lend extends PS_Controller
 
                 $this->return_lend_model->update($code, $arr);
                 $ex = 0;
-                $this->error = "บันทึกข้อมูลสำเร็จ แต่ส่งข้อมูลไป SAP ไม่สำเร็จ";
+                $this->error = "save data successfully but failed to send data to SAP";
               }
               else
               {
@@ -640,7 +641,7 @@ class Return_lend extends PS_Controller
           if($doc->status == 3 && $this->_SuperAdmin === FALSE)
           {
             $sc = FALSE;
-            $this->error = "สินค้าอยู่ระหว่างการรับเข้า ไม่สามารถยกเลิกได้";
+            $this->error = "Products are in the process of receiving cannot be canceled";
           }
 
 
@@ -690,7 +691,7 @@ class Return_lend extends PS_Controller
                 if( ! $this->movement_model->drop_movement($code) )
                 {
                   $sc = FALSE;
-                  $this->error = "ลบ movement ไม่สำเร็จ";
+                  $this->error = "Delete movement failed";
                 }
 
                 //--- 2 update order_lend_detail
@@ -715,7 +716,7 @@ class Return_lend extends PS_Controller
                       if( ! $this->return_lend_model->update_receive($rs->lend_code, $rs->product_code, $qty))
                       {
                         $sc = FALSE;
-                        $this->error = "ปรับปรุง ยอดรับ {$rs->product_code} ไม่สำเร็จ";
+                        $this->error = "Failed to update received qty : {$rs->product_code}";
                       }
                     } //-- end foreach
                   } //--- end if !empty $details
@@ -727,7 +728,7 @@ class Return_lend extends PS_Controller
                   if( ! $this->return_lend_model->change_details_status($code, 2))
                   {
                     $sc = FALSE;
-                    $this->error = "เปลี่ยนสถานะรายการไม่สำเร็จ";
+                    $this->error = "Failed to change item status.";
                   }
                 }
 
@@ -743,7 +744,7 @@ class Return_lend extends PS_Controller
                   if( ! $this->return_lend_model->update($code, $arr))
                   {
                     $sc = FALSE;
-                    $this->error = "เปลี่ยนสถานะเอกสารไม่สำเร็จ";
+                    $this->error = "Failed to change document status";
                   }
                 }
 
@@ -762,7 +763,7 @@ class Return_lend extends PS_Controller
             else
             {
               $sc = FALSE;
-              $this->error = "กรุณายกเลิกเอกสาร Inventory Transfer บน SAP ก่อน (เมื่อยกเลิกแล้วต้องแก้ไขเลข RN โดยเติม -X ต่อท้าย)";
+              $this->error = "Please cancel the Inventory Transfer document on SAP first (when canceling, must correct the RN number by adding -X at the end)";
             }
           }
         }
@@ -777,7 +778,7 @@ class Return_lend extends PS_Controller
             if( ! $this->return_lend_model->change_details_status($code, 2))
             {
               $sc = FALSE;
-              $this->error = "เปลี่ยนสถานะรายการไม่สำเร็จ";
+              $this->error = "Failed to change item status.";
             }
           }
 
@@ -793,7 +794,7 @@ class Return_lend extends PS_Controller
             if( ! $this->return_lend_model->update($code, $arr))
             {
               $sc = FALSE;
-              $this->error = "เปลี่ยนสถานะเอกสารไม่สำเร็จ";
+              $this->error = "Failed to change document status";
             }
           }
 
@@ -811,7 +812,7 @@ class Return_lend extends PS_Controller
       else
       {
         $sc = FALSE;
-        $this->error = "ไม่พบเลขที่เอกสาร";
+        $this->error = "Document number not found";
       }
     }
     else
@@ -920,7 +921,7 @@ class Return_lend extends PS_Controller
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่ใบยืมสินค้า";
+      $this->error = "Lend document not found.";
     }
 
     echo $sc === TRUE ? json_encode($ds) : $this->error;
@@ -1046,7 +1047,7 @@ class Return_lend extends PS_Controller
     $exists = $this->return_lend_model->is_exists($code, $old_code);
     if($exists)
     {
-      echo 'เลขที่เอกสารซ้ำ';
+      echo 'Duplicate document number';
     }
     else
     {

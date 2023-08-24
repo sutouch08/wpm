@@ -6,7 +6,7 @@ class Support extends PS_Controller
   public $menu_code = 'ICSUPP';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'REQUEST';
-	public $title = 'เบิกอภินันท์';
+	public $title = 'Complimentary';
   public $filter;
 	public $isAPI;
 
@@ -110,7 +110,7 @@ class Support extends PS_Controller
         $rs->state_name    = get_state_name($rs->state);
         $ds[] = $rs;
       }
-    }
+    }  
 
     $filter['orders'] = $ds;
 		$filter['state'] = $state;
@@ -151,6 +151,8 @@ class Support extends PS_Controller
 			$this->load->model('masters/warehouse_model');
 
       $book_code = getConfig('BOOK_CODE_SUPPORT');
+      $DocCur = getConfig('CURRENCY');
+      $DocRate = 1.00;
       $date_add = db_date($this->input->post('date'));
 
       if($this->input->post('code'))
@@ -170,6 +172,8 @@ class Support extends PS_Controller
         'code' => $code,
         'role' => $role,
         'bookcode' => $book_code,
+        'DocCur' => $DocCur,
+        'DocRate' => $DocRate,
         'customer_code' => $this->input->post('customerCode'),
         'user' => $this->_user->uname,
         'warehouse_code' => $wh->code,
@@ -192,13 +196,13 @@ class Support extends PS_Controller
       }
       else
       {
-        set_error('เพิ่มเอกสารไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+        set_error('Failed to add document Please try again.');
         redirect($this->home.'/add_new');
       }
     }
     else
     {
-      set_error('ไม่พบข้อมูลลูกค้า กรุณาตรวจสอบ');
+      set_error('No customer found.');
       redirect($this->home.'/add_new');
     }
   }
@@ -292,19 +296,19 @@ class Support extends PS_Controller
 	      if($rs === FALSE)
 	      {
 	        $sc = FALSE;
-	        $this->error = 'ปรับปรุงข้อมูลไม่สำเร็จ';
+	        $this->error = 'Update failed.';
 	      }
 			}
 			else
 			{
 				$sc = FALSE;
-        $this->error = "เลขที่เอกสารไม่ถูกต้อง : {$code}";
+        $this->error = "Invalid document number : {$code}";
 			}
     }
     else
     {
       $sc = FALSE;
-      $this->error = 'ไม่พบเลขที่เอกสาร';
+      $this->error = 'Document number not found.';
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -349,7 +353,7 @@ class Support extends PS_Controller
     {
       $diff = $credit_used - $credit_balance;
       $sc = FALSE;
-      $message = 'เครดิตคงเหลือไม่พอ (ขาด : '.number($diff, 2).')';
+      $message = 'Insufficient credit balance (Missing : '.number($diff, 2).')';
     }
 
 		if(empty($order->id_address))
@@ -408,7 +412,7 @@ class Support extends PS_Controller
       if($rs === FALSE)
       {
         $sc = FALSE;
-        $message = 'บันทึกออเดอร์ไม่สำเร็จ';
+        $message = 'Failed to save order';
       }
     }
 
@@ -446,7 +450,7 @@ class Support extends PS_Controller
     $code = $this->input->post('order_code');
     $option = $this->input->post('option');
     $rs = $this->orders_model->set_never_expire($code, $option);
-    echo $rs === TRUE ? 'success' : 'ทำรายการไม่สำเร็จ';
+    echo $rs === TRUE ? 'success' : 'Update failed.';
   }
 
 
@@ -454,7 +458,7 @@ class Support extends PS_Controller
   {
     $code = $this->input->post('order_code');
     $rs = $this->orders_model->un_expired($code);
-    echo $rs === TRUE ? 'success' : 'ทำรายการไม่สำเร็จ';
+    echo $rs === TRUE ? 'success' : 'Update failed.';
   }
 
   public function clear_filter()

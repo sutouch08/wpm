@@ -16,17 +16,17 @@ function getValidate() {
 
 	if(arr.length == 2){
 	  if(arr[0] !== prefix){
-	    swal('Prefix ต้องเป็น '+prefix);
+	    swal('Prefix must be '+prefix);
 	    return false;
 	  }else if(arr[1].length != (4 + runNo)){
-	    swal('Run Number ไม่ถูกต้อง');
+	    swal('Run Number is invalid');
 	    return false;
 	  }else{
 	    addOrder();
 		}
 
 	}else{
-	  swal('เลขที่เอกสารไม่ถูกต้อง');
+	  swal('Invalid document number');
 	  return false;
 	}
 }
@@ -67,29 +67,29 @@ function save()
 	let reqRemark = $('#required_remark').val();
 
 	if(!isDate(date_add)){
-		swal("วันที่ไม่ถูกต้อง");
+		swal("Invalid date format");
 		return false;
 	}
 
 	if(zone_code.length == 0 || zoneName.length == 0){
-		swal("กรุณาระบุโซนรับเข้า");
+		swal("Please specify bin location");
 		return false;
 	}
 
 	if(empName.length == 0 || empID == ''){
-		swal("กรุณาระบุผู้ยืม");
+		swal("Please specify the borrower");
 		return false;
 	}
 
 	if(lendCode.length == 0){
-		swal("กรุณาระบุใบยืมสินค้า");
+		swal("Please specify the lend code.");
 		return false;
 	}
 
 	if(reqRemark == 1 && remark.length < 10) {
 		swal({
-			title:'ข้อผิดพลาด',
-			text:'กรุณาใส่หมายเหตุ (ความยาวอย่างน้อย 10 ตัวอักษร)',
+			title:'Error!',
+			text:'Please put a note (at least 10 characters long)',
 			type:'warning'
 		});
 
@@ -136,7 +136,7 @@ function save()
 
 		swal({
 			title:'Error!',
-			text:"จำนวนที่คืนต้องไม่มากกว่ายอดค้างรับ และ ต้องไม่น้อยกว่า 0",
+			text:"The amount returned must not be greater than the amount due and must not be less than 0.",
 			type:'error'
 		});
 
@@ -146,7 +146,7 @@ function save()
 	if(rows.length < 1) {
 		swal({
 			title:'Error!',
-			text:"ต้องคืนอย่างน้อย 1 ตัว",
+			text:"At least 1 must be returned.",
 			type:'error'
 		});
 
@@ -232,7 +232,6 @@ function doExport() {
 		if(rs === 'success'){
 			swal({
 				title:'Success',
-				text:'ส่งข้อมูลไป SAP สำเร็จ',
 				type:'success',
 				timer:1000
 			});
@@ -371,7 +370,7 @@ function acceptConfirm() {
 	let note = $.trim($('#accept-note').val());
 
 	if(note.length < 10) {
-		$('#accept-error').text('กรุณาระบุหมายเหตุอย่างนี้อย 10 ตัวอักษร');
+		$('#accept-error').text('Please enter at least 10 characters in this remark.');
 		return false;
 	}
 	else {

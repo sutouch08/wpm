@@ -5,7 +5,7 @@ class Configs extends PS_Controller
   public $menu_code = 'SCCONF';
 	public $menu_group_code = 'SC';
   public $menu_sub_group_code = 'CONFIG';
-	public $title = 'การกำหนดค่า';
+	public $title = 'Setting';
   public $error = '';
 
   public function __construct()

@@ -7,10 +7,10 @@
 	</div>
     <div class="col-sm-6">
       <p class="pull-right top-p">
-				<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+				<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
   <?php if($doc->is_approve == 1) : ?>
 		<?php if($doc->status == 1) : ?>
-			<button type="button" class="btn btn-sm btn-info" onclick="doExport()"><i class="fa fa-send"></i> ส่งข้อมูลไป SAP</button>
+			<button type="button" class="btn btn-sm btn-info" onclick="doExport()"><i class="fa fa-send"></i> Sent to SAP</button>
 		<?php endif; ?>
 		<?php if($doc->status == 3) : ?>
 			<button type="button" class="btn btn-sm btn-success" onclick="sendToWms()"><i class="fa fa-send"></i> Send to WMS</button>
@@ -18,13 +18,13 @@
 	<?php endif; ?>
 
 	<?php if($doc->status == 1 && $doc->is_approve == 0 && $this->pm->can_edit) : ?>
-				<button type="button" class="btn btn-sm btn-danger" onclick="unsave()">ยกเลิกการบันทึก</button>
+				<button type="button" class="btn btn-sm btn-danger" onclick="unsave()">Unsave</button>
 	<?php endif; ?>
 	<?php if($doc->status == 1 && $doc->is_approve == 0 && $this->pm->can_approve) : ?>
-				<button type="button" class="btn btn-sm btn-primary" onclick="approve()"><i class="fa fa-check"></i> อนุมัติ</button>
+				<button type="button" class="btn btn-sm btn-primary" onclick="approve()"><i class="fa fa-check"></i> Approve</button>
 	<?php endif; ?>
 	<?php if($this->pm->can_delete && $doc->status != 2) : ?>
-				<button type="button" class="btn btn-sm btn-danger" onclick="goDelete('<?php echo $doc->code; ?>')"><i class="fa fa-times"></i> ยกเลิก</button>
+				<button type="button" class="btn btn-sm btn-danger" onclick="goDelete('<?php echo $doc->code; ?>')"><i class="fa fa-times"></i> Cancel</button>
 	<?php endif; ?>
 
 	<?php if($doc->status == 2 && $this->_SuperAdmin) : ?>
@@ -32,9 +32,9 @@
 	<?php endif; ?>
 
 	<?php if($doc->status != 0) : ?>
-				<button type="button" class="btn btn-sm btn-info" onclick="printReturn()"><i class="fa fa-print"></i> พิมพ์</button>
+				<button type="button" class="btn btn-sm btn-info" onclick="printReturn()"><i class="fa fa-print"></i> Print</button>
 				<?php if($doc->status != 2) : ?>
-				<button type="button" class="btn btn-sm btn-info" onclick="printWmsReturn()"><i class="fa fa-print"></i> พิมพ์ใบส่งของ</button>
+				<button type="button" class="btn btn-sm btn-info" onclick="printWmsReturn()"><i class="fa fa-print"></i> Print</button>
 			<?php endif; ?>
 	<?php endif; ?>
       </p>
@@ -45,23 +45,23 @@
 
 <div class="row">
     <div class="col-sm-1 col-1-harf col-xs-6 padding-5">
-    	<label>เลขที่เอกสาร</label>
+    	<label>Doc No.</label>
         <input type="text" class="form-control input-sm text-center" value="<?php echo $doc->code; ?>" disabled />
     </div>
 		<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
-    	<label>วันที่</label>
+    	<label>Date</label>
       <input type="text" class="form-control input-sm text-center" value="<?php echo thai_date($doc->date_add, FALSE); ?>" disabled/>
     </div>
 		<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
-			<label>รหัสลูกค้า</label>
+			<label>Customer</label>
 			<input type="text" class="form-control input-sm text-center" value="<?php echo $doc->customer_code; ?>" disabled />
 		</div>
 		<div class="col-sm-5 col-xs-12 padding-5">
-			<label>ลูกค้า</label>
+			<label class="not-show">ลูกค้า</label>
 			<input type="text" class="form-control input-sm" value="<?php echo $doc->customer_name; ?>" disabled/>
 		</div>
 		<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
-			<label>เลขที่บิล[SAP]</label>
+			<label>Invoice[SAP]</label>
 			<input type="text" class="form-control input-sm text-center" value="<?php echo $doc->invoice; ?>" disabled />
 		</div>
 		<div class="col-sm-1 col-xs-6 padding-5">
@@ -70,19 +70,19 @@
 		</div>
 
 		<div class="col-sm-6 col-xs-12 padding-5">
-			<label>โซนฝากขาย</label>
+			<label>From location(consignment)</label>
 			<input type="text" class="form-control input-sm" value="<?php echo $doc->from_zone_name; ?>" disabled />
 		</div>
 
 		<div class="col-sm-6 col-xs-12 padding-5">
-			<label>โซน[รับคืน]</label>
+			<label>To location(receive)</label>
 			<input type="text" class="form-control input-sm" value="<?php echo $doc->zone_name; ?>" disabled />
 		</div>
 		<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
-			<label>รับที่</label>
+			<label>WMS</label>
 			<select class="form-control input-sm" disabled>
-				<option value="1" <?php echo is_selected("1", $doc->is_wms); ?>>Pioneer</option>
 				<option value="0" <?php echo is_selected("0", $doc->is_wms); ?>>Warrix</option>
+				<!--<option value="1" <?php echo is_selected("1", $doc->is_wms); ?>>Pioneer</option>-->
 			</select>
 		</div>
 		<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
@@ -93,7 +93,7 @@
 			</select>
 		</div>
     <div class="col-sm-7 col-7-harf col-xs-12 padding-5">
-    	<label>หมายเหตุ</label>
+    	<label>Remark</label>
         <input type="text" class="form-control input-sm" value="<?php echo $doc->remark; ?>" disabled />
     </div>
 		<div class="col-sm-1 col-1-harf col-xs-6 padding-5">
@@ -124,15 +124,15 @@ if($doc->status == 3)
 		<table class="table table-striped border-1" style="min-width:900px;">
 			<thead>
 				<tr>
-					<th class="width-5 text-center">ลำดับ</th>
-					<th class="15">รหัส</th>
-					<th class="">สินค้า</th>
-					<th class="width-10 text-center">เลขที่บิล</th>
-					<th class="width-10 text-right">ราคา</th>
-					<th class="width-10 text-right">ส่วนลด</th>
-					<th class="width-10 text-right">คืน</th>
-					<th class="width-10 text-right">รับ</th>
-					<th class="width-10 text-right">มูลค่า(คืน)</th>
+					<th class="width-5 text-center">#</th>
+					<th class="15">Item code</th>
+					<th class="">Description</th>
+					<th class="width-10 text-center">Inovice</th>
+					<th class="width-10 text-right">Price</th>
+					<th class="width-10 text-right">GP</th>
+					<th class="width-10 text-right">Returned Qty</th>
+					<th class="width-10 text-right">Received Qty</th>
+					<th class="width-10 text-right">Amount</th>
 				</tr>
 			</thead>
 			<tbody id="detail-table">

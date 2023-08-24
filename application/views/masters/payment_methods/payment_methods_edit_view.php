@@ -36,7 +36,7 @@
     <div class="col-xs-12 col-sm-3">
 			<label>
 				<input type="checkbox" class="ace" name="term" id="term" value="1" <?php echo is_checked(1, $term); ?> />
-				<span class="lbl">&nbsp; &nbsp;เครติดเทอม</span>
+				<span class="lbl">&nbsp; &nbsp;is Credit Term</span>
 			</label>
     </div>
   </div>

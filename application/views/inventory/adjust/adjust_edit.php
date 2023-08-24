@@ -7,10 +7,10 @@
 	</div>
     <div class="col-sm-6">
       	<p class="pull-right top-p">
-			    <button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+			    <button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
           <?php if(($this->pm->can_add OR $this->pm->can_edit) && $doc->status == 0) : ?>
-						<button type="button" class="btn btn-sm btn-primary" onclick="getDiffList()"><i class="fa fa-archive"></i> ยอดต่าง</button>
-            <button type="button" class="btn btn-sm btn-success" onclick="saveAdjust()"><i class="fa fa-save"></i> บันทึก</button>
+						<!--<button type="button" class="btn btn-sm btn-primary" onclick="getDiffList()"><i class="fa fa-archive"></i> ยอดต่าง</button>-->
+            <button type="button" class="btn btn-sm btn-success" onclick="saveAdjust()"><i class="fa fa-save"></i> Save</button>
           <?php endif; ?>
         </p>
     </div>
@@ -19,26 +19,26 @@
 
 <div class="row">
     <div class="col-sm-1 col-1-harf padding-5 first">
-    	<label>เลขที่เอกสาร</label>
+    	<label>Doc No.</label>
         <input type="text" class="form-control input-sm text-center" value="<?php echo $doc->code; ?>" disabled />
     </div>
 		<div class="col-sm-1 padding-5">
-    	<label>วันที่</label>
+    	<label>Date</label>
       <input type="text" class="form-control input-sm text-center edit" id="date_add" value="<?php echo thai_date($doc->date_add) ?>" readonly disabled/>
     </div>
 		<div class="col-sm-2 padding-5">
-			<label>อ้างถึง</label>
+			<label>Reference</label>
 			<input type="text" class="form-control input-sm edit" id="reference" value="<?php echo $doc->reference; ?>" disabled />
 		</div>
 		<div class="col-sm-6 padding-5">
-    	<label>หมายเหตุ</label>
-        <input type="text" class="form-control input-sm" id="remark" placeholder="ระบุหมายเหตุเอกสาร (ถ้ามี)" value="<?php echo $doc->remark; ?>" disabled/>
+    	<label>Remark</label>
+        <input type="text" class="form-control input-sm" id="remark" placeholder="" value="<?php echo $doc->remark; ?>" disabled/>
     </div>
     <?php if($doc->status == 0) : ?>
 		<div class="col-sm-1 col-1-harf padding-5 last">
 			<label class="display-block not-show">add</label>
-			<button type="button" class="btn btn-xs btn-warning btn-block" id="btn-edit" onclick="getEdit()"><i class="fa fa-pencil"></i> แก้ไข</button>
-      <button type="button" class="btn btn-xs btn-success btn-block hide" id="btn-update" onclick="updateHeader()"><i class="fa fa-save"></i> บันทึก</button>
+			<button type="button" class="btn btn-xs btn-warning btn-block" id="btn-edit" onclick="getEdit()"><i class="fa fa-pencil"></i> Edit</button>
+      <button type="button" class="btn btn-xs btn-success btn-block hide" id="btn-update" onclick="updateHeader()"><i class="fa fa-save"></i> Update</button>
 		</div>
     <?php endif; ?>
 
@@ -50,33 +50,33 @@
 <hr class="margin-top-15 margin-bottom-15"/>
 <div class="row">
   <div class="col-sm-3 padding-5 first">
-    <label>โซน</label>
+    <label>Location</label>
     <input type="text" class="form-control input-sm text-center" id="zone" value="" autofocus />
   </div>
   <div class="col-sm-1 col-1-harf padding-5">
     <label class="display-block not-show">change</label>
-    <button type="button" class="btn btn-xs btn-yellow btn-block hide" id="btn-change-zone" onclick="changeZone()">เปลี่ยนโซน</button>
-    <button type="button" class="btn btn-xs btn-info btn-block" id="btn-set-zone" onclick="set_zone()">ตกลง</button>
+    <button type="button" class="btn btn-xs btn-yellow btn-block hide" id="btn-change-zone" onclick="changeZone()">change</button>
+    <button type="button" class="btn btn-xs btn-info btn-block" id="btn-set-zone" onclick="set_zone()">Set</button>
   </div>
   <div class="col-sm-3 padding-5">
-    <label>รหัสสินค้า</label>
+    <label>SKU</label>
     <input type="text" class="form-control input-sm text-center" id="pd-code" value="" disabled />
   </div>
 	<div class="col-sm-1 padding-5">
-		<label>สต็อก</label>
+		<label>Stock</label>
 		<input type="number" class="form-control input-sm text-center" id="stock-qty" value="" disabled />
 	</div>
   <div class="col-sm-1 padding-5">
-    <label>เพิ่ม</label>
+    <label>Increse</label>
     <input type="number" class="form-control input-sm text-center" id="qty-up" value="" disabled />
   </div>
   <div class="col-sm-1 padding-5">
-    <label>ลด</label>
+    <label>Decrese</label>
     <input type="number" class="form-control input-sm text-center" id="qty-down" value="" disabled />
   </div>
   <div class="col-sm-1 col-1-harf padding-5 last">
     <label class="display-block not-show">OK</label>
-    <button type="button" class="btn btn-xs btn-primary btn-block" id="btn-add" onclick="add_detail()" disabled>เพิ่มรายการ</button>
+    <button type="button" class="btn btn-xs btn-primary btn-block" id="btn-add" onclick="add_detail()" disabled>Add</button>
   </div>
 </div>
 <?php endif; ?>
@@ -84,21 +84,21 @@
 <div class="row">
   <div class="col-sm-12 first last">
     <p class="pull-right top-p">
-      <span style="margin-right:30px;"><i class="fa fa-check green"></i> = ปรับยอดแล้ว</span>
-      <span><i class="fa fa-times red"></i> = ยังไม่ปรับยอด</span>
+      <span style="margin-right:30px;"><i class="fa fa-check green"></i> = Saved</span>
+      <span><i class="fa fa-times red"></i> = Unsave</span>
     </p>
   </div>
   <div class="col-sm-12">
     <table class="table table-striped border-1">
       <thead>
         <tr>
-          <th class="width-5 text-center">ลำดับ</th>
-          <th class="width-20">รหัสสินค้า</th>
-          <th class="">สินค้า</th>
-          <th class="width-20 text-center">โซน</th>
-          <th class="width-10 text-center">เพิ่ม</th>
-          <th class="width-10 text-center">ลด</th>
-          <th class="width-5 text-center">สถานะ</th>
+          <th class="width-5 text-center">#</th>
+          <th class="width-20">Item code</th>
+          <th class="">Description</th>
+          <th class="width-20 text-center">Bin code</th>
+          <th class="width-10 text-center">Increse</th>
+          <th class="width-10 text-center">Decrese</th>
+          <th class="width-5 text-center">Status</th>
           <th class="width-5 text-right"></th>
         </tr>
       </thead>

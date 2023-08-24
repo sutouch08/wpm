@@ -5,7 +5,7 @@ class Sales_consignment_report extends PS_Controller
   public $menu_code = 'RSOCMD';
 	public $menu_group_code = 'RE';
   public $menu_sub_group_code = 'RESALE';
-	public $title = 'รายงานตัดยอดฝากขายเทียม แสดงรายการสินค้า';
+	public $title = 'Consignment cut off report showing product list';
   public $filter;
   public $error;
   public function __construct()
@@ -83,7 +83,7 @@ class Sales_consignment_report extends PS_Controller
       if(count($result) > 2000)
       {
         $sc = FALSE;
-        $this->error = "ข้อมูลมีปริมาณมากเกินกว่าจะแสดงผลได้ กรุณาส่งออกข้อมูลแทนการแสดงผลหน้าจอ";
+        $this->error = "The amount of data is too large to be displayed. Please export data instead of screen display";
       }
       else
       {
@@ -186,12 +186,12 @@ class Sales_consignment_report extends PS_Controller
     }
 
     //---  Report title
-    $report_title = "รายงานตัดยอดฝากขายเทียม";
-    $whList = $allWhouse == 1 ? 'ทั้งหมด' : $wh_list;
-    $zoneList = $allZone == 1 ? 'ทั้งหมด' : $zoneCode." - ".$zoneName;
-    $productList  = $allProduct == 1 ? 'ทั้งหมด' : '('.$pdFrom.') - ('.$pdTo.')';
+    $report_title = "Consignment cut off report showing product list";
+    $whList = $allWhouse == 1 ? 'All' : $wh_list;
+    $zoneList = $allZone == 1 ? 'All' : $zoneCode." - ".$zoneName;
+    $productList  = $allProduct == 1 ? 'All' : '('.$pdFrom.') - ('.$pdTo.')';
     $dateRange = "วันที่ ".thai_date($fromDate, FALSE, '/').' - '.thai_date($toDate, FALSE, '/');
-    $cusList = $allCustomer == 1 ? 'ทั้งหมด' : "({$cusFrom}) - ({$cusTo})";
+    $cusList = $allCustomer == 1 ? 'All' : "({$cusFrom}) - ({$cusTo})";
 
 
     $filter = array(
@@ -220,31 +220,31 @@ class Sales_consignment_report extends PS_Controller
     //--- set report title header
     $this->excel->getActiveSheet()->setCellValue('A1', $report_title);
     $this->excel->getActiveSheet()->setCellValue('A2', $dateRange);
-    $this->excel->getActiveSheet()->setCellValue('A3', 'ลูกค้า : '.$cusList);
-    $this->excel->getActiveSheet()->setCellValue('A4', 'คลัง : '.$whList);
-    $this->excel->getActiveSheet()->setCellValue('A5', 'โซน : '.$zoneList);
-    $this->excel->getActiveSheet()->setCellValue('A4', 'สินค้า : '.$productList);
+    $this->excel->getActiveSheet()->setCellValue('A3', 'Customer : '.$cusList);
+    $this->excel->getActiveSheet()->setCellValue('A4', 'Warehouse : '.$whList);
+    $this->excel->getActiveSheet()->setCellValue('A5', 'Zone : '.$zoneList);
+    $this->excel->getActiveSheet()->setCellValue('A4', 'Items : '.$productList);
 
     $row = 6;
     //--- set Table header
-    $this->excel->getActiveSheet()->setCellValue("A{$row}", "วันที่");
-    $this->excel->getActiveSheet()->setCellValue("B{$row}", "เลขที่");
-    $this->excel->getActiveSheet()->setCellValue("C{$row}", "รหัส");
-    $this->excel->getActiveSheet()->setCellValue("D{$row}", "สินค้า");
-    $this->excel->getActiveSheet()->setCellValue("E{$row}", "ทุน");
-    $this->excel->getActiveSheet()->setCellValue("F{$row}", "ราคา");
-    $this->excel->getActiveSheet()->setCellValue("G{$row}", "ขาย");
-    $this->excel->getActiveSheet()->setCellValue("H{$row}", "จำนวน");
-    $this->excel->getActiveSheet()->setCellValue("I{$row}", "ส่วนลด");
-    $this->excel->getActiveSheet()->setCellValue("J{$row}", "มูลค่าส่วนลด");
-    $this->excel->getActiveSheet()->setCellValue("K{$row}", "มูลค่ารวม");
-    $this->excel->getActiveSheet()->setCellValue("L{$row}", "ทุนรวม");
-    $this->excel->getActiveSheet()->setCellValue("M{$row}", "รหัสลูกค้า");
-    $this->excel->getActiveSheet()->setCellValue("N{$row}", "ชื่อลูกค้า");
-    $this->excel->getActiveSheet()->setCellValue("O{$row}", "รหัสคลัง");
-    $this->excel->getActiveSheet()->setCellValue("P{$row}", "ชื่อคลัง");
-    $this->excel->getActiveSheet()->setCellValue("Q{$row}", "รหัสโซน");
-    $this->excel->getActiveSheet()->setCellValue("R{$row}", "ชื่อโซน");
+    $this->excel->getActiveSheet()->setCellValue("A{$row}", "Date");
+    $this->excel->getActiveSheet()->setCellValue("B{$row}", "Document");
+    $this->excel->getActiveSheet()->setCellValue("C{$row}", "Item Code");
+    $this->excel->getActiveSheet()->setCellValue("D{$row}", "Description");
+    $this->excel->getActiveSheet()->setCellValue("E{$row}", "Cost");
+    $this->excel->getActiveSheet()->setCellValue("F{$row}", "Price");
+    $this->excel->getActiveSheet()->setCellValue("G{$row}", "Sell");
+    $this->excel->getActiveSheet()->setCellValue("H{$row}", "Qty");
+    $this->excel->getActiveSheet()->setCellValue("I{$row}", "Discount");
+    $this->excel->getActiveSheet()->setCellValue("J{$row}", "Discount Amount");
+    $this->excel->getActiveSheet()->setCellValue("K{$row}", "Total Amount");
+    $this->excel->getActiveSheet()->setCellValue("L{$row}", "Total Cose");
+    $this->excel->getActiveSheet()->setCellValue("M{$row}", "Customer Code");
+    $this->excel->getActiveSheet()->setCellValue("N{$row}", "Customer Name");
+    $this->excel->getActiveSheet()->setCellValue("O{$row}", "Warehouse Code");
+    $this->excel->getActiveSheet()->setCellValue("P{$row}", "Warehouse Name");
+    $this->excel->getActiveSheet()->setCellValue("Q{$row}", "Zone Code");
+    $this->excel->getActiveSheet()->setCellValue("R{$row}", "Zone Name");
 
     $row++;
 

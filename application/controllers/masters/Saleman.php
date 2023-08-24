@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Saleman extends PS_Controller{
 	public $menu_code = 'DBSALE'; //--- Add/Edit Users
 	public $menu_group_code = 'DB'; //--- System security
-	public $title = 'พนักงานขาย';
+	public $title = 'Sales Employee';
 
   public function __construct()
   {

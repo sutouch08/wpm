@@ -21,7 +21,7 @@
   </div>
   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 padding-5">
     <p class="pull-right top-p">
-      <button type="button" class="btn btn-xs btn-warning top-btn" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+      <button type="button" class="btn btn-xs btn-warning top-btn" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
     </p>
   </div>
 </div>
@@ -29,11 +29,11 @@
 
 <div class="row">
   <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4 padding-5">
-    <label>เลขที่</label>
+    <label>Code</label>
     <input type="text" class="form-control input-sm text-center" id="txt-policy" value="<?php echo $rule->code; ?>" disabled />
   </div>
   <div class="col-lg-6 col-md-7 col-sm-7 col-xs-8 padding-5">
-    <label>ชื่อเงื่อนไข</label>
+    <label>Name</label>
     <input type="text" class="form-control input-sm" maxlength="150" id="txt-rule-name" value="<?php echo $rule->name; ?>" disabled />
   </div>
   <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
@@ -50,8 +50,8 @@
   <?php if($this->pm->can_add) : ?>
   <div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-3 padding-5">
     <label class="display-block not-show">add</label>
-    <button type="button" class="btn btn-xs btn-warning btn-block" id="btn-edit" onclick="getEdit()">แก้ไข</button>
-    <button type="button" class="btn btn-xs btn-success btn-block hide" id="btn-update" onclick="updateRule()">บันทึก</button>
+    <button type="button" class="btn btn-xs btn-warning btn-block" id="btn-edit" onclick="getEdit()">Edit</button>
+    <button type="button" class="btn btn-xs btn-success btn-block hide" id="btn-update" onclick="updateRule()">Save</button>
   </div>
   <?php endif; ?>
 </div>
@@ -64,21 +64,21 @@
 
 <div class="col-lg-1-harf col-md-2 col-sm-2 padding-5 padding-top-15 hidden-xs">
   <ul id="myTab1" class="setting-tabs width-100" style="margin-left:0px;">
-    <li class="li-block active"><a href="#discount" data-toggle="tab">ส่วนลด</a></li>
-    <li class="li-block"><a href="#customer" data-toggle="tab">ลูกค้า</a></li>
-    <li class="li-block"><a href="#product" data-toggle="tab">สินค้า</a></li>
-    <li class="li-block"><a href="#channels" data-toggle="tab">ช่องทางขาย</a></li>
-    <li class="li-block"><a href="#payment" data-toggle="tab">การชำระเงิน</a></li>
+    <li class="li-block active"><a href="#discount" data-toggle="tab">Discount</a></li>
+    <li class="li-block"><a href="#customer" data-toggle="tab">Customer</a></li>
+    <li class="li-block"><a href="#product" data-toggle="tab">Product</a></li>
+    <li class="li-block"><a href="#channels" data-toggle="tab">Channels</a></li>
+    <li class="li-block"><a href="#payment" data-toggle="tab">Payments</a></li>
   </ul>
 </div>
 
 <div class="col-xs-12 padding-5 visible-xs">
   <ul id="myTab1" class="setting-tabs width-100" style="margin-left:0px;">
-    <li class="li-block inline border-1 margin-bottom-5 active"><a href="#discount" data-toggle="tab">ส่วนลด</a></li>
-    <li class="li-block inline border-1 margin-bottom-5"><a href="#customer" data-toggle="tab">ลูกค้า</a></li>
-    <li class="li-block inline border-1 margin-bottom-5"><a href="#product" data-toggle="tab">สินค้า</a></li>
-    <li class="li-block inline border-1 margin-bottom-5"><a href="#channels" data-toggle="tab">ช่องทางขาย</a></li>
-    <li class="li-block inline border-1 margin-bottom-5"><a href="#payment" data-toggle="tab">การชำระเงิน</a></li>
+    <li class="li-block inline border-1 margin-bottom-5 active"><a href="#discount" data-toggle="tab">Discount</a></li>
+    <li class="li-block inline border-1 margin-bottom-5"><a href="#customer" data-toggle="tab">Customer</a></li>
+    <li class="li-block inline border-1 margin-bottom-5"><a href="#product" data-toggle="tab">Product</a></li>
+    <li class="li-block inline border-1 margin-bottom-5"><a href="#channels" data-toggle="tab">Channels</a></li>
+    <li class="li-block inline border-1 margin-bottom-5"><a href="#payment" data-toggle="tab">Payments</a></li>
   </ul>
 </div>
 

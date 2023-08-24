@@ -222,7 +222,7 @@
 			<label class="col-sm-3 control-label no-padding-right">API</label>
 			<div class="col-xs-12 col-sm-3">
 				<label style="padding-top:5px;">
-					<input name="is_api" class="ace ace-switch ace-switch-7" type="checkbox" id="is_api" value="1" <?php echo is_checked($is_api,1); ?>/>
+					<input name="is_api" class="ace ace-switch ace-switch-7" type="checkbox" id="is_api" value="1" <?php echo is_checked($is_api, '1'); ?>/>
 					<span class="lbl"></span>
 				</label>
 			</div>

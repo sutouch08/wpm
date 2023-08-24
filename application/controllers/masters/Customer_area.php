@@ -6,7 +6,7 @@ class Customer_area extends PS_Controller
   public $menu_code = 'DBCARE';
 	public $menu_group_code = 'DB';
   public $menu_sub_group_code = 'CUSTOMER';
-	public $title = 'เพิ่ม/แก้ไข พื้นที่การขาย';
+	public $title = 'Sales Region';
 
   public function __construct()
   {
@@ -49,7 +49,6 @@ class Customer_area extends PS_Controller
   {
     $data['code'] = $this->session->flashdata('code');
     $data['name'] = $this->session->flashdata('name');
-    $this->title = 'เพิ่ม เขตการขาย';
     $this->load->view('masters/customer_area/customer_area_add_view', $data);
   }
 
@@ -69,25 +68,25 @@ class Customer_area extends PS_Controller
       if($this->customer_area_model->is_exists($code) === TRUE)
       {
         $sc = FALSE;
-        set_error("'".$code."' มีในระบบแล้ว");
+        set_error("'".$code."' already exists");
       }
 
       if($this->customer_area_model->is_exists_name($name) === TRUE)
       {
         $sc = FALSE;
-        set_error("'".$name."' มีในระบบแล้ว");
+        set_error("'".$name."' already exists");
       }
 
       if($sc === TRUE )
       {
         if($this->customer_area_model->add($ds))
         {
-          set_message('เพิ่มข้อมูลเรียบร้อยแล้ว');
+          set_message('Add data successfully');
         }
         else
         {
           $sc = FALSE;
-          set_error('เพิ่มข้อมูลไม่สำเร็จ');
+          set_error('Failed to add data');
         }
 
       }
@@ -101,7 +100,7 @@ class Customer_area extends PS_Controller
     }
     else
     {
-      set_error('ไม่พบข้อมูล');
+      set_error('No data found');
     }
 
     redirect($this->home.'/add_new');
@@ -111,7 +110,6 @@ class Customer_area extends PS_Controller
 
   public function edit($code)
   {
-    $this->title = 'แก้ไข เขตการขาย';
     $rs = $this->customer_area_model->get($code);
     $data = array(
       'code' => $rs->code,
@@ -142,25 +140,25 @@ class Customer_area extends PS_Controller
       if($sc === TRUE && $this->customer_area_model->is_exists($code, $old_code) === TRUE)
       {
         $sc = FALSE;
-        set_error("'".$code."' มีอยู่ในระบบแล้ว โปรดใช้รหัสอื่น");
+        set_error("'".$code."' already exists");
       }
 
       if($sc === TRUE && $this->customer_area_model->is_exists_name($name, $old_name) === TRUE)
       {
         $sc = FALSE;
-        set_error("'".$name."' มีอยู่ในระบบแล้ว โปรดใช้ชื่ออื่น");
+        set_error("'".$name."' already exists");
       }
 
       if($sc === TRUE)
       {
         if($this->customer_area_model->update($old_code, $ds) === TRUE)
         {
-          set_message('ปรับปรุงข้อมูลเรียบร้อยแล้ว');
+          set_message('Update data successfully');
         }
         else
         {
           $sc = FALSE;
-          set_error('ปรับปรุงข้อมูลไม่สำเร็จ');
+          set_error('Update data failed');
         }
       }
 
@@ -168,7 +166,7 @@ class Customer_area extends PS_Controller
     else
     {
       $sc = FALSE;
-      set_error('ไม่พบข้อมูล');
+      set_error('No data found');
     }
 
     if($sc === FALSE)
@@ -187,16 +185,16 @@ class Customer_area extends PS_Controller
     {
       if($this->customer_area_model->delete($code))
       {
-        set_message('ลบข้อมูลเรียบร้อยแล้ว');
+        set_message('Data has been deleted.');
       }
       else
       {
-        set_error('ลบข้อมูลไม่สำเร็จ');
+        set_error('Failed to delete data');
       }
     }
     else
     {
-      set_error('ไม่พบข้อมูล');
+      set_error('No data found');
     }
 
     redirect($this->home);

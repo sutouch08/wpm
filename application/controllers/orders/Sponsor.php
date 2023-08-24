@@ -6,7 +6,7 @@ class Sponsor extends PS_Controller
   public $menu_code = 'SOODSP';
 	public $menu_group_code = 'SO';
   public $menu_sub_group_code = 'ORDER';
-	public $title = 'สปอนเซอร์';
+	public $title = 'Sponsor';
   public $filter;
   public $error;
 	public $isAPI;
@@ -30,8 +30,6 @@ class Sponsor extends PS_Controller
     $this->load->helper('state');
     $this->load->helper('product_images');
     $this->load->helper('warehouse');
-
-		$this->isAPI = is_true(getConfig('WMS_API'));
   }
 
 
@@ -49,8 +47,7 @@ class Sponsor extends PS_Controller
       'isExpire' => get_filter('isExpire', 'sponsor_isExpire', NULL),
       'isApprove' => get_filter('isApprove', 'sponsor_isApprove', 'all'),
 			'warehouse' => get_filter('warehouse', 'sponsor_warehouse', ''),
-      'sap_status' => get_filter('sap_status', 'sponsor_sap_status', 'all'),
-			'wms_export' => get_filter('wms_export', 'sponsor_wms_export', 'all')
+      'sap_status' => get_filter('sap_status', 'sponsor_sap_status', 'all')
     );
 
     $state = array(
@@ -148,10 +145,13 @@ class Sponsor extends PS_Controller
   public function add()
   {
 		$this->load->model('masters/warehouse_model');
+
     if($this->input->post('customerCode'))
     {
       $book_code = getConfig('BOOK_CODE_SPONSOR');
+
       $date_add = db_date($this->input->post('date'));
+
       if($this->input->post('code'))
       {
         $code = $this->input->post('code');
@@ -162,19 +162,24 @@ class Sponsor extends PS_Controller
       }
 
       $role = 'P'; //--- P = Sponsor
-      $wh = $this->warehouse_model->get($this->input->post('warehouse'));
+
+      //$wh = $this->warehouse_model->get($this->input->post('warehouse'));
+      $DocCur = $this->input->post('doc_currency') ? $this->input->post('doc_currency') : getConfig('CURRENCY');
+      $DocRate = $this->input->post('doc_rate') > 0 ? $this->input->post('doc_rate') : 1;
+
       $ds = array(
         'date_add' => $date_add,
         'code' => $code,
         'role' => $role,
         'bookcode' => $book_code,
+        'DocCur' => $DocCur,
+        'DocRate' => $DocRate,
         'customer_code' => $this->input->post('customerCode'),
         'user' => $this->_user->uname,
         'remark' => $this->input->post('remark'),
         'user_ref' => $this->input->post('empName'),
-        'warehouse_code' => $wh->code,
-				'is_wms' => $wh->is_wms,
-				'transformed' => $this->input->post('transformed')
+        'warehouse_code' => $this->input->post('warehouse'),
+				'transformed' => 0
       );
 
       if($this->orders_model->add($ds) === TRUE)
@@ -191,13 +196,13 @@ class Sponsor extends PS_Controller
       }
       else
       {
-        set_error('เพิ่มเอกสารไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+        set_error('Failed to add document Please try again.');
         redirect($this->home.'/add_new');
       }
     }
     else
     {
-      set_error('ไม่พบข้อมูลลูกค้า กรุณาตรวจสอบ');
+      set_error('No customer found, please check.');
       redirect($this->home.'/add_new');
     }
   }
@@ -260,6 +265,8 @@ class Sponsor extends PS_Controller
 			$this->load->model('masters/warehouse_model');
 
       $code = $this->input->post('order_code');
+      $DocCur = $this->input->post('DocCur');
+      $DocRate = $this->input->post('DocRate');
       $order = $this->orders_model->get($code);
 
       if(!empty($order))
@@ -272,17 +279,17 @@ class Sponsor extends PS_Controller
         }
         else
         {
-					$wh = $this->warehouse_model->get($this->input->post('warehouse'));
           $ds = array(
             'customer_code' => $this->input->post('customer_code'),
             'date_add' => db_date($this->input->post('date_add')),
+            'DocCur' => $DocCur,
+            'DocRate' => $DocRate,
             'user_ref' => $this->input->post('user_ref'),
-            'warehouse_code' => $wh->code,
+            'warehouse_code' => $this->input->post('warehouse'),
             'remark' => $this->input->post('remark'),
             'status' => 0,
 						'id_address' => NULL,
 						'id_sender' => NULL,
-						'is_wms' => $wh->is_wms,
 						'transformed' => $this->input->post('transformed')
           );
         }
@@ -290,19 +297,55 @@ class Sponsor extends PS_Controller
         if(! $this->orders_model->update($code, $ds))
         {
           $sc = FALSE;
-          $this->error = "ปรับปรุงเอกสารไม่สำเร็จ";
+          $this->error = "Failed to update document";
+        }
+
+        if($sc === TRUE)
+        {
+          if($DocCur != $order->DocCur && $DocRate != $order->DocRate)
+          {
+            $details = $this->orders_model->get_order_details($code);
+
+            if( ! empty($details))
+            {
+              foreach($details as $detail)
+              {
+                //--- convert price
+                $cost = $detail->cost;
+                $price = convertPrice($detail->price, $DocRate,  $order->DocRate);
+                $full_amount = $detail->total_amount + $detail->discount_amount;
+                $discount = $detail->discount_amount / $full_amount;
+                $total_amount = $detail->qty * $price;
+                $total_discount = ($detail->qty * $price) * $discount;
+                $line_total = $total_amount - $total_discount;
+                $total_frgn = convertFC($total_amount, $DocRate, $order->DocRate);
+
+                $arr = array(
+                  'cost' => $cost,
+                  'price' => $price,
+                  'currency' => $DocCur,
+                  'rate' => $DocRate,
+                  'discount_amount' => $total_discount,
+                  'total_amount' => $line_total,
+                  'totalFrgn' => $total_frgn
+                );
+
+                $this->orders_model->update_detail($detail->id, $arr);
+              }
+            }
+          }
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "เลขที่เอกสารไม่ถูกต้อง : {$code}";
+        $this->error = "The document number is invalid. : {$code}";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = 'ไม่พบเลขที่เอกสาร';
+      $this->error = 'Document number not found';
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -347,7 +390,7 @@ class Sponsor extends PS_Controller
     {
       $diff = $credit_used - $credit_balance;
       $sc = FALSE;
-      $message = 'เครดิตคงเหลือไม่พอ (ขาด : '.number($diff, 2).')';
+      $message = 'Insufficient credit balance (Missing : '.number($diff, 2).')';
     }
 
 		if(empty($order->id_address))
@@ -406,7 +449,7 @@ class Sponsor extends PS_Controller
       if($rs === FALSE)
       {
         $sc = FALSE;
-        $message = 'บันทึกออเดอร์ไม่สำเร็จ';
+        $message = 'Failed to save order.';
       }
     }
 
@@ -444,7 +487,7 @@ class Sponsor extends PS_Controller
     $code = $this->input->post('order_code');
     $option = $this->input->post('option');
     $rs = $this->orders_model->set_never_expire($code, $option);
-    echo $rs === TRUE ? 'success' : 'ทำรายการไม่สำเร็จ';
+    echo $rs === TRUE ? 'success' : 'Failed to complete the transaction';
   }
 
 
@@ -452,7 +495,7 @@ class Sponsor extends PS_Controller
   {
     $code = $this->input->post('order_code');
     $rs = $this->orders_model->un_expired($code);
-    echo $rs === TRUE ? 'success' : 'ทำรายการไม่สำเร็จ';
+    echo $rs === TRUE ? 'success' : 'Failed to complete the transaction';
   }
 
   public function clear_filter()
@@ -466,7 +509,6 @@ class Sponsor extends PS_Controller
       'sponsor_toDate',
       'sponsor_isApprove',
 			'sponsor_warehouse',
-			'sponsor_wms_export',
       'sponsor_sap_status',
       'sponsor_notSave',
       'sponsor_onlyMe',

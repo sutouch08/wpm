@@ -8,9 +8,9 @@
     </div>
     <div class="col-sm-6">
 			<p class="pull-right">
-				<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i>  กลับ</button>
+				<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i>  Back</button>
 			<?php if($this->permission === TRUE) : ?>
-						<button type="button" class="btn btn-sm btn-success" onclick="savePermission()"><i class="fa fa-save"></i>  บันทึก</button>
+						<button type="button" class="btn btn-sm btn-success" onclick="savePermission()"><i class="fa fa-save"></i>  Update</button>
 			<?php endif; ?>
 			</p>
 		</div>
@@ -24,12 +24,12 @@
 			<thead>
 				<tr class="hide">
 					<th class="width-30"></th>
-					<th class="width-5 text-center">ดู</th>
-					<th class="width-5 text-center">เพิ่ม</th>
-					<th class="width-5 text-center">แก้ไข</th>
-					<th class="width-5 text-center">ลบ</th>
-					<th class="width-5 text-center">อนุมัติ</th>
-					<th class="width-5 text-center">ทั้งหมด</th>
+					<th class="width-5 text-center">View</th>
+					<th class="width-5 text-center">Add</th>
+					<th class="width-5 text-center">Edit</th>
+					<th class="width-5 text-center">Delete</th>
+					<th class="width-5 text-center">Approve</th>
+					<th class="width-5 text-center">All</th>
 
 				</tr>
 			</thead>
@@ -42,37 +42,37 @@
 					<td class="middle text-center">
 						<label>
 							<input id="view-group-<?php echo $g_code; ?>" type="checkbox" class="ace" onchange="groupViewCheck($(this), '<?php echo $g_code; ?>')" />
-							<span class="lbl">  ดู</span>
+							<span class="lbl">  view</span>
 						</label>
 					</td>
 					<td class="middle text-center">
 						<label>
 						<input id="add-group-<?php echo $g_code; ?>" type="checkbox" class="ace" onchange="groupAddCheck($(this), '<?php echo $g_code; ?>' )">
-						<span class="lbl">  เพิ่ม</span>
+						<span class="lbl">  Add</span>
 						</label>
 					</td>
 					<td class="middle text-center">
 						<label>
 						<input id="edit-group-<?php echo $g_code; ?>" type="checkbox" class="ace" onchange="groupEditCheck($(this), '<?php echo $g_code; ?>' )">
-						<span class="lbl"> แก้ไข</span>
+						<span class="lbl"> Edit</span>
 						</label>
 					</td>
 					<td class="middle text-center">
 						<label>
 						<input id="delete-group-<?php echo $g_code; ?>" type="checkbox" class="ace" onchange="groupDeleteCheck($(this), '<?php echo $g_code; ?>' )">
-						<span class="lbl"> ลบ</span>
+						<span class="lbl"> Delete</span>
 						</label>
 					</td>
 					<td class="middle text-center">
 						<label>
 						<input id="approve-group-<?php echo $g_code; ?>" type="checkbox" class="ace" onchange="groupApproveCheck($(this), '<?php echo $g_code; ?>' )">
-						<span class="lbl"> อนุมัติ</span>
+						<span class="lbl"> Approve</span>
 						</label>
 					</td>
 					<td class="middle text-center">
 						<label>
 						<input id="all-group-<?php echo $g_code; ?>" type="checkbox" class="ace" onchange="groupAllCheck($(this), '<?php echo $g_code; ?>' )">
-						<span class="lbl">  ทั้งหมด</span>
+						<span class="lbl">  All</span>
 						</label>
 					</td>
 
@@ -120,7 +120,7 @@
 			</tbody>
 		</table>
 		<p class="pull-right">
-			<button type="submit" class="btn btn-sm btn-success"><i class="fa fa-save"></i> บันทึก</button>
+			<button type="submit" class="btn btn-sm btn-success"><i class="fa fa-save"></i> Update</button>
 		</p>
 	</form>
 	</div>

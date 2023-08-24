@@ -5,7 +5,7 @@ class Discount_rule extends PS_Controller
 {
   public $menu_code = 'SCRULE';
 	public $menu_group_code = 'SC';
-	public $title = 'เพิ่ม/แก้ไข เงือนไขส่วนลด';
+	public $title = 'Discount Rule';
   public $error;
   public $segment = 4;
 
@@ -86,19 +86,19 @@ class Discount_rule extends PS_Controller
         }
         else
         {
-          set_error('สร้างเงื่อนไขส่วนลดไม่สำเร็จ');
+          set_error('Failed to create discount conditions.');
           redirect($this->home.'/add_new');
         }
       }
       else
       {
-        set_error('ไม่พบชื่อเงื่อนไข กรุณาตรวจสอบแล้วลองใหม่อีกครั้ง');
+        set_error('The condition name was not found. Please check and try again.');
         redirect($this->home.'/add_new');
       }
     }
     else
     {
-      set_error('คุณไม่มีสิทธิ์ในการสร้างเงื่อนไขส่วนลด');
+      set_error('You do not have the right to create discount conditions.');
       redirect($this->home);
     }
   }
@@ -126,7 +126,7 @@ class Discount_rule extends PS_Controller
 
     $rs = $this->discount_rule_model->update($id, $arr);
 
-    echo $rs === TRUE ? 'success' : 'แก้ไขรายการไม่สำเร็จ';
+    echo $rs === TRUE ? 'success' : 'Failed to edit item';
   }
 
 
@@ -174,19 +174,19 @@ class Discount_rule extends PS_Controller
     if($setPrice == 'N' && $unit == 'P' && $disc > 100)
     {
       $sc = FALSE;
-      $message = 'ส่วนลดต้องไม่เกิน 100%';
+      $message = 'The discount must not exceed 100%.';
     }
 
     if($setPrice == 'N' && $disc == 0 && $disc2 > 0)
     {
       $sc = FALSE;
-      $message = 'ต้องกำหนดส่วนลด step 1 ก่อนระบุส่วนลด step 2';
+      $message = 'The step 1 discount must be defined before the step 2 discount is specified.';
     }
 
     if($disc2 == 0 && $disc3 > 0)
     {
       $sc = FALSE;
-      $message = 'ต้องกำหนดส่วนลด step 2 ก่อนระบุส่วนลด step 3';
+      $message = 'The step 2 discount must be set before the step 3 discount is specified.';
     }
 
 
@@ -210,7 +210,7 @@ class Discount_rule extends PS_Controller
       if($this->discount_rule_model->update($id_rule, $arr) !== TRUE)
       {
         $sc = FALSE;
-        $message = 'บันทีกเงื่อนไขส่วนลดไม่สำเร็จ';
+        $message = 'Failed to save discount conditions';
       }
     }
 
@@ -428,7 +428,7 @@ class Discount_rule extends PS_Controller
   			if($this->discount_rule_model->update_policy($id_rule, $id_policy) === FALSE)
   			{
   				$sc = FALSE;
-  				$message = 'เพิ่มกฏไม่สำเร็จ';
+  				$message = 'Failed to add rule';
   			}
   		}	//--- end foreach
   	}	//--- end if empty
@@ -445,7 +445,7 @@ class Discount_rule extends PS_Controller
     if($this->discount_rule_model->update_policy($id_rule, NULL) === FALSE)
     {
       $sc = FALSE;
-      $message = 'ลบกฏไม่สำเร็จ';
+      $message = 'Failed to add rule';
     }
 
     echo $sc === TRUE ? 'success' : $message;
@@ -464,14 +464,14 @@ class Discount_rule extends PS_Controller
       {
         $policy_code = $this->discount_policy_model->get_code($rule->id_policy);
         $sc = FALSE;
-        $this->error = "มีการเชื่อมโยงเงื่อนไขไว้กับนโยบายเลขที่ : {$policy_code} กรุณาลบการเชื่อมโยงก่อนลบเงื่อนไขนี้";
+        $this->error = "The condition is linked to the policy number : {$policy_code} Please remove the link before deleting the condition.";
       }
       else
       {
         if(! $this->discount_rule_model->delete_rule($id))
         {
           $sc = FALSE;
-          $this->error = "ลบรายการไม่สำเร็จ";
+          $this->error = "Failed to delete rule";
         }
       }
     }
@@ -524,7 +524,7 @@ class Discount_rule extends PS_Controller
 
   public function clear_filter()
   {
-    $filter = array('rule_code', 'policy', 'rule_status', 'policy_status','rule_disc');  
+    $filter = array('rule_code', 'policy', 'rule_status', 'policy_status','rule_disc');
     clear_filter($filter);
   }
 } //--- end class

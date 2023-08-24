@@ -6,7 +6,7 @@ class Temp_goods_issue extends PS_Controller
   public $menu_code = 'TEGICK';
 	public $menu_group_code = 'TE';
   public $menu_sub_group_code = 'TEADJUST';
-	public $title = 'ตรวจสอบ Goods Issue';
+	public $title = 'Goods Issue Temp';
   public $filter;
   public function __construct()
   {

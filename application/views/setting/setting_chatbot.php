@@ -56,7 +56,7 @@
       <div class="divider-hidden"></div>
 
       <div class="col-sm-4">
-        <span class="form-control left-label">รหัสคลัง CHATBOT</span>
+        <span class="form-control left-label">Warehouse CHATBOT</span>
       </div>
       <div class="col-sm-8">
         <input type="text" class="form-control input-sm input-large" id="chatbot-warehouse" name="CHATBOT_WAREHOUSE_CODE" value="<?php echo $CHATBOT_WAREHOUSE_CODE; ?>" />
@@ -93,7 +93,7 @@
 			<div class="col-sm-8 col-sm-offset-4">
 				<?php if($this->pm->can_add OR $this->pm->can_edit) : ?> <?php //if($this->_SuperAdmin) : ?>
         <button type="button" class="btn btn-sm btn-success input-small" onClick="updateConfig('chatbotForm')">
-          <i class="fa fa-save"></i> บันทึก
+          <i class="fa fa-save"></i> Save
         </button>
 				<?php endif; ?>
       </div>

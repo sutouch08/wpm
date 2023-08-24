@@ -1,27 +1,27 @@
 <?php $this->load->view('include/header');  ?>
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5">
-		<h3 class="title"><?php echo $this->title; ?></h3>
+		<h3 class="title title-xs"><?php echo $this->title; ?></h3>
 	</div>
 </div>
 <hr class="margin-bottom-15 padding-5" />
 <!--  Search Product -->
 <div class="row">
-  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 padding-5">
-		<label>คลัง</label>
+  <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 padding-5">
+		<label>Warehouse</label>
     <select class="form-control input-sm" name="warehouse" id="warehouse">
-      <option value="">เลือกคลัง</option>
+      <option value="">Please select</option>
       <?php echo select_sell_warehouse(); ?>
     </select>
   </div>
 	<div class="col-lg-2 col-md-2 col-sm-3 col-xs-8 padding-5">
-		<label>รุ่นสินค้า</label>
-    <input type="text" class="form-control input-sm text-center" id="pd-box" placeholder="ค้นรหัสสินค้า" />
+		<label>Model</label>
+    <input type="text" class="form-control input-sm text-center" id="pd-box" placeholder="Product Model" />
   </div>
 
   <div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-4 padding-5">
 		<label class="display-block not-show">btn</label>
-  	<button type="button" class="btn btn-xs btn-primary btn-block" onclick="getProductGrid()"><i class="fa fa-tags"></i> แสดงสินค้า</button>
+  	<button type="button" class="btn btn-xs btn-primary btn-block" onclick="getProductGrid()"><i class="fa fa-tags"></i> Submit</button>
   </div>
 </div>
 <hr class="margin-top-15 margin-bottom-0" />
@@ -56,7 +56,7 @@
 
 <form id="orderForm">
 <div class="modal fade" id="orderGrid" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog" id="modal" style="max-width:95%;">
+	<div class="modal-dialog" id="modal" style="min-width:250px; max-width:90vw;">
 		<div class="modal-content">
   			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>

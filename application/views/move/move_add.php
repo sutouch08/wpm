@@ -17,14 +17,14 @@
 	</div>
   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
   	<p class="pull-right top-p">
-      <button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+      <button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
     </p>
   </div>
 </div><!-- End Row -->
 <hr class=""/>
 <div class="row">
 	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
-    <label>เลขที่เอกสาร</label>
+    <label>Doc No</label>
 		<?php if($manual_code == 1) : ?>
 	    <input type="text" class="form-control input-sm" name="code" id="code" value="" />
 		<?php else : ?>
@@ -33,12 +33,12 @@
   </div>
 
   <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
-    <label>วันที่</label>
+    <label>Date</label>
     <input type="text" class="form-control input-sm text-center" name="date" id="date" value="<?php echo date('d-m-Y'); ?>" readonly required />
   </div>
 
 	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-		<label>คลังต้นทาง</label>
+		<label>From WH</label>
 		<input type="text" class="form-control input-sm text-center" id="from_warehouse_code" autofocus/>
 	</div>
   <div class="col-lg-3 col-md-3 col-sm-3 col-xs-8 padding-5">
@@ -48,7 +48,7 @@
 
 
 	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-		<label>คลังปลายทาง</label>
+		<label>To WH</label>
 		<input type="text" class="form-control input-sm text-center" id="to_warehouse_code" autofocus/>
 	</div>
 	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-8 padding-5">
@@ -57,12 +57,12 @@
   </div>
 
   <div class="col-lg-10-harf col-md-10-harf col-sm-10-harf col-xs-9 padding-5">
-    <label>หมายเหตุ</label>
+    <label>Remark</label>
     <input type="text" class="form-control input-sm" name="remark" id="remark" value="">
   </div>
   <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-3 padding-5">
     <label class="display-block not-show">Submit</label>
-    <button type="button" class="btn btn-xs btn-success btn-block" onclick="add()"><i class="fa fa-plus"></i> เพิ่ม</button>
+    <button type="button" class="btn btn-xs btn-success btn-block" onclick="add()"><i class="fa fa-plus"></i> Add</button>
   </div>
 </div>
 <hr class="padding-5 margin-top-15">

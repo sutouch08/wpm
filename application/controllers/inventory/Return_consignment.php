@@ -6,7 +6,7 @@ class Return_consignment extends PS_Controller
   public $menu_code = 'ICRTSM';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'RETURN';
-	public $title = 'ลดหนี้ฝากขายเทียม';
+	public $title = 'Consignment Return';
   public $filter;
   public $error;
 	public $isAPI;
@@ -135,7 +135,7 @@ class Return_consignment extends PS_Controller
 							if($this->return_consignment_model->add_detail($arr) === FALSE)
 							{
 								$sc = FALSE;
-								$this->error = "บันทึกรายการ {$rs->product_code} ไม่สำเร็จ";
+								$this->error = "Failed to add {$rs->product_code}";
 							}
 						}
 
@@ -149,7 +149,7 @@ class Return_consignment extends PS_Controller
         else
 				{
 					$sc = FALSE;
-					$this->error = "ไม่พบรายการรับคืน";
+					$this->error = "No items found";
 				}
 
 
@@ -166,13 +166,13 @@ class Return_consignment extends PS_Controller
       {
         //--- empty document
         $sc = FALSE;
-				$this->error = 'ไม่พบเลขที่เอกสาร';
+				$this->error = 'Document number not found';
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = 'ไม่พบข้อมูลในฟอร์ม';
+      $this->error = 'form data not found';
     }
 
 		echo $sc === TRUE ? 'success' : $this->error;
@@ -191,7 +191,7 @@ class Return_consignment extends PS_Controller
     else
     {
       $rs = $this->return_consignment_model->delete_detail($id);
-      echo $rs === TRUE ? 'success' : 'ลบรายการไม่สำเร็จ';
+      echo $rs === TRUE ? 'success' : 'Failed to delete item';
     }
   }
 
@@ -215,14 +215,14 @@ class Return_consignment extends PS_Controller
 					if($doc->is_approve == 1)
 					{
 						$sc = FALSE;
-						$this->error = "เอกสารถูกอนุมัติแล้ว ไม่สามารถย้อนการบันทึกได้";
+						$this->error = "The document has been approved. Unable to reverse recording";
 					}
 					else
 					{
 						if($this->return_consignment_model->set_status($code, 0) === FALSE)
 			      {
 			        $sc = FALSE;
-			        $this->error = 'ยกเลิกการบันทึกไม่สำเร็จ';
+			        $this->error = 'Failed to cancel save.';
 			      }
 					}
 				}
@@ -230,14 +230,14 @@ class Return_consignment extends PS_Controller
 			else
 			{
 				$sc = FALSE;
-				$this->error = "เลขที่เอกสารไม่ถูกต้อง";
+				$this->error = "The document number is invalid.";
 			}
 
     }
     else
     {
       $sc = FALSE;
-      $this->error = 'คุณไม่มีสิทธิ์ในการยกเลิกการบันทึก';
+      $this->error = 'You do not have the right to cancel the recording.';
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -262,7 +262,7 @@ class Return_consignment extends PS_Controller
 						if(!$this->return_consignment_model->approve($code))
 						{
 							$sc = FALSE;
-							$this->error = "อนุมัติเอกสารไม่สำเร็จ";
+							$this->error = "Failed to approve document";
 						}
 						else
 						{
@@ -298,7 +298,7 @@ class Return_consignment extends PS_Controller
 								else
 								{
 									$sc = FALSE;
-									$this->error = "อนุมัติสำเร็จ แต่ส่งข้อมูลเข้า WMS ไม่สำเร็จ กรุณา refresh หน้าจอแล้วกดส่งข้อมูลอีกครั้ง";
+									$this->error = "approved successfully but failed to send data to WMS, please refresh the screen and press send again";
 								}
 							}
 							else
@@ -308,7 +308,7 @@ class Return_consignment extends PS_Controller
 								if(! $export)
 								{
 									$sc = FALSE;
-									$this->error = "อนุมัติสำเร็จ แต่ส่งข้อมูลไป SAP ไม่สำเร็จ กรุณา refresh หน้าจอแล้วกดส่งข้อมูลอีกครั้ง";
+									$this->error = "approved successfully but failed to send data to SAP, please refresh the screen and press submit again.";
 								}
 							}
 						}
@@ -323,13 +323,13 @@ class Return_consignment extends PS_Controller
 			else
 			{
 				$sc = FALSE;
-				$this->error = "ไม่พบเอกสาร";
+				$this->error = "Document not found";
 			}
     }
     else
     {
       $sc = FALSE;
-			$this->error = 'คุณไม่มีสิทธิ์อนุมัติ';
+			$this->error = 'You do not have permission to approve';
     }
 
 		echo $sc === TRUE ? 'success' : $this->error;
@@ -399,7 +399,7 @@ class Return_consignment extends PS_Controller
       if(! $this->return_consignment_model->add($arr))
       {
         $sc = FALSE;
-        $this->error = "เพิ่มเอกสารไม่สำเร็จ";
+        $this->error = "Failed to add document";
       }
       else
       {
@@ -424,7 +424,7 @@ class Return_consignment extends PS_Controller
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบข้อมูลเอกสารหรือฟอร์มว่างเปล่า กรุณาตรวจสอบ";
+      $this->error = "Document data not found or form is blank, please check.";
     }
 
     if($sc === TRUE)
@@ -585,14 +585,14 @@ class Return_consignment extends PS_Controller
       if($this->return_consignment_model->update($code, $arr) === FALSE)
       {
         $sc = FALSE;
-        $message = 'ปรับปรุงข้อมูลไม่สำเร็จ';
+        $message = 'Update failed';
       }
 
     }
     else
     {
       $sc = FALSE;
-      $message = 'ไม่พบเลขที่เอกสาร';
+      $message = 'Document number not found';
     }
 
     echo $sc === TRUE ? 'success' : $message;
@@ -678,7 +678,7 @@ class Return_consignment extends PS_Controller
 										if(!$this->return_consignment_model->add_detail($arr))
 										{
 											$sc = FALSE;
-											$this->error = "เพิ่มรายการไม่สำเร็จ : {$item->code} => {$rs->qty}";
+											$this->error = "Failed to add item : {$item->code} => {$rs->qty}";
 										}
 									}
 									else
@@ -691,7 +691,7 @@ class Return_consignment extends PS_Controller
 							else
 							{
 								$sc = FALSE;
-								$this->error = "ลบรายการปัจจุบันไม่สำเร็จ";
+								$this->error = "Failed to delete the current item.";
 							}
 
 							if($sc === TRUE)
@@ -707,31 +707,31 @@ class Return_consignment extends PS_Controller
 						else
 						{
 							$sc = FALSE;
-							$this->error = "ไม่พบสต็อกคงเหลือในโซน {$doc->from_zone_code}";
+							$this->error = "There is no remaining stock in the location {$doc->from_zone_code}";
 						}
 					}
 					else
 					{
 						$sc = FALSE;
-						$this->error = "รหัสคลังไม่ใช้คลังฝากขายเทียม";
+						$this->error = "This warehouse is not a consignment warehouse.";
 					}
 				}
 				else
 				{
 					$sc = FALSE;
-					$this->error = "รหัสโซนกับรหัสลูกค้าไม่ตรงกัน";
+					$this->error = "Bin code and customer code do not match";
 				}
 			}
 			else
 			{
 				$sc = FALSE;
-				$this->error = "เลขที่เอกสารไม่ถูกต้อง";
+				$this->error = "Invalid document number";
 			}
 		}
 		else
 		{
 			$sc = FALSE;
-			$this->error = "ไม่พบเลขที่เอกสาร";
+			$this->error = "Document number not found";
 		}
 
 		echo $sc === TRUE ? 'success' : $this->error;
@@ -778,25 +778,25 @@ class Return_consignment extends PS_Controller
           else
           {
             $sc = FALSE;
-            $this->error = "เพิ่มบิลไม่สำเร็จ";
+            $this->error = "Failed to add bill";
           }
         }
         else
         {
           $sc = FALSE;
-          $this->error = "เลขที่บิลซ้ำ";
+          $this->error = "duplicate bill number";
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "เลขที่บิลไม่ถูกต้อง";
+        $this->error = "Invalid bill number";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "เลขที่เอกสารไม่ถูกต้อง";
+      $this->error = "The document number is invalid.";
     }
 
     echo $sc === FALSE ? $this->error : json_encode($ds);
@@ -830,19 +830,19 @@ class Return_consignment extends PS_Controller
         else
         {
           $sc = FALSE;
-          $this->error = "ลบ Invoice ไม่สำเร็จ";
+          $this->error = "Failed to delete Invoice";
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "ไม่พบเลขที่ invoice";
+        $this->error = "invoice number not found";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสาร";
+      $this->error = "Document number not found";
     }
 
 
@@ -863,7 +863,7 @@ class Return_consignment extends PS_Controller
     if(empty($details))
     {
       $sc = FALSE;
-      $message = 'ไม่พบข้อมูล';
+      $message = 'data not found';
     }
 
     if(!empty($details))
@@ -924,7 +924,7 @@ class Return_consignment extends PS_Controller
     }
     else
     {
-      $sc[] = 'กรุณาระบุลูกค้า';
+      $sc[] = 'Please specify customer';
     }
 
     echo json_encode($sc);
@@ -997,7 +997,7 @@ class Return_consignment extends PS_Controller
 						if(!empty($sap))
 						{
 							$sc = FALSE;
-							$this->error = "เอกสารเข้า SAP แล้ว กรุณายกเลิกเอกสารใน SAP ก่อนดำเนินการต่อไป";
+							$this->error = "The document has arrived in SAP. Please cancel the document in SAP before proceeding.";
 						}
 					}
 
@@ -1043,13 +1043,13 @@ class Return_consignment extends PS_Controller
 			else
 			{
 				$sc = FALSE;
-				$this->error = "เลขที่เอกสารไม่ถูกต้อง";
+				$this->error = "The document number is invalid.";
 			}
     }
     else
     {
       $sc = FALSE;
-      $this->error = 'คุณไม่มีสิทธิ์ในการยกเลิกเอกสาร';
+      $this->error = 'You do not have the right to cancel the document.';
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -1262,19 +1262,19 @@ class Return_consignment extends PS_Controller
 					else
 					{
 						$sc = FALSE;
-						$this->error = "ไม่พบรายการคืนสินค้า";
+						$this->error = "Return item not found";
 					}
 				}
 				else
 				{
 					$sc = FALSE;
-					$this->error = "สถานะเอกสารไม่ถุกต้อง";
+					$this->error = "Invalid document status";
 				}
 			}
 			else
 			{
 				$sc = FALSE;
-				$this->error = "รหัสเอกสารไม่ถูกต้อง";
+				$this->error = "Invalid document number";
 			}
 		}
 		else

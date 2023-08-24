@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Sync_items extends CI_Controller
+class Sync_items extends PS_Controller
 {
   public $title = 'Sync Items';
 	public $menu_code = 'PDSYNC';
@@ -15,10 +15,7 @@ class Sync_items extends CI_Controller
   {
     parent::__construct();
     _check_login();
-		$this->pm = new stdClass();
-		$this->pm->can_view = 1;
-    $this->isViewer = FALSE;
-    $this->notibars = 0;
+    
     $this->ms = $this->load->database('ms', TRUE); //--- SAP database
     //$this->mc = $this->load->database('mc', TRUE); //--- Temp Database
     $this->date = date('Y-d-m H:i:s');
@@ -75,6 +72,7 @@ class Sync_items extends CI_Controller
           'code' => $rs->U_MODEL,
           'name' => $rs->U_MODEL,
           'group_code' => $rs->U_GROUP,
+          'main_group_code' => $rs->U_MainGroup,
           'sub_group_code' => $rs->U_MAJOR,
           'category_code' => $rs->U_CATE,
           'kind_code' => $rs->U_SUBTYPE,
@@ -134,6 +132,7 @@ class Sync_items extends CI_Controller
           'color_code' => $rs->U_COLOR,
           'size_code' => $rs->U_SIZE,
           'group_code' => $rs->U_GROUP,
+          'main_group_code' => $rs->U_MainGroup,
           'sub_group_code' => $rs->U_MAJOR,
           'category_code' => $rs->U_CATE,
           'kind_code' => $rs->U_SUBTYPE,
@@ -170,14 +169,19 @@ class Sync_items extends CI_Controller
 
   public function get_style_last_date()
   {
-    echo sap_date($this->product_style_model->get_style_last_sync());
+    //echo '2020-01-01 00:00:00';
+    $date = sap_date($this->product_style_model->get_style_last_sync(), TRUE);
+    $syncDate = date('Y-m-d 00:00:00', strtotime("-1 day", strtotime($date)));
+    echo $syncDate;
   }
 
 
   public function get_item_last_date()
   {
-    echo '2020-01-01 00:00:00';
-    //echo sap_date($this->products_model->get_items_last_sync());
+    //echo '2020-01-01 00:00:00';
+    $date = sap_date($this->products_model->get_items_last_sync(), TRUE);
+    $syncDate = date('Y-m-d 00:00:00', strtotime("-1 day", strtotime($date)));
+    echo $syncDate;
   }
 
 

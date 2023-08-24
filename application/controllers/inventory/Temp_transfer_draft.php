@@ -6,7 +6,7 @@ class Temp_transfer_draft extends PS_Controller
   public $menu_code = 'TETDCK';
 	public $menu_group_code = 'TE';
   public $menu_sub_group_code = 'TETRANSFER';
-	public $title = 'ตรวจสอบ Transfer Draft';
+	public $title = 'Transfer Draft';
   public $filter;
   public function __construct()
   {

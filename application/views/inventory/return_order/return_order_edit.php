@@ -1,20 +1,17 @@
 <?php $this->load->view('include/header'); ?>
 <input type="hidden" id="required_remark" value="<?php echo $this->required_remark; ?>" />
 <div class="row">
-	<div class="col-lg-6 col-md-6 col-sm-6 hidden-xs padding-5">
-    <h3 class="title"><?php echo $this->title; ?></h3>
-  </div>
-	<div class="col-xs-12 visible-xs padding-5">
-    <h3 class="title-xs"><?php echo $this->title; ?></h3>
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
+    <h3 class="title title-xs"><?php echo $this->title; ?></h3>
   </div>
   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
     <p class="pull-right top-p">
-			<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+			<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
 <?php if($doc->status == 0 && ($this->pm->can_add OR $this->pm->can_edit)) : ?>
-				<button type="button" class="btn btn-sm btn-success" onclick="save()"><i class="fa fa-save"></i> บันทึก</button>
+				<button type="button" class="btn btn-sm btn-success" onclick="save()"><i class="fa fa-save"></i> Save</button>
 <?php endif; ?>
 <?php if($doc->status == 1 && $this->pm->can_approve) : ?>
-				<button type="button" class="btn btn-sm btn-primary" id="btn-approve" onclick="approve()"><i class="fa fa-save"></i> อนุมัติ</button>
+				<button type="button" class="btn btn-sm btn-primary" id="btn-approve" onclick="approve()"><i class="fa fa-save"></i> Approve</button>
 <?php endif; ?>
     </p>
   </div>
@@ -23,59 +20,52 @@
 
 <div class="row">
   <div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-4 padding-5">
-  	<label>เลขที่เอกสาร</label>
+  	<label>Doc No.</label>
     <input type="text" class="form-control input-sm text-center" value="<?php echo $doc->code; ?>" disabled />
   </div>
 	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-  	<label>วันที่</label>
+  	<label>Date</label>
     <input type="text" class="form-control input-sm text-center edit" name="date_add" id="dateAdd" value="<?php echo thai_date($doc->date_add, FALSE); ?>" readonly disabled/>
   </div>
 	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-		<label>เลขที่บิล[SAP]</label>
+		<label>Invoice[SAP]</label>
 		<input type="text" class="form-control input-sm text-center edit" name="invoice" id="invoice" value="<?php echo $doc->invoice; ?>" disabled />
 	</div>
 	<div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-4 padding-5">
-		<label>รหัสลูกค้า</label>
+		<label>Customer</label>
 		<input type="text" class="form-control input-sm text-center edit" name="customer_code" id="customer_code" value="<?php echo $doc->customer_code; ?>" disabled />
 	</div>
 	<div class="col-lg-6 col-md-5 col-sm-5 col-xs-8 padding-5">
-		<label>ชื่อลูกค้า</label>
+		<label class="not-show">customer name</label>
 		<input type="text" class="form-control input-sm edit" name="customer" id="customer" value="<?php echo $doc->customer_name; ?>" disabled/>
 	</div>
+	<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-3 padding-5">
+		<label>Currency</label>
+		<input type="text" class="form-control input-sm text-center" id="doc_currency" value="<?php echo $doc->DocCur; ?>" disabled/>
+	</div>
+	<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-3 padding-5">
+		<label>Rate</label>
+		<input type="number" class="form-control input-sm text-center" name="doc_rate" id="doc_rate" value="<?php echo $doc->DocRate; ?>" disabled/>
+	</div>
+
 	<div class="col-lg-2-harf col-md-2-harf col-sm-2-harf col-xs-4 padding-5">
-		<label>รหัสโซน</label>
+		<label>Bin Location</label>
 		<input type="text" class="form-control input-sm text-center edit" name="zone_code" id="zone_code" value="<?php echo $doc->zone_code; ?>" disabled />
 	</div>
-	<div class="col-lg-6-harf col-md-6-harf col-sm-6-harf col-xs-8 padding-5">
-		<label>ชื่อโซน]</label>
+	<div class="col-lg-7-harf col-md-6-harf col-sm-6-harf col-xs-8 padding-5">
+		<label class="not-show">Bin name</label>
 		<input type="text" class="form-control input-sm edit" name="zone" id="zone" value="<?php echo $doc->zone_name; ?>" disabled />
 	</div>
 
-	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
-		<label>การรับ</label>
-		<select class="form-control input-sm edit" name="is_wms" id="is_wms" disabled>
-			<option value="1" <?php echo is_selected('1', $doc->is_wms); ?>>WMS</optoin>
-			<option value="0" <?php echo is_selected('0', $doc->is_wms); ?>>Warrix</option>
-		</select>
-	</div>
-
-	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
-		<label>Interface</label>
-		<select class="form-control input-sm edit" name="api" id="api" disabled>
-			<option value="1" <?php echo is_selected('1', $doc->api); ?>>ส่ง</option>
-			<option value="0" <?php echo is_selected('0', $doc->api); ?>>ไม่ส่ง</option>
-		</select>
-	</div>
-
   <div class="col-lg-10-harf col-md-10-harf col-sm-10-harf col-xs-9 padding-5">
-  	<label>หมายเหตุ</label>
+  	<label>remark</label>
     <input type="text" class="form-control input-sm edit" name="remark" id="remark" placeholder="ระบุหมายเหตุเอกสาร (ถ้ามี)" value="<?php echo $doc->remark; ?>" disabled />
   </div>
 	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-3 padding-5">
 		<label class="display-block not-show">save</label>
 <?php 	if($doc->status == 0 && ($this->pm->can_add OR $this->pm->can_edit)) : ?>
-					<button type="button" class="btn btn-xs btn-warning btn-block" id="btn-edit" onclick="editHeader()">แก้ไข</button>
-					<button type="button" class="btn btn-xs btn-success btn-block hide" id="btn-update" onclick="updateHeader()">ปรับปรุง</button>
+					<button type="button" class="btn btn-xs btn-warning btn-block" id="btn-edit" onclick="editHeader()">Edit</button>
+					<button type="button" class="btn btn-xs btn-success btn-block hide" id="btn-update" onclick="updateHeader()">Update</button>
 <?php	endif; ?>
 	</div>
 </div>
@@ -88,7 +78,7 @@
 <div class="row">
 	<div class="col-lg-10 col-md-9-harf col-sm-9 col-xs-6 padding-5">&nbsp;</div>
 	<div class="col-lg-2 col-md-2-harf col-sm-3 col-xs-6 padding-5">
-		<button type="button" class="btn btn-sm btn-danger btn-block" onclick="deleteChecked()"><i class="fa fa-trash"></i> ลบรายการที่เลือก</button>
+		<button type="button" class="btn btn-sm btn-danger btn-block" onclick="deleteChecked()"><i class="fa fa-trash"></i> Delete checked rows</button>
 	</div>
 </div>
 
@@ -99,20 +89,20 @@
 		<table class="table table-striped border-1" style="margin-bottom:0px; min-width:1200px;">
 			<thead>
 				<tr>
-					<th class="fix-width-40 text-center">ลำดับ</th>
+					<th class="fix-width-40 text-center">#</th>
 					<th class="fix-width-40 text-center">
 					<input type="checkbox" id="chk-all" class="ace" onchange="toggleCheckAll($(this))"/>
 					<span class="lbl"></span>
 					</th>
-					<th class="fix-width-175">รหัส</th>
-					<th class="min-width-200">สินค้า</th>
-					<th class="fix-width-100 text-center">อ้างอิง</th>
-					<th class="fix-width-120 text-center">ออเดอร์</th>
-					<th class="fix-width-80 text-right">จำนวน</th>
-					<th class="fix-width-80 text-right">ราคา</th>
-					<th class="fix-width-100 text-right">ส่วนลด</th>
-					<th class="fix-width-80 text-right">คืน</th>
-					<th class="fix-width-100 text-right">มูลค่า</th>
+					<th class="fix-width-200">SKU</th>
+					<th class="min-width-200">Description</th>
+					<th class="fix-width-100 text-center">Reference</th>
+					<th class="fix-width-120 text-center">Order No.</th>
+					<th class="fix-width-100 text-right">Price</th>
+					<th class="fix-width-100 text-right">Disc.</th>
+					<th class="fix-width-80 text-right">Qty</th>
+					<th class="fix-width-80 text-right">Return</th>
+					<th class="fix-width-120 text-right">Amount</th>
 					<th class="fix-width-40"></th>
 				</tr>
 			</thead>
@@ -122,6 +112,7 @@
 <?php if(!empty($details)) : ?>
 <?php  $no = 1; ?>
 <?php  foreach($details as $rs) : ?>
+	<?php if($rs->qty > 0) : ?>
 		<tr id="row_<?php echo $no; ?>">
 			<td class="middle text-center no"><?php echo $no; ?></td>
 			<td class="middle text-center">
@@ -132,15 +123,16 @@
 			<td class="middle"><?php echo $rs->product_name; ?></td>
 			<td class="middle text-center"><?php echo $rs->invoice_code; ?></td>
 			<td class="middle text-center"><?php echo $rs->order_code; ?></td>
-			<td class="middle text-right inv_qty"><?php echo round($rs->sold_qty); ?></td>
-			<td class="middle text-right"><?php echo $rs->price; ?></td>
+			<td class="middle text-right"><?php echo $rs->price." ".$rs->currency;; ?></td>
 			<td class="middle text-right"><?php echo $rs->discount_percent.' %'; ?></td>
+			<td class="middle text-right inv_qty"><?php echo round($rs->sold_qty); ?></td>
 			<td class="middle">
 				<input type="number"
 					class="form-control input-sm text-right input-qty"
 					name="qty[<?php echo $no; ?>]"
 					id="qty_<?php echo $no; ?>"
 					value="<?php echo $rs->qty; ?>"
+					data-no="<?php echo $no; ?>"
 					onkeyup="recalRow($(this), <?php echo $no; ?>)"
 				/>
 			</td>
@@ -153,29 +145,33 @@
 				</button>
 			</td>
 			<input type="hidden" name="item[<?php echo $no; ?>]" id="item_<?php echo $no; ?>" value="<?php echo $rs->product_code; ?>"/>
+			<inptu type="hidden" id="itemName_<?php echo $no; ?>" value="<?php echo $rs->product_name; ?>" />
 			<input type="hidden" name="sold_qty[<?php echo $no; ?>]" id="inv_qty_<?php echo $no; ?>" value="<?php echo round($rs->sold_qty); ?>"/>
 			<input type="hidden" class="input-price" name="price[<?php echo $no; ?>]" id="price_<?php echo $no; ?>" value="<?php echo $rs->price; ?>" />
 			<input type="hidden" name="discount[<?php echo $no; ?>]" id="discount_<?php echo $no; ?>" value="<?php echo $rs->discount_percent; ?>" />
 			<input type="hidden" name="order[<?php echo $no; ?>]" id="order_<?php echo $no; ?>" value="<?php echo $rs->order_code; ?>" />
+			<input type="hidden" name="currency[<?php echo $no; ?>]" id="currency_<?php echo $no; ?>" value="<?php echo $rs->currency; ?>" />
+			<input type="hidden" name="rate[<?php echo $no; ?>]" id="rate_<?php echo $no; ?>" value="<?php echo $rs->rate; ?>" />
 		</tr>
 <?php
 		$no++;
 		$total_qty += $rs->qty;
 		$total_amount += $rs->amount;
 ?>
+<?php endif; ?>
 <?php  endforeach; ?>
 <?php endif; ?>
 				<tr>
-					<td colspan="9" class="middle text-right">รวม</td>
+					<td colspan="9" class="middle text-right">Total</td>
 					<td class="middle text-right" id="total-qty"><?php echo number($total_qty); ?></td>
 					<td class="middle text-right" id="total-amount"><?php echo number($total_amount, 2); ?></td>
-					<td class=""></td>
+					<td class="text-center"><?php echo $doc->DocCur; ?></td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
 </div>
-
+<input type="hidden" id="code" value="<?php echo $doc->code; ?>" />
 </form>
 
 

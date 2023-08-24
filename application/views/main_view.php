@@ -14,25 +14,25 @@
 <?php endif; ?>
 <div class="row" style="margin-top:30px;">
 	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 padding-5">
-		<label>รหัสสินค้า</label>
-		<input type="text" class="form-control input-sm text-center" id="search-text" placeholder="พิมพ์รหัสสินค้า 4 ตัวอักษรขึ้นไป" />
+		<label>Item Code</label>
+		<input type="text" class="form-control input-sm text-center" id="search-text" placeholder="4 ตัวอักษรขึ้นไป" />
 	</div>
 
-	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-		<label>คลัง</label>
+	<div class="col-lg-3 col-md-4 col-sm-4 col-xs-6 padding-5">
+		<label>Warehouse</label>
 		<select class="form-control input-sm" id="warehouse" name="warehouse">
-			<option value="">ทั้งหมด</option>
+			<option value="">All</option>
 			<?php echo select_warehouse(); ?>
 		</select>
 	</div>
 
-	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
+	<div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-6 padding-5">
 		<label class="display-block not-show">stock</label>
-		<button type="button" class="btn btn-xs btn-primary btn-block" onclick="getSearch()">ตรวจสอบสต็อก</button>
+		<button type="button" class="btn btn-xs btn-primary btn-block" onclick="getSearch()">check stock</button>
 	</div>
-	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
+	<div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-6 padding-5">
 		<label class="display-block not-show">stock</label>
-		<button type="button" class="btn btn-xs btn-info btn-block" onclick="findOrder()">ตรวจสอบออเดอร์</button>
+		<button type="button" class="btn btn-xs btn-info btn-block" onclick="findOrder()">check order</button>
 	</div>
 </div>
 
@@ -40,7 +40,7 @@
 
 <div class="row">
   <div class="col-sm-12" id="result">
-    
+
   </div>
 </div>
 

@@ -55,13 +55,13 @@ $product_brand = ($pdBrandNo > 0 && $allProduct == 'N' && $product_style == 'N')
 <div class="tab-pane fade" id="product">
   <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-      <h4 class="title">กำหนดเงื่อนไขตามคุณสมบัติสินค้า</h4>
+      <h4 class="title">Set conditions according to product properties.</h4>
     </div>
 
     <div class="divider margin-top-5"></div>
 
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
-      <span class="form-control left-label text-right">สินค้าทั้งหมด</span>
+      <span class="form-control left-label text-right">All Products</span>
     </div>
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
       <div class="btn-group width-100">
@@ -73,7 +73,7 @@ $product_brand = ($pdBrandNo > 0 && $allProduct == 'N' && $product_style == 'N')
 
 
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
-      <span class="form-control left-label text-right">รุ่นสินค้า</span>
+      <span class="form-control left-label text-right">Model</span>
     </div>
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
       <div class="btn-group width-100">
@@ -88,7 +88,7 @@ $product_brand = ($pdBrandNo > 0 && $allProduct == 'N' && $product_style == 'N')
       <input type="hidden" id="id_style" />
     </div>
     <div class="col-lg-1 col-md-1 col-sm-1-harf col-xs-2 padding-5">
-      <button type="button" class="option btn btn-xs btn-info btn-block" id="btn-style-id-add" onclick="addStyleId()" disabled>เพิ่ม</button>
+      <button type="button" class="option btn btn-xs btn-info btn-block" id="btn-style-id-add" onclick="addStyleId()" disabled>Add</button>
     </div>
     <div class="divider-hidden visible-xs"></div>
     <div class="col-xs-4 visible-xs">&nbsp;</div>
@@ -98,12 +98,12 @@ $product_brand = ($pdBrandNo > 0 && $allProduct == 'N' && $product_style == 'N')
     <div class="divider-hidden visible-sm"></div>
     <div class="col-sm-3 col-xs-4 visible-sm">&nbsp;</div>
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3-harf padding-5">
-      <span class="form-control input-sm text-center"><span id="psCount"><?php echo $pdStyleNo; ?></span>  รายการ</span>
+      <span class="form-control input-sm text-center"><span id="psCount"><?php echo $pdStyleNo; ?></span>  items</span>
       <input type="hidden" id="style-no" value="<?php echo $pdStyleNo; ?>" />
     </div>
     <div class="col-lg-1 col-md-1 col-sm-1-harf col-xs-2 padding-5">
       <button type="button" class="option btn btn-xs btn-primary btn-block" id="btn-show-style-name" onclick="showStyleList()">
-        แสดง
+        show
       </button>
     </div>
     <div class="divider-hidden"></div>
@@ -112,7 +112,7 @@ $product_brand = ($pdBrandNo > 0 && $allProduct == 'N' && $product_style == 'N')
 
 
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
-      <span class="form-control left-label text-right">กลุ่มสินค้า</span>
+      <span class="form-control left-label text-right">Group</span>
     </div>
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
       <div class="btn-group width-100">
@@ -122,7 +122,7 @@ $product_brand = ($pdBrandNo > 0 && $allProduct == 'N' && $product_style == 'N')
     </div>
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
       <button type="button" class="option btn btn-xs btn-info btn-block padding-right-5" id="btn-select-pd-group" onclick="showProductGroup()" disabled>
-        เลือก <span class="badge pull-right" id="badge-pd-group"><?php echo $pdGroupNo; ?></span>
+        Select <span class="badge pull-right" id="badge-pd-group"><?php echo $pdGroupNo; ?></span>
       </button>
     </div>
     <div class="divider-hidden"></div>
@@ -130,7 +130,7 @@ $product_brand = ($pdBrandNo > 0 && $allProduct == 'N' && $product_style == 'N')
 
 
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
-      <span class="form-control left-label text-right">กลุ่มย่อยสินค้า</span>
+      <span class="form-control left-label text-right">Sub Group</span>
     </div>
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
       <div class="btn-group width-100">
@@ -140,7 +140,7 @@ $product_brand = ($pdBrandNo > 0 && $allProduct == 'N' && $product_style == 'N')
     </div>
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
       <button type="button" class="option btn btn-xs btn-info btn-block padding-right-5" id="btn-select-pd-sub" onclick="showProductSubGroup()" disabled>
-        เลือก <span class="badge pull-right" id="badge-pd-sub"><?php echo $pdSubNo; ?></span>
+        Select <span class="badge pull-right" id="badge-pd-sub"><?php echo $pdSubNo; ?></span>
       </button>
     </div>
     <div class="divider-hidden"></div>
@@ -148,7 +148,7 @@ $product_brand = ($pdBrandNo > 0 && $allProduct == 'N' && $product_style == 'N')
 
 
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
-      <span class="form-control left-label text-right">ชนิดสินค้า</span>
+      <span class="form-control left-label text-right">Type</span>
     </div>
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
       <div class="btn-group width-100">
@@ -158,7 +158,7 @@ $product_brand = ($pdBrandNo > 0 && $allProduct == 'N' && $product_style == 'N')
     </div>
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
       <button type="button" class="option btn btn-xs btn-info btn-block padding-right-5" id="btn-select-pd-type" onclick="showProductType()" disabled>
-        เลือก <span class="badge pull-right" id="badge-pd-type"><?php echo $pdTypeNo; ?></span>
+        Select <span class="badge pull-right" id="badge-pd-type"><?php echo $pdTypeNo; ?></span>
       </button>
     </div>
     <div class="divider-hidden"></div>
@@ -166,7 +166,7 @@ $product_brand = ($pdBrandNo > 0 && $allProduct == 'N' && $product_style == 'N')
 
 
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
-      <span class="form-control left-label text-right">ประเภทสินค้า</span>
+      <span class="form-control left-label text-right">Kind</span>
     </div>
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
       <div class="btn-group width-100">
@@ -176,14 +176,14 @@ $product_brand = ($pdBrandNo > 0 && $allProduct == 'N' && $product_style == 'N')
     </div>
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
       <button type="button" class="option btn btn-xs btn-info btn-block padding-right-5" id="btn-select-pd-kind" onclick="showProductKind()" disabled>
-        เลือก <span class="badge pull-right" id="badge-pd-kind"><?php echo $pdKindNo; ?></span>
+        Select <span class="badge pull-right" id="badge-pd-kind"><?php echo $pdKindNo; ?></span>
       </button>
     </div>
     <div class="divider-hidden"></div>
 
 
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
-      <span class="form-control left-label text-right">หมวดหมู่สินค้า</span>
+      <span class="form-control left-label text-right">Category</span>
     </div>
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
       <div class="btn-group width-100">
@@ -193,14 +193,14 @@ $product_brand = ($pdBrandNo > 0 && $allProduct == 'N' && $product_style == 'N')
     </div>
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
       <button type="button" class="option btn btn-xs btn-info btn-block padding-right-5" id="btn-select-pd-cat" onclick="showProductCategory()" disabled>
-        เลือก <span class="badge pull-right" id="badge-pd-cat"><?php echo $pdCategoryNo; ?></span>
+        Select <span class="badge pull-right" id="badge-pd-cat"><?php echo $pdCategoryNo; ?></span>
       </button>
     </div>
     <div class="divider-hidden"></div>
 
 
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
-      <span class="form-control left-label text-right">ยี่ห้อสินค้า</span>
+      <span class="form-control left-label text-right">Brand</span>
     </div>
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
       <div class="btn-group width-100">
@@ -210,13 +210,13 @@ $product_brand = ($pdBrandNo > 0 && $allProduct == 'N' && $product_style == 'N')
     </div>
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
       <button type="button" class="option btn btn-xs btn-info btn-block padding-right-5" id="btn-select-pd-brand" onclick="showProductBrand()" disabled>
-        เลือก <span class="badge pull-right" id="badge-pd-brand"><?php echo $pdBrandNo; ?></span>
+        Select <span class="badge pull-right" id="badge-pd-brand"><?php echo $pdBrandNo; ?></span>
       </button>
     </div>
     <div class="divider-hidden"></div>
 
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
-      <span class="form-control left-label text-right">ปีสินค้า</span>
+      <span class="form-control left-label text-right">Year</span>
     </div>
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
       <div class="btn-group width-100">
@@ -226,14 +226,14 @@ $product_brand = ($pdBrandNo > 0 && $allProduct == 'N' && $product_style == 'N')
     </div>
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
       <button type="button" class="option btn btn-xs btn-info btn-block padding-right-5" id="btn-select-pd-year" onclick="showProductYear()" disabled>
-        เลือก <span class="badge pull-right" id="badge-pd-year"><?php echo $pdBrandNo; ?></span>
+        Select <span class="badge pull-right" id="badge-pd-year"><?php echo $pdBrandNo; ?></span>
       </button>
     </div>
     <div class="divider-hidden"></div>
     <div class="divider-hidden"></div>
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">&nbsp;</div>
     <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
-      <button type="button" class="btn btn-sm btn-success btn-block" onclick="saveProduct()"><i class="fa fa-save"></i> บันทึก</button>
+      <button type="button" class="btn btn-sm btn-success btn-block" onclick="saveProduct()"><i class="fa fa-save"></i> Save</button>
     </div>
 
   </div>
@@ -261,11 +261,11 @@ $product_brand = ($pdBrandNo > 0 && $allProduct == 'N' && $product_style == 'N')
 		        <form id="upload-form" name="upload-form" method="post" enctype="multipart/form-data">
 		        <div class="row">
 		          <div class="col-sm-9">
-		            <button type="button" class="btn btn-sm btn-primary btn-block" id="show-file-name" onclick="getFile()">กรุณาเลือกไฟล์ Excel</button>
+		            <button type="button" class="btn btn-sm btn-primary btn-block" id="show-file-name" onclick="getFile()">Choose File Excel</button>
 		          </div>
 
 		          <div class="col-sm-3">
-		            <button type="button" class="btn btn-sm btn-info" onclick="readExcelFile()"><i class="fa fa-cloud-upload"></i> นำเข้า</button>
+		            <button type="button" class="btn btn-sm btn-info" onclick="readExcelFile()"><i class="fa fa-cloud-upload"></i> Import</button>
 		          </div>
 		        </div>
 		        <input type="file" class="hide" name="uploadFile" id="uploadFile" accept=".xlsx" />

@@ -5,7 +5,7 @@ class Order_details extends PS_Controller
   public $menu_code = 'RAODDT';
 	public $menu_group_code = 'RE';
   public $menu_sub_group_code = 'REAUDIT';
-	public $title = 'รายงานสถานะเอกสารแสดงรายละเอียด';
+	public $title = 'Detailed document status report';
   public $filter;
   public function __construct()
   {
@@ -139,13 +139,13 @@ class Order_details extends PS_Controller
       $details = $this->order_details_model->get_data($filter);
 
       //---  Report title
-      $report_title = "รายงานสถานะเอกสารแสดงรายละเอียด";
-      $role_title = "เอกสาร : ". ($allRole == 1 ? 'ทั้งหมด' : $this->get_role_title($role));
-      $expire_title = "อายุเอกสาร : ".($is_expired == 'all' ? 'ทั้งหมด' : ($is_expired == 1 ? 'เฉพาะที่หมดอายุ' : 'เฉพาะที่ไม่หมดอายุ'));
-      $wh_title     = 'คลัง :  '. ($allWarehouse == 1 ? 'ทั้งหมด' : $this->get_title($warehouse));
-      $ch_title = "ช่องทางขาย : ". ($allChannels == 1 ? 'ทั้งหมด' : $this->get_title($channels));
-      $pay_title = "การชำระเงิน : ". ($allPayments == 1 ? "ทั้งหมด" : $this->get_title($payments));
-      $state_title = "สถานะ : ".($allState == 1 ? "ทั้งหมด" : $this->get_state_title($state));
+      $report_title = "Detailed document status report";
+      $role_title = "Document : ". ($allRole == 1 ? 'All' : $this->get_role_title($role));
+      $expire_title = "Document status : ".($is_expired == 'all' ? 'All' : ($is_expired == 1 ? 'Only expired' : 'Only not expired'));
+      $wh_title     = 'Warehouse :  '. ($allWarehouse == 1 ? 'All' : $this->get_title($warehouse));
+      $ch_title = "Sales Channels : ". ($allChannels == 1 ? 'All' : $this->get_title($channels));
+      $pay_title = "Payments : ". ($allPayments == 1 ? "All" : $this->get_title($payments));
+      $state_title = "Status : ".($allState == 1 ? "All" : $this->get_state_title($state));
 
       //--- set report title header
       $this->excel->getActiveSheet()->setCellValue('A1', $report_title);
@@ -155,25 +155,25 @@ class Order_details extends PS_Controller
       $this->excel->getActiveSheet()->setCellValue('A5', $ch_title);
       $this->excel->getActiveSheet()->setCellValue('A6', $pay_title);
       $this->excel->getActiveSheet()->setCellValue('A7', $wh_title);
-      $this->excel->getActiveSheet()->setCellValue('A8', 'วันที่เอกสาร : ('.thai_date($fromDate,'/') .') - ('.thai_date($toDate,'/').')');
+      $this->excel->getActiveSheet()->setCellValue('A8', 'Document Date : ('.thai_date($fromDate,'/') .') - ('.thai_date($toDate,'/').')');
 
       //--- set Table header
       $row = 9;
 
-      $this->excel->getActiveSheet()->setCellValue("A{$row}", 'ลำดับ');
-      $this->excel->getActiveSheet()->setCellValue("B{$row}", 'วันที่');
-      $this->excel->getActiveSheet()->setCellValue("C{$row}", 'เลขที่');
-      $this->excel->getActiveSheet()->setCellValue("D{$row}", 'มูลค่า');
-      $this->excel->getActiveSheet()->setCellValue("E{$row}", 'รหัสลูกค้า');
-      $this->excel->getActiveSheet()->setCellValue("F{$row}", 'ชื่อลูกค้า');
-      $this->excel->getActiveSheet()->setCellValue("G{$row}", 'สถานะ');
-      $this->excel->getActiveSheet()->setCellValue("H{$row}", 'หมดอายุ');
-      $this->excel->getActiveSheet()->setCellValue("I{$row}", 'ช่องทางขาย');
-      $this->excel->getActiveSheet()->setCellValue("J{$row}", 'การชำระเงิน');
-      $this->excel->getActiveSheet()->setCellValue("K{$row}", 'รหัสคลัง');
-      $this->excel->getActiveSheet()->setCellValue("L{$row}", 'ชื่อคลัง');
+      $this->excel->getActiveSheet()->setCellValue("A{$row}", 'No');
+      $this->excel->getActiveSheet()->setCellValue("B{$row}", 'Date');
+      $this->excel->getActiveSheet()->setCellValue("C{$row}", 'Document No');
+      $this->excel->getActiveSheet()->setCellValue("D{$row}", 'Amount');
+      $this->excel->getActiveSheet()->setCellValue("E{$row}", 'Customer Code');
+      $this->excel->getActiveSheet()->setCellValue("F{$row}", 'Customer Name');
+      $this->excel->getActiveSheet()->setCellValue("G{$row}", 'Status');
+      $this->excel->getActiveSheet()->setCellValue("H{$row}", 'Expired');
+      $this->excel->getActiveSheet()->setCellValue("I{$row}", 'Sales Channels');
+      $this->excel->getActiveSheet()->setCellValue("J{$row}", 'Payment Channels');
+      $this->excel->getActiveSheet()->setCellValue("K{$row}", 'Warehouse Code');
+      $this->excel->getActiveSheet()->setCellValue("L{$row}", 'Warehouse Name');
       $this->excel->getActiveSheet()->setCellValue("M{$row}", 'Username');
-      $this->excel->getActiveSheet()->setCellValue("N{$row}", 'พนักงาน');
+      $this->excel->getActiveSheet()->setCellValue("N{$row}", 'Employee');
 
       $row++;
 
@@ -290,17 +290,17 @@ class Order_details extends PS_Controller
   private function get_state_title($ds = array())
   {
     $list = "";
-
+    
     $states = array(
-      "1" => "รอดำเนินการ",
-      "2" => "รอชำระเงิน",
-      "3" => "รอจัดสินค้า",
-      "4" => "กำลังจัดสินค้า",
-      "5" => "รอตรวจ",
-      "6" => "กำลังตรวจ",
-      "7" => "รอเปิดบิล",
-      "8" => "เปิดบิลแล้ว",
-      "9" => "ยกเลิก"
+      '1' => 'Pending',
+      '2' => 'Waiting for payment',
+      '3' => 'Waiting to pick',
+      '4' => 'Picking',
+      '5' => 'Waiting to pack',
+      '6' => 'Packing',
+      '7' => 'Ready to ship',
+      '8' => 'Shipped',
+      '9' => 'Cancelled'
     );
 
     if( ! empty($ds))

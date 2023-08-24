@@ -6,7 +6,7 @@ class Transfer extends PS_Controller
   public $menu_code = 'ICTRWH';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = 'TRANSFER';
-	public $title = 'โอนสินค้าระหว่างคลัง';
+	public $title = 'Inventory transfer';
   public $filter;
   public $error;
 	public $isAPI;
@@ -152,7 +152,7 @@ class Transfer extends PS_Controller
         if( ! $this->transfer_model->add($ds))
         {
           $sc = FALSE;
-          $this->error = 'เพิ่มเอกสารไม่สำเร็จ กรุณาลองใหม่อีกครั้ง';
+          $this->error = 'Failed to add document Please try again.';
         }
       }
       else
@@ -384,7 +384,7 @@ class Transfer extends PS_Controller
                   if(! $this->movement_model->add($move_out))
                   {
                     $sc = FALSE;
-                    $this->error = 'บันทึก movement ขาออกไม่สำเร็จ';
+                    $this->error = 'Failed to save outgoing movement';
                   }
 
                   $move_in = array(
@@ -401,7 +401,7 @@ class Transfer extends PS_Controller
                   if(! $this->movement_model->add($move_in))
                   {
                     $sc = FALSE;
-                    $this->error = 'บันทึก movement ขาเข้าไม่สำเร็จ';
+                    $this->error = 'Failed to save incoming movement.';
                   }
 
                 } //--- end foreach
@@ -411,13 +411,13 @@ class Transfer extends PS_Controller
                   if(! $this->transfer_model->set_status($code, 1))
                   {
                     $sc = FALSE;
-                    $this->error = "เปลี่ยนสถานะเอกสารไม่สำเร็จ";
+                    $this->error = "Failed to change document status";
                   }
 
                   if(! $this->transfer_model->valid_all_detail($code, 1))
                   {
                     $sc = FALSE;
-                    $this->error = "เปลี่ยนสถานะรายการไม่สำเร็จ";
+                    $this->error = "Failed to change item status.";
                   }
                 }
               }
@@ -451,7 +451,7 @@ class Transfer extends PS_Controller
                   {
                     $sc = FALSE;
                     $ex = 0;
-                    $this->error = "บันทึกสำเร็จ แต่ส่งข้อมูลไป WMS ไม่สำเร็จ";
+                    $this->error = "Save succeeded, but failed to send data to WMS.";
                   }
                 }
 
@@ -463,7 +463,7 @@ class Transfer extends PS_Controller
                   {
                     $sc = FALSE;
                     $ex = 0;
-                    $this->error = "บันทึกสำเร็จ แต่ส่งข้อมูลไป WMS ไม่สำเร็จ";
+                    $this->error = "Save succeeded, but failed to send data to WMS.";
                   }
                 }
               }
@@ -475,7 +475,7 @@ class Transfer extends PS_Controller
                 {
                   $sc = FALSE;
                   $ex = 0;
-                  $this->error = "บันทึกสำเร็จ แต่ส่งข้อมูลเข้า SAP ไม่สำเร็จ";
+                  $this->error = "บSave succeeded, but failed to send data to SAP.";
                 }
               } //-- is isAPI
             } //-- if must_approve && must_accept = 0
@@ -484,19 +484,19 @@ class Transfer extends PS_Controller
 				else
 				{
 					$sc = FALSE;
-					$this->error = "ไม่พบรายการโอนย้าย";
+					$this->error = "No items found.";
 				}
 			}
 			else
 			{
 				$sc = FALSE;
-				$this->error = "สถานะเอกสารไม่ถูกต้อง";
+				$this->error = "Invalid document status";
 			}
 		}
 		else
 		{
 			$sc = FALSE;
-			$this->error = "เลขที่เอกสารไม่ถูกต้อง";
+			$this->error = "Invalid document number";
 		}
 
 
@@ -573,7 +573,7 @@ class Transfer extends PS_Controller
                   if(! $this->movement_model->add($move_out))
                   {
                     $sc = FALSE;
-                    $this->error = 'บันทึก movement ขาออกไม่สำเร็จ';
+                    $this->error = 'Failed to save outgoing movement';
                     break;
                   }
 
@@ -591,7 +591,7 @@ class Transfer extends PS_Controller
                   if(! $this->movement_model->add($move_in))
                   {
                     $sc = FALSE;
-                    $this->error = 'บันทึก movement ขาเข้าไม่สำเร็จ';
+                    $this->error = 'Failed to save incoming movement.';
                     break;
                   }
                 } //--- end foreach
@@ -602,14 +602,14 @@ class Transfer extends PS_Controller
                   if(! $this->transfer_model->valid_all_detail($code, 1))
                   {
                     $sc = FALSE;
-                    $this->error = "เปลี่ยนสถานะรายการไม่สำเร็จ";
+                    $this->error = "Failed to change item status.";
                   }
                 }
               }
               else
               {
                 $sc = FALSE;
-                $this->error = "ไม่พบรายการโอนย้าย";
+                $this->error = "No items found.";
               }
             }
           }
@@ -641,7 +641,7 @@ class Transfer extends PS_Controller
                   {
                     $sc = FALSE;
                     $ex = 0;
-                    $this->error = "บันทึกสำเร็จ แต่ส่งข้อมูลไป WMS ไม่สำเร็จ";
+                    $this->error = "Save succeeded, but failed to send data to WMS.";
                   }
                 }
 
@@ -653,7 +653,7 @@ class Transfer extends PS_Controller
                   {
                     $sc = FALSE;
                     $ex = 0;
-                    $this->error = "บันทึกสำเร็จ แต่ส่งข้อมูลไป WMS ไม่สำเร็จ";
+                    $this->error = "Save succeeded, but failed to send data to WMS.";
                   }
                 }
               }
@@ -665,33 +665,33 @@ class Transfer extends PS_Controller
                 {
                   $sc = FALSE;
                   $ex = 0;
-                  $this->error = "บันทึกสำเร็จ แต่ส่งข้อมูลเข้า SAP ไม่สำเร็จ";
+                  $this->error = "Save successfully, but failed to import data to SAP.";
                 }
               }
             }
             else
             {
               $sc = FALSE;
-              $this->error = "ไม่พบรายการโอนย้าย";
+              $this->error = "No items found";
             }
           } //--- if must_accept == 0
         }
         else
         {
           $sc = FALSE;
-          $this->error = "สถานะเอกสารไม่ถูกต้อง";
+          $this->error = "Invalid document status";
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "เลขที่เอกสารไม่ถูกต้อง";
+        $this->error = "Invalid document number";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "คุณไม่มีสิทธิ์ในการอนุมัติ";
+      $this->error = "You do not have authorization rights.";
     }
 
     $arr = array(
@@ -755,7 +755,7 @@ class Transfer extends PS_Controller
     else
     {
       $sc = FALSE;
-      $this->error = "คุณไม่มีสิทธิ์ในการอนุมัติ";
+      $this->error = "You do not have authorization rights.";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -909,7 +909,7 @@ class Transfer extends PS_Controller
               {
                 $sc = FALSE;
                 $ex = 0;
-                $this->error = "บันทึกเอกสารสำเร็จ แต่ส่งข้อมูลไป SAP ไม่สำเร็จ";
+                $this->error = "Save the document successfully. but failed to send data to SAP";
               }
             }
           }
@@ -1095,7 +1095,7 @@ class Transfer extends PS_Controller
               {
                 $sc = FALSE;
                 $ex = 0;
-                $this->error = "บันทึกเอกสารสำเร็จ แต่ส่งข้อมูลไป SAP ไม่สำเร็จ";
+                $this->error = "Save the document successfully. but failed to send data to SAP";
               }
             }
           }
@@ -1206,14 +1206,14 @@ class Transfer extends PS_Controller
 				else
 				{
 					$sc = FALSE;
-					$this->error = "ไม่พบรายการโอนย้าย";
+					$this->error = "No items found.";
 				}
 			}
 		}
 		else
 		{
 			$sc = FALSE;
-			$this->error = "เลขที่เอกสารไม่ถูกต้อง";
+			$this->error = "Invalid document number";
 		}
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -1230,7 +1230,7 @@ class Transfer extends PS_Controller
     if(!empty($doc))
     {
       $sc = FALSE;
-      $this->error = "เอกสารเข้า SAP แล้วไม่อนุญาติให้ยกเลิก";
+      $this->error = "The document has already entered SAP, not allowed to cancel.";
     }
     else
     {
@@ -1360,7 +1360,7 @@ class Transfer extends PS_Controller
 				else
 				{
 					$sc = FALSE;
-					$this->error = "ไม่พบรายการสินค้า";
+					$this->error = "No items found.";
 				}
 	    }
 			else
@@ -1420,26 +1420,26 @@ class Transfer extends PS_Controller
           if($this->transfer_model->update_temp($arr) === FALSE)
           {
             $sc = FALSE;
-            $message = 'ย้ายสินค้าเข้า temp ไม่สำเร็จ';
+            $message = 'Failed to move product into temp';
           }
 
         }
         else
         {
           $sc = FALSE;
-          $message = 'ยอดในโซนไม่เพียงพอ';
+          $message = 'Insufficient balance in the location';
         }
       }
       else
       {
         $sc = FALSE;
-        $message = 'บาร์โค้ดไม่ถูกต้อง';
+        $message = 'Invalid barcode';
       }
     }
     else
     {
       $sc = FALSE;
-      $message = 'ไม่พบเลขที่เอกสาร';
+      $message = 'Document number not found.';
     }
 
     echo $sc === TRUE ? 'success' : $message;
@@ -1489,7 +1489,7 @@ class Transfer extends PS_Controller
                 if($this->transfer_model->update_qty($id, $temp_qty) === FALSE)
                 {
                   $sc = FALSE;
-                  $message = 'แก้ไขยอดในรายการไม่สำเร็จ';
+                  $message = 'Failed to update item quantity';
                   break;
                 }
               }
@@ -1509,7 +1509,7 @@ class Transfer extends PS_Controller
                 if($this->transfer_model->add_detail($ds) === FALSE)
                 {
                   $sc = FALSE;
-                  $message = 'เพิ่มรายการไม่สำเร็จ';
+                  $message = 'Failed to add item';
                   break;
                 }
               }
@@ -1517,7 +1517,7 @@ class Transfer extends PS_Controller
               if($this->transfer_model->update_temp_qty($rs->id, ($temp_qty * -1)) === FALSE)
               {
                 $sc = FALSE;
-                $message = 'แก้ไขยอดใน temp ไม่สำเร็จ';
+                $message = 'Failed to update temp quantity';
                 break;
               }
 
@@ -1539,7 +1539,7 @@ class Transfer extends PS_Controller
           if($qty > 0)
           {
             $sc = FALSE;
-            $message = 'ยอดที่ย้ายเข้ามากกว่ายอดที่ย้ายออกมา';
+            $message = 'The quantity moved in is greater than the amount moved out.';
           }
 
           if($sc === FALSE)
@@ -1563,19 +1563,19 @@ class Transfer extends PS_Controller
         else
         {
           $sc = FALSE;
-          $message = 'ไม่พบรายการใน temp';
+          $message = 'No item in temp';
         }
       }
       else
       {
         $sc = FALSE;
-        $message = 'บาร์โค้ดไม่ถูกต้อง';
+        $message = 'Invalid barcode';
       }
     }
     else
     {
       $sc = FALSE;
-      $message = 'ไม่พบเลขที่เอกสาร';
+      $message = 'Document number not found';
     }
 
     echo $sc === TRUE ? 'success' : $message;
@@ -1588,7 +1588,7 @@ class Transfer extends PS_Controller
     $exists = $this->transfer_model->is_exists($code, $old_code);
     if($exists)
     {
-      echo 'เลขที่เอกสารซ้ำ';
+      echo 'Duplicate document number';
     }
     else
     {
@@ -1713,7 +1713,7 @@ class Transfer extends PS_Controller
     }
     else
     {
-      $sc[] = 'ไม่พบโซน';
+      $sc[] = 'Not found';
     }
 
     echo json_encode($sc);
@@ -1983,25 +1983,25 @@ class Transfer extends PS_Controller
           else
           {
             $sc = FALSE;
-            $this->error = "ยืนยันการรับสินค้าใน Transfer Draft ไม่สำเร็จ";
+            $this->error = "Failed to confirm receipt of goods in Transfer Draft.";
           }
         }
         else
         {
           $sc = FALSE;
-          $this->error = "เอกสารถูกยืนยันไปแล้ว";
+          $this->error = "The document has already been verified.";
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "ไม่พบเอกสาร Transfer draft";
+        $this->error = "Transfer draft document not found";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสาร";
+      $this->error = "Document number not found";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;

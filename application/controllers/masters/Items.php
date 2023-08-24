@@ -5,7 +5,7 @@ class Items extends PS_Controller
   public $menu_code = 'DBITEM';
 	public $menu_group_code = 'DB';
   public $menu_sub_group_code = 'PRODUCT';
-	public $title = 'เพิ่ม/แก้ไข รายการสินค้า';
+	public $title = 'Products SKU';
   public $error = '';
 	public $wms;
 
@@ -336,7 +336,7 @@ class Items extends PS_Controller
         else
         {
           $sc = FALSE;
-          $this->error = "จำนวนนำเข้าสูงสุดได้ไม่เกิน {$limit} บรรทัด";
+          $this->error = "The maximum number of imports is {$limit} lines.";
         } //-- end if count limit
 
       } //--- end if else
@@ -387,10 +387,10 @@ class Items extends PS_Controller
           'cost' => round($this->input->post('cost'), 2),
           'price' => round($this->input->post('price'), 2),
           'unit_code' => $this->input->post('unit_code'),
-          'count_stock' => is_null($count) ? 0 : 1,
-          'can_sell' => is_null($sell) ? 0 : 1,
-          'active' => is_null($active) ? 0 : 1,
-          'is_api' => is_null($api) ? 0 : 1,
+          'count_stock' => empty($count) ? 0 : 1,
+          'can_sell' => empty($sell) ? 0 : 1,
+          'active' => empty($active) ? 0 : 1,
+          'is_api' => empty($api) ? 0 : 1,
           'update_user' => $user
           // 'old_style' => get_null($this->input->post('old_style')),
           // 'old_code' => get_null($this->input->post('old_code'))
@@ -451,10 +451,10 @@ class Items extends PS_Controller
           'cost' => round($this->input->post('cost'), 2),
           'price' => round($this->input->post('price'), 2),
           'unit_code' => $this->input->post('unit_code'),
-          'count_stock' => is_null($count) ? 0 : 1,
-          'can_sell' => is_null($sell) ? 0 : 1,
-          'active' => is_null($active) ? 0 : 1,
-          'is_api' => is_null($api) ? 0 : 1,
+          'count_stock' => empty($count) ? 0 : 1,
+          'can_sell' => empty($sell) ? 0 : 1,
+          'active' => empty($active) ? 0 : 1,
+          'is_api' => empty($api) ? 0 : 1,
           'update_user' => $user
           // 'old_style' => get_null($this->input->post('old_style')),
           // 'old_code' => get_null($this->input->post('old_code'))
@@ -493,7 +493,7 @@ class Items extends PS_Controller
     }
     else
     {
-      set_error('ไม่พบข้อมูล');
+      set_error('No data found');
       redirect($this->home);
     }
   }
@@ -509,7 +509,7 @@ class Items extends PS_Controller
     }
     else
     {
-      set_error('ไม่พบข้อมูล');
+      set_error('No data found');
       redirect($this->home);
     }
   }
@@ -547,10 +547,10 @@ class Items extends PS_Controller
       'cost' => round($ds->cost, 2),
       'price' => round($ds->price, 2),
       'unit_code' => $ds->unit_code,
-      'count_stock' => is_null($ds->count_stock) ? 0 : 1,
-      'can_sell' => is_null($ds->can_sell) ? 0 : 1,
-      'active' => is_null($ds->active) ? 0 : 1,
-      'is_api' => is_null($ds->is_api) ? 0 : 1,
+      'count_stock' => empty($ds->count_stock) ? 0 : 1,
+      'can_sell' => empty($ds->can_sell) ? 0 : 1,
+      'active' => empty($ds->active) ? 0 : 1,
+      'is_api' => empty($ds->is_api) ? 0 : 1,
       'update_user' => $this->_user->uname
       // 'old_style' => get_null($ds->old_style),
       // 'old_code' => get_null($ds->old_code)
@@ -575,7 +575,7 @@ class Items extends PS_Controller
   {
     if($this->products_model->is_exists($code, $old_code))
     {
-      echo 'รหัสซ้ำ';
+      echo 'Duplicated';
     }
     else
     {
@@ -645,19 +645,19 @@ class Items extends PS_Controller
         if(! $this->products_model->delete_item($item))
         {
           $sc = FALSE;
-          $message = "ลบรายการไม่สำเร็จ";
+          $message = "Delete data failed";
         }
       }
       else
       {
         $sc = FALSE;
-        $message = "ไม่สามารถลบ {$item} ได้ เนื่องจากสินค้ามี Transcetion เกิดขึ้นแล้ว";
+        $message = "{$item} cannot be deleted because the item already has a transcetion.";
       }
     }
     else
     {
       $sc = FALSE;
-      $message = 'ไม่พบข้อมูล';
+      $message = 'No data found';
     }
 
     echo $sc === TRUE ? 'success' : $message;

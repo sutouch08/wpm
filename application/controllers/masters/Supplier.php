@@ -5,7 +5,7 @@ class Supplier extends PS_Controller
   public $menu_code = 'DBSUPL';
 	public $menu_group_code = 'DB';
   public $menu_sub_group_code = '';
-	public $title = 'เพิ่ม/แก้ไข ผู้ผลิต';
+	public $title = 'Supplier';
 
   public function __construct()
   {
@@ -63,7 +63,7 @@ class Supplier extends PS_Controller
 			if($this->supplier_model->is_exists_code($ds['code']))
 			{
 				$sc = FALSE;
-				$this->error = "รหัสซ้ำ กรุณากำหนดรหัสใหม่";
+				$this->error = "Duplicated code";
 			}
 			else
 			{

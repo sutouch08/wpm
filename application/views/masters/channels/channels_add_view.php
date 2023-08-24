@@ -13,7 +13,7 @@
 <form class="form-horizontal" id="addForm" method="post" action="<?php echo $this->home."/add"; ?>">
 
 	<div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">รหัส</label>
+    <label class="col-sm-3 control-label no-padding-right">Code</label>
     <div class="col-xs-12 col-sm-3">
 			<span class="input-icon input-icon-right width-100">
       	<input type="text" name="code" id="code" class="width-100" maxlength="10" value="<?php echo $code; ?>" onkeyup="validCode(this)" autofocus required />
@@ -26,7 +26,7 @@
 
 
   <div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">ชื่อ</label>
+    <label class="col-sm-3 control-label no-padding-right">Name</label>
     <div class="col-xs-12 col-sm-3">
 			<span class="input-icon input-icon-right width-100">
         <input type="text" name="name" id="name" class="width-100" value="<?php echo $name; ?>" required />
@@ -37,7 +37,7 @@
   </div>
 
 	<div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">ลูกค้าเริ่มต้น</label>
+    <label class="col-sm-3 control-label no-padding-right">Default Customer</label>
     <div class="col-xs-12 col-sm-3">
 			<span class="input-icon input-icon-right width-100">
         <input type="text" name="customer_name" id="customer_name" class="width-100" value="<?php echo $customer_name; ?>" />

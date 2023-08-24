@@ -3,13 +3,13 @@ var HOME = BASE_URL + 'inventory/return_order/';
 
 function goDelete(code){
 	swal({
-		title: "คุณแน่ใจ ?",
-		text: "ต้องการยกเลิก '"+code+"' หรือไม่ ?",
+		title: "Are you sure ?",
+		text: "Do you want to delete '"+code+"' ?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#DD6B55",
-		confirmButtonText: 'ใช่, ฉันต้องการ',
-		cancelButtonText: 'ไม่ใช่',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: true
 		}, function(){
 			$('#cancle-code').val(code);
@@ -92,6 +92,7 @@ function goAdd(){
 
 
 function goEdit(code){
+	load_in();
 	window.location.href = HOME + 'edit/'+ code;
 }
 

@@ -85,7 +85,7 @@ class Change_password extends CI_Controller
 				if(!$this->user_model->change_password($user->id, $password))
 				{
 					$sc = FALSE;
-					$this->error = "เปลี่ยนรหัสผ่านไม่สำเร็จ";
+					$this->error = "Failed to change password";
 				}
 				else
 				{
@@ -99,7 +99,7 @@ class Change_password extends CI_Controller
 			else
 			{
 				$sc = FALSE;
-				$this->error = "รหัสผ่านไม่ถูกต้อง";
+				$this->error = "password is incorrect";
 			}
 		}
 		else

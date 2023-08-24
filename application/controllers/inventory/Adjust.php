@@ -6,7 +6,7 @@ class Adjust extends PS_Controller
   public $menu_code = 'ICSTAJ';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = '';
-	public $title = 'ปรับปรุงสต็อก';
+	public $title = 'Inventory Adjust';
   public $filter;
   public $error;
 
@@ -87,13 +87,13 @@ class Adjust extends PS_Controller
         if(! $this->adjust_model->add($ds))
         {
           $sc = FALSE;
-          $this->error = "เพิ่มเอกสารไม่สำเร็จ กรุณาลองใหม่อีกครั้ง";
+          $this->error = "Failed to add document Please try again.";
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "คุณไม่มีสิทธิ์ในการเพิ่มเอกสารใหม่";
+        $this->error = "You do not have permission to add new documents.";
       }
     }
 
@@ -159,21 +159,21 @@ class Adjust extends PS_Controller
                   if($new_qty < 0)
                   {
                     $sc = FALSE;
-                    $this->error = "ยอดคงเหลือไม่เพียงพอ มีในรายการแล้ว : {$detail->qty}";
+                    $this->error = "insufficient balance. Already in the list : {$detail->qty}";
                   }
                   else
                   {
                     if(! $this->adjust_model->update_detail_qty($detail->id, $qty))
                     {
                       $sc = FALSE;
-                      $this->error = "ปรับปรุงรายการไม่สำเร็จ";
+                      $this->error = "Failed to update item";
                     }
                   }
                 }
                 else
                 {
                   $sc = FALSE;
-                  $this->error = "ไม่สามารถปรับปรุงรายการได้เนื่องจากรายการถูกปรับยอดไปแล้ว";
+                  $this->error = "The item cannot be adjusted because the item has already been reconciled.";
                 }
 
               }
@@ -191,39 +191,39 @@ class Adjust extends PS_Controller
                 if(! $this->adjust_model->add_detail($ds))
                 {
                   $sc = FALSE;
-                  $this->error = "เพิ่มรายการไม่สำเร็จ";
+                  $this->error = "Failed to add item";
                 }
               }
             }
             else
             {
               $sc = FALSE;
-              $this->error = "รหัสโซนไม่ถูกต้อง";
+              $this->error = "Invalid Bin code";
             }
           }
           else
           {
             $sc = FALSE;
-            $this->error = "รหัสสินค้าไม่ถูกต้อง";
+            $this->error = "Product code is invalid.";
           }
         }
         else
         {
           $sc = FALSE;
-          $this->error = "เอกสารไม่ถูกต้อง หรือ สถานะเอกสารไม่ถูกต้อง";
+          $this->error = "The document is invalid or the document status is invalid.";
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "จำนวนต้องมากกว่า 1";
+        $this->error = "Number must be greater than 1";
       }
 
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบข้อมูล";
+      $this->error = "data not found";
     }
 
     if($sc === TRUE)
@@ -245,7 +245,7 @@ class Adjust extends PS_Controller
       else
       {
         $sc = FALSE;
-        $this->error = "การบันทึกข้อมูลผิดพลาด";
+        $this->error = "data recording error";
       }
     }
 
@@ -284,19 +284,19 @@ class Adjust extends PS_Controller
         if(! $this->adjust_model->update($code, $arr))
         {
           $sc = FALSE;
-          $this->error = "ปรับปรุงข้อมูลไม่สำเร็จ";
+          $this->error = "Failed to update information";
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "เลขที่เอกสารไม่ถูกต้อง";
+        $this->error = "The document number is invalid.";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสาร";
+      $this->error = "Document number not found";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -324,7 +324,7 @@ class Adjust extends PS_Controller
               if( ! $this->adjust_model->delete_detail($id))
               {
                 $sc = FALSE;
-                $this->error = "ลบรายการไม่สำเร็จ";
+                $this->error = "Failed to delete item";
               }
               else
               {
@@ -337,31 +337,31 @@ class Adjust extends PS_Controller
             else
             {
               $sc = FALSE;
-              $this->error = "เอกสารถูกบันทึกไปแล้ว ไม่สามารถแก้ไขรายการได้";
+              $this->error = "The document has been saved. Items cannot be edited.";
             }
           }
           else
           {
             $sc = FALSE;
-            $this->error = "ไม่พบเลขที่เอกสาร";
+            $this->error = "Document number not found";
           }
         }
         else
         {
           $sc = FALSE;
-          $this->error = "ไม่พบรายการที่ต้องการลบ หรือ รายการถูกลบไปแล้ว";
+          $this->error = "The item you want to delete cannot be found or the item has been deleted.";
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "ไม่พบ ID";
+        $this->error = "ID not found";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "คุณไม่มีสิทธิ์ในการแก้ไขรายการ";
+      $this->error = "You do not have permission to edit the list.";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -388,26 +388,26 @@ class Adjust extends PS_Controller
             if( ! $this->adjust_model->change_status($code, $status))
             {
               $sc = FALSE;
-              $this->error = "เปลี่ยนสถานะเอกสารไม่สำเร็จ";
+              $this->error = "Failed to change document status";
             }
           }
           else
           {
             $sc = FALSE;
-            $this->error = "ไม่พบรายการปรับยอดกรุณาตรวจสอบ";
+            $this->error = "No reconciliation list found, please check.";
           }
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "เลขที่เอกสารไม่ถูกต้อง";
+        $this->error = "The document number is invalid.";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสาร";
+      $this->error = "Document number not found";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -435,31 +435,31 @@ class Adjust extends PS_Controller
             if( ! $this->adjust_model->change_status($code, $status))
             {
               $sc = FALSE;
-              $this->error = "เปลี่ยนสถานะเอกสารไม่สำเร็จ";
+              $this->error = "Failed to change document status";
             }
           }
           else
           {
             $sc = FALSE;
-            $this->error = "ไม่พบรายการปรับยอดกรุณาตรวจสอบ";
+            $this->error = "No reconciliation list found, please check.";
           }
         }
         else
         {
           $sc = FALSE;
-          $this->error = "เอกสารถูกบันทึกไปแล้ว";
+          $this->error = "The document has been saved.";
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "เลขที่เอกสารไม่ถูกต้อง";
+        $this->error = "The document number is invalid.";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสาร";
+      $this->error = "Document number not found";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -509,7 +509,7 @@ class Adjust extends PS_Controller
                 if(! $this->movement_model->add($arr))
                 {
                   $sc = FALSE;
-                  $this->error = 'บันทึก movement ไม่สำเร็จ';
+                  $this->error = 'Failed to save movement';
                   break;
                 }
 
@@ -518,7 +518,7 @@ class Adjust extends PS_Controller
                 if(! $this->adjust_model->valid_detail($rs->id))
                 {
                   $sc = FALSE;
-                  $this->error = "เปลี่ยนสถานะรายการไม่สำเร็จ";
+                  $this->error = "Failed to change item status.";
                   break;
                 }
                 else
@@ -540,7 +540,7 @@ class Adjust extends PS_Controller
             if(!$this->adjust_model->do_approve($code, $user))
             {
               $sc = FALSE;
-              $this->error = "อนุมัติเอกสารไม่สำเร็จ";
+              $this->error = "Failed to approve document";
             }
 
             //--- write approve logs
@@ -565,26 +565,26 @@ class Adjust extends PS_Controller
             if($rs === FALSE)
             {
               $sc = FALSE;
-              $this->error = "อนุมัติเอกสารสำเร็จ แต่ ส่งข้อมูลไป SAP ไม่สำเร็จ";
+              $this->error = "The document was approved, but the data to SAP failed.";
             }
           }
         }
         else
         {
           $sc = FALSE;
-          $this->error = "เอกสารยังไม่ถูกบันทึก";
+          $this->error = "The document has not been saved.";
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "เลขที่เอกสารไม่ถูกต้อง";
+        $this->error = "The document number is invalid.";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสาร";
+      $this->error = "Document number not found";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -604,7 +604,7 @@ class Adjust extends PS_Controller
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสาร";
+      $this->error = "Document number not found";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -634,7 +634,7 @@ class Adjust extends PS_Controller
             if(! $this->drop_middle($code))
             {
               $sc = FALSE;
-              $this->error = "ลบเอกสารในถังกลางไม่สำเร็จ";
+              $this->error = "Failed to delete document in intermediate bin.";
             }
 
             $this->db->trans_begin();
@@ -645,7 +645,7 @@ class Adjust extends PS_Controller
               if(! $this->movement_model->drop_movement($code))
               {
                 $sc = FALSE;
-                $this->error = "ลบ movement ไม่สำเร็จ";
+                $this->error = "Failed to delete movement";
               }
             }
 
@@ -656,7 +656,7 @@ class Adjust extends PS_Controller
               if(! $this->adjust_model->unvalid_details($code))
               {
                 $sc = FALSE;
-                $this->error = "เปลี่ยนสถานะรายการไม่สำเร็จ";
+                $this->error = "Failed to change item status.";
               }
               else
               {
@@ -682,7 +682,7 @@ class Adjust extends PS_Controller
               if(! $this->adjust_model->un_approve($code, $this->_user->uname))
               {
                 $sc = FALSE;
-                $this->error = "ยกเลิกการอนุมัติไม่สำเร็จ";
+                $this->error = "Failed to cancel authorization";
               }
             }
 
@@ -705,26 +705,26 @@ class Adjust extends PS_Controller
           else
           {
             $sc = FALSE;
-            $this->error = "เอกสารเข้า SAP แล้วไม่สามารถแก้ไขได้";
+            $this->error = "The document has entered SAP and cannot be edited.";
           }
         }
         else
         {
           $sc = FALSE;
-          $this->error = "เอกสารเข้า SAP แล้วไม่สามารถแก้ไขได้";
+          $this->error = "The document has entered SAP and cannot be edited.้";
         }
 
       }
       else
       {
         $sc = FALSE;
-        $this->error = "เอกสารยังไม่ถูกบันทึก";
+        $this->error = "The document has not been saved.";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "เลขที่เอกสารไม่ถูกต้อง";
+      $this->error = "The document number is invalid.";
     }
 
     return $sc;
@@ -836,7 +836,7 @@ class Adjust extends PS_Controller
             if(! $this->adjust_model->cancle_details($code))
             {
               $sc = FALSE;
-              $this->error = "ยกเลิกรายการไม่สำเร็จ";
+              $this->error = "Failed to cancel item";
             }
 
             //--- change doc status to 2 Cancled
@@ -845,7 +845,7 @@ class Adjust extends PS_Controller
               if(! $this->adjust_model->change_status($code, 2))
               {
                 $sc = FALSE;
-                $this->error = "ยกเลิกเอกสารไม่สำเร็จ";
+                $this->error = "Failed to cancel the document.";
               }
             }
 
@@ -864,19 +864,19 @@ class Adjust extends PS_Controller
         else
         {
           $sc = FALSE;
-          $this->error = "เอกสารเข้า SAP แล้วไม่อนุญาติให้แก้ไข";
+          $this->error = "Documents in SAP are not allowed to be edited.";
         }
       }
       else
       {
         $sc = FALSE;
-        $this->error = "เลขที่เอกสารไม่ถูกต้อง";
+        $this->error = "The document number is invalid.";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "เลขที่เอกสารไม่ถูกต้อง";
+      $this->error = "The document number is invalid.";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
@@ -942,7 +942,7 @@ class Adjust extends PS_Controller
             else
             {
               $sc = FALSE;
-              $this->error = "โซนไม่ถูกต้อง";
+              $this->error = "Invalid Bin code";
             }
           }
         }
@@ -961,7 +961,7 @@ class Adjust extends PS_Controller
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบรายการยอดต่าง";
+      $this->error = "Amount not found";
     }
 
     if($sc === TRUE)
@@ -1011,7 +1011,7 @@ class Adjust extends PS_Controller
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสาร";
+      $this->error = "Document number not found";
     }
 
     return $sc;
@@ -1034,7 +1034,7 @@ class Adjust extends PS_Controller
     else
     {
       $sc = FALSE;
-      $this->error = "ไม่พบเลขที่เอกสาร";
+      $this->error = "Document number not found";
     }
 
     echo $sc === TRUE ? 'success' : $this->error;
