@@ -8,15 +8,15 @@
 	</div>
     <div class="col-sm-6 col-xs-6 padding-5">
       <p class="pull-right top-p">
-				<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+				<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
 				<?php if(($this->pm->can_add OR $this->pm->can_edit) && $doc->status == 0 && $doc->valid == 0) : ?>
 	      <button type="button" class="btn btn-sm btn-primary" onclick="reloadStock()">
-	        <i class="fa fa-refresh"></i> โหลดยอดตั้งต้นใหม่
+	        <i class="fa fa-refresh"></i> Reload Stock
 	      </button>
 				<?php if($doc->is_wms == 0) : ?>
 	       <!--- consign_check_detail.js --->
 	      <button type="button" class="btn btn-sm btn-success" onclick="closeCheck()">
-	        <i class="fa fa-bolt"></i> บันทึกการตรวจนับ
+	        <i class="fa fa-bolt"></i> Save
 	      </button>
 				<?php endif; ?>
 			<?php endif; ?>
@@ -24,7 +24,7 @@
 			<?php if(($this->_SuperAdmin && $doc->status != 2) OR (($this->pm->can_edit OR $this->pm->can_delete) && $doc->status != 2 && $doc->valid == 0)) : ?>
 				<!--- consign_check_detail.js --->
 	      <button type="button" class="btn btn-sm btn-danger" onclick="openCheck()">
-	        <i class="fa fa-bolt"></i> ยกเลิกการบันทึก
+	        <i class="fa fa-bolt"></i> Unsave
 	      </button>
 	    <?php endif; ?>
 
@@ -35,7 +35,7 @@
 			<?php if($this->pm->can_delete && $doc->status == 0 && $doc->valid == 0) : ?>
 				<!--- consign_check_detail.js --->
         <button type="button" class="btn btn-sm btn-danger" onclick="clearDetails()">
-          <i class="fa fa-trash"></i> ยกเลิกการตรวจนับ
+          <i class="fa fa-trash"></i> Cancel
         </button>
 			<?php endif; ?>
       </p>
@@ -45,30 +45,30 @@
 
 <div class="row">
     <div class="col-sm-1 col-1-harf padding-5">
-    	<label>เลขที่เอกสาร</label>
+    	<label>Doc No</label>
         <input type="text" class="form-control input-sm text-center" value="<?php echo $doc->code; ?>" disabled />
     </div>
 		<div class="col-sm-1 col-1-harf padding-5">
-    	<label>วันที่</label>
+    	<label>Date</label>
       <input type="text" class="form-control input-sm text-center" name="date_add" id="dateAdd" value="<?php echo thai_date($doc->date_add); ?>" disabled>
     </div>
 		<div class="col-sm-4 padding-5">
-			<label>ลูกค้า</label>
+			<label>Customer</label>
 			<input type="text" class="form-control input-sm edit" name="customer" id="customer" value="<?php echo $doc->customer_name; ?>"  disabled/>
 		</div>
 		<div class="col-sm-5 padding-5">
-			<label>โซน[ฝากขาย]</label>
+			<label>Location[Consignment]</label>
 			<input type="text" class="form-control input-sm edit" name="zone" id="zone" value="<?php echo $doc->zone_name; ?>" disabled />
 		</div>
-		<div class="col-sm-2 padding-5">
+		<div class="col-sm-2 padding-5 hide">
 			<label>การรับสินค้า</label>
 			<select class="form-control input-sm" name="is_wms" id="is_wms" disabled>
-				<option value="1" <?php echo is_selected('1', $doc->is_wms); ?>>WMS</option>
 				<option value="0" <?php echo is_selected('0', $doc->is_wms); ?>>Warrix</option>
+				<option value="1" <?php echo is_selected('1', $doc->is_wms); ?>>WMS</option>
 			</select>
 		</div>
-		<div class="col-sm-10 padding-5">
-    	<label>หมายเหตุ</label>
+		<div class="col-sm-12 padding-5">
+    	<label>Remark</label>
         <input type="text" class="form-control input-sm" name="remark" id="remark" value="<?php echo $doc->remark; ?>" disabled>
     </div>
 </div>

@@ -79,8 +79,7 @@ class Product_color extends PS_Controller
   {
     $data['code'] = $this->session->flashdata('code');
     $data['name'] = $this->session->flashdata('name');
-    $data['id_group'] = $this->session->flashdata('id_group');
-    $this->title = 'เพิ่ม สีสินค้า';
+    $data['id_group'] = $this->session->flashdata('id_group');    
     $this->load->view('masters/product_color/product_color_add_view', $data);
   }
 

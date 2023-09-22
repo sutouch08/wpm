@@ -16,7 +16,7 @@
 		<div class="help-block col-xs-12 col-sm-reset inline red" id="name-error"></div>
 	</div>
 
-	<div class="form-group">
+	<div class="form-group hide">
 		<label class="col-sm-3 control-label no-padding-right">Old Code</label>
 		<div class="col-xs-12 col-sm-3">
 			<input type="text" name="old_style" id="old_style" class="width-100" value="" placeholder="Option" />
@@ -142,15 +142,15 @@
 
 
 	<div class="form-group">
-		<label class="col-sm-3 control-label no-padding-right">Display Tabs</label>
-		<div class="col-xs-12 col-sm-reset" style="padding-top:10px;">
+		<label class="col-sm-3 control-label no-padding-right">Product Tabs</label>
+		<div class="col-xs-12 col-sm-reset">
 			<?php echo productTabsTree(); ?>
 		</div>
 	</div>
 
 
 	<div class="form-group">
-		<label class="col-sm-3 control-label no-padding-right">Inventroy Item</label>
+		<label class="col-sm-3 control-label no-padding-right">Inventory Item</label>
 		<div class="col-xs-12 col-sm-3">
 			<label style="padding-top:5px;">
 				<input name="count_stock" class="ace ace-switch ace-switch-7" type="checkbox" value="1" checked />
@@ -197,7 +197,7 @@
 	<div class="form-group">
 		<label class="col-sm-3 control-label not-show">Save</label>
 		<div class="col-xs-12 col-sm-3">
-			<button type="submit" class="btn btn-sm btn-success btn-block"><i class="fa fa-save"></i> Add</button>
+			<button type="submit" class="btn btn-sm btn-success btn-100"><i class="fa fa-save"></i> Add</button>
 		</div>
 		<div class="help-block col-xs-12 col-sm-reset inline red"></div>
 	</div>

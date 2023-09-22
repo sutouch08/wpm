@@ -74,7 +74,7 @@ function reloadShipToTable()
 				var output 	= $("#adrs");
 				render(source, data, output);
 			}else{
-				$("#adrs").html('<tr><td colspan="7" align="center">ไม่พบที่อยู่</td></tr>');
+				$("#adrs").html('<tr><td colspan="7" align="center">No address</td></tr>');
 			}
 		}
 	});
@@ -94,44 +94,44 @@ function saveShipTo()
 	var cust_ref = $('#customer_ref').val();
 
 	if(code == ''){
-		swal('กรุณาระบุชื่อลูกค้า');
+		swal('Please specify customer');
 		return false;
 	}
 
 	if( name == '' ){
-		swal('กรุณาระบุชื่อผู้รับ');
+		swal('Please specify consignee');
 		return false;
 	}
 
 	if( addr.length == 0 ){
-		swal('กรุณาระบุที่อยู่');
+		swal('Please specify address');
 		return false;
 	}
 
 	if(subdistrict.length == 0){
-		swal('กรุณาระบุตำบล');
+		swal('Subdistrict is required');
 		return false;
 	}
 
 
 	if(district.length == 0){
-		swal('กรุณาระบุอำเภอ');
+		swal('District is required');
 		return false;
 	}
 
 	if(province.length == 0){
-		swal('กรุณาระบุจังหวัด');
+		swal('Province is required');
 		return false;
 	}
 
 
 	if( alias == '' ){
-		swal('กรุณาตั้งชื่อให้ที่อยู่');
+		swal('Please specify alias');
 		return false;
 	}
 
 	if( email != '' && ! validEmail(email) ){
-		swal("อีเมล์ไม่ถูกต้องกรุณาตรวจสอบ");
+		swal("Invalid email address");
 		return false;
 	}
 
@@ -166,7 +166,7 @@ function saveShipTo()
 				clearAddressField();
 			}else{
 				swal({
-					title:'ข้อผิดพลาด',
+					title:'Error!',
 					text:rs,
 					type:'error'
 				});
@@ -180,13 +180,13 @@ function saveShipTo()
 function removeShipTo(id)
 {
 	swal({
-		title: 'ต้องการลบที่อยู่ ?',
-		text: 'คุณแน่ใจว่าต้องการลบที่อยู่นี้ โปรดจำไว้ว่าการกระทำนี้ไม่สามารถกู้คืนได้',
+		title: 'Are you sure ?',
+		text: 'Do you want to delete this address ?',
 		type: 'warning',
 		showCancelButton: true,
 		confirmButtonColor: '#DD6855',
-		confirmButtonText: 'ใช่ ลบเลย',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
 		}, function(){
 			$.ajax({
@@ -199,10 +199,15 @@ function removeShipTo(id)
 				success: function(rs){
 					var rs = $.trim(rs);
 					if( rs == 'success' ){
-						swal({ title : "สำเร็จ", text: "ลบรายการเรียบร้อยแล้ว", timer: 1000, type: "success" });
+						swal({
+							title : "สำเร็จ",
+							timer: 1000,
+							type: "success"
+						});
+
 						reloadShipToTable();
 					}else{
-						swal("ข้อผิดพลาด!!", "ลบรายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง", "error");
+						swal("Error!!", "Delete failed", "error");
 					}
 				}
 			});

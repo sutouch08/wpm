@@ -307,10 +307,11 @@ class Products extends PS_Controller
   }
 
 
-
   public function edit($code, $tab = 'styleTab')
   {
+    $code = urldecode($code);
     $style = $this->product_style_model->get($code);
+
     if(!empty($style))
     {
       $data = array(
@@ -329,8 +330,6 @@ class Products extends PS_Controller
       redirect($this->home);
     }
   }
-
-
 
 
   //--- update item data
@@ -1015,13 +1014,14 @@ class Products extends PS_Controller
 
 
 
-
   public function delete_style($style)
   {
     $sc = TRUE;
 
     if($style != '')
     {
+      $style = urldecode($style);
+
       if($this->products_model->is_exists_style($style) === TRUE)
       {
         $sc = FALSE;
@@ -1030,6 +1030,7 @@ class Products extends PS_Controller
       else
       {
         $rs = $this->product_style_model->delete($style);
+
         if($rs !== TRUE)
         {
           $sc = FALSE;
@@ -1045,7 +1046,6 @@ class Products extends PS_Controller
 
     echo $sc === TRUE ? 'success' : $message;
   }
-
 
 
   //--- ดึง items และรูปภาพ เพื่อทำการเชื่อมโยงรูปภาพ
@@ -1220,6 +1220,7 @@ class Products extends PS_Controller
 
     //--- เช็คข้อมูลในถังกลาง
     $middle = $this->products_model->get_un_import_middle($item->code);
+
     if(!empty($middle))
     {
       foreach($middle as $mid)
@@ -1267,10 +1268,10 @@ class Products extends PS_Controller
 
     if($this->products_model->add_item($ds))
 		{
-			if($this->wms_export_item)
-			{
-				$this->wms_product_api->export_item($item->code, $item);
-			}
+			// if($this->wms_export_item)
+			// {
+			// 	$this->wms_product_api->export_item($item->code, $item);
+			// }
 		}
 		else
 		{
@@ -1287,6 +1288,7 @@ class Products extends PS_Controller
     $sc = TRUE;
     $success = 0;
     $fail = 0;
+    $style_code = urldecode($style_code);
 
     $products = $this->products_model->get_style_items($style_code);
 
@@ -1339,43 +1341,9 @@ class Products extends PS_Controller
   }
 
 
-
-	// public function send_to_wms()
-	// {
-	// 	$sc = TRUE;
-	// 	$code = trim($this->input->post('code')); //--- style code
-  //
-	// 	if(!empty($code))
-	// 	{
-	// 		$items = $this->products_model->get_style_items($code);
-  //
-	// 		if(!empty($items))
-	// 		{
-	// 			$export = $this->wms_product_api->export_style($code, $items);
-	// 			if(!$export)
-	// 			{
-	// 				$sc = FALSE;
-	// 				$this->error = "Error : ".$this->wms_product_api->error;
-	// 			}
-	// 		}
-	// 		else
-	// 		{
-	// 			$sc = FALSE;
-	// 			$this->error = "Items not found";
-	// 		}
-	// 	}
-	// 	else
-	// 	{
-	// 		$sc = FALSE;
-	// 		$this->error = "Missing required parameter: code";
-	// 	}
-  //
-	// 	echo $sc === TRUE ? 'success' : $this->error;
-	// }
-
-
   public function export_barcode($code, $token)
   {
+    $code = urldecode($code);
     $products = $this->products_model->get_style_items($code);
 
     //--- load excel library

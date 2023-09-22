@@ -10,7 +10,7 @@
 	</div>
 	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
 		<p class="pull-right top-p">
-			<button type="button" class="btn btn-sm btn-success" onclick="export_diff()">Export ยอดต่าง</button>
+			<button type="button" class="btn btn-sm btn-success" onclick="export_diff()">Export Difference</button>
 		</p>
 	</div>
 </div><!-- End Row -->
@@ -134,7 +134,7 @@
 <?php endforeach; ?>
 <?php else : ?>
       <tr>
-        <td colspan="10" class="text-center"><h4>ไม่พบรายการ</h4></td>
+        <td colspan="10" class="text-center"><h4>Not found</h4></td>
       </tr>
 <?php endif; ?>
       </tbody>

@@ -5,7 +5,7 @@ class Consign_check extends PS_Controller
   public $menu_code = 'ICCSRC';
 	public $menu_group_code = 'IC';
   public $menu_sub_group_code = '';
-	public $title = 'กระทบยอดสินค้า';
+	public $title = 'Reconcile Goods';
   public $filter;
   public $error;
 	public $wms;

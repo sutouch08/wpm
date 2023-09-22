@@ -1,7 +1,7 @@
 <?php
 class View_stock extends PS_Controller
 {
-  public $title = 'เช็คสต็อก';
+  public $title = 'Available Model';
 	public $menu_code = 'SOVIEW';
 	public $menu_group_code = 'SO';
 	public $pm;

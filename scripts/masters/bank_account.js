@@ -45,7 +45,7 @@ function saveAdd(){
 	var branch = $('#branch').val();
 
 	if(bank_code === ""){
-		set_error($('#bank-code'), $('#bank-code-error'), 'โปรดเลือกธนาคาร');
+		set_error($('#bank-code'), $('#bank-code-error'), 'Please select bank');
 		return false;
 	}
 	else
@@ -55,7 +55,7 @@ function saveAdd(){
 
 
 	if(account_name === ""){
-		set_error($('#acc-name'), $('#acc-name-error'), 'โปรดระบุชื่อบัญชี');
+		set_error($('#acc-name'), $('#acc-name-error'), 'Please specify account name');
 		return false;
 	}
 	else
@@ -65,7 +65,7 @@ function saveAdd(){
 
 
 	if(account_no === ""){
-		set_error($('#acc-no'), $('#acc-no-error'), 'โปรดระบุเลขที่บัญชี');
+		set_error($('#acc-no'), $('#acc-no-error'), 'Please specify account number');
 		return false;
 	}
 	else
@@ -75,7 +75,7 @@ function saveAdd(){
 
 
 	if(branch === ""){
-		set_error($('#branch'), $('#branch-error'), 'โปรดระบุสาขา');
+		set_error($('#branch'), $('#branch-error'), 'Please specify branch');
 		return false;
 	}
 	else
@@ -101,7 +101,6 @@ function saveAdd(){
 			if(rs === 'success'){
 				swal({
 					title:'Success',
-					text:'เพิ่มบัญชีธนาคารเรียบร้อยแล้ว',
 					type:'success',
 					timer:1000
 				});
@@ -139,8 +138,8 @@ function update(){
 		return false;
 	}
 
-	if(bank_code === ""){
-		set_error($('#bank-code'), $('#bank-code-error'), 'โปรดเลือกธนาคาร');
+  if(bank_code === ""){
+		set_error($('#bank-code'), $('#bank-code-error'), 'Please select bank');
 		return false;
 	}
 	else
@@ -150,7 +149,7 @@ function update(){
 
 
 	if(account_name === ""){
-		set_error($('#acc-name'), $('#acc-name-error'), 'โปรดระบุชื่อบัญชี');
+		set_error($('#acc-name'), $('#acc-name-error'), 'Please specify account name');
 		return false;
 	}
 	else
@@ -160,7 +159,7 @@ function update(){
 
 
 	if(account_no === ""){
-		set_error($('#acc-no'), $('#acc-no-error'), 'โปรดระบุเลขที่บัญชี');
+		set_error($('#acc-no'), $('#acc-no-error'), 'Please specify account number');
 		return false;
 	}
 	else
@@ -170,14 +169,13 @@ function update(){
 
 
 	if(branch === ""){
-		set_error($('#branch'), $('#branch-error'), 'โปรดระบุสาขา');
+		set_error($('#branch'), $('#branch-error'), 'Please specify branch');
 		return false;
 	}
 	else
 	{
 		clear_error($('#branch'), $('#branch-error'));
 	}
-
 	load_in();
 
 	$.ajax({
@@ -197,7 +195,6 @@ function update(){
 			if(rs === 'success'){
 				swal({
 					title:'Success',
-					text:'แก้ไขบัญชีธนาคารเรียบร้อยแล้ว',
 					type:'success',
 					timer:1000
 				});
@@ -253,12 +250,12 @@ function delete_bank(id){
 function getDelete(id, name){
   swal({
     title:'Are sure ?',
-    text:'ต้องการลบ ' + name + ' หรือไม่ ?',
+    text:'Do you want to delete ' + name + ' ?',
     type:'warning',
     showCancelButton: true,
 		confirmButtonColor: '#FA5858',
-		confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
   },function(){
     delete_bank(id);

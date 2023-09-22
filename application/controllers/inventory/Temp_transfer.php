@@ -6,7 +6,7 @@ class Temp_transfer extends PS_Controller
   public $menu_code = 'TETRCK';
 	public $menu_group_code = 'TE';
   public $menu_sub_group_code = 'TETRANSFER';
-	public $title = 'Transfer WW-WQ-MV-WL';
+	public $title = 'Transfer Temp';
   public $filter;
 
   public function __construct()

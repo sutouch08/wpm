@@ -10,9 +10,9 @@
     <table class="table table-striped border-1">
       <thead>
         <tr>
-          <th class="width-5 text-center">No.</th>
-          <th class="width-20">รหัสสินค้า</th>
-          <th class="">ชื่อสินค้า</th>
+          <th class="width-5 text-center">#</th>
+          <th class="width-20">Item Code</th>
+          <th class="">Description</th>
           <th class="width-15">From</th>
           <th class="width-15">To</th>
           <th class="width-10 text-right">Qty</th>

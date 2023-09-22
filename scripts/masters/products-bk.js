@@ -10,30 +10,18 @@ function goBack(){
 
 
 function getEdit(code){
-  url = BASE_URL + 'masters/products/edit/' + encodeURIComponent(code);
-  window.location.href = url;
+  window.location.href = BASE_URL + 'masters/products/edit/'+code;
 }
 
 
-function changeURL(style, tab, a)
+function changeURL(style, tab)
 {
+
 	var url = BASE_URL + 'masters/products/edit/' + style + '/' + tab;
 	var stObj = { stage: 'stage' };
 	window.history.pushState(stObj, 'products', url);
-  if( a !== undefined )
-  {
-    $('#'+tab+'-a').click();
-  }
 }
 
-
-function toggleTab(tabName) {
-  $('.tab-pane').removeClass('in');
-  $('.tab-pane').removeClass('active');
-
-  $('#'+tabName).addClass('active');
-  $('#'+tabName).addClass('in');
-}
 
 
 
@@ -87,22 +75,23 @@ function export_filter(){
 function getDelete(code){
   swal({
     title:'Are sure ?',
-    text:'Do you want to delete ' + code + ' ?',
+    text:'ต้องการลบ ' + code + ' หรือไม่ ?',
     type:'warning',
     showCancelButton: true,
 		confirmButtonColor: '#FA5858',
-		confirmButtonText: 'Yes',
-		cancelButtonText: 'No',
+		confirmButtonText: 'ใช่, ฉันต้องการลบ',
+		cancelButtonText: 'ยกเลิก',
 		closeOnConfirm: false
   },function(){
     $.ajax({
-      url: BASE_URL + 'masters/products/delete_style/' + encodeURIComponent(code),
+      url: BASE_URL + 'masters/products/delete_style/' + code,
       type:'GET',
       cache:false,
       success:function(rs){
         if(rs === 'success'){
           swal({
             title:'Deleted',
+            text:'ลบรุ่นสินค้าเรียบร้อยแล้ว',
             type:'success',
             timer:1000
           });
@@ -131,7 +120,7 @@ function getSearch(){
 function doExport(code){
   load_in();
   $.ajax({
-    url:BASE_URL + 'masters/products/export_products/'+ encodeURIComponent(code),
+    url:BASE_URL + 'masters/products/export_products/'+code,
     type:'POST',
     cache:false,
     success:function(rs){
@@ -151,4 +140,34 @@ function doExport(code){
       }
     }
   })
+}
+
+
+function sendToSap(code) {
+	load_in();
+	$.ajax({
+		url:BASE_URL + 'masters/products/send_to_sap',
+		type:'POST',
+		cache:false,
+		data:{
+			'code' : code
+		},
+		success:function(rs) {
+			load_out();
+			if(rs === 'success') {
+				swal({
+					title:'Success',
+					type:'success',
+					timer:1000
+				});
+			}
+			else {
+				swal({
+					title:'Error!',
+					text:rs,
+					type:'error'
+				})
+			}
+		}
+	})
 }

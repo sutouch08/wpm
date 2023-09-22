@@ -15,24 +15,24 @@
                 กลับ</button>
             <?php if(($this->pm->can_add OR $this->pm->can_edit) && $doc->status == 0 && $doc->valid == 0) : ?>
 	            <button type="button" class="btn btn-sm btn-primary" onclick="reloadStock()">
-	                <i class="fa fa-refresh"></i> โหลดยอดตั้งต้นใหม่
+	                <i class="fa fa-refresh"></i> Reload Current Stock
 	            </button>
 							<?php if($doc->is_wms == 0) : ?>
 	            <button type="button" class="btn btn-sm btn-success" onclick="closeCheck()">
-	                <i class="fa fa-bolt"></i> บันทึกการตรวจนับ
+	                <i class="fa fa-bolt"></i> Save
 	            </button>
 							<?php endif; ?>
             <?php else : ?>
             <!--- consign_check_detail.js --->
             <button type="button" class="btn btn-sm btn-danger" onclick="openCheck()">
-                <i class="fa fa-bolt"></i> ยกเลิกการบันทึก
+                <i class="fa fa-bolt"></i> Unsave
             </button>
             <?php endif; ?>
 
             <?php if($this->pm->can_delete && $doc->status == 0 && $doc->valid == 0) : ?>
             <!--- consign_check_detail.js --->
             <button type="button" class="btn btn-sm btn-danger" onclick="clearDetails()">
-                <i class="fa fa-trash"></i> ยกเลิกการตรวจนับ
+                <i class="fa fa-trash"></i> Cancel
             </button>
             <?php endif; ?>
         </p>
@@ -41,41 +41,41 @@
 <hr />
 <div class="row">
   <div class="col-sm-1 col-1-harf padding-5">
-    <label>เลขที่เอกสาร</label>
+    <label>Doc No</label>
     <input type="text" class="form-control input-sm text-center" value="<?php echo $doc->code; ?>" disabled />
   </div>
   <div class="col-sm-1 col-1-harf padding-5">
-    <label>วันที่</label>
+    <label>Date</label>
     <input type="text" class="form-control input-sm text-center" name="date_add" id="dateAdd"  value="<?php echo thai_date($doc->date_add); ?>" readonly disabled>
   </div>
 	<div class="col-sm-1 col-1-harf padding-5">
-		<label>รหัสลูกค้า</label>
+		<label>Customer</label>
 		<input type="text" class="form-control input-sm text-center" value="<?php echo $doc->customer_code; ?>" disabled>
 	</div>
   <div class="col-sm-3 padding-5">
-    <label>ลูกค้า</label>
+    <label class="not-show">ลูกค้า</label>
     <input type="text" class="form-control input-sm edit" name="customer" id="customer" value="<?php echo $doc->customer_name; ?>" required disabled />
   </div>
   <div class="col-sm-4 col-4-harf padding-5">
-    <label>โซน[ฝากขาย]</label>
+    <label>Location[Consignment]</label>
     <input type="text" class="form-control input-sm edit" name="zone" id="zone" value="<?php echo $doc->zone_name; ?>" disabled required />
   </div>
-	<div class="col-sm-1 col-1-harf padding-5">
+	<div class="col-sm-1 col-1-harf padding-5 hide">
 		<label>การรับสินค้า</label>
 		<select class="form-control input-sm edit" name="is_wms" id="is_wms" disabled>
-			<option value="1" <?php echo is_selected('1', $doc->is_wms); ?>>WMS</option>
 			<option value="0" <?php echo is_selected('0', $doc->is_wms); ?>>Warrix</option>
+			<option value="1" <?php echo is_selected('1', $doc->is_wms); ?>>WMS</option>
 		</select>
 	</div>
-  <div class="col-sm-9 padding-5">
-    <label>หมายเหตุ</label>
+  <div class="col-sm-10 col-10-harf padding-5">
+    <label>Remark</label>
     <input type="text" class="form-control input-sm" name="remark" id="remark"
       value="<?php echo $doc->remark; ?>" disabled>
   </div>
   <div class="col-sm-1 col-1-harf padding-5">
     <label class="display-block not-show">add</label>
-    <button type="button" class="btn btn-xs btn-warning btn-block" id="btn-edit" onclick="getEdit()"><i class="fa fa-pencil"></i> แก้ไข</button>
-    <button type="button" class="btn btn-xs btn-success btn-block hide" id="btn-update" onclick="update()"><i class="fa fa-save"></i> บันทึก</button>
+    <button type="button" class="btn btn-xs btn-warning btn-block" id="btn-edit" onclick="getEdit()"><i class="fa fa-pencil"></i> Edit</button>
+    <button type="button" class="btn btn-xs btn-success btn-block hide" id="btn-update" onclick="update()"><i class="fa fa-save"></i> Update</button>
   </div>
 </div>
 <input type="hidden" name="zone_code" id="zone_code" value="<?php echo $doc->zone_code; ?>">
@@ -86,26 +86,25 @@
 
 <div class="row">
     <div class="col-sm-2 padding-5">
-        <label>บาร์โค้ดกล่อง</label>
-        <input type="text" class="form-control input-sm text-center box" id="box-code" placeholder="ยิงบาร์โค้ดกล่อง"
+        <label>Barcode Box</label>
+        <input type="text" class="form-control input-sm text-center box" id="box-code" placeholder="Scan barcode box"
             autofocus>
     </div>
     <div class="col-sm-1 padding-5">
-        <label>จำนวน</label>
+        <label>Qty</label>
         <input type="number" class="form-control input-sm text-center item" id="qty-box" value="1" disabled>
     </div>
     <div class="col-sm-2 padding-5">
-        <label>บาร์โค้ดสินค้า</label>
-        <input type="text" class="form-control input-sm text-center item" id="barcode" placeholder="ยิงบาร์โค้ดสินค้า"
-            disabled>
+        <label>Barcode Item</label>
+        <input type="text" class="form-control input-sm text-center item" id="barcode" placeholder="Scan barcode item"  disabled>
     </div>
     <div class="col-sm-1 col-1-harf padding-5">
         <label class="display-block not-show">changebox</label>
         <button type="button" class="btn btn-xs btn-info btn-block item" id="btn-change-box" onclick="changeBox()"
-            disabled><i class="fa fa-refresh"></i> เปลี่ยนกล่อง</button>
+            disabled><i class="fa fa-refresh"></i> Change box</button>
     </div>
     <div class="col-sm-3 col-3-harf">
-        <h4 class="pull-right" style="margin-top:15px;" id="box-label">จำนวนในกล่อง</h4>
+        <h4 class="pull-right" style="margin-top:15px;" id="box-label">In box</h4>
     </div>
     <div class="col-sm-2 padding-5">
         <div class="title middle text-center"

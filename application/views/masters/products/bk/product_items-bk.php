@@ -2,36 +2,39 @@
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-sm-12">
 		<?php if($this->pm->can_add OR $this->pm->can_edit) : ?>
-		<button type="button" class="btn btn-sm btn-primary top-btn" onclick="newItems()">Create new items</button>
-		<button type="button" class="btn btn-sm btn-info top-btn" onclick="setImages()">Image mapping</button>
-		<button type="button" class="btn btn-sm btn-warning top-btn" onclick="setBarcodeForm()">Generate Barcode</button>
-		<button type="button" class="btn btn-sm btn-purple top-btn" onclick="downloadBarcode('<?php echo $style->code; ?>')">Download Barcode</button>
-		<button type="button" class="btn btn-sm btn-info top-btn" onclick="doExport('<?php echo $style->code; ?>')"><i class="fa fa-send"></i> Send to SAP </button>
-
-		<button type="button" class="btn btn-sm btn-yellow top-btn hide" onclick="checkOldCode('<?php echo $style->code; ?>','<?php echo $style->old_code; ?>')">
-			Generate Old code
+		<button type="button" class="btn btn-sm btn-primary" onclick="newItems()">สร้างรายการสินค้า</button>
+		<button type="button" class="btn btn-sm btn-info" onclick="setImages()">เชื่อมโยงรูปภาพ</button>
+		<button type="button" class="btn btn-sm btn-warning" onclick="setBarcodeForm()">Generate Barcode</button>
+		<button type="button" class="btn btn-sm btn-purple" onclick="downloadBarcode('<?php echo $style->code; ?>')">Download Barcode</button>
+		<button type="button" class="btn btn-sm btn-info" onclick="doExport('<?php echo $style->code; ?>')"><i class="fa fa-send"></i> ส่งไป SAP </button>
+		<!--
+		<button type="button" class="btn btn-sm btn-yellow" onclick="checkOldCode('<?php echo $style->code; ?>','<?php echo $style->old_code; ?>')">
+			Generate รหัสเก่า
 		</button>
+	-->
+		<?php if(is_true(getConfig('WEB_API')) === TRUE) : ?>
+			<button type="button" class="btn btn-sm btn-success" onclick="sendToWeb('<?php echo $style->code; ?>')"><i class="fa fa-send"></i> ส่งไป Magento</button>
+		<?php endif; ?>
 		<?php endif; ?>
 	</div>
 </div>
 <hr/>
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5 table-responsive">
-		<table class="table table-striped table-hover" style="min-width:1150px;">
+		<table class="table table-striped table-hover">
 			<thead>
 				<tr>
-					<th class="fix-width-60 text-center">Images</th>
-					<th class="fix-width-200">Item</th>
-					<th class="fix-width-200">Old Code</th>
-					<th class="fix-width-120">Barcode</th>
-					<th class="fix-width-60 text-center">Color</th>
-					<th class="fix-width-60 text-center">Size</th>
-					<th class="fix-width-100 text-right">Cost</th>
-					<th class="fix-width-100 text-right">Price</th>
-					<th class="fix-width-50 text-center">Inventroy</th>
-					<th class="fix-width-50 text-center">Active</th>
-					<th class="fix-width-50 text-center hide">API</th>
-					<th class="min-width-100"></th>
+					<th class="width-5 text-center">รูปภาพ</th>
+					<th class="width-20">รหัสสินค้า</th>
+					<th class="width-10">บาร์โค้ด</th>
+					<th class="width-5 text-center">สี</th>
+					<th class="width-5 text-center">ไซส์</th>
+					<th class="width-8 text-right">ทุน</th>
+					<th class="width-8 text-right">ราคา</th>
+					<th class="width-5 text-center">ขาย</th>
+					<th class="width-5 text-center">เปิด</th>
+					<th class="width-5 text-center">API</th>
+					<th class=""></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -43,7 +46,6 @@
 						<img src="<?php echo $img; ?>" style="width:50px;" />
 					</td>
 					<td class="middle"><?php echo $item->code; ?></td>
-					<td class="middle"><?php echo $item->old_code; ?></td>
 
 					<td class="middle">
 						<span class="lb" id="bc-lbl-<?php echo $item->code; ?>"><?php echo $item->barcode; ?></span>
@@ -100,7 +102,7 @@
 						<?php endif; ?>
 					</td>
 
-					<td class="middle text-center hide">
+					<td class="middle text-center">
 						<?php if($this->pm->can_edit) : ?>
 							<a href="javascript:void(0)" class="api" data-code="<?php echo $item->code; ?>">
 								<?php echo is_active($item->is_api); ?>
@@ -143,15 +145,15 @@
 		<div class="modal-dialog" style="width:1000px">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title">Mapping Images</h4>
+					<h4 class="modal-title">จับคู่รูปภาพกับสินค้า</h4>
 				</div>
 				<div class="modal-body">
 					<div class="table-responsive" id="mappingBody"></div>
 
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-sm btn-primary">Submit</button>
+						<button type="button" class="btn btn-sm btn-default" data-dismiss="modal">ปิด</button>
+						<button type="submit" class="btn btn-sm btn-primary">ดำเนินการ</button>
 					</div>
 				</div>
 			</div>
@@ -168,15 +170,15 @@
 			<div class="modal-body">
 				<div class="row">
 					<div class="col-sm-12 text-center">
-						<label style="margin:20px;"><input type="radio" class="ace" name="barcodeType" value="1" checked /><span class="lbl"> Internal barcode</span></label>
-						<label><input type="radio" class="ace" name="barcodeType" value="2" /><span class="lbl"> Global Barcode</span></label>
+						<label style="margin:20px;"><input type="radio" class="ace" name="barcodeType" value="1" checked /><span class="lbl"> บาร์โค้ดภายใน</span></label>
+						<label><input type="radio" class="ace" name="barcodeType" value="2" /><span class="lbl"> บาร์โค้ดสากล</span></label>
 					</div>
 				</div>
 
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-sm btn-primary" onclick="startGenerate()">Generate</button>
+					<button type="button" class="btn btn-sm btn-default" data-dismiss="modal">ปิด</button>
+					<button type="button" class="btn btn-sm btn-primary" onclick="startGenerate()">ดำเนินการ</button>
 				</div>
 			</div>
 		</div>

@@ -30,7 +30,7 @@
       <option value="all">All</option>
       <option value="Y" <?php echo is_selected('Y', $status); ?>>Success</option>
       <option value="N" <?php echo is_selected('N', $status); ?>>Pending</option>
-      <option value="E" <?php echo is_selected('E', $status); ?>>Failed</option>
+      <option value="E" <?php echo is_selected('E', $status); ?>>Error</option>
     </select>
   </div>
 
@@ -111,7 +111,7 @@
             <?php if($rs->F_Sap === NULL) : ?>
               <span class="blue">Pending</span>
             <?php elseif($rs->F_Sap === 'N') : ?>
-              <span class="red">Failed</span>
+              <span class="red">Error</span>
 						<?php elseif($rs->F_Sap === 'Y') : ?>
 							<span class="green">Success</span>
             <?php endif; ?>

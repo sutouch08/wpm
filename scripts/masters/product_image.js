@@ -47,13 +47,13 @@ function showUploadBox()
 function removeImage(style, id_img)
 {
   swal({
-		title: "คุณแน่ใจ ?",
-		text: "ต้องการลบรูปภาพ หรือไม่ ?",
+		title: "Are you sure ?",
+		text: "Do you want to delete this image ?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#FA5858",
-		confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
 		}, function(){
       $.ajax({
@@ -70,7 +70,6 @@ function removeImage(style, id_img)
     			{
             swal({
               title:'Deleted',
-              text:'ลบรูปภาพเรียบร้อยแล้ว',
               type:'success',
               timer:1000
             });
@@ -79,7 +78,7 @@ function removeImage(style, id_img)
     			}
     			else
     			{
-    				swal("ข้อผิดพลาด", "ลบรูปภาพไม่สำเร็จ", "error");
+    				swal("Error!", "Delete failed", "error");
     			}
     		}
     	});

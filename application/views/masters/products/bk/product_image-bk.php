@@ -1,19 +1,16 @@
 <div class="row">
-  <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 text-center">
+  <div class="col-sm-4">
     <span class="form-control label-right">
-      <h4 class="title">Add images for this product</h4>
+      <h4 class="title">เพิ่มรูปภาพสำหรับสินค้านี้</h4>
     </span>
   </div>
-  <div class="divider-hidden visible-xs"></div>
-
-  <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+  <div class="col-sm-4">
     <button type="button" class="btn btn-primary btn-block" onClick="showUploadBox()">
-      <i class="fa fa-cloud-upload"></i> Add Images
+      <i class="fa fa-cloud-upload"></i> เพิ่มรูปภาพ
     </button>
   </div>
-  <div class="divider-hidden visible-xs"></div>
-  <div class="col-sm-4 col-xs-12">
-    <span class="help-block" style="margin-top:15px; margin-bottom:0px;">allow : jpg, png, gif maximum size 2 MB</span>
+  <div class="col-sm-4">
+    <span class="help-block" style="margin-top:15px; margin-bottom:0px;">ไฟล์ : jpg, png, gif ขนาดสูงสุด 2 MB</span>
   </div>
 </div><!--/ row -->
 
@@ -22,7 +19,7 @@
 <?php if(!empty($images) ) : ?>
 <?php		foreach( $images as $img ) : 	?>
 <?php			$cover	= $img->cover == 1 ? 'btn-success' : ''; ?>
-  <div class="col-sm-3 col-xs-6" id="div-image-<?php echo $img->id; ?>">
+  <div class="col-sm-3" id="div-image-<?php echo $img->id; ?>">
     <div class="thumbnail">
       <a data-rel="colorbox" href="<?php echo get_image_path($img->id, 'large'); ?>">
         <img class="img-rounded" src="<?php echo get_image_path($img->id, 'medium'); ?>" />
@@ -57,14 +54,17 @@
 
 
 <div class="modal fade" id="uploadBox" tabindex="-1" role="dialog" aria-labelledby="uploader" aria-hidden="true">
-	<div class="modal-dialog" style="width:800px; max-width:90vw;">
+	<div class="modal-dialog" style="width:800px">
   	<div class="modal-content">
+    	<div class="modal-header">
+        <h4 class="modal-title">อัพโหลดรูปภาพสำหรับสินค้านี้</h4>
+      </div>
       <div class="modal-body">
       	<form class="dropzone" id="imageForm" action="">
         </form>
       </div>
       <div class="modal-footer">
-      	<button type="button" class="btn btn-sm btn-default" onClick="clearUploadBox()">Close</button>
+      	<button type="button" class="btn btn-sm btn-default" onClick="clearUploadBox()">ปิด</button>
         <button type="button" class="btn btn-sm btn-primary" onClick="doUpload()">Upload</button>
       </div>
     </div>

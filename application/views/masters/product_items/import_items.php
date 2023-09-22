@@ -3,17 +3,17 @@
    <div class="modal-content">
        <div class="modal-header">
        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-       <h4 class="modal-title">นำเข้าไฟล์ Excel</h4>
+       <h4 class="modal-title">Import Excel</h4>
       </div>
       <div class="modal-body">
         <form id="upload-form" name="upload-form" method="post" enctype="multipart/form-data">
         <div class="row">
           <div class="col-sm-9">
-            <button type="button" class="btn btn-sm btn-primary btn-block" id="show-file-name" onclick="getFile()">กรุณาเลือกไฟล์ Excel</button>
+            <button type="button" class="btn btn-sm btn-primary btn-block" id="show-file-name" onclick="getFile()">Choose File</button>
           </div>
 
           <div class="col-sm-3">
-            <button type="button" class="btn btn-sm btn-info" onclick="uploadfile()"><i class="fa fa-cloud-upload"></i> นำเข้า</button>
+            <button type="button" class="btn btn-sm btn-info btn-block" onclick="uploadfile()">Import</button>
           </div>
         </div>
         <input type="file" class="hide" name="uploadFile" id="uploadFile" accept=".xlsx" />

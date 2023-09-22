@@ -4,20 +4,20 @@
 
 <div class="row">
   <div class="col-sm-2 col-sm-offset-3 text-center">
-    <label class="display-block">ในโซน</label>
+    <label class="display-block">In Location</label>
     <span><h4 class="title" id="total-zone">Loading...</h4></span>
   </div>
   <div class="col-sm-2 text-center">
-    <label class="display-block">ตรวจนับ</label>
+    <label class="display-block">Checked</label>
     <span><h4 class="title" id="total-checked">Loading...</h4></span>
   </div>
   <div class="col-sm-2 text-center">
-    <label class="display-block">ยอดต่าง</label>
+    <label class="display-block">Difference</label>
     <span><h4 class="title" id="total-diff">Loading...</h4></span>
   </div>
   <div class="col-sm-3 text-right top-col">
 		<?php if($doc->is_wms == 0) : ?>
-    <button type="button" class="btn btn-sm btn-info" onclick="getBoxList()"><i class="fa fa-file-text"></i> พิมพ์ใบปะหน้ากล่อง</button>
+    <button type="button" class="btn btn-sm btn-info" onclick="getBoxList()"><i class="fa fa-file-text"></i> Print box packing list</button>
 		<?php endif; ?>
   </div>
 </div>
@@ -29,11 +29,11 @@
 			<thead>
 				<tr>
 					<th class="width-5 middle text-center">No.</th>
-					<th class="width-15 middle">บาร์โค้ด</th>
-					<th class="width-40 middle">รหัสสินค้า</th>
-					<th class="width-10 middle text-right">ยอดในโซน</th>
-					<th class="width-10 middle text-right">ยอดตรวจนับ</th>
-					<th class="width-10 middle text-right">ยอดต่าง</th>
+					<th class="width-15 middle">Barcode</th>
+					<th class="width-40 middle">Items</th>
+					<th class="width-10 middle text-right">Location</th>
+					<th class="width-10 middle text-right">Checked</th>
+					<th class="width-10 middle text-right">Difference</th>
 					<th class="width-10 middle text-right"></th>
 				</tr>
 			</thead>
@@ -95,7 +95,7 @@
 
        </div>
 			 <div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 			 </div>
 		</div>
 	</div>
@@ -110,8 +110,8 @@
         <td colspan="3" class="text-center">{{pdCode}}</td>
       </tr>
       <tr>
-        <td class="width-50 text-center">กล่อง</td>
-        <td class="width-30 text-center">จำนวน</td>
+        <td class="width-50 text-center">Box No</td>
+        <td class="width-30 text-center">Qty</td>
         <td class="width-20 text-right"></td>
       </tr>
       {{#each rows}}
@@ -128,7 +128,7 @@
           </td>
         </tr>
         {{else}}
-         <tr><td colspan="3" class="text-center">ไม่มีข้อมูล</td></tr>
+         <tr><td colspan="3" class="text-center">No data found</td></tr>
          {{/if}}
       {{/each}}
     </table>
@@ -146,7 +146,7 @@
 
        </div>
 			 <div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 			 </div>
 		</div>
 	</div>
@@ -162,7 +162,7 @@
     {{#each this}}
       {{#if nodata}}
       <tr>
-        <td colspan="3" class="text-center">ไม่พบรายการ</td>
+        <td colspan="3" class="text-center">Not found</td>
       </tr>
       {{else}}
       <tr>
@@ -170,7 +170,7 @@
         <td class="middle text-center">{{ barcode }}</td>
         <td class="middle text-right">
           <button type="button" class="btn btn-sm btn-info" onclick="printConsignBox({{ id_box }})">
-            <i class="fa fa-print"></i> พิมพ์
+            <i class="fa fa-print"></i> Print
           </button>
         </td>
       </tr>

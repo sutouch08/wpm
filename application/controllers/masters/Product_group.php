@@ -19,7 +19,7 @@ class Product_group extends PS_Controller
   public function index()
   {
 		$code = get_filter('code', 'pd_group_code', '');
-		$name = get_filter('name', 'pd_group_name_name', '');
+		$name = get_filter('name', 'pd_group_name', '');
 
 		//--- แสดงผลกี่รายการต่อหน้า
 		$perpage = get_filter('set_rows', 'rows', 20);

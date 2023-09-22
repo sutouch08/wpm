@@ -136,23 +136,6 @@ class Product_tab_model extends CI_Model
 	}
 
 
-
-  //
-	// public function addTabsProduct($style_code, $id_tab)
-	// {
-	// 	return dbQuery("INSERT INTO product_tab_style (style_code, id_product_tab) VALUES ('".$style_code."', '".$id_tab."')");
-	// }
-
-
-
-
-	// public function dropTabsProduct($style_code)
-	// {
-	// 	return dbQuery("DELETE FROM product_tab_style WHERE style_code = '".$style_code."'");
-	// }
-
-
-
 	public function isExists($field, $val, $id='')
 	{
 		if( $id != '' )

@@ -129,12 +129,12 @@ function addEmployee(){
   let empName = $('#empName').val();
   let empID = $('#empID').val();
   if(code === undefined){
-    swal('ไม่พบรหัสโซน');
+    swal('Bin Location not found');
     return false;
   }
 
   if(empID == '' || empName.length == 0){
-    swal('ชื่อพนักงานไม่ถูกต้อง');
+    swal('Invalid employee');
     return false;
   }
 
@@ -154,7 +154,6 @@ function addEmployee(){
       if(rs === 'success'){
         swal({
           title:'Success',
-          text:'เพิ่มพนักงานเรียบร้อยแล้ว',
           type:'success',
           timer:1000
         });
@@ -205,12 +204,12 @@ function addCustomer(){
   let customer_code = $('#customer_code').val();
   let customer_name = $('#search-box').val();
   if(code === undefined){
-    swal('ไม่พบรหัสโซน');
+    swal('Bin location not found');
     return false;
   }
 
   if(customer_code == '' || customer_name.length == 0){
-    swal('ชื่อลูกค้าไม่ถูกต้อง');
+    swal('Invalid customer');
     return false;
   }
 
@@ -229,7 +228,6 @@ function addCustomer(){
       if(rs === 'success'){
         swal({
           title:'Success',
-          text:'เพิ่มลูกค้าเรียบร้อยแล้ว',
           type:'success',
           timer:1000
         });
@@ -253,12 +251,12 @@ function addCustomer(){
 function getDelete(code){
   swal({
     title:'Are sure ?',
-    text:'ต้องการลบ ' + code + ' หรือไม่ ?',
+    text:'Do you want to delete ' + code + ' ?',
     type:'warning',
     showCancelButton: true,
 		confirmButtonColor: '#FA5858',
-		confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
   },function(){
     $.ajax({
@@ -269,7 +267,6 @@ function getDelete(code){
         if(rs === 'success'){
           swal({
             title:'Deleted',
-            text:'ลบ '+code+' เรียบร้อยแล้ว',
             type:'success',
             timer:1000
           });
@@ -293,12 +290,12 @@ function getDelete(code){
 function deleteCustomer(id,code){
   swal({
     title:'Are sure ?',
-    text:'ต้องการลบ ' + code + ' หรือไม่ ?',
+    text:'Do you want to delete ' + code + ' ?',
     type:'warning',
     showCancelButton: true,
 		confirmButtonColor: '#FA5858',
-		confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
   },function(){
     $.ajax({
@@ -309,7 +306,6 @@ function deleteCustomer(id,code){
         if(rs === 'success'){
           swal({
             title:'Deleted',
-            text:'ลบ '+code+' เรียบร้อยแล้ว',
             type:'success',
             timer:1000
           });
@@ -333,12 +329,12 @@ function deleteCustomer(id,code){
 function deleteEmployee(id,name){
   swal({
     title:'Are sure ?',
-    text:'ต้องการลบ ' + name + ' หรือไม่ ?',
+    text:'Do you want to delete ' + name + ' ?',
     type:'warning',
     showCancelButton: true,
 		confirmButtonColor: '#FA5858',
-		confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
   },function(){
     $.ajax({

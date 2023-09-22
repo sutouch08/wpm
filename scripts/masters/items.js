@@ -55,29 +55,7 @@ function update() {
 		clear_error($('#name'), $('#name-error'));
 	}
 
-	// if(data.style.length === 0) {
-	// 	set_error($('#style'), $('#style-error'), "required");
-	// 	error++;
-	// }
-	// else {
-	// 	clear_error($('#style'), $('#style-error'));
-	// }
-  //
-	// if(data.color.length === 0) {
-	// 	set_error($('#color'), $('#color-error'), "required");
-	// 	error++;
-	// }
-	// else {
-	// 	clear_error($('#color'), $('#color-error'));
-	// }
-  //
-	// if(data.size.length === 0) {
-	// 	set_error($('#size'), $('#size-error'), "required");
-	// 	error++;
-	// }
-	// else {
-	// 	clear_error($('#size'), $('#size-error'));
-	// }
+
 
 	if(data.unit_code.length === 0) {
 		set_error($('#unit_code'), $('#unit-error'), "required");
@@ -86,14 +64,6 @@ function update() {
 	else {
 		clear_error($('#unit_code'), $('#unit-error'));
 	}
-
-	// if(data.main_group_code.length === 0) {
-	// 	set_error($('#mainGroup'), $('#mainGroup-error'), "required");
-	// 	error++;
-	// }
-	// else {
-	// 	clear_error($('#mainGroup'), $('#mainGroup-error'));
-	// }
 
 	if(error > 0) {
 		return false;
@@ -226,23 +196,22 @@ function clearFilter(){
 function getDelete(code){
   swal({
     title:'Are sure ?',
-    text:'ต้องการลบ ' + code + ' หรือไม่ ?',
+    text:'Do you want to delete ' + code + ' ?',
     type:'warning',
     showCancelButton: true,
 		confirmButtonColor: '#FA5858',
-		confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
   },function(){
     $.ajax({
-      url: BASE_URL + 'masters/items/delete_item/' + code,
+      url: BASE_URL + 'masters/items/delete_item/' + encodeURIComponent(code),
       type:'GET',
       cache:false,
       success:function(rs){
         if(rs === 'success'){
           swal({
-            title:'Deleted',
-            text:'ลบรุ่นสินค้าเรียบร้อยแล้ว',
+            title:'Deleted',            
             type:'success',
             timer:1000
           });

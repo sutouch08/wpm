@@ -64,7 +64,8 @@ class Items extends PS_Controller
       'kind'      => get_filter('kind', 'kind', ''),
       'type'      => get_filter('type', 'type', ''),
       'brand'     => get_filter('brand', 'brand', ''),
-      'year'      => get_filter('year', 'year', '')
+      'year'      => get_filter('year', 'year', ''),
+      'active' => get_filter('active', 'active', 'all')
     );
 
 		//--- แสดงผลกี่รายการต่อหน้า
@@ -640,6 +641,8 @@ class Items extends PS_Controller
 
     if($item != '')
     {
+      $item = urldecode($item);
+      
       if(! $this->products_model->has_transection($item))
       {
         if(! $this->products_model->delete_item($item))

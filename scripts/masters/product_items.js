@@ -93,7 +93,7 @@ function checkBarcode(barcode, item)
     success:function(rs){
       if(rs === 'exists'){
       el.addClass('has-error');
-      el.attr('data-original-title', 'บาร์โค้ดซ้ำ');
+      el.attr('data-original-title', 'Duplicated barcode');
       el.tooltip();
       }else{
         el.removeClass('has-error');
@@ -117,7 +117,7 @@ function setImages()
 			load_out();
 			var rs = $.trim(rs);
 			if( rs == 'noimage' ){
-				swal('ไม่พบรูปภาพ หรือ รายการสินค้า');
+				swal('No image or items not found');
 			}else{
 				$("#mappingBody").html(rs);
 				$("#imageMappingTable").modal('show');
@@ -270,7 +270,7 @@ $('.act').click(function(){
     }else{
       swal({
         title:'Error!',
-        text: 'เปลี่ยนสถานะไม่สำเร็จ',
+        text: 'Failed to change status',
         type:'error'
       });
     }
@@ -294,7 +294,7 @@ $('.api').click(function(){
     }else{
       swal({
         title:'Error!',
-        text: 'เปลี่ยนสถานะไม่สำเร็จ',
+        text: 'Failed to change status',
         type:'error'
       });
     }
@@ -306,12 +306,12 @@ $('.api').click(function(){
 function deleteItem(item){
   swal({
     title:'Are sure ?',
-    text:'ต้องการลบ ' + item + ' หรือไม่ ?',
+    text:'Do you want to delete ' + item + ' ?',
     type:'warning',
     showCancelButton: true,
 		confirmButtonColor: '#FA5858',
-		confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
   },function(){
     $.ajax({
@@ -322,7 +322,6 @@ function deleteItem(item){
         if(rs === 'success'){
           swal({
             title:'Deleted',
-            text:'ลบรายการสินค้าเรียบร้อยแล้ว',
             type:'success',
             timer:1000
           });
@@ -344,35 +343,5 @@ function downloadBarcode(code)
 {
 	var token	= new Date().getTime();
 	get_download(token);
-	window.location.href = BASE_URL + 'masters/products/export_barcode/'+code+'/'+token;
-}
-
-
-function sendToWeb(code)
-{
-  load_in();
-  $.ajax({
-    url:BASE_URL + 'masters/products/export_products_to_web',
-    type:'POST',
-    cache:false,
-    data:{
-      'style_code' : code
-    },
-    success:function(rs){
-      load_out();
-      if(rs === 'success'){
-        swal({
-          title:'Success',
-          type:'success',
-          timer:1000
-        });
-      }else{
-        swal({
-          title:'Error',
-          text:rs,
-          type:'error'
-        });
-      }
-    }
-  })
+	window.location.href = BASE_URL + 'masters/products/export_barcode/'+encodeURIComponent(code)+'/'+token;
 }

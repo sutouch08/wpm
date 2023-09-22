@@ -6,7 +6,7 @@
   <div class="col-sm-6 padding-5">
     <p class="pull-right top-p">
       <?php if($this->pm->can_add) : ?>
-        <button type="button" class="btn btn-sm btn-success" onclick="goAdd()"><i class="fa fa-plus"></i> เพิ่มใหม่</button>
+        <button type="button" class="btn btn-sm btn-success" onclick="goAdd()"><i class="fa fa-plus"></i> Add New</button>
       <?php endif; ?>
     </p>
   </div>
@@ -15,51 +15,51 @@
 <form id="searchForm" method="post" action="<?php echo current_url(); ?>">
   <div class="row">
     <div class="col-sm-2 padding-5">
-      <label>เลขที่เอกสาร</label>
+      <label>Doc No.</label>
       <input type="text" class="form-control input-sm text-center search" name="code" value="<?php echo $code; ?>" />
     </div>
     <div class="col-sm-2 padding-5">
-      <label>ลูกค้า</label>
+      <label>Customer</label>
       <input type="text" class="form-control input-sm text-center search" name="customer" value="<?php echo $customer; ?>" />
     </div>
 		<div class="col-sm-2 padding-5">
-      <label>โซน</label>
+      <label>Location</label>
       <input type="text" class="form-control input-sm text-center search" name="zone" value="<?php echo $zone; ?>" />
     </div>
-    <div class="col-sm-2 padding-5">
+    <div class="col-sm-2 padding-5 hide">
     	<label>ช่องทางการรับ</label>
 			<select class="form-control input-sm" name="is_wms" onchange="getSearch()">
-				<option value="all">ทั้งหมด</option>
+				<option value="all">All</option>
 				<option value="1" <?php echo is_selected('1', $is_wms); ?>>WMS</option>
 				<option value="0" <?php echo is_selected('0', $is_wms); ?>>Warrix</option>
 			</select>
     </div>
     <div class="col-sm-2 padding-5">
-      <label>สถานะ</label>
+      <label>Status</label>
       <select class="form-control input-sm" name="status" onchange="getSearch()">
-  			<option value="all">ทั้งหมด</option>
-  			<option value="0" <?php echo is_selected('0', $status); ?>>ยังไม่บันทึก</option>
-  			<option value="1" <?php echo is_selected('1', $status); ?>>บันทึกแล้ว</option>
-  			<option value="2" <?php echo is_selected('2', $status); ?>>ยกเลิก</option>
-        <option value="3" <?php echo is_selected('3', $status); ?>>WMS Process</option>
+  			<option value="all">All</option>
+  			<option value="0" <?php echo is_selected('0', $status); ?>>Draft</option>
+  			<option value="1" <?php echo is_selected('1', $status); ?>>Saved</option>
+  			<option value="2" <?php echo is_selected('2', $status); ?>>Cancelled</option>
+        <!--<option value="3" <?php echo is_selected('3', $status); ?>>WMS Process</option> -->
   		</select>
     </div>
 
     <div class="col-sm-2 padding-5">
-      <label>การดึงยอด</label>
+      <label>Linked</label>
       <select class="form-control input-sm" name="valid" onchange="getSearch()">
-  			<option value="all">ทั้งหมด</option>
-  			<option value="0" <?php if($valid == '0'){ echo 'selected'; } ?>>ยังไม่ดึง</option>
-  			<option value="1" <?php echo is_selected(1, $valid); ?>>ดึงแล้ว</option>
+  			<option value="all">All</option>
+  			<option value="0" <?php if($valid == '0'){ echo 'selected'; } ?>>No</option>
+  			<option value="1" <?php echo is_selected(1, $valid); ?>>Yes</option>
   		</select>
     </div>
 
     <div class="col-sm-2 padding-5">
-      <label>เลขที่อ้างอิง</label>
+      <label>Reference</label>
       <input type="text" class="form-control input-sm text-center search" name="consign_code" value="<?php echo $consign_code; ?>" />
     </div>
     <div class="col-sm-2 padding-5">
-      <label>วันที่</label>
+      <label>Date</label>
       <div class="input-daterange input-group">
         <input type="text" class="form-control input-sm width-50 from-date" name="from_date" id="fromDate" value="<?php echo $from_date; ?>" />
         <input type="text" class="form-control input-sm width-50" name="to_date" id="toDate" value="<?php echo $to_date; ?>" />
@@ -67,7 +67,7 @@
     </div>
     <div class="col-sm-1 padding-5">
       <label class="display-block not-show">btn</label>
-      <button type="button" class="btn btn-xs btn-primary btn-block" onclick="getSearch()"><i class="fa fa-search"></i> ค้นหา</button>
+      <button type="button" class="btn btn-xs btn-primary btn-block" onclick="getSearch()"><i class="fa fa-search"></i> Search</button>
     </div>
     <div class="col-sm-1 padding-5">
       <label class="display-block not-show">btn</label>
@@ -81,22 +81,22 @@
 <div class="row">
   <div class="col-sm-12 padding-5">
     <p class="pull-right top-p">
-      สถานะ : <span class="green">OK</span> = ตัดยอดแล้ว,&nbsp;
-      <span class="blue">NC</span> = ยังไม่ตัดยอด,&nbsp;
-      <span class="red">NS</span> = ยังไม่บันทึก,&nbsp;
-			<span class="purple">OP</span> = รอรับที่ WMS,&nbsp;
-      <span class="red">CN</span> = ยกเลิก
+      Status : <span class="green">OK</span> = Closed,&nbsp;
+      <span class="blue">NC</span> = Open,&nbsp;
+      <span class="red">NS</span> = Draft,&nbsp;
+			<span class="purple hide">OP</span> = รอรับที่ WMS,&nbsp;
+      <span class="red">CN</span> = Cancelled
     </p>
     <table class="table table-striped border-1">
       <thead>
         <tr>
-          <th class="width-5 text-center">ลำดับ</th>
-          <th class="width-10 text-center">วันที่</th>
-          <th class="width-10">เลขที่เอกสาร</th>
-          <th class="width-25">ลูกค้า</th>
-          <th class="width-25">โซน</th>
-          <th class="width-10">อ้างอิง</th>
-          <th class="width-5 text-center">สถานะ</th>
+          <th class="width-5 text-center">#</th>
+          <th class="width-10 text-center">Date</th>
+          <th class="width-10">Document No</th>
+          <th class="width-25">Customer</th>
+          <th class="width-25">Location</th>
+          <th class="width-10">Reference</th>
+          <th class="width-5 text-center">Status</th>
           <th class=""></th>
         </tr>
       </thead>
@@ -139,7 +139,7 @@
 <?php else : ?>
         <tr>
           <td colspan="8" class="text-center">
-            --- ไม่พบรายการ ---
+            --- Not found ---
           </td>
         </tr>
 <?php endif; ?>

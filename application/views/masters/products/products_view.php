@@ -9,7 +9,7 @@
   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
   	<p class="pull-right top-p">
     <?php if($this->pm->can_add) : ?>
-      <button type="button" class="btn btn-sm btn-success" onclick="addNew()"><i class="fa fa-plus"></i> เพิมใหม่</button>
+      <button type="button" class="btn btn-sm btn-success" onclick="addNew()"><i class="fa fa-plus"></i> Add New</button>
     <?php endif; ?>
     </p>
   </div>
@@ -18,75 +18,75 @@
 <form id="searchForm" method="post" action="<?php echo current_url(); ?>">
 <div class="row">
   <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>รหัส</label>
+    <label>Code</label>
     <input type="text" class="width-100" name="code" id="code" value="<?php echo $code; ?>" />
   </div>
 
   <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>ชื่อ</label>
+    <label>Name</label>
     <input type="text" class="width-100" name="name" id="name" value="<?php echo $name; ?>" />
   </div>
 
 	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>กลุ่ม</label>
+    <label>Group</label>
     <select class="form-control" name="group" id="group" onchange="getSearch()">
-			<option value="">ทั้งหมด</option>
+			<option value="">All</option>
 			<?php echo select_product_group($group); ?>
 		</select>
   </div>
 
 	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>กลุ่มหลัก</label>
+    <label>Main Group</label>
 		<select class="form-control" name="main_group" id="main_group" onchange="getSearch()">
-			<option value="">ทั้งหมด</option>
+			<option value="">All</option>
 			<?php echo select_product_main_group($main_group); ?>
 		</select>
   </div>
 
 	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>กลุ่มย่อย</label>
+    <label>Sub Group</label>
 		<select class="form-control" name="sub_group" id="sub_group" onchange="getSearch()">
-			<option value="">ทั้งหมด</option>
+			<option value="">All</option>
 			<?php echo select_product_sub_group($sub_group); ?>
 		</select>
   </div>
 
 	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>หมวดหมู่</label>
+    <label>Category</label>
 		<select class="form-control" name="category" id="category" onchange="getSearch()">
-			<option value="">ทั้งหมด</option>
+			<option value="">All</option>
 			<?php echo select_product_category($category); ?>
 		</select>
   </div>
 
 	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>ประเภท</label>
+    <label>Kind</label>
 		<select class="form-control" name="kind" id="kind" onchange="getSearch()">
-			<option value="">ทั้งหมด</option>
+			<option value="">All</option>
 			<?php echo select_product_kind($kind); ?>
 		</select>
   </div>
 
 	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>ชนิด</label>
+    <label>Type</label>
 		<select class="form-control" name="type" id="type" onchange="getSearch()">
-			<option value="">ทั้งหมด</option>
+			<option value="">All</option>
 			<?php echo select_product_type($type); ?>
 		</select>
   </div>
 
 	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>ยี่ห้อ</label>
+    <label>Brand</label>
 		<select class="form-control" name="brand" id="brand" onchange="getSearch()">
-			<option value="">ทั้งหมด</option>
+			<option value="">All</option>
 			<?php echo select_product_brand($brand); ?>
 		</select>
   </div>
 
 	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>ปี</label>
+    <label>Year</label>
 		<select class="form-control" name="year" id="year" onchange="getSearch()">
-			<option value="">ทั้งหมด</option>
+			<option value="">All</option>
 			<?php echo select_years($year); ?>
 		</select>
   </div>
@@ -125,16 +125,16 @@
 		<table class="table table-striped table-bordered table-hover">
 			<thead>
 				<tr>
-					<th class="width-5 middle text-center">ลำดับ</th>
-					<th class="width-5 middle text-center">รูปภาพ</th>
-					<th class="middle text-center">รหัส</th>
-					<th class="width-10 middle text-center">ราคา</th>
-					<th class="width-10 middle text-center">กลุ่ม</th>
-					<th class="width-10 middle text-center">หมวดหมู่</th>
-					<th class="width-10 middle text-center">ประเภท</th>
-					<th class="width-5 middle text-center">ปี</th>
-					<th class="width-5 middle text-center">ขาย</th>
-					<th class="width-5 middle text-center">ใช้งาน</th>
+					<th class="width-5 middle text-center">#</th>
+					<th class="width-5 middle text-center">Img</th>
+					<th class="middle text-center">Code</th>
+					<th class="width-10 middle text-center">Price</th>
+					<th class="width-10 middle text-center">Group</th>
+					<th class="width-10 middle text-center">Category</th>
+					<th class="width-10 middle text-center">Kind</th>
+					<th class="width-5 middle text-center">Year</th>
+					<th class="width-5 middle text-center">Sell</th>
+					<th class="width-5 middle text-center">Active</th>
 					<th class="width-10"></th>
 				</tr>
 			</thead>
@@ -162,7 +162,7 @@
 						<td class="middle text-center"><?php echo is_active($rs->sell); ?></td>
 						<td class="middle text-center"><?php echo is_active($rs->active); ?></td>
 						<td class="middle text-right">
-							<button type="button" class="btn btn-mini btn-info" onclick="sendToSap('<?php echo $rs->code; ?>')">
+							<button type="button" class="btn btn-mini btn-info" onclick="doExport('<?php echo $rs->code; ?>')">
 								<i class="fa fa-send"></i>
 							</button>
 							<?php if($this->pm->can_edit) : ?>

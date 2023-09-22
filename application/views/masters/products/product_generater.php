@@ -1,9 +1,9 @@
 <?php $this->load->view('include/header'); ?>
 <div class="row">
-	<div class="col-sm-6 ">
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
     <h3 class="title"><?php echo $this->title; ?></h3>
   </div>
-	<div class="col-sm-6">
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
 		<p class="pull-right top-p">
 			<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
 		</p>
@@ -13,7 +13,7 @@
 <script src="<?php echo base_url(); ?>assets/js/fuelux/fuelux.wizard.js"></script>
 <div class="widget-box">
   <div class="widget-header widget-header-blue widget-header-flat">
-		<h4 class="widget-title lighter">สร้างรายการสินค้ารุ่น  : <?php echo $style->code; ?> (<?php echo $style->name; ?>)</h4>
+		<h4 class="widget-title lighter">Create New Items  : <?php echo $style->code; ?></h4>
 	</div>
 
 	<div class="widget-body">
@@ -24,15 +24,15 @@
 					<ul class="steps">
 						<li data-step="1" class="active">
 							<span class="step">1</span>
-							<span class="title">กำหนด สี/ไซส์</span>
+							<span class="title">Specify Color/Size</span>
 						</li>
 						<li data-step="2" class="">
 							<span class="step">2</span>
-							<span class="title">จับคู่รูปภาพ</span>
+							<span class="title">Mapping Images</span>
 						</li>
 						<li data-step="3" class="">
 							<span class="step">3</span>
-							<span class="title">สร้างรายการ</span>
+							<span class="title">Generate Items</span>
 						</li>
 					</ul>
 					<!-- /section:plugins/fuelux.wizard.steps -->
@@ -50,7 +50,7 @@
                 <div class="col-xs-12 col-sm-6">
   								<div class="widget-box">
   									<div class="widget-header">
-  										<h4 class="widget-title">กำหนดสี</h4>
+  										<h4 class="widget-title">Specify Colors</h4>
   									</div>
   									<div class="widget-body">
   										<div class="widget-main" style="height: 350px; overflow:scroll;">
@@ -73,7 +73,7 @@
                 <div class="col-xs-12 col-sm-6">
   								<div class="widget-box">
   									<div class="widget-header">
-  										<h4 class="widget-title">กำหนดไซส์</h4>
+  										<h4 class="widget-title">Specigy Size</h4>
   									</div>
   									<div class="widget-body">
   										<div class="widget-main" style="height: 350px; overflow:scroll;">
@@ -108,7 +108,7 @@
                       </p>
                       <p class="text-center">
                         <select name="image[<?php echo $img->id; ?>]" id="<?php echo $img->id; ?>" class="form-control imageBox">
-                          <option value="">เลือกสี</option>
+                          <option value="">Select Color</option>
                         </select>
                       </p>
                     </div>
@@ -124,9 +124,9 @@
                   <table class="table border-1">
                     <thead>
                       <tr>
-                        <th class="width-10 text-center">รูปภาพ</th>
-                        <th>รหัสสินค้า</th>
-												<th>รหัสเก่า</th>
+                        <th class="width-10 text-center">Images</th>
+                        <th>Item Code</th>
+												<th>Old Code</th>
                       </tr>
                     </thead>
                     <tbody id="preGen">
@@ -139,8 +139,8 @@
                     <thead>
                       <tr>
                         <th class="width-10 middle text-center">size</td>
-                        <th class="width-10">ทุน</td>
-                        <th class="width-10">ราคา</td>
+                        <th class="width-10">Cost</td>
+                        <th class="width-10">Price</td>
                         <th></td>
                       </tr>
                     </thead>

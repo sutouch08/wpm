@@ -7,7 +7,7 @@
 	</div>
     <div class="col-sm-6 padding-5">
       <p class="pull-right top-p">
-				<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+				<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
       </p>
     </div>
 </div>
@@ -16,35 +16,35 @@
 <form id="addForm" action="<?php echo $this->home.'/add'; ?>" method="post">
 <div class="row">
     <div class="col-sm-1 col-1-harf padding-5">
-    	<label>เลขที่เอกสาร</label>
+    	<label>Doc No</label>
         <input type="text" class="form-control input-sm text-center" value="" disabled />
     </div>
 		<div class="col-sm-1 col-1-harf padding-5">
-    	<label>วันที่</label>
+    	<label>Date</label>
       <input type="text" class="form-control input-sm text-center" name="date_add" id="dateAdd" value="<?php echo date('d-m-Y'); ?>" readonly />
     </div>
 		<div class="col-sm-4 padding-5">
-			<label>ลูกค้า</label>
+			<label>Customer</label>
 			<input type="text" class="form-control input-sm edit" name="customer" id="customer" value=""  required/>
 		</div>
 		<div class="col-sm-5 padding-5">
-			<label>โซน[ฝากขาย]</label>
-			<input type="text" class="form-control input-sm edit" name="zone" id="zone" value="" placeholder="กำหนดโซนที่จะกระทบยอด" required />
+			<label>Location[consignment]</label>
+			<input type="text" class="form-control input-sm edit" name="zone" id="zone" value="" required />
 		</div>
-		<div class="col-sm-1 col-1-harf padding-5">
+		<div class="col-sm-1 col-1-harf padding-5 hide">
 			<label>ช่องทางการรับ</label>
 			<select class="form-control input-sm" name="is_wms" id="is_wms">
-				<option value="1">WMS</option>
 				<option value="0">Warrix</option>
+				<!--<option value="1">WMS</option>-->
 			</select>
 		</div>
-		<div class="col-sm-9 padding-5">
-    	<label>หมายเหตุ</label>
-        <input type="text" class="form-control input-sm" name="remark" id="remark" placeholder="ระบุหมายเหตุเอกสาร (ถ้ามี)" />
+		<div class="col-sm-10 col-10-harf padding-5">
+    	<label>Remark</label>
+        <input type="text" class="form-control input-sm" name="remark" id="remark" />
     </div>
 		<div class="col-sm-1 col-1-harf padding-5">
 			<label class="display-block not-show">add</label>
-			<button type="button" class="btn btn-xs btn-success btn-block" onclick="add()"><i class="fa fa-plus"></i> เพิ่ม</button>
+			<button type="button" class="btn btn-xs btn-success btn-block" onclick="add()"><i class="fa fa-plus"></i> Add</button>
 		</div>
 </div>
 <input type="hidden" name="zone_code" id="zone_code">

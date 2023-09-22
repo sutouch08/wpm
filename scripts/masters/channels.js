@@ -26,12 +26,12 @@ function clearFilter(){
 function getDelete(code, name){
   swal({
     title:'Are sure ?',
-    text:'ต้องการลบ ' + name + ' หรือไม่ ?',
+    text:'Do you want to delete ' + name + ' ?',
     type:'warning',
     showCancelButton: true,
-		confirmButtonColor: '#FA5858',
-		confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+    confirmButtonColor: '#FA5858',
+    confirmButtonText: 'Yes',
+    cancelButtonText: 'No',
 		closeOnConfirm: false
   },function(){
     window.location.href = BASE_URL + 'masters/channels/delete/' + code;

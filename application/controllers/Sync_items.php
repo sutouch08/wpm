@@ -15,7 +15,7 @@ class Sync_items extends PS_Controller
   {
     parent::__construct();
     _check_login();
-    
+
     $this->ms = $this->load->database('ms', TRUE); //--- SAP database
     //$this->mc = $this->load->database('mc', TRUE); //--- Temp Database
     $this->date = date('Y-d-m H:i:s');

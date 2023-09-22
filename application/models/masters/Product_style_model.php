@@ -63,24 +63,6 @@ class Product_style_model extends CI_Model
 
   public function get_sap_list($date_add, $date_upd, $limit, $offset)
   {
-    // $rs = $this->ms->distinct()
-    // ->select('OITM.U_MODEL, OITM.U_GROUP, OITM.U_MAJOR')
-    // ->select('OITM.U_CATE, OITM.U_SUBTYPE, OITM.U_TYPE')
-    // ->select('OITM.U_BRAND, OITM.U_YEAR, OITM.InvntItem, OITM.InvntryUom')
-    // ->select('ITM1.Price AS cost, ITM2.Price AS price')
-    // ->from('OITM')
-    // ->join('ITM1 AS ITM1', '(ITM1.ItemCode = OITM.ItemCode AND ITM1.PriceList = 13)','left')
-    // ->join('ITM1 AS ITM2', '(ITM2.ItemCode = OITM.ItemCode AND ITM2.PriceList = 11)', 'left')
-    // ->where('OITM.U_MODEL IS NOT NULL', NULL, FALSE)
-    // ->where('OITM.U_MODEL !=', '')
-    // ->where('OITM.U_MODEL !=','0')
-    // ->group_start()
-    // ->where('OITM.CreateDate >', $date_add)
-    // ->or_where('UpdateDate >', $date_upd)
-    // ->group_end()
-    // ->limit($limit, $offset)
-    // ->get();
-
     $rs = $this->ms
     ->select('U_MODEL')
     ->where('U_MODEL IS NOT NULL', NULL, FALSE)
@@ -109,19 +91,13 @@ class Product_style_model extends CI_Model
     ->select('OITM.U_BRAND, OITM.U_YEAR, OITM.InvntItem, OITM.InvntryUom')
     ->select('ITM1.Price AS cost, ITM2.Price AS price')
     ->from('OITM')
-    ->join('ITM1 AS ITM1', '(ITM1.ItemCode = OITM.ItemCode AND ITM1.PriceList = 13)','left')
-    ->join('ITM1 AS ITM2', '(ITM2.ItemCode = OITM.ItemCode AND ITM2.PriceList = 11)', 'left')
+    ->join('ITM1 AS ITM1', '(ITM1.ItemCode = OITM.ItemCode AND ITM1.PriceList = 1)','left')
+    ->join('ITM1 AS ITM2', '(ITM2.ItemCode = OITM.ItemCode AND ITM2.PriceList = 2)', 'left')
     ->where('OITM.U_MODEL', $code)
     ->where('OITM.U_MODEL !=', '')
     ->where('OITM.U_MODEL !=','0')
     ->limit(1)
     ->get();
-
-    // $rs = $this->ms
-    // ->select('U_MODEL, U_GROUP, U_MAJOR, U_CATE, U_TYPE, U_SUBTYPE, U_BRAND, U_YEAR, InvntryUom, InvntItem')
-    // ->where('U_MODEL', $code)
-    // ->limit(1)
-    // ->get('OITM');
 
     if($rs->num_rows() > 0)
     {

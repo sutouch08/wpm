@@ -177,7 +177,7 @@ function genItems(){
   var style = $('#style').val();
   var countColor = $('.color').length;
   var countSize = $('.size').length;
-  
+
   if(style.length == 0){
     swal('ไม่พบรุ่นสินค้า');
     return false;
@@ -186,7 +186,7 @@ function genItems(){
   if(countColor == 0 && countSize == 0){
     swal({
       title:'Error!',
-      text:'ต้องกำหนดสีหรือไซส์อย่างน้อย 1 รายการ',
+      text:'At least one color or size must be specified.',
       type:'error'
     });
 

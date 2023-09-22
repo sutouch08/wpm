@@ -6,7 +6,7 @@ class Temp_receive_transform extends PS_Controller
   public $menu_code = 'TERTCK';
 	public $menu_group_code = 'TE';
   public $menu_sub_group_code = 'TEADJUST';
-	public $title = 'Goods Receipt Transform';
+	public $title = 'Goods Receipt Temp';
   public $filter;
   public function __construct()
   {

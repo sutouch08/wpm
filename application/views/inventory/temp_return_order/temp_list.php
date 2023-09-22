@@ -10,21 +10,21 @@
 <form id="searchForm" method="post" action="<?php echo current_url(); ?>">
 <div class="row">
   <div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-6 padding-5">
-    <label>เลขที่เอกสาร</label>
+    <label>Doc No.</label>
     <input type="text" class="form-control input-sm search" name="code"  value="<?php echo $code; ?>" />
   </div>
 
   <div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-6 padding-5">
-    <label>ลูกค้า/ผู้เบิก</label>
+    <label>Customer</label>
     <input type="text" class="form-control input-sm search" name="customer" value="<?php echo $customer; ?>" />
   </div>
 
   <div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-6 padding-5">
-    <label>สถานะ</label>
+    <label>Status</label>
     <select class="form-control input-sm" name="status" onchange="getSearch()">
-      <option value="all">ทั้งหมด</option>
-      <option value="Y" <?php echo is_selected('Y', $status); ?>>เข้าแล้ว</option>
-      <option value="N" <?php echo is_selected('N', $status); ?>>ยังไม่เข้า</option>
+      <option value="all">All</option>
+      <option value="Y" <?php echo is_selected('Y', $status); ?>>Success</option>
+      <option value="N" <?php echo is_selected('N', $status); ?>>Pending</option>
       <option value="E" <?php echo is_selected('E', $status); ?>>Error</option>
     </select>
   </div>
@@ -51,27 +51,20 @@
 <?php echo $this->pagination->create_links(); ?>
 
 <div class="row">
-  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5">
-    <p class="pull-right">
-      สถานะ : ว่างๆ = ปกติ, &nbsp;
-      <span class="red">ERROR</span> = เกิดข้อผิดพลาด, &nbsp;
-      <span class="blue">NC</span> = ยังไม่เข้า SAP
-    </p>
-  </div>
   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5 table-responsive">
-    <table class="table table-striped border-1 dataTable" style="min-width:1100px;">
+    <table class="table table-striped border-1 dataTable" style="min-width:1240px;">
       <thead>
         <tr>
 					<th class="fix-width-80"></th>
-          <th class="fix-width-60 text-center">ลำดับ</th>
-          <th class="fix-width-100 text-center">วันที่</th>
-          <th class="fix-width-120">เลขที่เอกสาร </th>
-          <th class="fix-width-100">รหัสลูกค้า</th>
-          <th class="fix-width-250">ชื่อลูกค้า</th>
-          <th class="fix-width-150">เข้าถังกลาง</th>
-          <th class="fix-width-150">เข้า SAP</th>
-          <th class="fix-width-60 text-center">สถานะ</th>
-					<th class="min-width-100">หมายเหตุ</th>
+          <th class="fix-width-60 text-center">#</th>
+          <th class="fix-width-100 text-center">Date</th>
+          <th class="fix-width-120">Document No.</th>
+          <th class="fix-width-120">Customer Code</th>
+          <th class="fix-width-300">Customer Name</th>
+          <th class="fix-width-150">Temp Date</th>
+          <th class="fix-width-150">SAP Date</th>
+          <th class="fix-width-60 text-center">Status</th>
+					<th class="min-width-100">Remark</th>
         </tr>
       </thead>
       <tbody>
@@ -80,33 +73,29 @@
 <?php   foreach($orders as $rs)  : ?>
 
         <tr class="font-size-12" id="row-<?php echo $rs->DocEntry; ?>">
-					<td class="text-right">
+					<td class="middle">						
+						<button type="button" class="btn btn-minier btn-primary" onclick="get_detail(<?php echo $rs->DocEntry; ?>)">
+							<i class="fa fa-eye"></i>
+						</button>
 						<?php if($rs->F_Sap !== 'Y') : ?>
 							<button type="button" class="btn btn-minier btn-danger" onclick="removeTemp(<?php echo $rs->DocEntry; ?>, '<?php echo $rs->U_ECOMNO; ?>')">
 								<i class="fa fa-trash"></i>
 							</button>
 						<?php endif; ?>
-						<button type="button" class="btn btn-minier btn-primary" onclick="get_detail(<?php echo $rs->DocEntry; ?>)">
-							<i class="fa fa-eye"></i>
-						</button>
 					</td>
-          <td class="text-center no"><?php echo $no; ?></td>
+          <td class="middle text-center no"><?php echo $no; ?></td>
 
-          <td class="text-center"><?php echo thai_date($rs->DocDate); ?></td>
+          <td class="middle text-center"><?php echo thai_date($rs->DocDate); ?></td>
 
-          <td class="">
+          <td class="middle"><?php echo $rs->U_ECOMNO; ?></td>
 
-						<?php echo $rs->U_ECOMNO; ?>
+          <td class="middle"><?php echo $rs->CardCode; ?></td>
 
-					</td>
+          <td class="middle"><?php echo $rs->CardName; ?></td>
 
-          <td class=""><?php echo $rs->CardCode; ?></td>
+          <td class="middle" ><?php echo thai_date($rs->F_E_CommerceDate, TRUE); ?></td>
 
-          <td class="hide-text"><?php echo $rs->CardName; ?></td>
-
-          <td class="" ><?php echo thai_date($rs->F_E_CommerceDate, TRUE); ?></td>
-
-          <td class="">
+          <td class="middle">
 						<?php
 							if(!empty($rs->F_SapDate))
 							{
@@ -114,16 +103,16 @@
 							}
 					 	?>
 				 	</td>
-					<td class="text-center">
+					<td class="middle text-center">
             <?php if($rs->F_Sap === NULL) : ?>
-              <span class="blue">NC</span>
+              <span class="blue">Pending</span>
             <?php elseif($rs->F_Sap === 'N') : ?>
               <span class="red">ERROR</span>
 						<?php elseif($rs->F_Sap == 'Y') : ?>
-							<span class="green">สำเร็จ</span>
+							<span class="green">Success</span>
             <?php endif; ?>
           </td>
-          <td class="">
+          <td class="middle">
             <?php
             if($rs->F_Sap === 'N')
             {
@@ -136,7 +125,7 @@
 <?php endforeach; ?>
 <?php else : ?>
       <tr>
-        <td colspan="10" class="text-center"><h4>ไม่พบรายการ</h4></td>
+        <td colspan="10" class="text-center"><h4>Not found</h4></td>
       </tr>
 <?php endif; ?>
       </tbody>

@@ -8,7 +8,7 @@ function checkStyle(){
     $.get(url, function(rs){
       if(rs == 'exists'){
         $('#valid').val(''); ///---
-        set_error(el, label, "รหัสรุ่นสินค้านี้มีอยู่แล้ว");
+        set_error(el, label, "Model code already exists");
       }else{
         clear_error(el, label);
         $('#valid').val(1);

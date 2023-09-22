@@ -235,6 +235,11 @@ class Products_model extends CI_Model
       {
         $this->db->where('year', $ds['year']);
       }
+
+      if(isset($ds['active']) && $ds['active'] != 'all')
+      {
+        $this->db->where('products.active', $ds['active']);
+      }
     }
 
     return $this->db->count_all_results();
@@ -351,6 +356,11 @@ class Products_model extends CI_Model
       if(!empty($ds['year']))
       {
         $this->db->where('year', $ds['year']);
+      }
+
+      if(isset($ds['active']) && $ds['active'] != 'all')
+      {
+        $this->db->where('products.active', $ds['active']);
       }
     }
 

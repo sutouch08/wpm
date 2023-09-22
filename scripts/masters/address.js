@@ -1,13 +1,13 @@
 function removeAddress(id)
 {
 	swal({
-		title: 'ต้องการลบที่อยู่ ?',
-		text: 'คุณแน่ใจว่าต้องการลบที่อยู่นี้ โปรดจำไว้ว่าการกระทำนี้ไม่สามารถกู้คืนได้',
+		title: 'Are you sure ?',
+		text: 'Do you want to delete address ?',
 		type: 'warning',
 		showCancelButton: true,
 		confirmButtonColor: '#DD6855',
-		confirmButtonText: 'ใช่ ลบเลย',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
 		}, function(){
 			$.ajax({
@@ -20,10 +20,10 @@ function removeAddress(id)
 				success: function(rs){
 					var rs = $.trim(rs);
 					if( rs == 'success' ){
-						swal({ title : "สำเร็จ", text: "ลบรายการเรียบร้อยแล้ว", timer: 1000, type: "success" });
+						swal({ title : "สำเร็จ", timer: 1000, type: "success" });
 						reloadAddressTable();
 					}else{
-						swal("ข้อผิดพลาด!!", "ลบรายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง", "error");
+						swal("Error!!", "Failed to delete address", "error");
 					}
 				}
 			});
@@ -60,7 +60,7 @@ function editAddress(id)
 				$("#alias").val(ds.alias);
 				$("#addressModal").modal('show');
 			}else{
-				swal("ข้อผิดพลาด!", "ไม่พบข้อมูลที่อยู่", "error");
+				swal("Error!", "No data found", "error");
 			}
 		}
 	});
@@ -136,45 +136,45 @@ function saveAddress()
 	var alias 		= $("#alias").val();
 
 	if(code == ''){
-		swal('กรุณาระบุชื่อลูกค้า');
+		swal('Please specify customer');
 		return false;
 	}
 
 	if(cus_ref == ''){
-		swal('กรุณาระบุชื่อลูกค้า[ออนไลน์]');
+		swal('please specify customer reference');
 		return false;
 	}
 
 
 	if( name == '' ){
-		swal('กรุณาระบุชื่อผู้รับ');
+		swal('Please specify consignee');
 		return false;
 	}
 
 	if( addr.length == 0 ){
-		swal('กรุณาระบุที่อยู่');
+		swal('Address is required');
 		return false;
 	}
 
 	if(subdistrict.length == 0){
-		swal('กรุณาระบุตำบล');
+		swal('Subdistrict is required');
 		return false;
 	}
 
 
 	if(district.length == 0){
-		swal('กรุณาระบุอำเภอ');
+		swal('Disctrict is required');
 		return false;
 	}
 
 	if(province.length == 0){
-		swal('กรุณาระบุจังหวัด');
+		swal('Province is required');
 		return false;
 	}
 
 
 	if( alias == '' ){
-		swal('กรุณาตั้งชื่อให้ที่อยู่');
+		swal('Please specify alias');
 		return false;
 	}
 
@@ -214,7 +214,7 @@ function saveAddress()
 				clearAddressField();
 			}else{
 				swal({
-					title:'ข้อผิดพลาด',
+					title:'Error',
 					text:rs,
 					type:'error'
 				});
