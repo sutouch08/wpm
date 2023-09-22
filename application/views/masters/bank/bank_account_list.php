@@ -1,19 +1,20 @@
 <?php $this->load->view('include/header'); ?>
 <div class="row">
-	<div class="col-sm-6 col-xs-12 padding-5">
-    <h3 class="title">
-      <i class="fa fa-credit-card"></i> <?php echo $this->title; ?>
-    </h3>
-    </div>
-    <div class="col-sm-6 col-xs-12 padding-5">
-    	<p class="pull-right">
-      <?php if($this->pm->can_add) : ?>
-        <button type="button" class="btn btn-sm btn-success" onclick="addNew()"><i class="fa fa-plus"></i> Add New</button>
-      <?php endif; ?>
-      </p>
-    </div>
+	<div class="col-lg-6 col-md-6 col-sm-6 padding-5 hidden-xs">
+    <h3 class="title"><?php echo $this->title; ?></h3>
+  </div>
+	<div class="col-xs-12 padding-5 visible-xs">
+    <h3 class="title-xs"><?php echo $this->title; ?></h3>
+  </div>
+  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
+  	<p class="pull-right top-p">
+    <?php if($this->pm->can_add) : ?>
+      <button type="button" class="btn btn-sm btn-success" onclick="addNew()"><i class="fa fa-plus"></i> Add New</button>
+    <?php endif; ?>
+    </p>
+  </div>
 </div><!-- End Row -->
-<hr class="title-block padding-5"/>
+<hr class=""/>
 <form id="searchForm" method="post" action="<?php echo current_url(); ?>">
 <div class="row">
   <div class="col-sm-2 col-xs-6 padding-5">

@@ -19,7 +19,7 @@ class Payment_methods extends PS_Controller
   {
 		$code = get_filter('code', 'payment_code', '');
 		$name = get_filter('name', 'payment_name', '');
-    $term = get_filter('term', 'payment_term', 0);
+    $term = get_filter('term', 'payment_term', 'all');
 
 		//--- แสดงผลกี่รายการต่อหน้า
 		$perpage = get_filter('set_rows', 'rows', 20);

@@ -39,13 +39,10 @@ class Payment_methods_model extends CI_Model
 
   public function count_rows($c_code = '', $c_name = '', $term = '')
   {
-    $this->db->select('code');
-
-    if($term == 1)
+    if($term != '' && $term != 'all')
     {
-      $this->db->where('has_term', 1);
+      $this->db->where('has_term', $term);
     }
-
 
     if($c_code != '')
     {
@@ -57,9 +54,8 @@ class Payment_methods_model extends CI_Model
       $this->db->like('name', $c_name);
     }
 
-    $rs = $this->db->get('payment_method');
+    return $this->db->count_all_results('payment_method');
 
-    return $rs->num_rows();
   }
 
 
@@ -99,9 +95,9 @@ class Payment_methods_model extends CI_Model
 
   public function get_data($c_code = '', $c_name = '', $term = '', $perpage = '', $offset = '')
   {
-    if($term == 1)
+    if($term != '' && $term != 'all')
     {
-      $this->db->where('has_term', 1);
+      $this->db->where('has_term', $term);
     }
 
     if($c_code != '')
