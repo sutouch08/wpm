@@ -5,7 +5,7 @@ class Consign_stock_zone extends PS_Controller
   public $menu_code = 'RCSSTZ';
 	public $menu_group_code = 'RE';
   public $menu_sub_group_code = 'REINVT';
-	public $title = 'Consignment inventory report separated by zones (TR)';
+	public $title = 'Consignment inventory report by location';
   public $filter;
   public $error;
   public function __construct()
@@ -191,7 +191,7 @@ class Consign_stock_zone extends PS_Controller
         $row++;
       }
 
-      $this->excel->getActiveSheet()->setCellValue('A'.$row, 'รวม');
+      $this->excel->getActiveSheet()->setCellValue('A'.$row, 'Total');
       $this->excel->getActiveSheet()->mergeCells('A'.$row.':F'.$row);
       $this->excel->getActiveSheet()->setCellValue('G'.$row, $totalQty);
       $this->excel->getActiveSheet()->getStyle('A'.$row)->getAlignment()->setHorizontal('right');

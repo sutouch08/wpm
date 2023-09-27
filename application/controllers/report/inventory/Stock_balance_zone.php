@@ -5,7 +5,7 @@ class Stock_balance_zone extends PS_Controller
   public $menu_code = 'RICSBZ';
 	public $menu_group_code = 'RE';
   public $menu_sub_group_code = 'REINVT';
-	public $title = 'Inventory report by zone (SAP)';
+	public $title = 'Inventory report by location';
   public $filter;
   public $error;
   public function __construct()

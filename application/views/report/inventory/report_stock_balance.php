@@ -8,9 +8,9 @@
     </div>
 		<div class="col-sm-6">
 			<p class="pull-right top-p">
-        <button type="button" class="btn btn-sm btn-success" onclick="getReport()"><i class="fa fa-bar-chart"></i> รายงาน</button>
-				<button type="button" class="btn btn-sm btn-primary" onclick="doExport()"><i class="fa fa-file-excel-o"></i> ส่งออก</button>
-				<button type="button" class="btn btn-sm btn-info" onclick="print()"><i class="fa fa-print"></i> พิมพ์</button>
+        <button type="button" class="btn btn-sm btn-success" onclick="getReport()"><i class="fa fa-bar-chart"></i> Report</button>
+				<button type="button" class="btn btn-sm btn-primary" onclick="doExport()"><i class="fa fa-file-excel-o"></i> Export</button>
+				<!--<button type="button" class="btn btn-sm btn-info" onclick="print()"><i class="fa fa-print"></i> พิมพ์</button>-->
 			</p>
 		</div>
 </div><!-- End Row -->
@@ -18,10 +18,10 @@
 <form class="hidden-print" id="reportForm" method="post" action="<?php echo $this->home; ?>/do_export">
 <div class="row">
   <div class="col-sm-2 padding-5 first">
-    <label class="display-block">สินค้า</label>
+    <label class="display-block">Products</label>
     <div class="btn-group width-100">
-      <button type="button" class="btn btn-sm btn-primary width-50" id="btn-pd-all" onclick="toggleAllProduct(1)">ทั้งหมด</button>
-      <button type="button" class="btn btn-sm width-50" id="btn-pd-range" onclick="toggleAllProduct(0)">เลือก</button>
+      <button type="button" class="btn btn-sm btn-primary width-50" id="btn-pd-all" onclick="toggleAllProduct(1)">All</button>
+      <button type="button" class="btn btn-sm width-50" id="btn-pd-range" onclick="toggleAllProduct(0)">Select</button>
     </div>
   </div>
   <div class="col-sm-2 padding-5">
@@ -33,10 +33,10 @@
     <input type="text" class="form-control input-sm text-center" id="pdTo" name="pdTo" disabled>
   </div>
   <div class="col-sm-2 padding-5">
-    <label class="display-block">คลัง</label>
+    <label class="display-block">Warehouse</label>
     <div class="btn-group width-100">
-      <button type="button" class="btn btn-sm btn-primary width-50" id="btn-wh-all" onclick="toggleAllWarehouse(1)">ทั้งหมด</button>
-      <button type="button" class="btn btn-sm width-50" id="btn-wh-range" onclick="toggleAllWarehouse(0)">เลือก</button>
+      <button type="button" class="btn btn-sm btn-primary width-50" id="btn-wh-all" onclick="toggleAllWarehouse(1)">All</button>
+      <button type="button" class="btn btn-sm width-50" id="btn-wh-range" onclick="toggleAllWarehouse(0)">Select</button>
     </div>
   </div>
 
@@ -50,7 +50,7 @@
         <div class='modal-content'>
             <div class='modal-header'>
                 <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
-                <h4 class='title' id='modal_title'>เลือกคลัง</h4>
+                <h4 class='title' id='modal_title'>List of warehouse</h4>
             </div>
             <div class='modal-body' id='modal_body' style="padding:0px;">
         <?php if(!empty($whList)) : ?>
@@ -67,7 +67,7 @@
         		<div class="divider" ></div>
             </div>
             <div class='modal-footer'>
-                <button type='button' class='btn btn-default btn-block' data-dismiss='modal'>ตกลง</button>
+                <button type='button' class='btn btn-default btn-block' data-dismiss='modal'>OK</button>
             </div>
         </div>
     </div>
@@ -87,32 +87,32 @@
 <script id="template" type="text/x-handlebars-template">
   <table class="table table-bordered table-striped">
     <tr>
-      <th colspan="7" class="text-center">รายงานสินค้าคงเหลือ ณ วันที่ {{ reportDate }}</th>
+      <th colspan="7" class="text-center">Inventory report as of {{ reportDate }}</th>
     </tr>
     <tr>
-      <th colspan="7" class="text-center"> คลัง : {{ whList }} </th>
+      <th colspan="7" class="text-center"> Warehouse : {{ whList }} </th>
     </tr>
     <tr>
-      <th colspan="7" class="text-center"> สินค้า : {{ productList }} </th>
+      <th colspan="7" class="text-center"> Products : {{ productList }} </th>
     </tr>
     <tr class="font-size-12">
-      <th class="width-5 middle text-center">ลำดับ</th>
-      <th class="width-15 middle text-center">บาร์โค้ด</th>
-      <th class="width-15 middle text-center">รหัส</th>
-      <th class="width-30 middle text-center">สินค้า</th>
-      <th class="width-10 middle text-right">ทุน</th>
-      <th class="width-10 text-right middle">คงเหลือ</th>
-      <th class="width-15 text-right middle">มูลค่า</th>
+      <th class="width-5 middle text-center">#</th>
+      <th class="width-15 middle text-center">Barcode</th>
+      <th class="width-15 middle text-center">SKU</th>
+      <th class="width-30 middle text-center">Description</th>
+      <th class="width-10 middle text-right">Cost</th>
+      <th class="width-10 text-right middle">Balance</th>
+      <th class="width-15 text-right middle">Total</th>
     </tr>
 {{#each bs}}
   {{#if nodata}}
     <tr>
-      <td colspan="7" align="center"><h4>-----  ไม่พบสินค้าคงเหลือตามเงื่อนไขที่กำหนด  -----</h4></td>
+      <td colspan="7" align="center"><h4>-----  Not found  -----</h4></td>
     </tr>
   {{else}}
     {{#if @last}}
     <tr class="font-size-14">
-      <td colspan="5" class="text-right">รวม</td>
+      <td colspan="5" class="text-right">Total</td>
       <td class="text-right">{{ totalQty }}</td>
       <td class="text-right">{{ totalAmount }}</td>
     </tr>

@@ -8,14 +8,14 @@
 	</div>
   <div class="col-lg-8 col-md-7 col-sm-8 col-xs-12 padding-5">
   	<p class="pull-right top-p">
-      <button type="button" class="btn btn-sm btn-warning top-btn" onclick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
+      <button type="button" class="btn btn-sm btn-warning top-btn" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
 		<?php if($doc->status == 1) : ?>
 			<?php if($this->pm->can_delete && $in_sap === FALSE) : ?>
-				<button type="button" class="btn btn-sm btn-danger top-btn" onclick="unSaveConsign()"><i class="fa fa-refresh"></i> ยกเลิกการบันทึก</button>
+				<button type="button" class="btn btn-sm btn-danger top-btn" onclick="unSaveConsign()"><i class="fa fa-refresh"></i> Cancel save state</button>
 			<?php endif; ?>
-				<button type="button" class="btn btn-sm btn-primary top-btn" onclick="doExport()"><i class="fa fa-send"></i> ส่งข้อมูลไป SAP</button>
+				<button type="button" class="btn btn-sm btn-success top-btn" onclick="doExport()"><i class="fa fa-send"></i> Send to SAP</button>
 		<?php endif; ?>
-			<button type="button" class="btn btn-sm btn-info  top-btn hidden-xs" onclick="printConsignOrder()"><i class="fa fa-print"></i> พิมพ์</button>
+			<button type="button" class="btn btn-sm btn-info  top-btn hidden-xs" onclick="printConsignOrder()"><i class="fa fa-print"></i> Print</button>
     </p>
   </div>
 </div><!-- End Row -->
@@ -26,42 +26,42 @@
 <form id="addForm" method="post" action="<?php echo $this->home; ?>/update">
 <div class="row">
   <div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-4 padding-5">
-    <label>เลขที่เอกสาร</label>
+    <label>Doc. No.</label>
     <input type="text" class="form-control input-sm" value="<?php echo $doc->code; ?>" disabled />
   </div>
 
   <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-    <label>วันที่</label>
+    <label>Date</label>
     <input type="text" class="form-control input-sm text-center edit" name="date_add" id="date" value="<?php echo thai_date($doc->date_add); ?>" readonly disabled />
   </div>
 
 	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-4 padding-5">
-		<label>รหัสลูกค้า</label>
+		<label>Customer</label>
 		<input type="text" class="form-control input-sm text-center edit" name="customerCode" id="customerCode" value="<?php echo $doc->customer_code; ?>" disabled>
 	</div>
 
 	<div class="col-lg-5 col-md-6-harf col-sm-6-harf col-xs-12 padding-5">
-    <label>ลูกค้า[ในระบบ]</label>
+    <label class="not-show">ลูกค้า[ในระบบ]</label>
     <input type="text" class="form-control input-sm edit" name="customer" id="customer" value="<?php echo $doc->customer_name; ?>" disabled />
   </div>
 
 	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-4 padding-5">
-		<label>รหัสโซน</label>
+		<label>Bin location</label>
 		<input type="text" class="form-control input-sm edit text-center" id="zone_code" name="zone_code" value="<?php echo $doc->zone_code; ?>" disabled />
 	</div>
 
 	<div class="col-lg-4-harf col-md-8 col-sm-8 col-xs-8 padding-5">
-    <label>โซน[ฝากขาย]</label>
+    <label class="not-show">โซน[ฝากขาย]</label>
 		<input type="text" class="form-control input-sm edit" name="zone" id="zone" value="<?php echo $doc->zone_name; ?>" disabled />
   </div>
 
 	<div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-4 padding-5">
-    <label>อ้างอิง</label>
+    <label>Reference</label>
 		<input type="text" class="form-control input-sm"  value="<?php echo $doc->ref_code; ?>" disabled />
   </div>
 
 	<div class="col-lg-4-harf col-md-10-harf col-sm-10-harf col-xs-5 padding-5">
-		<label>หมายเหตุ</label>
+		<label>Remark</label>
 		<input type="text" class="form-control input-sm edit" name="remark" id="remark" value="<?php echo $doc->remark; ?>" disabled />
 	</div>
 	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-3 padding-5">

@@ -4,7 +4,7 @@
 	$sender			= '<div class="col-lg-12" style="font-size:18px; padding-top:15px; padding-bottom:30px;">';
 	$sender			.= '<span style="display:block; margin-bottom:10px;">'.$cName.'</span>';
 	$sender			.= '<span style="width:70%; display:block;">'.$cAddress.' '.$cPostCode.'</span>';
-	$sender			.= '<span style="display:block"> โทร. '.$cPhone.'</span>';
+	$sender			.= '<span style="display:block"> Tel. '.$cPhone.'</span>';
 	$sender			.= '</div>';
 	/********* / Sender *************/
 
@@ -14,9 +14,9 @@
 	$receiver		= '<div class="col-lg-12" style="font-size:18px; padding-left: 250px; padding-top:15px; padding-bottom:40px;">';
 	$receiver		.= '<span style="display:block; margin-bottom:10px;">'.$ad->name.'</span>';
 	$receiver		.= '<span style="display:block;">'.$ad->address.'</span>';
-	$receiver		.= '<span style="display:block;"> ต. '.$ad->sub_district.' อ. '.$ad->district.'</span>';
-	$receiver		.= '<span style="display:block;">จ. '.$ad->province.' '.$ad->postcode.'</span>';
-	$receiver		.= $ad->phone == '' ? '' : '<span style="display:block;">โทร. '.$ad->phone.'</span>';
+	$receiver		.= '<span style="display:block;"> '.$ad->sub_district.' '.$ad->district.'</span>';
+	$receiver		.= '<span style="display:block;"> '.$ad->province.' '.$ad->postcode.'</span>';
+	$receiver		.= $ad->phone == '' ? '' : '<span style="display:block;">Tel. '.$ad->phone.'</span>';
 	$receiver		.= '</div>';
 	/********** / Receiver ***********/
 
@@ -27,7 +27,7 @@
 		$transport	= '<table style="width:100%; border:0px; margin-left: 30px; position: relative; bottom:1px;">';
 		$transport	.= '<tr style="font-18px;"><td>'. $sd->name .'</td></tr>';
 		$transport	.= '<tr style="font-18px;"><td>'. $sd->address1 .' '.$sd->address2.'</td></tr>';
-		$transport	.= '<tr style="font-18px;"><td>โทร. '. $sd->phone.' เวลาทำการ : '.date('H:i', strtotime($sd->open)).' - '.date('H:i', strtotime($sd->close)).' น. - ( '.$sd->type.')</td></tr>';
+		$transport	.= '<tr style="font-18px;"><td>Tel. '. $sd->phone.' Open : '.date('H:i', strtotime($sd->open)).' - '.date('H:i', strtotime($sd->close)).' - ( '.$sd->type.')</td></tr>';
 		$transport 	.= '</table>';
 	}
 
@@ -51,7 +51,7 @@
 			$Page .= $this->printer->content_start();
 			$Page .= '<table style="width:100%; border:0px;"><tr><td style="width:50%;">';
 			$Page .= $sender;
-			$Page .= '</td><td style=" vertical-align:text-top; text-align:right; font-size:18px; padding-top:25px; padding-right:15px;">'.$reference.' : กล่องที่ '.$n.' / '.$boxes.'</td></tr></table>';
+			$Page .= '</td><td style=" vertical-align:text-top; text-align:right; font-size:18px; padding-top:25px; padding-right:15px;">'.$reference.' : Box No. '.$n.' / '.$boxes.'</td></tr></table>';
 			$Page .= $receiver;
 			$Page .= $transport;
 			$Page .= $this->printer->content_end();
@@ -62,7 +62,7 @@
 			$Page .= $this->printer->content_start();
 			$Page .= '<table style="width:100%; border:0px;"><tr><td style="width:50%;">';
 			$Page .= $sender;
-			$Page .= '</td><td style=" vertical-align:text-top; text-align:right; font-size:18px; padding-top:25px; padding-right:15px;">'.$reference.' : กล่องที่ '.$n.' / '.$boxes.'</td></tr></table>';
+			$Page .= '</td><td style=" vertical-align:text-top; text-align:right; font-size:18px; padding-top:25px; padding-right:15px;">'.$reference.' : Box No. '.$n.' / '.$boxes.'</td></tr></table>';
 			$Page .= $receiver;
 			$Page .= $transport;
 			$Page .= $this->printer->content_end();
@@ -105,9 +105,9 @@
 					<tr style="font-size:10px;">
             <td>ผู้ติดต่อ</td>
             <td>'.$ad->name.'</td>
-            <td>โทร. '.$ad->phone.'</td>
+            <td>Tel. '.$ad->phone.'</td>
             <td>ผู้สั่งงาน '.get_cookie('uname').'</td>
-            <td>โทร. </td>
+            <td>Tel. </td>
           </tr>
 				</table>';
 			}

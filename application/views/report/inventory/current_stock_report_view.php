@@ -66,7 +66,7 @@
     </div>
 		<div class="col-sm-6">
 			<p class="pull-right top-p">
-        <button type="button" class="btn btn-sm btn-success" onclick="getReport()"><i class="fa fa-bar-chart"></i> รายงาน</button>
+        <button type="button" class="btn btn-sm btn-success" onclick="getReport()"><i class="fa fa-bar-chart"></i> Report</button>
 			</p>
 		</div>
 </div><!-- End Row -->
@@ -96,10 +96,10 @@
 			<div class="col-sm-12 padding-5">
 				<blockquote>
 					<p class="lead" style="color:#CCC;">
-						รายงานนี้แสดงสินค้าคงเหลือ ณ เวลาที่เรียกรายงาน โดยรายงานแสดงผลลัพธ์ตามนี้ <br/>
-						- แสดงเฉพาะสินค้าที่มีสต็อกคงเหลือเท่านั้น<br/>
-						- แสดงเฉพาะสต็อกที่มีในคลังของบริษัทเท่านั้น (ไม่รวมสินค้าฝากขายที่มีการเปิดใบกำกับภาษีไปแล้ว)<br/>
-						- แสดงรายการสินค้า ตามกลุ่มสินค้า ที่กำหนดโดยฐานข้อมูลรายการสินค้า<br/>
+						This report shows inventory at the time the report is called. The report shows results as follows <br/>
+						- Show only products with remaining stock<br/>
+						- Show only stocks that are in the artificial consignment warehouse. (Consignment products for which the tax invoice has already been opened)<br/>
+						- Show product list By product group determined by the product list database<br/>
 					</p>
 				</blockquote>
 			</div>
@@ -120,7 +120,7 @@
 			 </div>
 			 <div class="modal-body" id="modalBody"></div>
 			 <div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 			 </div>
 		</div>
 	</div>
@@ -177,7 +177,7 @@ function getData(code)
 			}
 			else {
 				swal(rs);
-			}		
+			}
 		}
 	});
 }

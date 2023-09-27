@@ -2,19 +2,19 @@
   $this->load->helper('print');
   $page = '';
   $page .= $this->printer->doc_header();
-	$this->printer->add_title("ใบรายงานตรวจนับสินค้าฝากขาย");
+	$this->printer->add_title("Consignment product count report");
 	$header	= array(
-    'เลขที่' => $doc->code,
-    'วันที่'  => thai_date($doc->date_add, FALSE, '/'),
-    'เจ้าของ' => $doc->customer_code.' : '.$doc->customer_name,
-    'โซน' => $doc->zone_name,
-    'คลัง' => $doc->warehouse_name,
-    'ผู้ทำรายการ' => $this->user_model->get_name($doc->user)
+    'No.' => $doc->code,
+    'Date'  => thai_date($doc->date_add, FALSE, '/'),
+    'Owner' => $doc->customer_code.' : '.$doc->customer_name,
+    'Loc.' => $doc->zone_name,
+    'Whs.' => $doc->warehouse_name,
+    'Maker' => $this->user_model->get_name($doc->user)
 	);
 
   if($doc->remark != '')
   {
-    $header['หมายเหตุ'] = $doc->remark;
+    $header['remark'] = $doc->remark;
   }
 
 	$this->printer->add_header($header);
@@ -34,10 +34,10 @@
 
 	//**************  กำหนดหัวตาราง  ******************************//
 	$thead	= array(
-						array("ลำดับ", "width:5%; text-align:center; border-top:0px; border-top-left-radius:10px;"),
-						array("รหัส", "width:20%; text-align:center; border-left: solid 1px #ccc; border-top:0px;"),
-						array("สินค้า", "width:60%; text-align:center;border-left: solid 1px #ccc; border-top:0px;"),
-						array("จำนวน", "width:15%; text-align:center; border-left: solid 1px #ccc; border-top:0px; border-top-right-radius:10px")
+						array("#", "width:5%; text-align:center; border-top:0px; border-top-left-radius:10px;"),
+						array("SKU", "width:20%; text-align:center; border-left: solid 1px #ccc; border-top:0px;"),
+						array("Description", "width:60%; text-align:center;border-left: solid 1px #ccc; border-top:0px;"),
+						array("Qty.", "width:15%; text-align:center; border-left: solid 1px #ccc; border-top:0px; border-top-right-radius:10px")
 						);
 
 	$this->printer->add_subheader($thead);
@@ -53,8 +53,8 @@
 
 	//*******************************  กำหนดช่องเซ็นของ footer *******************************//
 	$footer	= array(
-						array("ผู้จัดทำ", "", "วันที่ ............................."),
-            array("ผู้ตรวจสอบ", "","วันที่ .............................")
+						array("Maker", "", "Date ............................."),
+            array("Inspector", "","Date .............................")
 						);
 
   $this->printer->set_footer($footer);
@@ -71,7 +71,7 @@
 				{
 					$page .= '
 				  <div style="width:0px; height:0px; position:relative; left:30%; line-height:0px; top:300px;color:red; text-align:center; z-index:100000; opacity:0.1; transform:rotate(-45deg)">
-				      <span style="font-size:150px; border-color:red; border:solid 10px; border-radius:20px; padding:0 20 0 20;">ยกเลิก</span>
+				      <span style="font-size:150px; border-color:red; border:solid 10px; border-radius:20px; padding:0 20 0 20;">Cancel</span>
 				  </div>';
 				}
 
@@ -117,7 +117,7 @@
           "<td style='height:".$this->printer->row_height."mm; border: solid 1px #ccc;
           border-bottom:0px; border-left:0px; text-align:right;
           width:85.2%;'>
-          <strong>รวม</strong>
+          <strong>Total</strong>
           </td>
           <td style='height:".$this->printer->row_height."mm; border: solid 1px #ccc;
           border-right:0px; border-bottom:0px; border-bottom-right-radius:10px;

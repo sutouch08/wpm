@@ -144,8 +144,8 @@ class Sell_stock extends PS_Controller
 
     //---  Report title
     $report_title = 'Available Inventory report on '.thai_date(date('Y-m-d'), '/');
-    $wh_title     = 'คลัง :  '. ($allWhouse == 1 ? 'All' : $wh_list);
-    $pd_title     = 'สินค้า :  '. ($allProduct == 1 ? 'All' : '('.$pdFrom.') - ('.$pdTo.')');
+    $wh_title     = 'Warehouse :  '. ($allWhouse == 1 ? 'All' : $wh_list);
+    $pd_title     = 'Products :  '. ($allProduct == 1 ? 'All' : '('.$pdFrom.') - ('.$pdTo.')');
 
     $result = $this->inventory_report_model->get_current_stock_balance($allProduct, $pdFrom, $pdTo, $allWhouse, $warehouse);
 

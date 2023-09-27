@@ -14,8 +14,8 @@
   </div>
 	<div class="col-sm-6">
 		<p class="pull-right top-p">
-      <button type="button" class="btn btn-xs btn-success" onclick="getReport()"><i class="fa fa-bar-chart"></i> รายงาน</button>
-			<button type="button" class="btn btn-xs btn-primary" onclick="doExport()"><i class="fa fa-file-excel-o"></i> ส่งออก</button>
+      <button type="button" class="btn btn-xs btn-success" onclick="getReport()"><i class="fa fa-bar-chart"></i> Report</button>
+			<button type="button" class="btn btn-xs btn-primary" onclick="doExport()"><i class="fa fa-file-excel-o"></i> Export</button>
 		</p>
 	</div>
 </div><!-- End Row -->
@@ -23,50 +23,50 @@
 <form class="hidden-print" id="reportForm" method="post" action="<?php echo $this->home; ?>/do_export">
 	<div class="row">
 	  <div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-6 padding-5 ">
-	    <label class="display-block">สินค้า</label>
+	    <label class="display-block">Products</label>
 	    <div class="btn-group width-100" style="height:30px;">
-	      <button type="button" class="btn btn-sm btn-primary width-50" id="btn-pd-all" onclick="toggleAllProduct(1)">ทั้งหมด</button>
-	      <button type="button" class="btn btn-sm width-50" id="btn-pd-range" onclick="toggleAllProduct(0)">เลือก</button>
+	      <button type="button" class="btn btn-sm btn-primary width-50" id="btn-pd-all" onclick="toggleAllProduct(1)">All</button>
+	      <button type="button" class="btn btn-sm width-50" id="btn-pd-range" onclick="toggleAllProduct(0)">Select</button>
 	    </div>
 	  </div>
 	  <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6 padding-5">
-	    <label class="">เริ่มต้น</label>
+	    <label class="">From</label>
 	    <input type="text" class="form-control input-sm text-center" id="pdFrom" name="pdFrom" disabled>
 	  </div>
 	  <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6 padding-5">
-	    <label class="">สิ้นสุด</label>
+	    <label class="">To</label>
 	    <input type="text" class="form-control input-sm text-center" id="pdTo" name="pdTo" disabled>
 	  </div>
 
     <div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-6 padding-5 ">
-	    <label class="display-block">ลูกค้า</label>
+	    <label class="display-block">Customers</label>
 	    <div class="btn-group width-100" style="height:30px;">
-	      <button type="button" class="btn btn-sm btn-primary width-50" id="btn-cus-all" onclick="toggleAllCustomer(1)">ทั้งหมด</button>
-	      <button type="button" class="btn btn-sm width-50" id="btn-cus-range" onclick="toggleAllCustomer(0)">เลือก</button>
+	      <button type="button" class="btn btn-sm btn-primary width-50" id="btn-cus-all" onclick="toggleAllCustomer(1)">All</button>
+	      <button type="button" class="btn btn-sm width-50" id="btn-cus-range" onclick="toggleAllCustomer(0)">Select</button>
 	    </div>
 	  </div>
 	  <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6 padding-5">
-	    <label class="">เริ่มต้น</label>
+	    <label class="">From</label>
 	    <input type="text" class="form-control input-sm text-center" id="cusFrom" name="cusFrom" disabled>
 	  </div>
 	  <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6 padding-5">
-	    <label class="">สิ้นสุด</label>
+	    <label class="">To</label>
 	    <input type="text" class="form-control input-sm text-center" id="cusTo" name="cusTo" disabled>
 	  </div>
 
 	  <div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-6 padding-5 ">
-	    <label class="display-block">คลัง</label>
+	    <label class="display-block">Warehouse</label>
 	    <div class="btn-group width-100" style="height:30px;">
-	      <button type="button" class="btn btn-sm btn-primary width-50" id="btn-wh-all" onclick="toggleAllWarehouse(1)">ทั้งหมด</button>
-	      <button type="button" class="btn btn-sm width-50" id="btn-wh-range" onclick="toggleAllWarehouse(0)">เลือก</button>
+	      <button type="button" class="btn btn-sm btn-primary width-50" id="btn-wh-all" onclick="toggleAllWarehouse(1)">All</button>
+	      <button type="button" class="btn btn-sm width-50" id="btn-wh-range" onclick="toggleAllWarehouse(0)">Select</button>
 	    </div>
 	  </div>
 
 	  <div class="col-lg-2 col-md-2 col-sm-2-harf col-xs-6 padding-5 ">
-			<label class="display-block">โซน</label>
+			<label class="display-block">Location</label>
 	    <div class="btn-group width-100" style="height:30px;">
-	      <button type="button" class="btn btn-sm btn-primary width-50" id="btn-zone-all" onclick="toggleAllZone(1)">ทั้งหมด</button>
-	      <button type="button" class="btn btn-sm width-50" id="btn-zone-range" onclick="toggleAllZone(0)">เลือก</button>
+	      <button type="button" class="btn btn-sm btn-primary width-50" id="btn-zone-all" onclick="toggleAllZone(1)">All</button>
+	      <button type="button" class="btn btn-sm width-50" id="btn-zone-range" onclick="toggleAllZone(0)">Select</button>
 	    </div>
 	  </div>
 
@@ -76,7 +76,7 @@
 		</div>
 
     <div class="col-lg-2 col-md-3 col-sm-3 col-xs-6 padding-5">
-      <label>วันที่</label>
+      <label>Date</label>
       <div class="input-daterange input-group">
         <input type="text" class="form-control input-sm width-50 text-center from-date" id="fromDate" name="fromDate" />
         <input type="text" class="form-control input-sm width-50 text-center" id="toDate" name="toDate" />
@@ -97,7 +97,7 @@
         <div class='modal-content'>
             <div class='modal-header'>
                 <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
-                <h4 class='title' id='modal_title'>เลือกคลัง</h4>
+                <h4 class='title' id='modal_title'>List of warehouse</h4>
             </div>
             <div class='modal-body' id='modal_body' style="padding:0px;">
         <?php if(!empty($whList)) : ?>
@@ -114,7 +114,7 @@
         		<div class="divider" ></div>
             </div>
             <div class='modal-footer'>
-                <button type='button' class='btn btn-default btn-block' data-dismiss='modal'>ตกลง</button>
+                <button type='button' class='btn btn-default btn-block' data-dismiss='modal'>OK</button>
             </div>
         </div>
     </div>
@@ -133,35 +133,35 @@
     <thead>
       <tr>
         <th class="fix-width-40 text-center">#</th>
-        <th class="fix-width-100 text-center">วันที่</th>
-        <th class="fix-width-120 text-center">เลขที่</th>
-        <th class="fix-width-150 text-center">รหัส</th>
-        <th class="fix-width-250 text-center">สินค้า</th>
-        <th class="fix-width-100 text-center">ต้นทุน</th>
-        <th class="fix-width-100 text-center">ราคา</th>
-        <th class="fix-width-100 text-center">ส่วนลด</th>
-        <th class="fix-width-100 text-center">ราคาหลังส่วนลด</th>
-        <th class="fix-width-100 text-center">จำนวน</th>
-        <th class="fix-width-120 text-center">ส่วนลดรวม</th>
-        <th class="fix-width-120 text-center">มูลค่ารวม</th>
-        <th class="fix-width-120 text-center">ต้นทุนรวม</th>
-        <th class="fix-width-100 text-center">รหัสลูกค้า</th>
-        <th class="fix-width-200 text-center">ลูกค้า</th>
-        <th class="fix-width-100 text-center">รหัสคลัง</th>
-        <th class="fix-width-200 text-center">คลัง</th>
-        <th class="fix-width-100 text-center">รหัสโซน</th>
-        <th class="fix-width-200 text-center">โซน</th>
+        <th class="fix-width-100 text-center">Date</th>
+        <th class="fix-width-120 text-center">Document No</th>
+        <th class="fix-width-150 text-center">SKU</th>
+        <th class="fix-width-250 text-center">Description</th>
+        <th class="fix-width-100 text-center">Cost</th>
+        <th class="fix-width-100 text-center">Price</th>
+        <th class="fix-width-100 text-center">Discount</th>
+        <th class="fix-width-100 text-center">Price after disc.</th>
+        <th class="fix-width-100 text-center">Qty</th>
+        <th class="fix-width-120 text-center">Total Disc.</th>
+        <th class="fix-width-120 text-center">Total Amount</th>
+        <th class="fix-width-120 text-center">Total Cost</th>
+        <th class="fix-width-100 text-center">Customer Code</th>
+        <th class="fix-width-200 text-center">Customer Name</th>
+        <th class="fix-width-100 text-center">Warehouse Code</th>
+        <th class="fix-width-200 text-center">Warehouse Name</th>
+        <th class="fix-width-100 text-center">Location Code</th>
+        <th class="fix-width-200 text-center">Location Name</th>
       </tr>
     </thead>
 {{#each bs}}
   {{#if nodata}}
     <tr>
-      <td colspan="15" align="center"><h4>-----  ไม่พบสินค้าคงเหลือตามเงื่อนไขที่กำหนด  -----</h4></td>
+      <td colspan="15" align="center"><h4>-----  Not found  -----</h4></td>
     </tr>
   {{else}}
     {{#if @last}}
     <tr class="font-size-14">
-      <td colspan="9" class="text-right">รวม</td>
+      <td colspan="9" class="text-right">Total</td>
       <td class="text-right">{{ totalQty }}</td>
       <td class="text-right">{{ totalDiscount }}</td>
       <td class="text-right">{{ totalCost }}</td>

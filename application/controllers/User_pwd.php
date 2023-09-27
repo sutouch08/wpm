@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class User_pwd extends PS_Controller
 {
-  public $title = 'เปลี่ยนรหัสผ่าน';
+  public $title = 'Change password';
 	public $menu_code = 'change password';
 	public $menu_group_code = 'SC';
 	public $pm;

@@ -136,25 +136,25 @@
 	{{#if @last}}
     <tr class="font-size-12">
     	<td colspan="6" rowspan="4"></td>
-      <td style="border-left:solid 1px #CCC;"><b>จำนวนรวม</b></td>
+      <td style="border-left:solid 1px #CCC;"><b>Tota Qty</b></td>
       <td class="text-right"><b>{{ total_qty }}</b></td>
       <td class="text-center"><b>Pcs.</b></td>
     </tr>
 
     <tr class="font-size-12">
-      <td style="border-left:solid 1px #CCC;"><b>มูลค่ารวม</b></td>
+      <td style="border-left:solid 1px #CCC;"><b>Total Amount</b></td>
       <td class="text-right"><b>{{ order_amount }}</b></td>
       <td class="text-center"><b>THB.</b></td>
     </tr>
 
     <tr class="font-size-12">
-      <td style="border-left:solid 1px #CCC;"><b>ส่วนลดรวม</b></td>
+      <td style="border-left:solid 1px #CCC;"><b>Total Disc.</b></td>
       <td class="text-right"><b>{{ total_discount }}</b></td>
       <td class="text-center"><b>THB.</b></td>
     </tr>
 
     <tr class="font-size-12">
-      <td style="border-left:solid 1px #CCC;"><b>สุทธิ</b></td>
+      <td style="border-left:solid 1px #CCC;"><b>Net Amount</b></td>
       <td class="text-right"><b>{{ net_amount }}</b></td>
       <td class="text-center"><b>THB.</b></td>
     </tr>
@@ -182,6 +182,6 @@
 
 <script id="nodata-template" type="text/x-handlebars-template">
 	<tr>
-      <td colspan="11" class="text-center"><h4>ไม่พบรายการ</h4></td>
+      <td colspan="11" class="text-center"><h4>Not found</h4></td>
   </tr>
 </script>

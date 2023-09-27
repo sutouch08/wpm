@@ -102,7 +102,7 @@
 
 			 </div>
 			<div class="modal-footer">
-			 <button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+			 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 			</div>
 	 </div>
  </div>
@@ -113,17 +113,17 @@
 	 <div class="modal-content">
 			 <div class="modal-header">
 			 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			 <h4 class="modal-title">นำเข้าไฟล์ Excel</h4>
+			 <h4 class="modal-title">Import Excel File</h4>
 			</div>
 			<div class="modal-body">
 				<form id="upload-form" name="upload-form" method="post" enctype="multipart/form-data">
 				<div class="row">
 					<div class="col-sm-9 col-xs-9 padding-5">
-						<button type="button" class="btn btn-sm btn-primary btn-block" id="show-file-name" onclick="getFile()">กรุณาเลือกไฟล์ Excel</button>
+						<button type="button" class="btn btn-sm btn-primary btn-block" id="show-file-name" onclick="getFile()">Choose file</button>
 					</div>
 
 					<div class="col-sm-3 col-xs-3 padding-5">
-						<button type="button" class="btn btn-sm btn-info btn-block" onclick="uploadfile()"><i class="fa fa-cloud-upload"></i> นำเข้า</button>
+						<button type="button" class="btn btn-sm btn-info btn-block" onclick="uploadfile()"><i class="fa fa-cloud-upload"></i> Import</button>
 					</div>
 				</div>
 				<input type="file" class="hide" name="uploadFile" id="uploadFile" accept=".xlsx" />
@@ -144,8 +144,8 @@
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th class="width-30 text-center">วันที่</th>
-					<th class="width-40 text-center">เอกสาร</th>
+					<th class="width-30 text-center">Date</th>
+					<th class="width-40 text-center">Document</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -153,14 +153,14 @@
 		 {{#each this}}
 			 {{#if nodata}}
 				 <tr>
-					 <td colspan="3" class="text-center"><h4>ไม่พบรายการ</h4></td>
+					 <td colspan="3" class="text-center"><h4>Not found</h4></td>
 				 </tr>
 			 {{else}}
 					<tr>
 						<td class="middle text-center">{{date_add}}</td>
 						<td class="middle text-center">{{code}}</td>
 						<td class="middle text-center">
-							<button type="button" class="btn btn-xs btn-info btn-block" onclick="loadCheckDiff('{{code}}')">นำเข้ายอดต่าง</button>
+							<button type="button" class="btn btn-xs btn-info btn-block" onclick="loadCheckDiff('{{code}}')">Import diff amount</button>
 						</td>
 					</tr>
 				{{/if}}

@@ -1,9 +1,7 @@
 <?php $this->load->view('include/header'); ?>
 <div class="row">
 	<div class="col-sm-6 padding-5">
-    <h3 class="title">
-      <i class="fa fa-users"></i> <?php echo $this->title; ?>
-    </h3>
+    <h3 class="title"><?php echo $this->title; ?> </h3>
     </div>
 		<div class="col-sm-6 padding-5">
 			<p class="pull-right top-p"></p>
