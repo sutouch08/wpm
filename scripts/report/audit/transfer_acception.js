@@ -46,12 +46,12 @@ function getReport() {
   var isAccept = $('#is_accept').val();
 
   if(!isDate(fromDate) || !isDate(toDate)){
-    swal("กรุณาระบุวันที่");
+    swal("Invalid date");
     return false;
   }
 
   if(allRole == '0' && countRole === 0) {
-    swal("กรุณาเลือกประเภทเอกสาร");
+    swal("Please select document type");
     $('#role-modal').modal('show');
     return false;
   }
@@ -127,12 +127,12 @@ function doExport(){
   var isAccept = $('#is_accept').val();
 
   if(!isDate(fromDate) || !isDate(toDate)){
-    swal("กรุณาระบุวันที่");
+    swal("Invalid date");
     return false;
   }
 
   if(allRole == '0' && countRole === 0) {
-    swal("กรุณาเลือกประเภทเอกสาร");
+    swal("Please select document type");
     $('#role-modal').modal('show');
     return false;
   }

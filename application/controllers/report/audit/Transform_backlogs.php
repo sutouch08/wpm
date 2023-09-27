@@ -159,10 +159,10 @@ class Transform_backlogs extends PS_Controller
     $this->excel->getActiveSheet()->setCellValue('F'.$row, 'Item Code(Orignal)');
     $this->excel->getActiveSheet()->setCellValue('G'.$row, 'Item Code(Transformed)');
     $this->excel->getActiveSheet()->setCellValue('H'.$row, 'Price');
-    $this->excel->getActiveSheet()->setCellValue('I'.$row, 'Send');
-    $this->excel->getActiveSheet()->setCellValue('J'.$row, 'Received');
-    $this->excel->getActiveSheet()->setCellValue('K'.$row, 'Balance Qty');
-    $this->excel->getActiveSheet()->setCellValue('L'.$row, 'Balance Amount');
+    $this->excel->getActiveSheet()->setCellValue('I'.$row, 'Sent');
+    $this->excel->getActiveSheet()->setCellValue('J'.$row, 'Returned');
+    $this->excel->getActiveSheet()->setCellValue('K'.$row, 'Outstanding Qty');
+    $this->excel->getActiveSheet()->setCellValue('L'.$row, 'Outstanding Amount');
 
     //---- กำหนดความกว้างของคอลัมภ์
     $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
@@ -211,7 +211,7 @@ class Transform_backlogs extends PS_Controller
 
 		$re = $row - 1;
 
-		$this->excel->getActiveSheet()->setCellValue("A{$row}", 'รวม');
+		$this->excel->getActiveSheet()->setCellValue("A{$row}", 'Total');
 		$this->excel->getActiveSheet()->mergeCells("A{$row}:G{$row}");
 		$this->excel->getActiveSheet()->getStyle("A{$row}")->getAlignment()->setHorizontal('right');
 

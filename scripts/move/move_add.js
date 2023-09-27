@@ -24,7 +24,7 @@ function getValidate(){
       swal('Prefix must be '+prefix);
       return false;
     }else if(arr[1].length != (4 + runNo)){
-      swal('Run Number ไม่ถูกต้อง');
+      swal('Run Number is invalid');
       return false;
     }else{
       $.ajax({
@@ -322,7 +322,7 @@ function saveMove(code)
         let ds = JSON.parse(rs);
         if(ds.status == 'success') {
           swal({
-            title:'Saved',          
+            title:'Saved',
             type:'success',
             timer:1000
           });

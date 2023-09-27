@@ -400,12 +400,12 @@ function checkCompanySetting(){
 	year = parseInt($('#startYear').val());
 
 	if(isNaN(year)){
-		swal('ปีที่เริ่มต้นกิจการไม่ถูกต้อง');
+		swal('Incorrect year of start of business');
 		return false;
 	}
 
 	if(year < 1970){
-		swal('ปีที่เริ่มต้นกิจการไม่ถูกต้อง');
+		swal('Incorrect year of start of business');
 		return false;
 	}
 

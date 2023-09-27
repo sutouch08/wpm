@@ -309,7 +309,7 @@ function exportToCheck()
 
   if(zoneCode.length == 0 || zoneName.length == 0)
   {
-    swal("กรุณาระบุโซน");
+    swal("Please specify location");
     return false;
   }
 

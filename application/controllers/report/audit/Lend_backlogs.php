@@ -154,8 +154,8 @@ class Lend_backlogs extends PS_Controller
 
     $this->excel->getActiveSheet()->setCellValue('A'.$row, '#');
     $this->excel->getActiveSheet()->setCellValue('B'.$row, 'Lender');
-    $this->excel->getActiveSheet()->setCellValue('C'.$row, 'Returnee');
-    $this->excel->getActiveSheet()->setCellValue('D'.$row, 'List Maker');
+    $this->excel->getActiveSheet()->setCellValue('C'.$row, 'Receiver');
+    $this->excel->getActiveSheet()->setCellValue('D'.$row, 'Owner');
     $this->excel->getActiveSheet()->setCellValue('E'.$row, 'Document No');
     $this->excel->getActiveSheet()->setCellValue('F'.$row, 'Item Code');
     $this->excel->getActiveSheet()->setCellValue('G'.$row, 'Price');

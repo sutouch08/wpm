@@ -26,7 +26,7 @@ function checkPassword() {
 
 	if(current.val().length === 0) {
 		current.addClass('has-error');
-		cuErr.text("กรุณาใส่รหัสผ่านปัจจุบัน");
+		cuErr.text("Please enter current password.");
 		return false;
 	}
 	else {
@@ -36,7 +36,7 @@ function checkPassword() {
 
 	if(newPass.val().length === 0) {
 		newPass.addClass('has-error');
-		pasErr.text('กรุณากำหนดรหัสผ่าน');
+		pasErr.text('Please set a password.');
 		return false;
 	}
 	else {
@@ -47,7 +47,7 @@ function checkPassword() {
 	//--- check use same as current passsword ?
 	if(newPass.val() === current.val()) {
 		newPass.addClass('has-error');
-		pasErr.text("รหัสใหม่ต้องไม่ซ้ำกับรหัสปัจจุบัน");
+		pasErr.text("The new code must be unique from the current code.");
 		return false;
 	}
 	else {
@@ -58,7 +58,7 @@ function checkPassword() {
 	//--- check complexity
 	if(!validatePassword(newPass.val())) {
 		newPass.addClass('has-error');
-		pasErr.text('รหัสผ่านต้องมีความยาว 8 - 20 ตัวอักษร และต้องประกอบด้วย ตัวอักษรภาษาอังกฤษ พิมพ์เล็ก พิมพ์ใหญ่ และตัวเลขอย่างน้อย อย่างละตัว');
+		pasErr.text('Password must be 8 - 20 characters long and must include: English letters, lowercase, uppercase, and at least one number each.');
 		return false;
 	}
 	else {
@@ -69,7 +69,7 @@ function checkPassword() {
 
 	if(newPass.val() !== conPass.val()) {
 		conPass.addClass('has-error');
-		cmErr.text('ยืนยันรหัสผ่านไม่ตรงกับรหัสผ่านใหม่');
+		cmErr.text('Confirm password does not match new password');
 		return false;
 	}
 	else {
@@ -128,7 +128,7 @@ function changePassword() {
 				}
 				else if(rs === 'invalid') {
 					current.addClass('has-error');
-					cuErr.text('รหัสผ่านไม่ถูกต้อง');
+					cuErr.text('The password is incorrect.');
 					return false;
 				}
 				else {

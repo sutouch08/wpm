@@ -21,7 +21,7 @@ function addNew() {
 	var remark = $.trim($('#remark').val());
 
 	if(!isDate(date)) {
-		swal("วันที่ไม่ถูกต้อง");
+		swal("Invalid date");
 		return false;
 	}
 
@@ -90,7 +90,7 @@ function update() {
 					type:'success',
 					timer:1000
 				});
-				
+
 				$('#date_add').attr('disabled', 'disabled');
 				$('#remark').attr('disabled', 'disabled');
 				$('#btn-update').addClass('hide');

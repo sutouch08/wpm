@@ -11,7 +11,6 @@ function doExport()
 			if(rs == 'success'){
 				swal({
 					title:'Success',
-					text:'ส่งข้อมูลไป SAP เรียบร้อยแล้ว',
 					type:'success',
 					timer:1000
 				});
@@ -32,13 +31,13 @@ function deleteMoveItem(id, code)
 	var code = $('#move_code').val();
 
   swal({
-		title: 'คุณแน่ใจ ?',
-		text: 'ต้องการลบ '+ code +' หรือไม่ ?',
+		title: 'Are you sure ?',
+		text: 'Do you want to delete '+ code +' ?',
 		type: 'warning',
 		showCancelButton: true,
 		comfirmButtonColor: '#DD6855',
-		confirmButtonText: 'ใช่ ฉันต้องการ',
-		cancelButtonText: 'ไม่ใช่',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'Cancel',
 		closeOnConfirm: false
 	}, function(){
 		$.ajax({
@@ -54,7 +53,6 @@ function deleteMoveItem(id, code)
 				if( rs == 'success' ) {
 					swal({
 						title:'Success',
-						text: 'ดำเนินการเรียบร้อยแล้ว',
 						type: 'success',
 						timer: 1000
 					});
@@ -63,7 +61,7 @@ function deleteMoveItem(id, code)
 					reIndex();
 					reCal();
 				}else{
-					swal("ข้อผิดพลาด", rs, "error");
+					swal("Error", rs, "error");
 				}
 			}
 		});
@@ -137,7 +135,7 @@ function addToMove(){
 
 	if(from_zone.length == 0)
 	{
-		swal('โซนต้นทางไม่ถูกต้อง');
+		swal('Invalid source location');
 		return false;
 	}
 
@@ -145,7 +143,7 @@ function addToMove(){
 	var to_zone = $('#to_zone_code').val();
 	if(to_zone.length == 0)
 	{
-		swal('โซนปลายทางไม่ถูกต้อง');
+		swal('Invalid destination location');
 		return false;
 	}
 
@@ -153,7 +151,7 @@ function addToMove(){
 	var count  = countInput();
 	if(count == 0)
 	{
-		swal('ข้อผิดพลาด !', 'กรุณาระบุจำนวนในรายการที่ต้องการย้าย อย่างน้อย 1 รายการ', 'warning');
+		swal('Error !', 'Please specify the number of items you want to move, at least 1 item.', 'warning');
 		return false;
 	}
 
@@ -195,7 +193,6 @@ function addToMove(){
 					if( rs == 'success' ){
 						swal({
 							title: 'success',
-							text: 'เพิ่มรายการเรียบร้อยแล้ว',
 							type: 'success',
 							timer: 1000
 						});
@@ -206,7 +203,7 @@ function addToMove(){
 
 					}else{
 
-						swal("ข้อผิดพลาด", rs, "error");
+						swal("Error", rs, "error");
 					}
 				}
 			});
@@ -215,7 +212,7 @@ function addToMove(){
 	else
 	{
 
-		swal('ข้อผิดพลาด !', 'กรุณาระบุจำนวนในรายการที่ต้องการย้าย อย่างน้อย 1 รายการ', 'warning');
+		swal('Error !', 'Please specify the number of items you want to move, at least 1 item.', 'warning');
 
 	}
 }
@@ -263,12 +260,12 @@ function accept() {
 
 		swal({
 			title:'Acception',
-			text:'ยินยอมให้โอนสินค้าเข้าโซนของคุณใช่หรือไม่ ?',
+			text:'Do you agree to transfer products into your location ?',
 			type:'info',
 			showCancelButton:true,
 			confirmButtonColor:'#87B87F',
-			confirmButtonText:'ยืนยัน',
-			cancelButtonText:'ยกเลิก',
+			confirmButtonText:'Yes',
+			cancelButtonText:'Cancel',
 			closeOnConfirm:true
 		}, function() {
 			load_in();
@@ -328,7 +325,7 @@ function acceptConfirm() {
 	let note = $.trim($('#accept-note').val());
 
 	if(note.length < 10) {
-		$('#accept-error').text('กรุณาระบุหมายเหตุอย่างนี้อย 10 ตัวอักษร');
+		$('#accept-error').text('Please specify at least 10 characters in this note.');
 		return false;
 	}
 	else {

@@ -72,13 +72,13 @@ function export_diff()
 
 function removeTemp(docEntry, code) {
 	swal({
-		title: 'คุณแน่ใจ ?',
-		text: 'ต้องการลบ '+code+' หรือไม่?',
+		title: 'Are you sure ?',
+		text: 'Do you want to delete '+code+' ?',
 		type: 'warning',
 		showCancelButton: true,
 		comfirmButtonColor: '#DD6855',
-		confirmButtonText: 'ใช่ ฉันต้องการ',
-		cancelButtonText: 'ไม่ใช่',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'Cancel',
 		closeOnConfirm: false
 	}, function(){
 		$.ajax({
@@ -97,7 +97,7 @@ function removeTemp(docEntry, code) {
 					$('#row-'+docEntry).remove();
 					reIndex();
 				}else{
-					swal("ข้อผิดพลาด", rs, "error");
+					swal("Error", rs, "error");
 				}
 			}
 		});

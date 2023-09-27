@@ -81,12 +81,12 @@ function approve()
   		var id_sender = $('#id_sender').val();
 
   		if(id_address == "") {
-  			swal("กรุณาระบุที่อยู่จัดส่ง");
+  			swal("Please specify delivery address.");
   			return false;
   		}
 
   		if(id_sender == "") {
-  			swal("กรุณาระบุผู้จัดส่ง");
+  			swal("Please specify delivery person.");
   			return false;
   		}
   	}
@@ -121,7 +121,7 @@ function approve()
     });
   }
   else{
-		swal('Error !', 'พบรายการที่ไม่ได้เชื่อมโยงสินค้าอย่างถูกต้อง กรุณาตรวจสอบ', 'error');
+		swal('Error !', 'Found an item that was not properly linked to the product. Please check.', 'error');
 	}
 }
 

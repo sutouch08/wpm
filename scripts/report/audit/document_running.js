@@ -44,8 +44,7 @@ function doExport(){
 
 	if(!isDate(fromDate) && !isDate(toDate)) {
 		swal({
-			title: "วันที่ไม่ถูกต้อง",
-			text:"กรุณาระบุ วันที่เอกสาร",
+			title: "Invalid Date",			
 			type:'warning'
 		});
 

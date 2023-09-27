@@ -55,7 +55,6 @@ function saveAdjust(){
       if(rs === 'success'){
         swal({
           title:'Saved',
-          text:'บันทึกรายการเรียบร้อยแล้ว',
           type:'success',
           timer:1000
         });
@@ -139,7 +138,6 @@ function updateHeader(){
       if(rs == 'success'){
         swal({
           title:'Updated',
-          text:'ปรับปรุงข้อมูลเรียบร้อยแล้ว',
           type:'success',
           timer:1000
         });
@@ -168,7 +166,7 @@ function add(){
   var remark = $('#remark').val();
 
   if(!isDate(date_add)){
-    swal("วันที่ไม่ถูกต้อง");
+    swal("Invalid date");
     return false;
   }
 
@@ -344,22 +342,22 @@ function add_detail(){
   let qty_down = $('#qty-down').val();
 
   if(code.length == 0){
-    swal('ไม่พบเลขที่เอกสาร');
+    swal('Invalid document number');
     return false;
   }
 
   if(pd_code.length == 0){
-    swal('กรุณาระบุรหัสสินค้า');
+    swal('Please specify product');
     return false;
   }
 
   if(zone_code.length == 0){
-    swal('กรุณาระบุโซน');
+    swal('Please specify location');
     return false;
   }
 
   if(qty_up == 0 && qty_down == 0){
-    swal('กรุณาระบุจำนวนที่จะปรับยอด');
+    swal('Please specify quantity');
     return false;
   }
 
@@ -483,13 +481,13 @@ function changeZone(){
 //--- ลบรายการ 1 บรรทัด
 function deleteDetail(id, pdCode){
   swal({
-		title: 'คุณแน่ใจ ?',
-		text: 'ต้องการลบ '+ pdCode +' หรือไม่ ?',
+		title: 'Are you sure ?',
+		text: 'Do you want to delete '+ pdCode +' ?',
 		type: 'warning',
 		showCancelButton: true,
 		comfirmButtonColor: '#DD6855',
-		confirmButtonText: 'ใช่ ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
 	}, function(){
 		$.ajax({
@@ -504,7 +502,6 @@ function deleteDetail(id, pdCode){
 				if( rs == 'success' ){
 					swal({
 						title:'Deleted',
-						text: 'ลบรายการเรียบร้อยแล้ว',
 						type: 'success',
 						timer: 1000
 					});
@@ -514,7 +511,7 @@ function deleteDetail(id, pdCode){
 
 				}else{
 
-					swal("ลบรายการไม่สำเร็จ", rs, "error");
+					swal("Delete failed", rs, "error");
 				}
 			}
 		});
@@ -536,10 +533,10 @@ function validateOrder(){
 
     if(arr.length == 2){
       if(arr[0] !== prefix){
-        swal('Prefix ต้องเป็น '+prefix);
+        swal('Prefix must be '+prefix);
         return false;
       }else if(arr[1].length != (4 + runNo)){
-        swal('Run Number ไม่ถูกต้อง');
+        swal('Run Number is invalid');
         return false;
       }else{
         $.ajax({
@@ -561,7 +558,7 @@ function validateOrder(){
       }
 
     }else{
-      swal('เลขที่เอกสารไม่ถูกต้อง');
+      swal('Document number not found');
       return false;
     }
   }

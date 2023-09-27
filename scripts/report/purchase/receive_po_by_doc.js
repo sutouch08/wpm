@@ -174,7 +174,7 @@ function getReport(){
   if(allDoc == 0){
     if(docFrom.length == 0){
       $('#docFrom').addClass('has-error');
-      swal('Error!', 'เอกสารไม่ถูกต้อง', 'error');
+      swal('Error!', 'Invalid document', 'error');
       return false;
     }else{
       $('#docFrom').removeClass('has-error');
@@ -182,7 +182,7 @@ function getReport(){
 
     if(docTo.length == 0){
       $('#docTo').addClass('has-error');
-      swal('Error!', 'เอกสารไม่ถูกต้อง', 'error');
+      swal('Error!', 'Invalid document', 'error');
       return false;
     }else{
       $('#docTo').removeClass('has-error');
@@ -195,7 +195,7 @@ function getReport(){
   if(allVendor == 0){
     if(vendorFrom.length == 0){
       $('#vendorFrom').addClass('has-error');
-      swal('Error!', 'ผู้ขายไม่ถูกต้อง', 'error');
+      swal('Error!', 'Invalid vendor', 'error');
       return false;
     }else{
       $('#vendorFrom').removeClass('has-error');
@@ -203,7 +203,7 @@ function getReport(){
 
     if(vendorTo.length == 0){
       $('#vendorTo').addClass('has-error');
-      swal('Error!', 'ผู้ขายไม่ถูกต้อง', 'error');
+      swal('Error!', 'Invalid vendor', 'error');
       return false;
     }else{
       $('#vendorTo').removeClass('has-error');
@@ -217,7 +217,7 @@ function getReport(){
   if(allPO == 0){
     if(poFrom.length == 0){
       $('#poFrom').addClass('has-error');
-      swal('Error!', 'ใบสั่งซื้อไม่ถูกต้อง', 'error');
+      swal('Error!', 'Invalid Purchase order', 'error');
       return false;
     }else{
       $('#poFrom').removeClass('has-error');
@@ -225,7 +225,7 @@ function getReport(){
 
     if(poTo.length == 0){
       $('#poTo').addClass('has-error');
-      swal('Error!', 'ใบสั่งซื้อไม่ถูกต้อง', 'error');
+      swal('Error!', 'Invalid Purchase order', 'error');
       return false;
     }else{
       $('#poTo').removeClass('has-error');
@@ -239,7 +239,7 @@ function getReport(){
   if(allInvoice == 0){
     if(invoiceFrom.length == 0){
       $('#invoiceFrom').addClass('has-error');
-      swal('Error!', 'ใบส่งของไม่ถูกต้อง', 'error');
+      swal('Error!', 'Invalid Invoice', 'error');
       return false;
     }else{
       $('#invoiceFrom').removeClass('has-error');
@@ -247,7 +247,7 @@ function getReport(){
 
     if(poTo.length == 0){
       $('#invoiceTo').addClass('has-error');
-      swal('Error!', 'ใบส่งของไม่ถูกต้อง', 'error');
+      swal('Error!', 'Invalid Invoice', 'error');
       return false;
     }else{
       $('#invoiceTo').removeClass('has-error');
@@ -260,7 +260,7 @@ function getReport(){
 
   if(!isDate(fromDate)){
     $('#fromDate').addClass('has-error');
-    swal('Error!', 'วันที่ไม่ถูกต้อง', 'error');
+    swal('Error!', 'Invalid date', 'error');
     return false;
   }else{
     $('#fromDate').removeClass('has-error');
@@ -268,7 +268,7 @@ function getReport(){
 
   if(!isDate(toDate)){
     $('#toDate').addClass('has-error');
-    swal('Error!', 'วันที่ไม่ถูกต้อง', 'error');
+    swal('Error!', 'Invalid date', 'error');
     return false;
   }else{
     $('#toDate').removeClass('has-error');
@@ -336,7 +336,7 @@ function doExport(){
   if(allDoc == 0){
     if(docFrom.length == 0){
       $('#docFrom').addClass('has-error');
-      swal('Error!', 'เอกสารไม่ถูกต้อง', 'error');
+      swal('Error!', 'Invalid document', 'error');
       return false;
     }else{
       $('#docFrom').removeClass('has-error');
@@ -344,7 +344,7 @@ function doExport(){
 
     if(docTo.length == 0){
       $('#docTo').addClass('has-error');
-      swal('Error!', 'เอกสารไม่ถูกต้อง', 'error');
+      swal('Error!', 'Invalid document', 'error');
       return false;
     }else{
       $('#docTo').removeClass('has-error');
@@ -357,7 +357,7 @@ function doExport(){
   if(allVendor == 0){
     if(vendorFrom.length == 0){
       $('#vendorFrom').addClass('has-error');
-      swal('Error!', 'ผู้ขายไม่ถูกต้อง', 'error');
+      swal('Error!', 'Invalid vendor', 'error');
       return false;
     }else{
       $('#vendorFrom').removeClass('has-error');
@@ -365,7 +365,7 @@ function doExport(){
 
     if(vendorTo.length == 0){
       $('#vendorTo').addClass('has-error');
-      swal('Error!', 'ผู้ขายไม่ถูกต้อง', 'error');
+      swal('Error!', 'Invalid vendor', 'error');
       return false;
     }else{
       $('#vendorTo').removeClass('has-error');
@@ -379,7 +379,7 @@ function doExport(){
   if(allPO == 0){
     if(poFrom.length == 0){
       $('#poFrom').addClass('has-error');
-      swal('Error!', 'ใบสั่งซื้อไม่ถูกต้อง', 'error');
+      swal('Error!', 'Invalid Purchase order', 'error');
       return false;
     }else{
       $('#poFrom').removeClass('has-error');
@@ -387,7 +387,7 @@ function doExport(){
 
     if(poTo.length == 0){
       $('#poTo').addClass('has-error');
-      swal('Error!', 'ใบสั่งซื้อไม่ถูกต้อง', 'error');
+      swal('Error!', 'Invalid Purchase order', 'error');
       return false;
     }else{
       $('#poTo').removeClass('has-error');
@@ -401,7 +401,7 @@ function doExport(){
   if(allInvoice == 0){
     if(invoiceFrom.length == 0){
       $('#invoiceFrom').addClass('has-error');
-      swal('Error!', 'ใบส่งของไม่ถูกต้อง', 'error');
+      swal('Error!', 'Invalid Invoice', 'error');
       return false;
     }else{
       $('#invoiceFrom').removeClass('has-error');
@@ -409,7 +409,7 @@ function doExport(){
 
     if(poTo.length == 0){
       $('#invoiceTo').addClass('has-error');
-      swal('Error!', 'ใบส่งของไม่ถูกต้อง', 'error');
+      swal('Error!', 'Invalid Invoice', 'error');
       return false;
     }else{
       $('#invoiceTo').removeClass('has-error');
@@ -422,7 +422,7 @@ function doExport(){
 
   if(!isDate(fromDate)){
     $('#fromDate').addClass('has-error');
-    swal('Error!', 'วันที่ไม่ถูกต้อง', 'error');
+    swal('Error!', 'Invalid date', 'error');
     return false;
   }else{
     $('#fromDate').removeClass('has-error');
@@ -430,7 +430,7 @@ function doExport(){
 
   if(!isDate(toDate)){
     $('#toDate').addClass('has-error');
-    swal('Error!', 'วันที่ไม่ถูกต้อง', 'error');
+    swal('Error!', 'Invalid date', 'error');
     return false;
   }else{
     $('#toDate').removeClass('has-error');

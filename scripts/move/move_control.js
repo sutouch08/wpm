@@ -182,7 +182,7 @@ function inputQtyInit(){
 
 		if(qty > limit)
 		{
-			swal('โอนได้ไม่เกิน ' + limit);
+			swal('Limit to ' + limit);
 			$(this).val(limit);
 		}
 	})

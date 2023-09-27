@@ -101,7 +101,7 @@
 	<div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-6 padding-5">
     <label>Active</label>
 		<select class="form-control" name="active" onchange="getSearch()">
-			<option value="">All</option>
+			<option value="all">All</option>
 			<option value="1" <?php echo is_selected('1', $active); ?>>Yes</option>
 			<option value="0" <?php echo is_selected('0', $active); ?>>No</option>
 		</select>

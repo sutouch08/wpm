@@ -2,13 +2,13 @@ function unsave()
 {
 	var code = $('#return_code').val();
 	swal({
-		title:'คุณแน่ใจ ?',
-		text:'โปรดทราบ คุณต้องลบเอกสารใน SAP ด้วย ต้องการดำเนินการต่อหรือไม่ ?',
+		title:'Are you sure ?',
+		text:'Please note, you must also delete the document in SAP. Do you want to continue?',
 		type:'warning',
 		showCancelButton:true,
-		confirmButtonText:'ดำเนินการต่อ',
+		confirmButtonText:'Yes',
 		confirmButtonColor:'#DD6B55',
-		cancelButtonText:'ยกเลิก',
+		cancelButtonText:'No',
 		closeOnConfirm:false
 	}, function(){
 		$.ajax({
@@ -19,7 +19,6 @@ function unsave()
 				if(rs == 'success'){
 					swal({
 						title:'Success',
-						text:'ยกเลิกการบันทึกเรียบร้อยแล้ว',
 						type:'success',
 						timer:1000
 					});
@@ -57,7 +56,7 @@ function update(){
   var remark   = $('#remark').val();
 
   if(! isDate(date_add)){
-    swal('วันที่ไม่ถูกต้อง');
+    swal('Invalid date');
     return false;
   }
 
@@ -157,17 +156,17 @@ function add(){
 	let remark = $('#remark').val();
 
 	if(! isDate(date)){
-		swal("วันที่ไม่ถูกต้อง");
+		swal("Invalid date");
 		return false;
 	}
 
 	if(customer_code.length == 0 || customer.length == 0){
-		swal("กรุณาระบุลูกค้า");
+		swal("Please specify customer");
 		return false;
 	}
 
 	if(zone.length == 0 || zone_code.length == 0){
-		swal("โซนไม่ถูกต้อง");
+		swal("Invalid location");
 		return false;
 	}
 

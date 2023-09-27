@@ -29,12 +29,12 @@ function getReset(id){
 function getDelete(id, uname){
   swal({
     title:'Are sure ?',
-    text:'ต้องการลบ '+ uname +' หรือไม่ ?',
+    text:'Do you want to delete '+ uname +' ?',
     type:'warning',
     showCancelButton: true,
 		confirmButtonColor: '#FA5858',
-		confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
   },function(){
     $.ajax({
@@ -141,7 +141,7 @@ function validPWD(){
   if(pwd.length > 0) {
 
 		if(!validatePassword(pwd)) {
-			$('#pwd-error').text('รหัสผ่านต้องมีความยาว 8 - 20 ตัวอักษร และต้องประกอบด้วย ตัวอักษรภาษาอังกฤษ พิมพ์เล็ก พิมพ์ใหญ่ และตัวเลขอย่างน้อย อย่างละตัว');
+			$('#pwd-error').text('Password must be 8 - 20 characters long and must include: English letters, lowercase, uppercase, and at least one number each.');
       $('#pwd').addClass('has-error');
 			validPwd = false;
       return false;

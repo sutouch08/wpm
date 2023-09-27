@@ -25,12 +25,12 @@ function clearFilter(){
 function getDelete(id, name){
   swal({
     title:'Are sure ?',
-    text:'ต้องการลบ '+ name +' หรือไม่ ?',
+    text:'Do you want to delete '+ name +' ?',
     type:'warning',
     showCancelButton: true,
 		confirmButtonColor: '#FA5858',
-		confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
   },function(){
     window.location.href = BASE_URL + 'users/profiles/delete_profile/'+id;

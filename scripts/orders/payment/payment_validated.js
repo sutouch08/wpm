@@ -9,7 +9,7 @@ function viewValidDetail(id_order)
 			load_out();
 			var rs = $.trim(rs);
 			if( rs == 'fail' ){
-				swal('ข้อผิดพลาด', 'ไม่พบข้อมูล', 'error');
+				swal('Error', 'Not found', 'error');
 			}else{
 				var source 	= $("#detailTemplate").html();
 				var data		= $.parseJSON(rs);
@@ -28,13 +28,13 @@ function viewValidDetail(id_order)
 function removeValidPayment(id_order, name)
 {
 	swal({
-		title: 'คุณแน่ใจ ?',
-		text: 'ต้องการลบการแจ้งชำระของ '+ name + ' หรือไม่?',
+		title: 'Are you sure ?',
+		text: 'Do you want to delete '+ name + ' ?',
 		type: 'warning',
 		showCancelButton: true,
 		confirmButtonColor: '#DD6855',
-		confirmButtonText: 'ใช่ ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
 		}, function(){
 			$.ajax({
@@ -43,14 +43,18 @@ function removeValidPayment(id_order, name)
 				success: function(rs){
 					var rs = $.trim(rs);
 					if( rs == 'success' ){
-						swal({ title : "สำเร็จ", text: "ลบรายการเรียบร้อยแล้ว", timer: 1000, type: "success" });	
+						swal({
+							title : "Success",
+							timer: 1000,
+							type: "success"
+						});
 						$("#"+id_order).remove();
 					}else{
-						swal("ข้อผิดพลาด!!", "ลบรายการไม่สำเร็จ", "error");	
+						swal("Error!!", "Failed to delete", "error");
 					}
 				}
 			});
-		});	
+		});
 }
 
 

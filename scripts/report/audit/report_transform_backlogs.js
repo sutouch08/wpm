@@ -133,13 +133,13 @@ function getReport() {
 	var toDate = $('#toDate').val();
 
 	if(allUser == 0 && dname == "") {
-		swal("กรุณาระบุผู้เบิก");
+		swal("Please specify Lender");
 		return false;
 	}
 
 	if(allPd == 0) {
 		if(pdFrom == "" || pdTo == "") {
-			swal("รหัสสินค้าไม่ถูกต้อง");
+			swal("Invalid products");
 			return false;
 		}
 	}
@@ -201,13 +201,13 @@ function doExport() {
 	var toDate = $('#toDate').val();
 
 	if(allUser == 0 && dname == "") {
-		swal("กรุณาระบุผู้เบิก");
+		swal("Please specify Lender");
 		return false;
 	}
 
 	if(allPd == 0) {
 		if(pdFrom == "" || pdTo == "") {
-			swal("รหัสสินค้าไม่ถูกต้อง");
+			swal("Invalid products");
 			return false;
 		}
 	}

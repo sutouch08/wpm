@@ -158,30 +158,30 @@ function doExport(){
   var toDate = $('#toDate').val();
 
   if(allChannels === '0' && countChannels === 0){
-    swal("กรุณาเลือกช่องทางขาย");
+    swal("Please select sales channels");
     return false;
   }
 
 
   if(allPayments === '0' && countPayments === 0){
-    swal("กรุณาเลือกการชำระเงิน");
+    swal("Please select payment channels");
     return false;
   }
 
 
   if(allWarehouse === '0' && countWarehouse === 0){
-    swal("กรุณาเลือกคลังสินค้า");
+    swal("Please select warehouse");
     return false;
   }
 
 
   if(allProduct === '0' && (pdFrom.length === 0 || pdTo.length === 0)){
-    swal("รายการสินค้าไม่ถูกต้อง");
+    swal("Invalid products");
     return false;
   }
 
   if(!isDate(fromDate) || !isDate(toDate)){
-    swal("กรุณาระบุวันที่");
+    swal("Invalid date");
     return false;
   }
 

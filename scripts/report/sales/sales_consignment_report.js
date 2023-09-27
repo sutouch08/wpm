@@ -237,7 +237,7 @@ function getReport(){
 
   if( ! isDate(fromDate) || ! isDate(toDate))
   {
-    swal("วันที่ไม่ถูกต้อง");
+    swal("Invalid date");
     return false;
   }
 
@@ -377,7 +377,7 @@ function doExport() {
 
   if( ! isDate(fromDate) || ! isDate(toDate))
   {
-    swal("วันที่ไม่ถูกต้อง");
+    swal("Invalid date");
     return false;
   }
 

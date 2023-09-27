@@ -123,38 +123,38 @@ function getReport() {
   var isExpired = $('#is_expired').val();
 
   if(!isDate(fromDate) || !isDate(toDate)){
-    swal("กรุณาระบุวันที่");
+    swal("Invalid Date");
     return false;
   }
 
   if(allRole == '0' && countRole === 0) {
-    swal("กรุณาเลือกประเภทเอกสาร");
+    swal("Please select document type");
     $('#role-modal').modal('show');
     return false;
   }
 
   if(allState == '0' && countState === 0) {
-    swal("กรุณาเลือกสถานะเอกสาร");
+    swal("Please select status");
     $('#state-modal').modal('show');
     return false;
   }
 
   if(allChannels === '0' && countChannels === 0){
-    swal("กรุณาเลือกช่องทางขาย");
+    swal("Please select sales channels");
     $('#channels-modal').modal('show');
     return false;
   }
 
 
   if(allPayments === '0' && countPayments === 0){
-    swal("กรุณาเลือกการชำระเงิน");
+    swal("Please select payment channels");
     $('#payment-modal').modal('show');
     return false;
   }
 
 
   if(allWarehouse === '0' && countWarehouse === 0){
-    swal("กรุณาเลือกคลังสินค้า");
+    swal("Please select warehouse");
     $('#warehouse-modal').modal('show');
     return false;
   }
@@ -241,9 +241,9 @@ function getReport() {
         let ds = $.parseJSON(rs);
         let text = "";
         if(ds.rows > 0) {
-          text = "ผลลัพธ์ทั้งหมด "+addCommas(ds.rows)+" รายการ";
+          text = "All results "+addCommas(ds.rows)+" rows";
           if(ds.rows > ds.limit) {
-            text += "  แสดง "+addCommas(ds.limit)+" รายการ หากต้องการดูผลลัพธ์ทั้งหมด กรุณาส่งออกเป็น excel";
+            text += "  Showing "+addCommas(ds.limit)+" rows. To see all results Please export to excel.";
           }
         }
 
@@ -289,38 +289,38 @@ function doExport(){
   var isExpired = $('#is_expired').val();
 
   if(!isDate(fromDate) || !isDate(toDate)){
-    swal("กรุณาระบุวันที่");
+    swal("Invalid date");
     return false;
   }
 
   if(allRole == '0' && countRole === 0) {
-    swal("กรุณาเลือกประเภทเอกสาร");
+    swal("Please select document type");
     $('#role-modal').modal('show');
     return false;
   }
 
   if(allState == '0' && countState === 0) {
-    swal("กรุณาเลือกสถานะเอกสาร");
+    swal("Please select document status");
     $('#state-modal').modal('show');
     return false;
   }
 
   if(allChannels === '0' && countChannels === 0){
-    swal("กรุณาเลือกช่องทางขาย");
+    swal("Please select sales channels");
     $('#channels-modal').modal('show');
     return false;
   }
 
 
   if(allPayments === '0' && countPayments === 0){
-    swal("กรุณาเลือกการชำระเงิน");
+    swal("Please select payment channels");
     $('#payment-modal').modal('show');
     return false;
   }
 
 
   if(allWarehouse === '0' && countWarehouse === 0){
-    swal("กรุณาเลือกคลังสินค้า");
+    swal("Please select warehouse");
     $('#warehouse-modal').modal('show');
     return false;
   }

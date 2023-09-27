@@ -89,7 +89,7 @@ function set_zone()
       else {
         swal({
           title:'Error!',
-          text:'ไม่พบโซน',
+          text:'Not found',
           type:'error'
         });
       }
@@ -156,7 +156,7 @@ function save_checked(no){
 function save_all(){
   var uncheck = $('.check-no:not(:checked)').length;
   if(uncheck > 0){
-    swal("กรุณาตรวจสอบ","พบรายการที่ไม่ได้ตรวจนับ "+ uncheck + " รายการ", "warning");
+    swal("Oops","Uncount item found "+ uncheck + " items", "warning");
   }else{
     $('#checkForm').submit();
   }
@@ -199,13 +199,13 @@ function toggleCheckAll(el){
 function loadDiff(){
   var adjust_code = $('#adjust_code').val();
   if(adjust_code.length == 0){
-    swal('Error!','ไม่พบเลขที่เอกสารปรับยอด','error');
+    swal('Error!','Not found','error');
     return false;
   }
 
   var len = $('.chk:checked').length;
   if(len == 0){
-    swal('กรุณาเลือกรายการที่ต้องการโหลด');
+    swal('Please select the item you want to load.');
     return false;
   }
 

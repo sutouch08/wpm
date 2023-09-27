@@ -25,13 +25,13 @@ function showDetail(pdCode){
 
 function removeCheckedItem(id_box, pdCode, qty, box){
   swal({
-    title:'คุณแน่ใจ ?',
-    text:'ต้องการลบข้อมูลใน'+ box + ' หรือไม่ ?',
+    title:'Are you sure ?',
+    text:'Do you want to delete data in '+ box + ' ?',
     type:'warning',
     showCancelButton:true,
     confirmButtonColor:'#FA5858',
-    confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+    confirmButtonText: 'Yes',
+		cancelButtonText: 'Cancel',
 		closeOnConfirm: true
   },function(){
     var code = $('#check_code').val();
@@ -81,14 +81,14 @@ function removeCheckedItem(id_box, pdCode, qty, box){
 
 function clearDetails(){
   swal({
-    title:'ลบข้อมูลทั้งหมด ?',
-    text:'<center>คุณแน่ใจ ? ว่าต้องการลบข้อมูลทั้งหมด</center><center>ต้องการลบข้อมูลทั้งหมด หรือไม่ ? </center>',
+    title:'Are you sure ?',
+    text:'Do you want to delete all data ?',
     type:'warning',
     html:true,
     showCancelButton:true,
     confirmButtonColor:'#FA5858',
-    confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ไม่ต้องการ',
+    confirmButtonText: 'Yes',
+		cancelButtonText: 'Cancel',
 		closeOnConfirm: false
   },function(){
       var code = $('#check_code').val();
@@ -101,7 +101,6 @@ function clearDetails(){
           if(rs == 'success'){
             swal({
               title:'Deleted',
-              text:'ลบรายการทั้งหมดแล้ว',
               type:'success',
               timer:1000
             });
@@ -131,13 +130,13 @@ function closeCheck(){
   }
 
   swal({
-    title:'ตรวจนับเสร็จแล้ว',
-    text:'<center>ยอดต่างจากการตรวจนับ '+ sumDiff +'ชิ้น จะถูกดึงไปตัดยอดฝากขาย</center><center>ต้องการดำเนินการต่อหรือไม่ ?</center>',
+    title:'Finish Count',
+    text:'<center>The amount different from the counting '+ sumDiff +' pieces will be taken to deduct the consignment amount.</center><center>Do you want to continue?</center>',
     type:'warning',
     html:true,
     showCancelButton:true,
-    confirmButtonText:'ดำเนินการต่อไป',
-    cancelButtonText:'ยกเลิก',
+    confirmButtonText:'Yes',
+    cancelButtonText:'Cancel',
     confirmButtonColor:'#F6BB42',
     closeOnConfirm:false
   }, function(){
@@ -150,13 +149,13 @@ function confirmCloseConisgn(code, sumChecked)
 {
   if(sumChecked <= 0){
     swal({
-      title:'ไม่พบยอดตรวจนับ !',
-      text:'<center>สินค้าคงเหลือทั้งหมดในโซนจะถูกดึงไปตัดยอดฝากขาย</center><center>ต้องการดำเนินการต่อหรือไม่ ?</center>',
+      title:'Total count not found !',
+      text:'<center>All remaining inventory in the location will be taken to deduct consignment sales.</center><center>Do you want to continue ?</center>',
       type:'warning',
       html:true,
       showCancelButton:true,
-      confirmButtonText:'ดำเนินการต่อไป',
-      cancelButtonText:'ยกเลิก',
+      confirmButtonText:'Yes',
+      cancelButtonText:'Cancel',
       confirmButtonColor:'#F6BB42',
       closeOnConfirm:false
     }, function(){
@@ -181,7 +180,6 @@ function closeConsignCheck(code){
       if(rs == 'success'){
         swal({
           title:'Success',
-          text:'ดำเนินการเรียบร้อยแล้ว',
           type:'success',
           timer:1000
         });
@@ -200,13 +198,13 @@ function closeConsignCheck(code){
 
 function reloadStock(){
   swal({
-    title:'โหลดยอดตั้งต้นใหม่ ?',
-    text:'ต้องการโหลดยอดตั้งต้นใหม่หรือไม่ ?',
+    title:'Reload Stock ?',
+    text:'Reload all remaining inventory in the location ?',
     type:'warning',
     html:true,
     showCancelButton:true,
-    confirmButtonText:'ดำเนินการ',
-    cancelButtonText:'ไม่',
+    confirmButtonText:'Yes',
+    cancelButtonText:'Cancel',
     confirmButtonColor:'#F6BB42',
     closeOnConfirm:false
   }, function(){
@@ -240,13 +238,13 @@ function reloadStock(){
 
 function openCheck(){
   swal({
-    title:'ยกเลิกการบันทึก ?',
-    text:'<center>คุณต้องการยกเลิกการบันทึกเพื่อตรวจนับเพิ่มเติม</center><center>ต้องการดำเนินการต่อหรือไม่ ?</center>',
+    title:'Cancel save state ?',
+    text:'<center>Do you want to cancel the recording for further counting?</center><center>Do you want to continue?</center>',
     type:'warning',
     html:true,
     showCancelButton:true,
-    confirmButtonText:'ดำเนินการ',
-    cancelButtonText:'ไม่',
+    confirmButtonText:'Yes',
+    cancelButtonText:'Cancel',
     confirmButtonColor:'#F6BB42',
     closeOnConfirm:false
   }, function(){

@@ -128,7 +128,6 @@ function updateHeader(){
       if(rs == 'success'){
         swal({
           title:'Updated',
-          text:'ปรับปรุงข้อมูลเรียบร้อยแล้ว',
           type:'success',
           timer:1000
         });
@@ -157,12 +156,12 @@ function add(){
   var remark = $('#remark').val();
 
   if(!isDate(date_add)){
-    swal("วันที่ไม่ถูกต้อง");
+    swal("Invalid date");
     return false;
   }
 
   if(zone_code.length === 0){
-    swal("กรุณาระบุโซน");
+    swal("Please specify location");
     return false;
   }
 
@@ -301,10 +300,10 @@ function validateOrder(){
 
     if(arr.length == 2){
       if(arr[0] !== prefix){
-        swal('Prefix ต้องเป็น '+prefix);
+        swal('Prefix must be '+prefix);
         return false;
       }else if(arr[1].length != (4 + runNo)){
-        swal('Run Number ไม่ถูกต้อง');
+        swal('Run Number is invalid');
         return false;
       }else{
         $.ajax({
@@ -326,7 +325,7 @@ function validateOrder(){
       }
 
     }else{
-      swal('เลขที่เอกสารไม่ถูกต้อง');
+      swal('Invalid document number');
       return false;
     }
   }

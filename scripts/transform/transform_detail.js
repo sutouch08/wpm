@@ -1,12 +1,12 @@
 //---	ลบสินค้าที่เชื่อมโยงแล้วออกจากรายการ
 function removeTransformProduct(id_order_detail, product_code){
 	swal({
-		title:'คุณแน่ใจ ?',
-		text: 'ต้องการลบ '+ product_code + ' หรือไม่ ?',
+		title:'Are you sure ?',
+		text: 'Do you want to delete '+ product_code + ' ?',
 		type: 'warning',
 		showCancelButton:true,
-		cancelButtonText:'ยกเลิก',
-		confirmButtonText: 'ลบรายการ',
+		cancelButtonText:'No',
+		confirmButtonText: 'Yes',
 		confirmButtonColor:'#FA5858',
 		closeOnConfirm:false
 	}, function(){
@@ -75,12 +75,12 @@ function addToTransform(){
 
 	if( id_order_detail == ''){
 		$('#transform-modal').modal('hide');
-		swal('ไม่พบตัวแปร ID ORDER DETAIL');
+		swal('Missing ID ORDER DETAIL');
 		return false;
 	}
 
 	if( isNaN(qty) || qty < 1 || qty > limit){
-		$('#qty-error').text('จำนวนไม่ถูกต้อง');
+		$('#qty-error').text('Invalid Qty');
 		$('#qty-error').removeClass('not-show');
 		$('#trans-qty').focus();
 		return false;
@@ -89,7 +89,7 @@ function addToTransform(){
 	}
 
 	if( transform_product == '' || product_code == ''){
-		$('#product-error').text('สินค้าไม่ถูกต้อง');
+		$('#product-error').text('Invalid product');
 		$('#product-error').removeClass('not-show');
 		$('#trans-product').focus();
 		return false;
@@ -212,11 +212,11 @@ function isConnected(id){
 			//---	ถ้ามีการเชื่อมโยงอยู่ แจ้งเตือนการลบ
 			if(rs == 'exists'){
 				swal({
-					title:'รายการที่เชื่อมโยงไว้จะถูกลบ',
-					text: 'ต้องการดำเนินการต่อหรือไม่ ?',
+					title:'The linked item will be deleted.',
+					text: 'Do you want to continue? ?',
 					type:'warning',
 					showCancelButton:true,
-					confirmButtonText:'ดำเนินการ',
+					confirmButtonText:'Yes',
 					closeOnConfirm:true
 				},
 				//---	หากยืนยันการลบ
@@ -323,7 +323,7 @@ $('#trans-qty').focusout(function(){
 	var input_qty = parseInt($(this).val());
 	var limit = parseInt($('#detail-qty').val());
 	if( isNaN(input_qty) || input_qty < 1 || input_qty > limit){
-		$('#qty-error').text('ได้ไม่เกิน '+limit+' หน่วย');
+		$('#qty-error').text('Limit to '+limit+' pcs');
 		$('#qty-error').removeClass('not-show');
 		$(this).val(limit);
 	}else{

@@ -52,8 +52,7 @@ function get_quotation()
 					var rs = $.trim(rs);
 					if( rs == 'success' ){
 						swal({
-							title:'Success',
-							text:'ดึงรายการใหม่เรียบร้อยแล้ว',
+							title:'Success',							
 							type:'success',
 							timer:1000
 						});

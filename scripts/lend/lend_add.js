@@ -111,32 +111,32 @@ function addOrder(){
 
   if(!isDate(date_add))
   {
-    swal('วันที่ไม่ถูกต้อง');
+    swal('Invalid date');
     return false;
   }
 
 
   if(empID == "" || empName.length == 0){
-    swal('ชื่อผู้รับไม่ถูกต้อง');
+    swal('Invalid recipient name');
     return false;
   }
 
   if(zone_code.length == 0 || zone_name.length == 0)
   {
-    swal("โซนไม่ถูกต้อง");
+    swal("Invalid location");
     return false;
   }
 
 
   if(empName.length == 0)
   {
-    swal('ชื่อผู้เบิกไม่ถูกต้อง');
+    swal('Invalid requester');
     return false;
   }
 
 
   if(warehouse == ""){
-    swal('กรุณาระบุคลัง');
+    swal('Please specify warehouse');
     return false;
   }
 
@@ -159,10 +159,10 @@ function validateOrder(){
 
   if(arr.length == 2){
     if(arr[0] !== prefix){
-      swal('Prefix ต้องเป็น '+prefix);
+      swal('Prefix must be '+prefix);
       return false;
     }else if(arr[1].length != (4 + runNo)){
-      swal('Run Number ไม่ถูกต้อง');
+      swal('Run Number is invalid');
       return false;
     }else{
       $.ajax({
@@ -184,7 +184,7 @@ function validateOrder(){
     }
 
   }else{
-    swal('เลขที่เอกสารไม่ถูกต้อง');
+    swal('Invalid document number');
     return false;
   }
 }
@@ -282,13 +282,13 @@ function updateDetailTable(){
 
 function removeDetail(id, name){
 	swal({
-		title: "คุณแน่ใจ ?",
-		text: "ต้องการลบ '" + name + "' หรือไม่ ?",
+		title: "Are you sure ?",
+		text: "Do you want to delete '" + name + "' ?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#DD6B55",
-		confirmButtonText: 'ใช่, ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
 		}, function(){
 			$.ajax({
@@ -433,24 +433,24 @@ function validUpdate(){
 
 	//---- ตรวจสอบวันที่
 	if( ! isDate(date_add) ){
-		swal("วันที่ไม่ถูกต้อง");
+		swal("Invalid date");
 		return false;
 	}
 
 	//--- ตรวจสอบลูกค้า
 	if( empName.length == 0 || empID == "" ){
-		swal("ชื่อผู้เบิกไม่ถูกต้อง");
+		swal("Invalid requester");
 		return false;
 	}
 
   if(user_ref == ""){
-    swal('กรุณาระบุผู้เบิก[ผู้สั่งงาน]');
+    swal('Please specify requester');
     return false;
   }
 
   if(zone_code == '' || zone_name.length == 0)
   {
-    swal('โซนไม่ถูกต้อง');
+    swal('Invalid location');
     return false;
   }
 
@@ -526,23 +526,23 @@ function changeState(){
 
 		if(is_wms) {
 			if(state == 3 && id_address == "") {
-				swal("กรุณาระบุที่อยู่จัดส่ง");
+				swal("Please specify address");
 				return false;
 			}
 
 			if(state == 3 && id_sender == "") {
-				swal("กรุณาระบุผู้จัดส่ง");
+				swal("Please specify sender");
 				return false;
 			}
 
 			if($('#sender option:selected').data('tracking') == 1) {
 				if(trackingNo != tracking) {
-					swal("กรุณากดบันทึก Tracking No");
+					swal("Please save Tracking No");
 					return false;
 				}
 
 				if(trackingNo.length === 0) {
-					swal("กรุณาระบุ Tracking No");
+					swal("Please specify Tracking No");
 					return false;
 				}
 			}

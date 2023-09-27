@@ -51,13 +51,13 @@ function get_detail(code)
 
 function get_delete(code) {
 	swal({
-		title: "คุณแน่ใจ ?",
-		text: "ต้องการลบ '"+code+"' หรือไม่ ?",
+		title: "Are you sure ?",
+		text: "Do you want to delete '"+code+"' ?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#DD6B55",
-		confirmButtonText: 'ใช่, ฉันต้องการ',
-		cancelButtonText: 'ไม่ใช่',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'Cancel',
 		closeOnConfirm: false
 		}, function(){
 			$.ajax({

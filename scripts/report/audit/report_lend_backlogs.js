@@ -133,18 +133,18 @@ function getReport() {
 	var toDate = $('#toDate').val();
 
 	if(!isDate(fromDate) || !isDate(toDate)) {
-		swal("วันที่ไม่ถูกต้อง");
+		swal("Invalid date");
 		return false;
 	}
 
 	if(allEmp == 0 && empId == "") {
-		swal("กรุณาระบุผู้ยืม");
+		swal("Please specify Lender");
 		return false;
 	}
 
 	if(allPd == 0) {
 		if(pdFrom == "" || pdTo == "") {
-			swal("รหัสสินค้าไม่ถูกต้อง");
+			swal("Invalid Products");
 			return false;
 		}
 	}
@@ -206,18 +206,18 @@ function doExport() {
 	var toDate = $('#toDate').val();
 
 	if(!isDate(fromDate) || !isDate(toDate)) {
-		swal("วันที่ไม่ถูกต้อง");
+		swal("Invalid date");
 		return false;
 	}
 
 	if(allEmp == 0 && empId == "") {
-		swal("กรุณาระบุผู้ยืม");
+		swal("Please specify Lender");
 		return false;
 	}
 
 	if(allPd == 0) {
 		if(pdFrom == "" || pdTo == "") {
-			swal("รหัสสินค้าไม่ถูกต้อง");
+			swal("Invalid products");
 			return false;
 		}
 	}

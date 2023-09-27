@@ -42,7 +42,6 @@ function unsave(){
 			if(rs === 'success'){
 				swal({
 					title:'Success',
-					text:'ยกเลิกการบันทึกเรียบร้อยแล้ว',
 					type:'success',
 					time:1000
 				});
@@ -86,7 +85,7 @@ function save()
 	})
 
 	if(count == 0) {
-		swal("ไม่พบรายการคืนสินค้า", "", "error");
+		swal("No item found", "", "error");
 		return false;
 	}
 
@@ -176,7 +175,6 @@ function doExport(){
 			if(rs == 'success') {
 				swal({
 					title:'Success',
-					text:'ส่งข้อมูลไป SAP สำเร็จ',
 					type:'success',
 					timer:1000
 				});
@@ -262,27 +260,27 @@ function updateHeader(){
 	var gp = $('#gp').val();
 
 	if(!isDate(date_add)){
-    swal('วันที่ไม่ถูกต้อง');
+    swal('Invalid date');
     return false;
   }
 
 	if(invoice.length == 0){
-		swal('กรุณาอ้างอิงเลขที่บิล');
+		swal('Please specify invoice no.');
 		return false;
 	}
 
 	if(customer_code.length == 0){
-		swal('กรุณาอ้างอิงลูกค้า');
+		swal('Please specify customer');
 		return false;
 	}
 
 	if(zone_code.length == 0){
-		swal('กรุณาระบุโซนรับสินค้า');
+		swal('Please specify location to receive');
 		return false;
 	}
 
 	if(from_zone_code.length == 0){
-		swal('กรุณาระบุโซนฝากขาย');
+		swal('Please sepcify consignment location');
 		return false;
 	}
 
@@ -369,27 +367,27 @@ function addNew()
 	var remark = $('#remark').val();
 
   if(!isDate(date_add)){
-    swal('วันที่ไม่ถูกต้อง');
+    swal('Invalid date');
     return false;
   }
 
 	if(invoice.length == 0){
-		swal('กรุณาอ้างอิงเลขที่บิล');
+		swal('Please specify invoice no.');
 		return false;
 	}
 
 	if(customer_code.length == 0){
-		swal('กรุณาระบุลูกค้า');
+		swal('Please specify customer');
 		return false;
 	}
 
 	if(from_zone.length == 0){
-		swal('กรุณาระบุโซนฝากขาย');
+		swal('Please specify consignment location');
 		return false;
 	}
 
 	if(zone_code.length == 0){
-		swal('กรุณาระบุโซนรับสินค้า');
+		swal('Please specify location to receive');
 		return false;
 	}
 
@@ -563,12 +561,12 @@ function removeRow(no, id, count){
 
 function load_stock_in_zone(){
 	swal({
-    title: "นำเข้าสินค้าในโซน",
-		text: "รายการที่มีอยู่ในเอกสารจะถูกลบแล้วแทนที่ด้วยสินค้าในโซน <br/> ต้องการดำเนินการหรือไม่ ?",
+    title: "Load remaining inventory in location",
+		text: "Existing items in the document will be deleted and replaced with products in the location.<br/> Do you want to process ?",
 		type: "warning",
 		showCancelButton: true,
-		confirmButtonText: 'ดำเนินการ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'Cancel',
 		html:true,
 		closeOnConfirm: false
   },function(){

@@ -5,8 +5,8 @@
     </div>
 		<div class="col-sm-4 padding-5">
 			<p class="pull-right top-p">
-				<button type="button" class="btn btn-sm btn-success" onclick="getReport()"><i class="fa fa-bar-chart"></i> รายงาน</button>
-				<button type="button" class="btn btn-sm btn-primary" onclick="doExport()"><i class="fa fa-file-excel-o"></i> ส่งออก</button>
+				<button type="button" class="btn btn-sm btn-success" onclick="getReport()"><i class="fa fa-bar-chart"></i> Report</button>
+				<button type="button" class="btn btn-sm btn-primary" onclick="doExport()"><i class="fa fa-file-excel-o"></i> Export</button>
 			</p>
 		</div>
 </div><!-- End Row -->
@@ -14,36 +14,36 @@
 <form class="hidden-print" id="reportForm" method="post" action="<?php echo $this->home; ?>/do_export">
 <div class="row">
 	<div class="col-sm-1 col-1-harf padding-5">
-		<label class="display-block">ผู้ยืม</label>
+		<label class="display-block">Lender</label>
 		<div class="btn-group width-100">
-			<button type="button" class="btn btn-sm btn-primary width-50" id="btn-emp-all" onclick="toggleAllEmp(1)">ทั้งหมด</button>
-			<button type="button" class="btn btn-sm width-50" id="btn-emp-use" onclick="toggleAllEmp(0)">ระบุ</button>
+			<button type="button" class="btn btn-sm btn-primary width-50" id="btn-emp-all" onclick="toggleAllEmp(1)">All</button>
+			<button type="button" class="btn btn-sm width-50" id="btn-emp-use" onclick="toggleAllEmp(0)">Specify</button>
 		</div>
 	</div>
 	<div class="col-sm-3 padding-5">
 		<label class="display-block not-show">&nbsp;</label>
-		<input type="text" class="form-control input-sm" name="empName" id="empName" placeholder="ระบุชื่อพนักงาน" disabled>
+		<input type="text" class="form-control input-sm" name="empName" id="empName" placeholder="Specify employee" disabled>
 	</div>
 	<div class="col-sm-1 col-1-harf padding-5">
-		<label>สินค้า</label>
+		<label>Products</label>
 		<div class="btn-group width-100">
-			<button type="button" class="btn btn-sm btn-primary width-50" id="btn-pd-all" onclick="toggleAllProduct(1)">ทั้งหมด</button>
-			<button type="button" class="btn btn-sm width-50" id="btn-pd-range" onclick="toggleAllProduct(0)">ระบุ</button>
+			<button type="button" class="btn btn-sm btn-primary width-50" id="btn-pd-all" onclick="toggleAllProduct(1)">All</button>
+			<button type="button" class="btn btn-sm width-50" id="btn-pd-range" onclick="toggleAllProduct(0)">Specify</button>
 		</div>
 	</div>
 	<div class="col-sm-2 padding-5">
-		<label>เริ่มต้น</label>
-		<input type="text" class="form-control input-sm" id="pdFrom" name="pdFrom" placeholder="เริ่มต้น" disabled>
+		<label class="not-show">Start</label>
+		<input type="text" class="form-control input-sm" id="pdFrom" name="pdFrom" placeholder="From" disabled>
 	</div>
 	<div class="col-sm-2 padding-5">
-		<label>สิ้นสุด</label>
-		<input type="text" class="form-control input-sm" id="pdTo" name="pdTo" placeholder="สิ้นสุด" disabled>
+		<label class="not-show">End</label>
+		<input type="text" class="form-control input-sm" id="pdTo" name="pdTo" placeholder="To" disabled>
 	</div>
 	<div class="col-sm-2 padding-5">
-		<label>วันที่</label>
+		<label>Date</label>
 		<div class="input-daterange input-group">
-      <input type="text" class="form-control input-sm width-50 text-center from-date" name="fromDate" id="fromDate" readonly value="">
-      <input type="text" class="form-control input-sm width-50 text-center" name="toDate" id="toDate" readonly value="">
+      <input type="text" class="form-control input-sm width-50 text-center from-date" name="fromDate" id="fromDate" readonly placeholder="From">
+      <input type="text" class="form-control input-sm width-50 text-center" name="toDate" id="toDate" readonly placeholder="To">
     </div>
 	</div>
 </div>
@@ -55,21 +55,21 @@
 </form>
 
 <div class="row">
-  <div class="col-sm-12 padding-5">
+  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5 table-responsive">
 		<table class="table table-bordered">
 			<thead>
 				<tr class="font-size-12">
 					<th class="width-5 text-center">#</th>
-					<th class="width-15 text-center">ผู้ยืม</th>
-					<th class="width-15 text-center">ผู้รับ</th>
-					<th class="width-10 text-center">ผู้ทำรายการ</th>
-					<th class="width-10 text-center">เลขที่เอกสาร</th>
-					<th class="width-10 text-center">รหัสสินค้า</th>
-					<th class="width-8 text-center">ราคา</th>
-					<th class="width-5 text-center">ยืม</th>
-					<th class="width-5 text-center">คืน</th>
-					<th class="width-5 text-center">ค้าง</th>
-					<th class="width-8 text-center">มูลค่า</th>
+					<th class="width-15 text-center">Lender</th>
+					<th class="width-15 text-center">Receiver</th>
+					<th class="width-10 text-center">Owner</th>
+					<th class="width-10 text-center">Document No</th>
+					<th class="width-10 text-center">Items</th>
+					<th class="width-8 text-center">Price</th>
+					<th class="width-5 text-center">Lended</th>
+					<th class="width-5 text-center">Returned Qty</th>
+					<th class="width-5 text-center">Outstanding</th>
+					<th class="width-8 text-center">Outstanding Amount</th>
 				</tr>
 			</thead>
 			<tbody id="result">
@@ -83,7 +83,7 @@
 	{{#each this}}
 		{{#if @last}}
 			<tr class="font-size-12">
-				<td colspan="7" class="middle text-right">รวม</td>
+				<td colspan="7" class="middle text-right">Total</td>
 				<td class="middle text-right">{{total_lend}}</td>
 				<td class="middle text-right">{{total_return}}</td>
 				<td class="middle text-right">{{total_balance}}</td>

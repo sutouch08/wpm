@@ -88,7 +88,7 @@ function get_item_by_code() {
 					$('#i-price').val("");
 					$('#i-gp').val(0);
 					$('#i-qty').val(1);
-					swal('ไม่พบสินค้า');
+					swal('Not found');
 				}
 			}//-- success
 		}); //--- ajax
@@ -252,7 +252,7 @@ function doReceive()
           }
           else
           {
-            swal('ไม่พบสินค้า');
+            swal('Not found');
             $('#barcode').removeAttr('disabled');
           }
         }//-- success

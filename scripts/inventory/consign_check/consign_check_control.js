@@ -21,7 +21,7 @@ function getBox(barcode){
         box = $.parseJSON(rs);
         $('#id_box').val(box.id_box);
         $('#box-qty').text(box.qty);
-        $('#box-label').text('กล่องที่ ' + box.box_no);
+        $('#box-label').text('Box no. ' + box.box_no);
         activeControl();
       }
     }
@@ -95,7 +95,7 @@ function checkItem(barcode, qty){
       }
     });
   }else{
-    swal('Error!', 'กรุณายิงบาร์โค้ดกล่อง', 'error');
+    swal('Error!', 'Please scan box\'s barcode', 'error');
   }
 
 }
@@ -112,7 +112,7 @@ function changeBox(){
   $('#box-code').val('');
   $('#barcode').val('');
   $('#box-qty').text('0');
-  $('#box-label').text('จำนวนในกล่อง');
+  $('#box-label').text('Qty in box');
   $('.item').attr('disabled', 'disabled');
   $('.box').removeAttr('disabled');
   $('#box-code').focus();
@@ -128,7 +128,7 @@ function activeControl(){
     $('#barcode').focus();
 
   }else{
-    swal('โซนไม่ถูกต้อง');
+    swal('Invalid location');
   }
 }
 

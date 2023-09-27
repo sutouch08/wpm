@@ -18,14 +18,14 @@ function confirmPayment(id)
 			var rs = $.trim(rs);
 			if( rs == 'success' ){
 				swal({
-          title : 'เรียบร้อย',
+          title : 'Success',
           text: 'Paid',
           timer: 1000,
           type: 'success'
         });
 				$("#row-"+id).remove();
 			}else{
-				swal("ข้อผิดพลาด", rs, "error");
+				swal("Error", rs, "error");
 			}
 		}
 	});
@@ -49,14 +49,13 @@ function unConfirmPayment(id)
 			var rs = $.trim(rs);
 			if( rs == 'success' ){
 				swal({
-          title : 'เรียบร้อย',
-          text: 'ยกเลิกการยืนยันเรียบร้อยแล้ว',
+          title : 'Success',
           timer: 1000,
           type: 'success'
         });
 				$("#row-"+id).remove();
 			}else{
-				swal("ข้อผิดพลาด", rs, "error");
+				swal("Error", rs, "error");
 			}
 		}
 	});
@@ -78,7 +77,7 @@ function viewDetail(id)
 			load_out();
 			var rs = $.trim(rs);
 			if( rs == 'fail' ){
-				swal('ข้อผิดพลาด', 'ไม่พบข้อมูล หรือ การชำระเงินถูกยืนยันไปแล้ว', 'error');
+				swal('Error', 'No information found or payment has already been confirmed.', 'error');
 			}else{
 				var source 	= $("#detailTemplate").html();
 				var data		= $.parseJSON(rs);
@@ -96,13 +95,13 @@ function viewDetail(id)
 function removePayment(id, name)
 {
 	swal({
-		title: 'คุณแน่ใจ ?',
-		text: 'ต้องการลบการแจ้งชำระของ '+ name + ' หรือไม่?',
+		title: 'Are you sure ?',
+		text: 'Do you want to delete '+ name + ' ?',
 		type: 'warning',
 		showCancelButton: true,
 		confirmButtonColor: '#DD6855',
-		confirmButtonText: 'ใช่ ฉันต้องการลบ',
-		cancelButtonText: 'ยกเลิก',
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
 		closeOnConfirm: false
 		}, function(){
 			$.ajax({
@@ -116,15 +115,14 @@ function removePayment(id, name)
 					var rs = $.trim(rs);
 					if( rs == 'success' ){
 						swal({
-              title : "สำเร็จ",
-              text: "ลบรายการเรียบร้อยแล้ว",
+              title : "Success",
               timer: 1000,
               type: "success"
             });
 
 						$("#row-"+id).remove();
 					}else{
-						swal("ข้อผิดพลาด!!", "ลบรายการไม่สำเร็จ หรือ มีการยืนยันการชำระเงินแล้ว", "error");
+						swal("Error!!", "Unable to delete item or payment confirmed", "error");
 					}
 				}
 			});

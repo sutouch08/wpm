@@ -77,7 +77,7 @@ function doExport(){
   var toDate = $('#toDate').val();
 
   if(!isDate(fromDate) || !isDate(toDate)){
-    swal("กรุณาระบุวันที่");
+    swal("Invalid date");
     return false;
   }
 
