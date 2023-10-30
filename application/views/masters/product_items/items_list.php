@@ -1,8 +1,11 @@
 <?php $this->load->view('include/header'); ?>
 <div class="row">
-	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
+	<div class="col-lg-6 col-md-6 col-sm-6 hidden-xs padding-5">
     <h3 class="title"><?php echo $this->title; ?></h3>
   </div>
+	<div class="col-xs-12 visible-xs">
+		<h3 class="title-xs"><?php echo $this->title; ?></h3>
+	</div>
   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
   	<p class="pull-right top-p">
     <?php if($this->pm->can_add) : ?>
@@ -98,7 +101,7 @@
 		</select>
   </div>
 
-	<div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-6 padding-5">
+	<div class="col-lg-1-harf col-md-1-harf col-sm-2 col-xs-4 padding-5">
     <label>Active</label>
 		<select class="form-control" name="active" onchange="getSearch()">
 			<option value="all">All</option>
@@ -107,11 +110,11 @@
 		</select>
   </div>
 
-  <div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
+  <div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
     <label class="display-block not-show">buton</label>
     <button type="submit" class="btn btn-sm btn-primary btn-block"><i class="fa fa-search"></i> Search</button>
   </div>
-	<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
+	<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
     <label class="display-block not-show">buton</label>
     <button type="button" class="btn btn-sm btn-warning btn-block" onclick="clearFilter()"><i class="fa fa-retweet"></i> Reset</button>
   </div>

@@ -1,52 +1,55 @@
 <?php $this->load->view('include/header'); ?>
 <div class="row">
-	<div class="col-sm-6">
+	<div class="col-lg-6 col-md-6 col-sm-6 padding-5 hidden-xs">
     <h3 class="title"><?php echo $this->title; ?></h3>
   </div>
-	<div class="col-sm-6">
+	<div class="col-xs-12 padding-5 visible-xs">
+    <h3 class="title-xs"><?php echo $this->title; ?></h3>
+  </div>
+  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
 		<p class="pull-right">
 			<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
 		</p>
 	</div>
 </div><!-- End Row -->
-<hr class="title-block"/>
+<hr class=""/>
 <form class="form-horizontal" id="addForm" method="post" action="<?php echo $this->home."/add"; ?>">
 	<div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">รหัส</label>
+    <label class="col-sm-3 control-label no-padding-right">Code</label>
     <div class="col-xs-12 col-sm-3">
 			<input type="text" name="code" id="code" class="width-100" maxlength="9" onkeyup="validCode(this)" autofocus required />
     </div>
   </div>
   <div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">ชื่อ</label>
+    <label class="col-sm-3 control-label no-padding-right">Name</label>
     <div class="col-xs-12 col-sm-3">
 			<input type="text" name="name" id="name" class="width-100" maxlength="250" required />
     </div>
   </div>
 
   <div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">ที่อยู่ 1</label>
+    <label class="col-sm-3 control-label no-padding-right">Address 1</label>
     <div class="col-xs-12 col-sm-3">
 			<input type="text" name="address1" id="address1" class="width-100" />
     </div>
   </div>
 
   <div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">ที่อยู่ 2</label>
+    <label class="col-sm-3 control-label no-padding-right">Address 2</label>
     <div class="col-xs-12 col-sm-3">
 			<input type="text" name="address2" id="address2" class="width-100" />
     </div>
   </div>
 
   <div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">เบอร์โทร</label>
+    <label class="col-sm-3 control-label no-padding-right">Tel</label>
     <div class="col-xs-12 col-sm-3">
 			<input type="text" name="phone" id="phone" class="width-100" />
     </div>
   </div>
 
   <div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">เวลาทำการ</label>
+    <label class="col-sm-3 control-label no-padding-right">Business hours</label>
     <div class="col-xs-12 col-sm-3">
       <select class="form-control input-sm input-small" name="open" id="open" style="display:inline-block;">
       <?php echo selectTime(); ?>
@@ -59,11 +62,11 @@
   </div>
 
   <div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">เงื่อนไข</label>
+    <label class="col-sm-3 control-label no-padding-right">Shipping fee</label>
     <div class="col-xs-12 col-sm-3">
 			<select class="form-control input-sm" name="type" id="type">
-        <option value="ปลายทาง">เก็บเงินปลายทาง</option>
-        <option value="ต้นทาง">เก็บเงินต้นทาง</option>
+        <option value="ปลายทาง">Pay by receiver</option>
+        <option value="ต้นทาง">Pay by sender</option>
       </select>
     </div>
   </div>
@@ -73,7 +76,7 @@
     <div class="col-xs-12 col-sm-3">
 			<label>
 				<input type="checkbox" name="in_list" id="in_list" class="ace" value="1" />
-				<span class="lbl">  แสดงในตัวเลือก</span>
+				<span class="lbl">  Show in list</span>
 			</label>
     </div>
   </div>
@@ -83,7 +86,7 @@
     <div class="col-xs-12 col-sm-3">
 			<label>
 				<input type="checkbox" name="force_tracking" id="force_tracking" class="ace" value="1" onchange="toggleAutoGen()" />
-				<span class="lbl">  บังคับใส่ Tracking</span>
+				<span class="lbl">  Require Tracking</span>
 			</label>
     </div>
   </div>

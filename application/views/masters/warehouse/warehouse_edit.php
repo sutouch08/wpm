@@ -11,20 +11,23 @@
 	$cm_no = empty($ds->is_consignment) ? 'btn-danger' : '';
  ?>
 <div class="row">
-	<div class="col-sm-6">
+	<div class="col-lg-6 col-md-6 col-sm-6 padding-5 hidden-xs">
     <h3 class="title"><?php echo $this->title; ?></h3>
   </div>
-	<div class="col-sm-6">
-		<p class="pull-right">
+	<div class="col-xs-12 padding-5 visible-xs">
+    <h3 class="title-xs"><?php echo $this->title; ?></h3>
+  </div>
+  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
+  	<p class="pull-right top-p">
 			<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
 		</p>
 	</div>
 </div><!-- End Row -->
-<hr class="title-block"/>
+<hr class=""/>
 <form class="form-horizontal" id="addForm" method="post" action="<?php echo $this->home."/update"; ?>">
 
 	<div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">รหัสคลัง</label>
+    <label class="col-sm-3 control-label no-padding-right">Whs Code</label>
     <div class="col-xs-12 col-sm-3">
       <input type="text" class="form-control input-sm" value="<?php echo $ds->code; ?>" disabled />
     </div>
@@ -33,7 +36,7 @@
 
 
   <div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">ชื่อคลัง</label>
+    <label class="col-sm-3 control-label no-padding-right">Description</label>
     <div class="col-xs-12 col-sm-3">
 			<input type="text" class="form-control input-sm" value="<?php echo $ds->name; ?>" disabled />
     </div>
@@ -41,68 +44,68 @@
   </div>
 
 	<div class="form-group">
- 	 <label class="col-sm-3 control-label no-padding-right">ประเภทคลัง</label>
+ 	 <label class="col-sm-3 control-label no-padding-right">Whs Role</label>
  	 <div class="col-xs-12 col-sm-3">
  		 <select class="form-control input-sm" name="role" required>
- 		 	<option value="">กรุณาเลือก</option>
+ 		 	<option value="">Select</option>
 			<?php echo select_warehouse_role($ds->role); ?>
  		 </select>
  	 </div>
   </div>
 
 	<div class="form-group">
-    <label class="col-sm-3 control-label no-padding-right">มูลค่าสูงสุด</label>
+    <label class="col-sm-3 control-label no-padding-right">Maximum Amount Allowed</label>
     <div class="col-xs-12 col-sm-3">
 			<input type="text" class="form-control input-sm" value="<?php echo number($ds->limit_amount, 2); ?>" disabled />
     </div>
     <div class="help-block col-xs-12 col-sm-reset inline" >
-			มูลค่ารวม(ทุน)ของสินค้าที่อนุญาติให้มีได้ในคลังนี้ หากไม่ต้องการจำกัดมูลค่า ให้กำหนดเป็น 0.00 
+			Total value (capital) of goods allowed in this warehouse. If you don't want to limit the value, set it to 0.00.
 		</div>
   </div>
 
 	<div class="form-group">
- 	 <label class="col-sm-3 control-label no-padding-right">ฝากขายเทียม</label>
+ 	 <label class="col-sm-3 control-label no-padding-right">Consignment IV</label>
  	 <div class="col-xs-12 col-sm-2">
  		<div class="btn-group width-100">
- 			<button type="button" class="btn btn-sm width-50 <?php echo $cm_yes; ?>" id="btn-cm-yes" onclick="toggleConsignment(1)">ใช่</button>
-			<button type="button" class="btn btn-sm width-50 <?php echo $cm_no; ?>" id="btn-cm-no" onclick="toggleConsignment(0)">ไม่ใช่</button>
+ 			<button type="button" class="btn btn-sm width-50 <?php echo $cm_yes; ?>" id="btn-cm-yes" onclick="toggleConsignment(1)">Yes</button>
+			<button type="button" class="btn btn-sm width-50 <?php echo $cm_no; ?>" id="btn-cm-no" onclick="toggleConsignment(0)">No</button>
  		</div>
  	 </div>
   </div>
 
 
 	<div class="form-group">
- 	 <label class="col-sm-3 control-label no-padding-right">อนุญาติให้ขาย</label>
+ 	 <label class="col-sm-3 control-label no-padding-right">Allow to Sell</label>
  	 <div class="col-xs-12 col-sm-2">
  		<div class="btn-group width-100">
- 			<button type="button" class="btn btn-sm width-50 <?php echo $sell_yes; ?>" id="btn-sell-yes" onclick="toggleSell(1)">ใช่</button>
-			<button type="button" class="btn btn-sm width-50 <?php echo $sell_no; ?>" id="btn-sell-no" onclick="toggleSell(0)">ไม่ใช่</button>
+ 			<button type="button" class="btn btn-sm width-50 <?php echo $sell_yes; ?>" id="btn-sell-yes" onclick="toggleSell(1)">Yes</button>
+			<button type="button" class="btn btn-sm width-50 <?php echo $sell_no; ?>" id="btn-sell-no" onclick="toggleSell(0)">No</button>
  		</div>
  	 </div>
   </div>
 
 	<div class="form-group">
- 	 <label class="col-sm-3 control-label no-padding-right">อนุญาติให้จัด</label>
+ 	 <label class="col-sm-3 control-label no-padding-right">Allow to Pick</label>
  	 <div class="col-xs-12 col-sm-2">
  		<div class="btn-group width-100">
- 			<button type="button" class="btn btn-sm width-50 <?php echo $prepare_yes; ?>" id="btn-prepare-yes" onclick="togglePrepare(1)">ใช่</button>
-			<button type="button" class="btn btn-sm width-50 <?php echo $prepare_no; ?>" id="btn-prepare-no" onclick="togglePrepare(0)">ไม่ใช่</button>
+ 			<button type="button" class="btn btn-sm width-50 <?php echo $prepare_yes; ?>" id="btn-prepare-yes" onclick="togglePrepare(1)">Yes</button>
+			<button type="button" class="btn btn-sm width-50 <?php echo $prepare_no; ?>" id="btn-prepare-no" onclick="togglePrepare(0)">No</button>
  		</div>
  	 </div>
   </div>
 
 	<div class="form-group">
- 	 <label class="col-sm-3 control-label no-padding-right">อนุญาติให้ติดลบ</label>
+ 	 <label class="col-sm-3 control-label no-padding-right">Nagative Stock Allowed</label>
  	 <div class="col-xs-12 col-sm-2">
  		<div class="btn-group width-100">
- 			<button type="button" class="btn btn-sm width-50 <?php echo $auz_yes; ?>" id="btn-auz-yes" onclick="toggleAuz(1)">ใช่</button>
-			<button type="button" class="btn btn-sm width-50 <?php echo $auz_no; ?>" id="btn-auz-no" onclick="toggleAuz(0)">ไม่ใช่</button>
+ 			<button type="button" class="btn btn-sm width-50 <?php echo $auz_yes; ?>" id="btn-auz-yes" onclick="toggleAuz(1)">Yes</button>
+			<button type="button" class="btn btn-sm width-50 <?php echo $auz_no; ?>" id="btn-auz-no" onclick="toggleAuz(0)">No</button>
  		</div>
  	 </div>
   </div>
 
 	<div class="form-group">
- 	 <label class="col-sm-3 control-label no-padding-right">สถานะ</label>
+ 	 <label class="col-sm-3 control-label no-padding-right">Status</label>
  	 <div class="col-xs-12 col-sm-2">
 		 <button type="button" class="btn btn-sm <?php echo $btn_active; ?>" style="width:100px;" disabled>
 			 <?php echo $ds->active == 1 ? 'Active' : 'Inactive'; ?>

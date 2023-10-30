@@ -642,7 +642,7 @@ class Items extends PS_Controller
     if($item != '')
     {
       $item = urldecode($item);
-      
+
       if(! $this->products_model->has_transection($item))
       {
         if(! $this->products_model->delete_item($item))
@@ -863,7 +863,7 @@ class Items extends PS_Controller
 
   public function clear_filter()
 	{
-    $filter = array('item_code','item_name','item_barcode','color', 'size','group','sub_group','category','kind','type','brand','year');
+    $filter = array('item_code','item_name','item_barcode','color', 'size','group','sub_group','category','kind','type','brand','year', 'active');
     clear_filter($filter);
 	}
 }

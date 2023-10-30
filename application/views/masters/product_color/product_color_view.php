@@ -16,43 +16,43 @@
 </div><!-- End Row -->
 <hr class=""/>
 <form id="searchForm" method="post" action="<?php echo current_url(); ?>">
-<div class="row">
-  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>รหัส</label>
-    <input type="text" class="form-control input-sm" name="code" id="code" value="<?php echo $code; ?>" />
-  </div>
+	<div class="row">
+	  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
+	    <label>Code</label>
+	    <input type="text" class="form-control input-sm" name="code" id="code" value="<?php echo $code; ?>" />
+	  </div>
 
-  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>สี</label>
-    <input type="text" class="form-control input-sm" name="name" id="name" value="<?php echo $name; ?>" />
-  </div>
+	  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
+	    <label>Name</label>
+	    <input type="text" class="form-control input-sm" name="name" id="name" value="<?php echo $name; ?>" />
+	  </div>
 
-	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-		<label>กลุ่มสี</label>
-		<select class="form-control input-sm" id="color_group" name="color_group" onchange="getSearch()">
-			<option value="">ทั้งหมด</option>
-			<option value="NULL" <?php echo is_selected("NULL", $color_group); ?>>ไม่มีกลุ่ม</option>
-			<?php echo select_color_group($color_group); ?>
-		</select>
+		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
+			<label>Group</label>
+			<select class="form-control input-sm" id="color_group" name="color_group" onchange="getSearch()">
+				<option value="">All</option>
+				<option value="NULL" <?php echo is_selected("NULL", $color_group); ?>>No Group</option>
+				<?php echo select_color_group($color_group); ?>
+			</select>
+		</div>
+		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
+	    <label>Active</label>
+	    <select class="form-control input-sm" name="status" id="status" onchange="getSearch()">
+				<option value="2">All</option>
+				<option value="1" <?php echo is_selected(1, $status); ?>>Yes</option>
+				<option value="0" <?php echo is_selected(0, $status); ?>>No</option>
+			</select>
+	  </div>
+
+	  <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
+	    <label class="display-block not-show">buton</label>
+	    <button type="submit" class="btn btn-xs btn-primary btn-block"><i class="fa fa-search"></i> Search</button>
+	  </div>
+		<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
+	    <label class="display-block not-show">buton</label>
+	    <button type="button" class="btn btn-xs btn-warning btn-block" onclick="clearFilter()"><i class="fa fa-retweet"></i> Reset</button>
+	  </div>
 	</div>
-	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>สถานะ</label>
-    <select class="form-control input-sm" name="status" id="status" onchange="getSearch()">
-			<option value="2">ทั้งหมด</option>
-			<option value="1" <?php echo is_selected(1, $status); ?>>ใช้งาน</option>
-			<option value="0" <?php echo is_selected(0, $status); ?>>ไม่ใช้งาน</option>
-		</select>
-  </div>
-
-  <div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
-    <label class="display-block not-show">buton</label>
-    <button type="submit" class="btn btn-xs btn-primary btn-block"><i class="fa fa-search"></i> Search</button>
-  </div>
-	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-6 padding-5">
-    <label class="display-block not-show">buton</label>
-    <button type="button" class="btn btn-xs btn-warning btn-block" onclick="clearFilter()"><i class="fa fa-retweet"></i> Reset</button>
-  </div>
-</div>
 <hr class="margin-top-15">
 </form>
 <?php echo $this->pagination->create_links(); ?>

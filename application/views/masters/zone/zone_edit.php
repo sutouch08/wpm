@@ -1,11 +1,14 @@
 <?php $this->load->view('include/header'); ?>
 
 <div class="row">
-	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 padding-5">
+	<div class="col-lg-6 col-md-6 col-sm-6 padding-5 hidden-xs">
     <h3 class="title"><?php echo $this->title; ?></h3>
   </div>
-	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 padding-5">
-		<p class="pull-right top-p">
+	<div class="col-xs-12 padding-5 visible-xs">
+    <h3 class="title-xs"><?php echo $this->title; ?></h3>
+  </div>
+  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
+  	<p class="pull-right top-p">
 			<button type="button" class="btn btn-sm btn-warning" onclick="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
 		</p>
 	</div>
@@ -13,22 +16,22 @@
 <hr/>
 <div class="row">
 	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 padding-5">
-		<label>รหัสโซน</label>
+		<label>Code</label>
 		<input type="text" class="form-control input-sm" value="<?php echo $ds->code; ?>" readonly disabled />
 	</div>
 
 	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
-		<label>ชื่อโซน</label>
+		<label>Description</label>
 		<input type="text" class="form-control input-sm" value="<?php echo $ds->name; ?>" readonly disabled />
 	</div>
 
 	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 padding-5">
-		<label>คลังสินค้า</label>
+		<label>Warehouse</label>
 		<input type="text" class="form-control input-sm" value="<?php echo $ds->warehouse_name; ?>" readonly disabled />
 	</div>
 
 	<div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 padding-5">
-		<label>เจ้าของโซน</label>
+		<label>Owner</label>
 		<input type="text" class="form-control input-sm" id="uname" value="<?php echo $ds->uname; ?>" <?php echo (empty($ds->uname) ? "" : "disabled"); ?>/>
 		<input type="hidden" id="user_id" value="<?php echo $ds->user_id; ?>" />
 	</div>
@@ -51,7 +54,7 @@
 			</div>
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 padding-5">
 				<button type="button" class="btn btn-xs btn-primary" onclick="addCustomer()">
-					<i class="fa fa-plus"></i> เพิ่มลูกค้า
+					<i class="fa fa-plus"></i> Add Customer
 				</button>
 			</div>
 			<div class="divider"></div>
@@ -60,8 +63,8 @@
 					<thead>
 						<tr>
 							<th class="fix-width-40 text-center">No.</th>
-							<th class="fix-width-100">รหัสลูกค้า</th>
-							<th class="fix-width-250">ชิ้อลูกค้า</th>
+							<th class="fix-width-100">Customer Code</th>
+							<th class="fix-width-250">Customer Name</th>
 							<th class="fix-width-80"></th>
 						</tr>
 					</thead>
@@ -102,7 +105,7 @@
 				</div>
 				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 padding-5">
 					<button type="button" class="btn btn-xs btn-purple" onclick="addEmployee()">
-						<i class="fa fa-plus"></i> เพิ่มพนักงาน
+						<i class="fa fa-plus"></i> Add Employee
 					</button>
 				</div>
 				<div class="divider"></div>
@@ -111,7 +114,7 @@
 						<thead>
 							<tr>
 								<th class="fix-width-40 text-center">No.</th>
-								<th class="fix-width-200">พนักงาน</th>
+								<th class="fix-width-200">Employee</th>
 								<th class="fix-width-80"></th>
 							</tr>
 						</thead>

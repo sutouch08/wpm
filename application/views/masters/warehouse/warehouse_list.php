@@ -17,63 +17,63 @@
 <form id="searchForm" method="post" action="<?php echo current_url(); ?>">
 <div class="row">
   <div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>รหัส</label>
+    <label>Code</label>
     <input type="text" class="form-control input-sm" name="code" id="code" value="<?php echo $code; ?>" />
   </div>
 
   <div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-6 padding-5">
-    <label>ชื่อ</label>
+    <label>Description</label>
     <input type="text" class="form-control input-sm" name="name" id="name" value="<?php echo $name; ?>" />
   </div>
 
 	<div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-4 padding-5">
-    <label>ประเภท</label>
+    <label>Whs Role</label>
     <select class="form-control input-sm filter" name="role" id="role" onchange="getSearch()">
-			<option value="all">ทั้งหมด</option>
+			<option value="all">All</option>
 			<?php echo select_warehouse_role($role); ?>
 		</select>
   </div>
 
 	<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-    <label>คลังเทียม</label>
+    <label>Consignment</label>
     <select class="form-control input-sm filter" name="is_consignment" onchange="getSearch()">
-			<option value="all">ทั้งหมด</option>
+			<option value="all">All</option>
 			<option value="1" <?php echo is_selected('1', $is_consignment); ?>>YES</option>
 			<option value="0" <?php echo is_selected('0', $is_consignment); ?>>NO</option>
 		</select>
   </div>
 
 	<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-    <label>สถานะ</label>
+    <label>Status</label>
     <select class="form-control input-sm filter" name="active" onchange="getSearch()">
-			<option value="all">ทั้งหมด</option>
+			<option value="all">All</option>
 			<option value="1" <?php echo is_selected('1', $active); ?>>Active</option>
 			<option value="0" <?php echo is_selected('0', $active); ?>>Inactive</option>
 		</select>
   </div>
 
 	<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-    <label>ขาย</label>
+    <label>Sell</label>
     <select class="form-control input-sm filter" name="sell" onchange="getSearch()">
-			<option value="all">ทั้งหมด</option>
+			<option value="all">All</option>
 			<option value="1" <?php echo is_selected('1', $sell); ?>>YES</option>
 			<option value="0" <?php echo is_selected('0', $sell); ?>>NO</option>
 		</select>
   </div>
 
 	<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-    <label>จัด</label>
+    <label>Pick</label>
     <select class="form-control input-sm filter" name="prepare" onchange="getSearch()">
-			<option value="all">ทั้งหมด</option>
+			<option value="all">All</option>
 			<option value="1" <?php echo is_selected('1', $prepare); ?>>YES</option>
 			<option value="0" <?php echo is_selected('0', $prepare); ?>>NO</option>
 		</select>
   </div>
 
-	<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-    <label>ติดลบ</label>
+	<div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-4 padding-5">
+    <label>Nagative stock</label>
     <select class="form-control input-sm filter" name="auz" onchange="getSearch()">
-			<option value="all">ทั้งหมด</option>
+			<option value="all">All</option>
 			<option value="1" <?php echo is_selected('1', $auz); ?>>YES</option>
 			<option value="0" <?php echo is_selected('0', $auz); ?>>NO</option>
 		</select>
@@ -99,18 +99,18 @@
 		<table class="table table-hover border-1" style="min-width:1000px;">
 			<thead>
 				<tr style="font-size:11px;">
-					<th class="fix-width-40 middle text-center">ลำดับ</th>
-					<th class="fix-width-100 middle">รหัสคลัง</th>
-					<th class="min-width-250 middle">ชื่อคลัง</th>
-					<th class="fix-width-100 middle">ประเภทคลัง</th>
-					<th class="fix-width-80 middle text-center">โซน</th>
-					<th class="fix-width-60 middle text-center">ขาย</th>
-					<th class="fix-width-60 middle text-center">จัด</th>
-					<th class="fix-width-60 middle text-center">ติดลบ</th>
-					<th class="fix-width-60 middle text-center">ใช้งาน</th>
-					<th class="fix-width-60 middle text-center">ฝาขายเทียม</th>
-					<th class="fix-width-120 middle text-right">มูลค่าสูงสุด</th>
-					<th class="fix-width-100 middle text-center">แก้ไข</th>
+					<th class="fix-width-40 middle text-center">#</th>
+					<th class="fix-width-100 middle">Whs Code</th>
+					<th class="min-width-250 middle">Description</th>
+					<th class="fix-width-100 middle">Whs Role</th>
+					<th class="fix-width-80 middle text-center">Loc.</th>
+					<th class="fix-width-60 middle text-center">Sell</th>
+					<th class="fix-width-60 middle text-center">Pick</th>
+					<th class="fix-width-60 middle text-center">Nagative Stock</th>
+					<th class="fix-width-60 middle text-center">Active</th>
+					<th class="fix-width-60 middle text-center">Is Consignment IV</th>
+					<th class="fix-width-120 middle text-right">Maximum Stock Amount</th>
+					<th class="fix-width-100 middle text-center">update by</th>
 					<th class="fix-width-100 middle"></th>
 				</tr>
 			</thead>

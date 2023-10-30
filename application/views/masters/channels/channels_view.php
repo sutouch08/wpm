@@ -41,18 +41,18 @@
 <?php echo $this->pagination->create_links(); ?>
 
 <div class="row">
-	<div class="col-sm-12">
-		<table class="table table-striped table-bordered table-hover">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5 table-responsive">
+		<table class="table table-striped table-bordered table-hover" style="min-width:810px;">
 			<thead>
 				<tr>
-					<th class="width-5 middle text-center">#</th>
-					<th class="width-10 middle">Code</th>
-					<th class="width-15 middle">Name</th>
-					<th class="width-30 middle">Default Customer</th>
-					<th class="width-15 middle text-center">Type code</th>
-					<th class="width-5 middle text-center">Online</th>
-					<th class="width-5 middle text-center">Default</th>
-					<th></th>
+					<th class="fix-width-40 middle text-center">#</th>
+					<th class="fix-width-100 middle">Code</th>
+					<th class="fix-width-150 middle">Name</th>
+					<th class="fix-width-150 middle">Customer</th>
+					<th class="fix-width-150 middle text-center">Type code</th>
+					<th class="fix-width-60 middle text-center">Online</th>
+					<th class="fix-width-60 middle text-center">Default</th>
+					<th class="min-width-100"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -91,7 +91,7 @@
 							<?php endif; ?>
 						</td>
 
-						<td class="text-right">
+						<td class="">
 							<?php if($this->pm->can_edit) : ?>
 								<button type="button" class="btn btn-mini btn-warning" onclick="getEdit('<?php echo $rs->code; ?>')">
 									<i class="fa fa-pencil"></i>
