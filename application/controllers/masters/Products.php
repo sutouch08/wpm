@@ -376,10 +376,7 @@ class Products extends PS_Controller
 
 
   public function update_style()
-  {
-    print_r($this->input->post());
-
-    exit();
+  {    
     if($this->input->post('code'))
     {
       $code = $this->input->post('code'); //--- style code
