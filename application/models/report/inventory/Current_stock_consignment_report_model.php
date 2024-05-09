@@ -13,7 +13,7 @@ class Current_stock_consignment_report_model extends CI_Model
     $qr .= "SUM(OIBQ.OnHandQty * ITM1.Price) AS amount ";
     $qr .= "FROM OIBQ ";
     $qr .= "LEFT JOIN ITM1 ON OIBQ.ItemCode = ITM1.ItemCode ";
-    $qr .= "AND ITM1.PriceList = 13 ";
+    $qr .= "AND ITM1.PriceList = 1 ";
     $qr .= "WHERE OIBQ.OnHandQty != 0 ";
 
     $rs = $this->cn->query($qr);
@@ -35,7 +35,7 @@ class Current_stock_consignment_report_model extends CI_Model
     $qr .= "FROM OIBQ ";
     $qr .= "LEFT JOIN OITM ON OIBQ.ItemCode = OITM.ItemCode ";
     $qr .= "LEFT JOIN ITM1 ON OIBQ.ItemCode = ITM1.ItemCode ";
-    $qr .= "AND ITM1.PriceList = 13 ";
+    $qr .= "AND ITM1.PriceList = 1 ";
     $qr .= "WHERE OIBQ.OnHandQty != 0 ";
     $qr .= "AND OITM.U_GROUP = '{$code}' ";
 
@@ -57,7 +57,7 @@ class Current_stock_consignment_report_model extends CI_Model
     $qr .= "FROM OIBQ ";
     $qr .= "LEFT JOIN OITM ON OIBQ.ItemCode = OITM.ItemCode ";
     $qr .= "LEFT JOIN ITM1 ON OIBQ.ItemCode = ITM1.ItemCode ";
-    $qr .= "AND ITM1.PriceList = 13 ";
+    $qr .= "AND ITM1.PriceList = 1 ";
     $qr .= "WHERE OIBQ.OnHandQty != 0 ";
     $qr .= "AND OITM.U_MODEL = '{$code}' ";
 
@@ -100,7 +100,7 @@ class Current_stock_consignment_report_model extends CI_Model
 		$qr = "SELECT OITM.U_MODEL AS code, SUM(OIBQ.OnHandQty) AS qty, SUM(OIBQ.OnHandQty * ITM1.Price) AS amount
 		FROM OIBQ
 		LEFT JOIN OITM ON OIBQ.ItemCode = OITM.ItemCode
-		LEFT JOIN ITM1 ON OIBQ.ItemCode = ITM1.ItemCode AND ITM1.PriceList = 13
+		LEFT JOIN ITM1 ON OIBQ.ItemCode = ITM1.ItemCode AND ITM1.PriceList = 1
 		WHERE OITM.U_GROUP = '{$group_code}' AND OIBQ.OnHandQty != 0
 		GROUP BY OITM.U_MODEL
 		ORDER BY qty DESC";

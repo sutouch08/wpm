@@ -127,8 +127,8 @@ class Products_model extends CI_Model
     $rs = $this->ms
     ->select('OITM.ItemCode, ITM1.Price AS cost, ITM2.Price AS price')
     ->from('OITM')
-    ->join('ITM1 AS ITM1', '(ITM1.ItemCode = OITM.ItemCode AND ITM1.PriceList = 13)')
-    ->join('ITM1 AS ITM2', '(ITM2.ItemCode = OITM.ItemCode AND ITM2.PriceList = 11)')
+    ->join('ITM1 AS ITM1', '(ITM1.ItemCode = OITM.ItemCode AND ITM1.PriceList = 1)')
+    ->join('ITM1 AS ITM2', '(ITM2.ItemCode = OITM.ItemCode AND ITM2.PriceList = 2)')
     ->where('OITM.ItemCode', $code)
     ->get();
 
@@ -564,7 +564,7 @@ class Products_model extends CI_Model
 
   public function get($code)
   {
-    $rs = $this->db->where('code', $code)->or_where('old_code', $code)->get('products');
+    $rs = $this->db->where('code', $code)->get('products');
 
     if($rs->num_rows() == 1)
     {

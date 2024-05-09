@@ -273,7 +273,7 @@ class Import_order extends CI_Controller
               if($is_exists === FALSE OR $rs['S'] == 1)
               {
                 //---- รหัสลูกค้าจะมีการเปลี่ยนแปลงตามเงื่อนไขด้านล่างนี้
-                $customer_code = trim($rs['Z']);
+                $customer_code = empty($rs['Z']) ? 'NULL' : trim($rs['Z']);
                 //---- ตรวจสอบว่าช่องทางขายที่กำหนดมา เป็นเว็บไซต์หรือไม่(เพราะจะมีช่องทางการชำระเงินหลายช่องทาง)
 
                 $customer = $this->customers_model->get($customer_code);

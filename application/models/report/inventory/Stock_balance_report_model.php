@@ -18,7 +18,7 @@ class Stock_balance_report_model extends CI_Model
     ->select('OIBQ.OnHandQty AS qty')
     ->from('OIBQ')
     ->join('OITM', 'OIBQ.ItemCode = OITM.ItemCode', 'left')
-    ->join('ITM1', 'OITM.ItemCode = ITM1.ItemCode AND ITM1.PriceList = 11', 'left')
+    ->join('ITM1', 'OITM.ItemCode = ITM1.ItemCode AND ITM1.PriceList = 1', 'left')
     ->join('OBIN', 'OIBQ.BinAbs = OBIN.AbsEntry','left')
     ->where('OIBQ.OnHandQty !=', 0, FALSE);
 

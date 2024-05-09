@@ -473,7 +473,7 @@ class Export
                     'GTotal' => round($rs->total_amount, 2),
                     'TaxType' => 'Y',
                     'F_E_Commerce' => 'A',
-                    'F_E_CommerceDate' => sap_date(now())
+                    'F_E_CommerceDate' => sap_date(now(), TRUE)
                   );
 
                   if( ! $this->ci->transfer_model->add_sap_transfer_detail($arr))
@@ -659,7 +659,7 @@ public function export_transfer_draft($code)
                   'GTotal' => round($rs->total_amount, 2),
                   'TaxType' => 'Y',
                   'F_E_Commerce' => 'A',
-                  'F_E_CommerceDate' => sap_date(now())
+                  'F_E_CommerceDate' => sap_date(now(), TRUE)
                 );
 
                 if( ! $this->ci->transfer_model->add_sap_transfer_draft_detail($arr))
@@ -2575,7 +2575,7 @@ public function export_adjust_goods_receive($code)
             'DocTotal' => remove_vat($doc_total),
             'Comments' => limitText($doc->remark, 250),
             'F_E_Commerce' => 'A',
-            'F_E_CommerceDate' => sap_date(now())
+            'F_E_CommerceDate' => sap_date(now(), TRUE)
           );
 
           $this->ci->mc->trans_begin();
@@ -2619,7 +2619,7 @@ public function export_adjust_goods_receive($code)
                 'GTotal' => round($amount, 2),
                 'TaxType' => 'Y',
                 'F_E_Commerce' => 'A',
-                'F_E_CommerceDate' => sap_date(now())
+                'F_E_CommerceDate' => sap_date(now(), TRUE)
               );
 
               if( ! $this->ci->adjust_model->add_sap_goods_receive_row($arr))
@@ -2853,7 +2853,7 @@ public function export_adjust_consignment_goods_receive($code)
             'DocTotal' => remove_vat($doc_total),
             'Comments' => limitText($doc->remark, 250),
             'F_E_Commerce' => 'A',
-            'F_E_CommerceDate' => sap_date(now())
+            'F_E_CommerceDate' => sap_date(now(), TRUE)
           );
 
           $this->ci->mc->trans_begin();
@@ -2897,7 +2897,7 @@ public function export_adjust_consignment_goods_receive($code)
                 'GTotal' => round($amount, 2),
                 'TaxType' => 'Y',
                 'F_E_Commerce' => 'A',
-                'F_E_CommerceDate' => sap_date(now())
+                'F_E_CommerceDate' => sap_date(now(), TRUE)
               );
 
               if( ! $this->ci->adjust_consignment_model->add_sap_goods_receive_row($arr))

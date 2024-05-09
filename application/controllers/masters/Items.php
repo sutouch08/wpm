@@ -191,7 +191,7 @@ class Items extends PS_Controller
                 break;
               }
 
-              $code_pattern = '/[^a-zA-Z0-9_-]/';
+              $code_pattern = '/[^a-zA-Z0-9._-]/';
               $rs['D'] = str_replace(array("\n", "\r"), '', $rs['D']); //--- เอาตัวขึ้นบรรทัดใหม่ออก
 
               $style = preg_replace($code_pattern, '', get_null(trim($rs['D'])));
@@ -488,7 +488,8 @@ class Items extends PS_Controller
 		$code = $this->input->post('itemCode');
 
     $item = $this->products_model->get($code);
-    if(!empty($item))
+
+    if( ! empty($item))
     {
       $this->load->view('masters/product_items/items_edit_view', $item);
     }

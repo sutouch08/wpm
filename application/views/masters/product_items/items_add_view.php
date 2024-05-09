@@ -18,7 +18,7 @@
 			<div class="col-xs-12 col-sm-3">
 				<input type="text" name="code" id="code" class="width-100" value="" placeholder="Required" onkeyup="validCode(this)" autofocus required />
 			</div>
-			<div class="help-block col-xs-12 col-sm-reset inline grey" id="code-error">Allow only [a-z, A-Z, 0-9, "-", "_" ]</div>
+			<div class="help-block col-xs-12 col-sm-reset inline grey" id="code-error">Allow only [a-z, A-Z, 0-9, ".", "-", "_" ]</div>
 		</div>
 
 		<div class="form-group hide">
@@ -254,5 +254,5 @@
 </div><!--/ row  -->
 
 <script src="<?php echo base_url(); ?>scripts/masters/items.js?v=<?php echo date('Ymd'); ?>"></script>
-<script src="<?php echo base_url(); ?>scripts/code_validate.js"></script>
+<script src="<?php echo base_url(); ?>scripts/code_validate.js?v=<?php echo date('Ymd'); ?>"></script>
 <?php $this->load->view('include/footer'); ?>
