@@ -6,3 +6,6 @@
 *.pdf
 *.xls
 *.xlsx
+.htaccess
+index.php
+/application/config/*

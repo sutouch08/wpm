@@ -30,10 +30,10 @@
   </div>
 
 	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-		<label>WMS</label>
-		<select class="form-control input-sm edit" name="api" id="api" disabled>
-      <option value="0" <?php echo is_selected('0', $doc->api); ?>>No</option>
-			<!--<option value="1" <?php echo is_selected('1', $doc->api); ?>>ปกติ</option>-->
+		<label>AGX</label>
+    <select class="form-control input-sm edit" name="is_wms" id="is_wms" disabled>
+			<option value="0" <?php echo is_selected('0', $doc->is_wms); ?>>No</option>
+			<option value="1" <?php echo is_selected('1', $doc->is_wms); ?>>Yes</option>
 		</select>
 	</div>
 
@@ -43,6 +43,7 @@
 			<option>Unknow</option>
       <option <?php echo is_selected('-1', $doc->status); ?>>Draft</option>
       <option <?php echo is_selected('0', $doc->status); ?>>Waiting for approve</option>
+      <option <?php echo is_selected('3', $doc->status); ?>>Waiting for AGX</option>
       <option <?php echo is_selected('4', $doc->status); ?>>Waitting for acceptance</option>
       <option <?php echo is_selected('1', $doc->status); ?>>Saved</option>
       <option <?php echo is_selected('2', $doc->status); ?>>Cancelled</option>

@@ -311,6 +311,20 @@ function toggleAutoClose(option){
 }
 
 //--- เปิด/ปิด WMS API
+function toggleAgxApi(option){
+	$('#agx-api').val(option);
+	if(option == 1){
+		$('#btn-agx-on').addClass('btn-success');
+		$('#btn-agx-off').removeClass('btn-danger');
+		return;
+	}else if(option == 0){
+		$('#btn-agx-on').removeClass('btn-success');
+		$('#btn-agx-off').addClass('btn-danger');
+		return;
+	}
+}
+
+//--- เปิด/ปิด WMS API
 function toggleWmsApi(option){
 	$('#wms-api').val(option);
 	if(option == 1){

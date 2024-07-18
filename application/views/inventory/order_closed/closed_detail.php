@@ -143,7 +143,7 @@
               </td>
 
               <td class="middle text-right">
-                <?php echo $rs->is_count == 0 ? number($rs->final_price * $rs->order_qty) : number( $rs->final_price * $rs->sold , 2); ?>
+                <?php echo $rs->is_count == 0 ? number($rs->final_price * $rs->order_qty, 2) : number( $rs->final_price * $rs->sold , 2); ?>
                 &nbsp; <?php echo $rs->currency; ?>
               </td>
 
@@ -200,7 +200,7 @@
               Total amount
             </td>
             <td colspan="2" class="text-right">
-              <?php echo number($totalPrice, 2); ?><?php echo $order->DocCur; ?>
+              <?php echo number($totalPrice, 2); ?> <?php echo $order->DocCur; ?>
             </td>
           </tr>
 
@@ -209,7 +209,7 @@
               Total discount
             </td>
             <td colspan="2" class="text-right">
-              <?php echo number($totalDiscount + $order->bDiscAmount, 2); ?><?php echo $order->DocCur; ?>
+              <?php echo number($totalDiscount + $order->bDiscAmount, 2); ?> <?php echo $order->DocCur; ?>
             </td>
           </tr>
 
@@ -218,7 +218,7 @@
               Net amount
             </td>
             <td colspan="2" class="text-right">
-              <?php echo number($totalPrice - ($totalDiscount + $order->bDiscAmount), 2); ?><?php echo $order->DocCur; ?>
+              <?php echo number($totalPrice - ($totalDiscount + $order->bDiscAmount), 2); ?> <?php echo $order->DocCur; ?>
             </td>
           </tr>
 

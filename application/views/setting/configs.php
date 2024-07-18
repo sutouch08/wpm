@@ -17,6 +17,7 @@
   <li class="li-block"><a href="#document" data-toggle="tab">Documents</a></li>
 	<li class="li-block"><a href="#bookcode" data-toggle="tab">Book Code</a></li>
 	<li class="li-block"><a href="#SAP" data-toggle="tab">SAP</a></li>
+	<li class="li-block"><a href="#AGX" data-toggle="tab">AGX</a></li>
 	<!--
 	<li class="li-block"><a href="#WMS" data-toggle="tab">WMS</a></li>
 	<li class="li-block"><a href="#chatbot" data-toggle="tab">ข้อมูล CHATBOT</a></li>
@@ -52,6 +53,8 @@
 <?php //$this->load->view('setting/setting_wms'); ?>
 
 <?php //$this->load->view('setting/setting_chatbot'); ?>
+
+<?php $this->load->view('setting/setting_agx'); ?>
 
 
 </div>

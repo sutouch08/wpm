@@ -337,6 +337,9 @@ class Delivery_order extends PS_Controller
           foreach($bill as $rs)
           {
             //--- ข้อมูลสำหรับบันทึกยอดขาย
+            $total_amount = $rs->final_price * $rs->qty;
+            $totalFrgn = convertFC($total_amount, $rs->rate, 1);
+
             $arr = array(
                     'reference' => $order->code,
                     'role'   => $order->role,
@@ -349,10 +352,13 @@ class Delivery_order extends PS_Controller
                     'price'  => $rs->price,
                     'sell'  => $rs->final_price,
                     'qty'   => $rs->qty,
+                    'currency' => $rs->currency,
+                    'rate' => $rs->rate,
                     'discount_label'  => discountLabel($rs->discount1, $rs->discount2, $rs->discount3),
                     'discount_amount' => ($rs->discount_amount * $rs->qty),
-                    'total_amount'   => $rs->final_price * $rs->qty,
+                    'total_amount'   => $total_amount,
                     'total_cost'   => $rs->cost * $rs->qty,
+                    'totalFrgn' => $totalFrgn,
                     'margin'  => ($rs->final_price * $rs->qty) - ($rs->cost * $rs->qty),
                     'id_policy'   => $rs->id_policy,
                     'id_rule'     => $rs->id_rule,

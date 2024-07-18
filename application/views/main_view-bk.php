@@ -34,10 +34,6 @@
 		<label class="display-block not-show">stock</label>
 		<button type="button" class="btn btn-xs btn-info btn-block" onclick="findOrder()">check order</button>
 	</div>
-  <div class="col-lg-1-harf col-md-2 col-sm-2 col-xs-6 padding-5">
-		<label class="display-block not-show">read Order</label>
-		<button type="button" class="btn btn-xs btn-info btn-block" onclick="readOrders()">Read Orders</button>
-	</div>
 </div>
 
 <hr class="margin-top-15 margin-bottom-15"/>
@@ -132,25 +128,6 @@
 
 <script>
 var HOME = BASE_URL + 'main/';
-
-var fileList = [];
-
-function readOrders() {
-  load_in();
-  $.ajax({
-    url: HOME + 'get_file_list',
-    type:'GET',
-    cache:false,
-    success:function(rs) {
-      load_out();
-      console.log(rs);
-    }
-  })
-}
-
-function getFileList() {
-
-}
 //---- ค้นหาว่าสินค้าติดอยู่ที่ออเดอร์ไหนบ้าง
 function findOrder(){
 	var searchText = $.trim($('#search-text').val());

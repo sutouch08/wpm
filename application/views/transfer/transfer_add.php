@@ -56,20 +56,15 @@
 		<input type="text" class="form-control input-sm" id="to_warehouse" value="" readonly />
   </div>
 
-	<div class="col-lg-1 col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-		<label>WMS</label>
-		<select class="form-control input-sm" name="api" id="api">
+	<div class="col-lg-1 col-md-1 col-sm-1-harf col-xs-4 padding-5">
+		<label>AGX</label>
+		<select class="form-control input-sm" name="is_wms" id="is_wms">
 			<option value="0">No</option>
-			<!--<option value="1">No</option>-->
+			<option value="1">Yes</option>
 		</select>
 	</div>
 
-	<div class="col-lg-1-harf col-md-1-harf col-sm-1-harf col-xs-4 padding-5">
-		<label>WX No.</label>
-		<input type="text" class="form-control input-sm" name="wx_code" id="wx_code" />
-	</div>
-
-  <div class="col-lg-8 col-md-7-harf col-sm-7-harf col-xs-8 padding-5">
+  <div class="col-lg-9-harf col-md-9-harf col-sm-9 col-xs-8 padding-5">
     <label>Remark</label>
     <input type="text" class="form-control input-sm" name="remark" id="remark" value="">
   </div>

@@ -70,8 +70,7 @@ function addTransfer() {
   //--- คลังปลายทาง
   var to_warehouse = $('#to_warehouse').val();
   var to_warehouse_code = $('#to_warehouse_code').val();
-  var api = $('#api').val();
-  var wx_code = $('#wx_code').val();
+  var is_wms = $('#is_wms').val();
 
   //--- หมายเหตุ
   var remark = $.trim($('#remark').val());
@@ -123,8 +122,7 @@ function addTransfer() {
       'date' : date_add,
       'from_warehouse_code' : from_warehouse_code,
       'to_warehouse_code' : to_warehouse_code,
-      'api' : api,
-      'wx_code' : wx_code,
+      'is_wms' : is_wms,
       'remark' : remark
     },
     success:function(rs) {
@@ -241,8 +239,7 @@ function update(){
 
 function do_update(code, date_add, from_warehouse, to_warehouse, remark)
 {
-	var api = $('#api').val();
-	var wx_code = $('#wx_code').val();
+	var is_wms = $('#is_wms').val();
 
   load_in();
   //--- ถ้าไม่มีอะไรผิดพลาด ส่งข้อมูไป update
@@ -255,8 +252,7 @@ function do_update(code, date_add, from_warehouse, to_warehouse, remark)
       'from_warehouse' : from_warehouse,
       'to_warehouse' : to_warehouse,
       'remark' : remark,
-			'api' : api,
-			'wx_code' : wx_code
+			'is_wms' : is_wms
     },
     success:function(rs){
       load_out();

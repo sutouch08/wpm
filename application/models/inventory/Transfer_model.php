@@ -219,8 +219,6 @@ class Transfer_model extends CI_Model
   }
 
 
-
-
   public function add(array $ds = array())
   {
     if(!empty($ds))
@@ -349,6 +347,23 @@ class Transfer_model extends CI_Model
 		return NULL;
   }
 
+
+  public function get_detail_by_product_and_zone($transfer_code, $product_code, $from_zone, $to_zone)
+  {
+    $rs = $this->db
+    ->where('transfer_code', $transfer_code)
+    ->where('product_code', $product_code)
+    ->where('from_zone', $from_zone)
+    ->where('to_zone', $to_zone)
+    ->get('transfer_detail');
+
+    if($rs->num_rows() === 1)
+    {
+      return $rs->row();
+    }
+
+    return NULL;
+  }
 
 
   public function get_id($transfer_code, $product_code, $from_zone, $to_zone)

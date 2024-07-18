@@ -21,7 +21,7 @@ class Transfer extends PS_Controller
     $this->load->model('masters/zone_model');
     $this->load->model('stock/stock_model');
 
-		$this->isAPI = is_true(getConfig('WMS_API'));
+		$this->isAPI = is_true(getConfig('AGX_API'));
   }
 
 
@@ -106,20 +106,14 @@ class Transfer extends PS_Controller
       $date_add = db_date($this->input->post('date'), TRUE);
       $from_warehouse = $this->input->post('from_warehouse_code');
       $to_warehouse = $this->input->post('to_warehouse_code');
-			$wx_code = get_null(trim($this->input->post('wx_code')));
       $remark = $this->input->post('remark');
       $bookcode = getConfig('BOOK_CODE_TRANSFER');
       $isManual = getConfig('MANUAL_DOC_CODE');
 
-			$api = $this->input->post('api'); //--- 1 = ส่งข้อมูลไป wms ตามหลักการ 0 = ไม่ส่งข้อมูลไป WMS
-
 			$fromWh = $this->warehouse_model->get($from_warehouse);
 			$toWh = $this->warehouse_model->get($to_warehouse);
 
-			$is_wms = $fromWh->is_wms == 1 ? 1 : ($toWh->is_wms == 1 ? 1 : 0);
-
-			//---- direction 0 = wrx to wrx, 1 = wrx to wms , 2 = wms to wrx
-			$direction = $toWh->is_wms == 1 ? 1 :($fromWh->is_wms == 1 ? 2 : 0);
+			$is_wms = $this->input->post('is_wms') == 1 ? 1 : 0;
 
       if($isManual == 1 && $this->input->post('code'))
       {
@@ -143,9 +137,6 @@ class Transfer extends PS_Controller
           'user' => $this->_user->uname,
           'date_add' => $date_add,
           'is_wms' => $is_wms,
-          'direction' => $direction,
-          'api' => $api,
-          'wx_code' => $wx_code,
           'must_approve' => $must_approve
         );
 
@@ -246,13 +237,7 @@ class Transfer extends PS_Controller
 		$fromWh = $this->warehouse_model->get($this->input->post('from_warehouse'));
 		$toWh = $this->warehouse_model->get($this->input->post('to_warehouse'));
 
-		$is_wms = $fromWh->is_wms == 1 ? 1 : ($toWh->is_wms == 1 ? 1 : 0);
-		$api = $this->input->post('api'); //--- 1 = ส่งข้อมูลไป wms ตามหลักการ 0 = ไม่ส่งข้อมูลไป WMS
-		$wx_code = get_null(trim($this->input->post('wx_code')));
-
-		//---- direction 0 = wrx to wrx, 1 = wrx to wms , 2 = wms to wrx
-		$direction = $toWh->is_wms == 1 ? 1 :($fromWh->is_wms == 1 ? 2 : 0);
-
+		$is_wms = $this->input->post('is_wms');
 
     $must_approve = getConfig('STRICT_TRANSFER') == 1 ? 1 : 0;
 
@@ -262,9 +247,6 @@ class Transfer extends PS_Controller
       'to_warehouse' => $toWh->code,
       'remark' => get_null(trim($this->input->post('remark'))),
 			'is_wms' => $is_wms,
-			'direction' => $direction,
-			'api' => $api,
-			'wx_code' => $wx_code,
       'must_approve' => $must_approve,
       'update_user' => $this->_user->uname
     );
@@ -348,7 +330,7 @@ class Transfer extends PS_Controller
             }
             else
             {
-              if($this->isAPI === TRUE && $doc->is_wms == 1 && $doc->api == 1)
+              if($this->isAPI === TRUE && $doc->is_wms == 1)
               {
                 $arr = array(
                   'status' => 3
@@ -438,33 +420,15 @@ class Transfer extends PS_Controller
             if($doc->must_approve == 0 && $doc->must_accept == 0)
             {
               //--- ถ้าต้อง process ที่ wms แค่เปลี่ยนสถานะเป็น 3 แล้ส่งข้อมูลออกไป wms
-              if($this->isAPI === TRUE && $doc->is_wms == 1 && $doc->api == 1)
+              if($this->isAPI === TRUE && $doc->is_wms == 1)
               {
-                $this->wms = $this->load->database('wms', TRUE);
+                $this->load->library('agx');
 
-                //---- direction 0 = wrx to wrx, 1 = wrx to wms , 2 = wms to wrx
-                if($doc->direction == 1)
+                if( ! $this->agx->export_transfer_request($doc->code))
                 {
-                  $this->load->library('wms_receive_api');
-
-                  if(! $this->wms_receive_api->export_transfer($doc, $details))
-                  {
-                    $sc = FALSE;
-                    $ex = 0;
-                    $this->error = "Save succeeded, but failed to send data to WMS.";
-                  }
-                }
-
-                if($doc->direction == 2)
-                {
-                  $this->load->library('wms_order_api');
-
-                  if( ! $this->wms_order_api->export_transfer_order($doc, $details))
-                  {
-                    $sc = FALSE;
-                    $ex = 0;
-                    $this->error = "Save succeeded, but failed to send data to WMS.";
-                  }
+                  $sc = FALSE;
+                  $ex = 0;
+                  $this->error = "Save succeeded, but failed to send data to AGX \r\n".$this->agx->error;
                 }
               }
               else
@@ -475,7 +439,7 @@ class Transfer extends PS_Controller
                 {
                   $sc = FALSE;
                   $ex = 0;
-                  $this->error = "บSave succeeded, but failed to send data to SAP.";
+                  $this->error = "Save succeeded, but failed to send data to SAP.";
                 }
               } //-- is isAPI
             } //-- if must_approve && must_accept = 0
@@ -624,57 +588,31 @@ class Transfer extends PS_Controller
             $this->db->trans_rollback();
           }
 
-
           if($sc === TRUE && $doc->must_accept == 0)
           {
-            if( ! empty($details))
+            if($is_wms == TRUE)
             {
-              if($is_wms == TRUE)
+              $this->load->library('agx');
+
+              if( ! $this->agx->export_transfer_request($doc->code))
               {
-                $this->wms = $this->load->database('wms', TRUE);
-                //---- direction 0 = wrx to wrx, 1 = wrx to wms , 2 = wms to wrx
-                if($doc->direction == 1)
-                {
-                  $this->load->library('wms_receive_api');
-
-                  if( ! $this->wms_receive_api->export_transfer($doc, $details))
-                  {
-                    $sc = FALSE;
-                    $ex = 0;
-                    $this->error = "Save succeeded, but failed to send data to WMS.";
-                  }
-                }
-
-                if($doc->direction == 2)
-                {
-                  $this->load->library('wms_order_api');
-
-                  if( ! $this->wms_order_api->export_transfer_order($doc, $details))
-                  {
-                    $sc = FALSE;
-                    $ex = 0;
-                    $this->error = "Save succeeded, but failed to send data to WMS.";
-                  }
-                }
-              }
-              else
-              {
-                $this->transfer_model->update($code, array('shipped_date' => now()));
-
-                if( ! $this->do_export($code))
-                {
-                  $sc = FALSE;
-                  $ex = 0;
-                  $this->error = "Save successfully, but failed to import data to SAP.";
-                }
+                $sc = FALSE;
+                $ex = 0;
+                $this->error = "Save succeeded, but failed to send data to AGX \r\n".$this->agx->error;
               }
             }
             else
             {
-              $sc = FALSE;
-              $this->error = "No items found";
-            }
-          } //--- if must_accept == 0
+              $this->transfer_model->update($code, array('shipped_date' => now())); //--- update transferd date
+
+              if( ! $this->do_export($code))
+              {
+                $sc = FALSE;
+                $ex = 0;
+                $this->error = "Save succeeded, but failed to send data to SAP.";
+              }
+            } //-- is isAPI
+          } //-- if $sc = TRUE
         }
         else
         {
@@ -1169,33 +1107,13 @@ class Transfer extends PS_Controller
 					//--- ถ้าต้อง process ที่ wms แค่เปลี่ยนสถานะเป็น 3 แล้ส่งข้อมูลออกไป wms
 					if($doc->is_wms == 1 && $doc->api == 1)
 					{
-						$this->wms = $this->load->database('wms', TRUE);
-						//---- direction 0 = wrx to wrx, 1 = wrx to wms , 2 = wms to wrx
-						if($doc->direction == 1)
-						{
-							$this->load->library('wms_receive_api');
+            $this->load->library('agx');
 
-							$rs = $this->wms_receive_api->export_transfer($doc, $details);
-
-							if(! $rs)
-							{
-								$sc = FALSE;
-								$this->error = "Error! - ".$this->wms_receive_api->error;
-							}
-						}
-
-						if($doc->direction == 2)
-						{
-							$this->load->library('wms_order_api');
-
-							$rs = $this->wms_order_api->export_transfer_order($doc, $details);
-
-							if(! $rs)
-							{
-								$sc = FALSE;
-								$this->error = "Error! - ".$this->wms_order_api->error;
-							}
-						}
+            if( ! $this->agx->export_transfer_request($code))
+            {
+              $sc = FALSE;
+              $this->error = $this->agx->error;
+            }
 					}
 					else
 					{
