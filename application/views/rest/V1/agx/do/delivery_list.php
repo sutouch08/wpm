@@ -38,7 +38,7 @@
 <?php endforeach; ?>
 <?php else : ?>
       <tr>
-        <td colspan="5" class="text-center"><h4>This folder is empty XX</h4></td>
+        <td colspan="5" class="text-center"><h4>This folder is empty</h4></td>
       </tr>
 <?php endif; ?>
       </tbody>
