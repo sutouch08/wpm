@@ -8,11 +8,14 @@ class Agx_transfer_list extends PS_Controller
   public $menu_sub_group_code = 'TAGXTR';
 	public $title = 'AGX TR-Request';
   public $filter;
+		public $uname = "api@agx";
+	public $agx_api = FALSE;
 
   public function __construct()
   {
     parent::__construct();
     $this->home = base_url().'rest/V1/agx_transfer_list';
+		$this->agx_api = is_true(getConfig('AGX_API'));
   }
 
   public function index()

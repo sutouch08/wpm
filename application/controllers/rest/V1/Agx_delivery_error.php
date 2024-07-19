@@ -10,11 +10,13 @@ class Agx_delivery_error extends PS_Controller
   public $filter;
 	public $ch = array();
 	public $uname = "api@agx";
+	public $agx_api = FALSE;
 
   public function __construct()
   {
     parent::__construct();
     $this->home = base_url().'rest/V1/agx_delivery_error';
+		$this->agx_api = is_true(getConfig('AGX_API'));
   }
 
   public function index()

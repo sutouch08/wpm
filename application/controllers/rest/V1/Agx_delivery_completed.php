@@ -9,12 +9,14 @@ class Agx_delivery_completed extends PS_Controller
 	public $title = 'AGX DO-Completed';
   public $filter;
 	public $uname = "api@agx";
+	public $agx_api = FALSE;
 
   public function __construct()
   {
     parent::__construct();
     $this->home = base_url().'rest/V1/agx_delivery_completed';
 		$this->load->model('agx_logs_model');
+		$this->agx_api = is_true(getConfig('AGX_API'));
   }
 
 	public function index()

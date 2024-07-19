@@ -9,6 +9,7 @@ class Agx_transfer_confirm extends PS_Controller
 	public $title = 'AGX TR-Confirm';
   public $filter;
 	public $uname = "api@agx";
+	public $agx_api = FALSE;
 
   public function __construct()
   {
@@ -17,6 +18,7 @@ class Agx_transfer_confirm extends PS_Controller
 		$this->load->model('inventory/transfer_model');
 		$this->load->model('inventory/movement_model');
 		$this->load->model('agx_logs_model');
+		$this->agx_api = is_true(getConfig('AGX_API'));
   }
 
   public function index()

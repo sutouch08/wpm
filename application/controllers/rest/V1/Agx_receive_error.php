@@ -10,6 +10,7 @@ class Agx_receive_error extends PS_Controller
   public $filter;
 	public $ch = array();
 	public $uname = "api@agx";
+	public $agx_api = FALSE;
 
   public function __construct()
   {
@@ -22,6 +23,7 @@ class Agx_receive_error extends PS_Controller
 		$this->load->model('masters/warehouse_model');
 		$this->load->model('masters/zone_model');
 		$this->load->model('agx_logs_model');
+		$this->agx_api = is_true(getConfig('AGX_API'));
   }
 
   public function index()

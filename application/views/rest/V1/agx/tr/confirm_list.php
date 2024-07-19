@@ -36,11 +36,11 @@
           <td class="middle"><?php echo $file['date_modify']; ?></td>
 					<td class="middle"><?php echo $file['size']; ?></td>
           <td class="middle">
-						<button type="button" class="btn btn-mini btn-primary" onclick="process('<?php echo $file['name']; ?>')">Process</button>
 						<button type="button" class="btn btn-mini btn-info" onclick="viewDetail('<?php echo $file['name']; ?>')">View Details</button>
-					<?php if($this->_SuperAdmin) : ?>
-						<button type="button" class="btn btn-mini btn-danger" onclick="getDelete('<?php echo $file['name']; ?>', <?php echo $no; ?>)">Delete</button>
-					<?php endif; ?>
+						<?php if($this->agx_api) : ?>
+							<button type="button" class="btn btn-mini btn-primary" onclick="process('<?php echo $file['name']; ?>')">Process</button>
+						<?php endif; ?>
+						<button type="button" class="btn btn-mini btn-danger" onclick="getDelete('<?php echo $file['name']; ?>', <?php echo $no; ?>)">Delete</button>					
 					</td>
         </tr>
 <?php  $no++; ?>

@@ -9,6 +9,7 @@ class Agx_receive_list extends PS_Controller
 	public $title = 'AGX GR - List';
   public $filter;
 	public $uname = "api@agx";
+	public $agx_api = FALSE;
 
   public function __construct()
   {
@@ -21,6 +22,7 @@ class Agx_receive_list extends PS_Controller
 		$this->load->model('masters/warehouse_model');
 		$this->load->model('masters/zone_model');
 		$this->load->model('agx_logs_model');
+		$this->agx_api = is_true(getConfig('AGX_API'));
   }
 
   public function index()
