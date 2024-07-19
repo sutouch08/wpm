@@ -1,10 +1,22 @@
 <?php $this->load->view('include/header'); ?>
+<script>
+	var HOME = '<?php echo $this->home; ?>/';
+</script>
 <div class="row">
-	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5">
+	<div class="col-lg-8 col-md-8 col-sm-6 hidden-xs padding-5">
     <h3 class="title">
       <?php echo $this->title; ?>
     </h3>
   </div>
+	<div class="col-xs-12 padding-5 visible-xs">
+		<h4 class="title-xs"><?php echo $this->title; ?></h4>
+	</div>
+	<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 padding-5">
+		<p class="pull-right top-p">
+			<button type="button" class="btn btn-sm btn-primary" onclick="processAll()">Process All</button>
+			<button type="button" class="btn btn-sm btn-info" onclick="getUploadFile()">Upload File</button>
+		</p>
+	</div>
 </div><!-- End Row -->
 <hr class=""/>
 <div class="row">
@@ -47,6 +59,8 @@
     </table>
   </div>
 </div>
+
+<?php $this->load->view('rest/V1/agx/agx_file_upload'); ?>
 
 <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog" style="width:95vw; max-width:95vw;">

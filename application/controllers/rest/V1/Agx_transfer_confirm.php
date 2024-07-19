@@ -51,6 +51,33 @@ class Agx_transfer_confirm extends PS_Controller
 
 
 
+	public function upload_file()
+	{
+		$sc = TRUE;
+		$file = isset( $_FILES['uploadFile'] ) ? $_FILES['uploadFile'] : FALSE;
+		$path = $this->config->item('upload_path').'agx/TR/Confirm/';
+		$file	= 'uploadFile';
+
+		$config = array(   // initial config for upload class
+			"allowed_types" => "csv|xls|xlsx",
+			"upload_path" => $path,
+			//"file_name"	=> "import_order",
+			"max_size" => 5120,
+			"overwrite" => TRUE
+		);
+
+		$this->load->library("upload", $config);
+
+		if(! $this->upload->do_upload($file))
+		{
+			$sc = FALSE;
+			$this->error = $this->upload->display_errors();
+		}
+
+		echo $sc === TRUE ? 'success' : $this->error;
+	}
+
+
 	 public function process_confirm()
 	 {
 		 $sc = TRUE;

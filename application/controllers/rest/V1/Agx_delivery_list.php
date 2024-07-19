@@ -64,6 +64,33 @@ class Agx_delivery_list extends PS_Controller
   }
 
 
+	public function upload_file()
+	{
+		$sc = TRUE;
+		$file = isset( $_FILES['uploadFile'] ) ? $_FILES['uploadFile'] : FALSE;
+		$path = $this->config->item('upload_path').'agx/DO/';
+		$file	= 'uploadFile';
+
+		$config = array(   // initial config for upload class
+			"allowed_types" => "csv|xls|xlsx",
+			"upload_path" => $path,
+			//"file_name"	=> "import_order",
+			"max_size" => 5120,
+			"overwrite" => TRUE
+		);
+
+		$this->load->library("upload", $config);
+
+		if(! $this->upload->do_upload($file))
+		{
+			$sc = FALSE;
+			$this->error = $this->upload->display_errors();
+		}
+
+		echo $sc === TRUE ? 'success' : $this->error;
+	}
+
+
 	public function process_file()
 	{
 		$sc = TRUE;
@@ -113,6 +140,7 @@ class Agx_delivery_list extends PS_Controller
 				foreach($collection as $rs)
 				{
 					$csv[$i] = $rs;
+					
 					if($i == 1)
 					{
 						$csv[$i]['L'] = "Error";
