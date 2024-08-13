@@ -13,7 +13,7 @@
       <thead>
         <tr>
           <th class="fix-width-40 text-center">#</th>
-					<th class="fix-width-200">Files</th>
+					<th class="fix-width-250">Files</th>
           <th class="fix-width-200">Date modified </th>
 					<th class="fix-width-100">Size </th>
 					<th class="min-width-100"></th>

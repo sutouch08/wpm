@@ -48,12 +48,12 @@
 
 <div class="row">
   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-5 table-responsive">
-    <table class="table table-striped border-1" style="min-width:900px;">
+    <table class="table table-striped border-1" style="min-width:1000px;">
       <thead>
         <tr>
           <th class="fix-width-40 text-center">#</th>
-					<th class="fix-width-150">Document No.</th>
-					<th class="fix-width-150">Files Name</th>
+					<th class="fix-width-120">Document No.</th>
+					<th class="fix-width-250">Files Name</th>
 					<th class="fix-width-50">Size</th>
 					<th class="fix-width-100 text-center">Status</th>
 					<th class="fix-width-200">Date modified</th>

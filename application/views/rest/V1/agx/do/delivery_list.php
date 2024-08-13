@@ -13,7 +13,7 @@
 	</div>
 	<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 padding-5">
 		<p class="pull-right top-p">
-			<button type="button" class="btn btn-sm btn-primary" onclick="processAll()">Process All</button>
+			<button type="button" class="btn btn-sm btn-primary" onclick="processAll()">Process</button>
 			<button type="button" class="btn btn-sm btn-info" onclick="getUploadFile()">Upload File</button>
 		</p>
 	</div>
@@ -25,7 +25,7 @@
       <thead>
         <tr>
           <th class="fix-width-40 text-center">#</th>
-					<th class="fix-width-200">Files</th>
+					<th class="fix-width-250">Files</th>
           <th class="fix-width-200">Date modified </th>
 					<th class="fix-width-100">Size </th>
 					<th class="min-width-100"></th>
@@ -122,6 +122,47 @@
 </script>
 
 <script>
+	function processAll() {
+		load_in();
+		$.ajax({
+			url:HOME + "process",
+			type:'POST',
+			cache:false,
+			success:function(rs) {
+				load_out();
+				if(rs == 'success') {
+					swal({
+						title:'Success',
+						type:'success',
+						timer:1000
+					});
+
+					setTimeout(() => {
+						window.location.reload();
+					}, 1200);
+				}
+				else {
+					swal({
+						title:'Error!',
+						text:rs,
+						type:'error',
+						html:true
+					})
+				}
+			},
+			error:function(rs) {
+				load_out();
+				swal({
+					title:'Error!',
+					text:rs.responseText,
+					type:'error',
+					html:true
+				})
+			}
+		})
+	}
+
+
 	function process(fileName) {
 		load_in();
 		$.ajax({

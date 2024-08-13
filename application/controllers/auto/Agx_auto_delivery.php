@@ -1,23 +1,21 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-
-class Agx_delivery_list extends PS_Controller
+class Agx_auto_delivery extends CI_Controller
 {
-	public $menu_code = 'AGXDOLT';
-	public $menu_group_code = 'WMS';
-  public $menu_sub_group_code = 'TAGXDO';
-	public $title = 'AGX DO - List';
-  public $filter;
-	public $ch = array();
-	public $uname = "api@agx";
-	public $agx_api = FALSE;
+  public $home;
+  public $mc;
+  public $ms;
+	public $user;
+  public $limit = 10;
+
 
   public function __construct()
   {
     parent::__construct();
-    $this->home = base_url().'rest/V1/agx_delivery_list';
+    $this->ms = $this->load->database('ms', TRUE); //--- SAP database
+    $this->mc = $this->load->database('mc', TRUE); //--- Temp Database
+    $this->home = base_url().'auto/agx_auto_delivery';
 
-		$this->load->model('orders/orders_model');
+    $this->load->model('orders/orders_model');
     $this->load->model('masters/channels_model');
     $this->load->model('masters/payment_methods_model');
     $this->load->model('masters/products_model');
@@ -30,73 +28,12 @@ class Agx_delivery_list extends PS_Controller
 		$this->agx_api = is_true(getConfig('AGX_API'));
   }
 
-  public function index()
-  {
-		$list = array();
-		$path = $this->config->item('upload_path')."agx/DO/";
-		$file_path = $this->config->item('upload_file_path')."agx/DO/";
-
-		if($handle = opendir($path))
-		{
-			while(FALSE !== ($entry = readdir($handle)))
-			{
-				if($entry !== '.' && $entry !== '..')
-				{
-					$f = $file_path.$entry;
-
-					if(is_file($f))
-					{
-						$file = array(
-							'name' => $entry,
-							'size' => ceil((filesize($f)/1024))." KB",
-							'date_modify' => date('Y-m-d H:i:s', filemtime($f))
-						);
-
-						$list[] = $file;
-					}
-				}
-			}
-
-			closedir($handle);
-		}
-
-    $this->load->view('rest/V1/agx/do/delivery_list', ['list' => $list]);
-  }
-
-
-	public function upload_file()
-	{
-		$sc = TRUE;
-		$file = isset( $_FILES['uploadFile'] ) ? $_FILES['uploadFile'] : FALSE;
-		$path = $this->config->item('upload_path').'agx/DO/';
-		$file	= 'uploadFile';
-
-		$config = array(   // initial config for upload class
-			"allowed_types" => "csv|xls|xlsx",
-			"upload_path" => $path,
-			//"file_name"	=> "import_order",
-			"max_size" => 5120,
-			"overwrite" => TRUE
-		);
-
-		$this->load->library("upload", $config);
-
-		if(! $this->upload->do_upload($file))
-		{
-			$sc = FALSE;
-			$this->error = $this->upload->display_errors();
-		}
-
-		echo $sc === TRUE ? 'success' : $this->error;
-	}
-
-
-	function process()
+  function index()
 	{
 		$sc = TRUE;
 
 		$list = array();
-    $limit = 10;
+    $limit = $this->limit;
 		$path = $this->config->item('upload_path')."agx/DO/";
 		$file_path = $this->config->item('upload_file_path')."agx/DO/";
 
@@ -127,50 +64,19 @@ class Agx_delivery_list extends PS_Controller
 
     if( ! empty($list))
     {
-			$message = "";
-			$files = 0;
-			$ok = 0;
-			$failed = 0;
       foreach($list as $rs)
       {
-        if($this->do_process($rs->fileName))
-				{
-					$ok++;
-				}
-				else
-				{
-					$sc = FALSE;
-					$message .= "Failed : {$rs->fileName}<br/>";
-					$failed++;
-				}
-				$files++;
+        $this->do_process($rs->filename);
       }
 
-			$this->error = "Process : {$files} files<br/>";
-			$this->error .= "Success : {$ok} files<br/>";
-			$this->error .= "Failed : {$failed} files<br/>";
-			$this->error .= "------------------------------<br/>";
-			$this->error .= $message;
+			$this->error = $message;
     }
 
 		echo $sc === TRUE ? 'success' : $this->error;
 	}
 
 
-	public function process_file()
-	{
-		$sc = TRUE;
-		$fileName = empty($fileName) ? $this->input->post('fileName') : $fileName;
-
-		if( ! $this->do_process($fileName))
-		{
-			$sc = FALSE;
-		}
-
-		echo $sc === TRUE ? 'success' : $this->error;
-	}
-
-	public function do_process($fileName)
+  public function do_process($fileName)
 	{
 		$sc = TRUE;
 
@@ -504,140 +410,56 @@ class Agx_delivery_list extends PS_Controller
 	}
 
 
-	 public function get_detail()
-	 {
-		 $sc = TRUE;
-		 $ds = array();
+  public function create_error_file(array $ds = array(), $error_file_path)
+  {
+    if( ! empty($ds))
+    {
+      // Create a file pointer
+      $f = fopen($error_file_path, 'w');
 
-		 $fileName = $this->input->post('fileName');
- 		 $file_path = $this->config->item('upload_file_path')."agx/DO/".$fileName;
-		 $code = "DO / ".$fileName;
+      if($f !== FALSE)
+      {
+        $delimiter = ",";
+        fputs($f, $bom = ( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
 
-		 if(file_exists($file_path))
-		 {
-			 $this->load->library('excel');
-			 $excel = PHPExcel_IOFactory::load($file_path);
-			 $collection = $excel->getActiveSheet()->toArray(NULL, TRUE, TRUE, TRUE);
+        foreach($ds as $line)
+        {
+          fputcsv($f, $line, $delimiter);
+        }
 
-			 if( ! empty($collection))
-			 {
-				 $i = 0;
+        fclose($f);
 
-				 foreach($collection as $line)
-				 {
-					 if($i > 0)
-					 {
-						 $arr = array(
-							 'consignee' => $line['A'],
-							 'address' => $line['B'],
-							 'tel' => $line['C'],
-							 'order_number' => $line['D'],
-							 'date' => $line['E'],
-							 'channels' => $line['F'],
-							 'itemId' => $line['G'],
-							 'qty' => $line['H'],
-							 'price' => $line['I'],
-							 'courier' => $line['J'],
-							 'shipping_code' => $line['K']
-						 );
+        return TRUE;
+      }
+    }
 
-						 array_push($ds, $arr);
-					 }
-
-					 $i++;
-				 }
-			 }
-		 }
-		 else
-		 {
-			 $sc = FALSE;
-			 $this->error = "File not found !";
-		 }
-
-		 $arr = array(
-			 'status' => $sc === TRUE ? 'success' : 'failed',
-			 'message' => $sc === TRUE ? 'success' : $this->error,
-			 'data' => $sc === TRUE ? $ds : $this->error,
-			 'code' => $code
-		 );
-
-		 echo json_encode($arr);
-	 }
+    return FALSE;
+  }
 
 
-	 public function create_error_file(array $ds = array(), $error_file_path)
-	 {
-		 if( ! empty($ds))
-		 {
-			 // Create a file pointer
-			 $f = fopen($error_file_path, 'w');
+  public function get_new_code($date)
+  {
+    $date = $date == '' ? date('Y-m-d') : $date;
+    $Y = date('y', strtotime($date));
+    $M = date('m', strtotime($date));
+    $prefix = getConfig('PREFIX_ORDER');
+    $run_digit = getConfig('RUN_DIGIT_ORDER');
+    $pre = $prefix .'-'.$Y.$M;
+    $code = $this->orders_model->get_max_code($pre);
 
-			 if($f !== FALSE)
-			 {
-				 $delimiter = ",";
-				 fputs($f, $bom = ( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
+    if(! is_null($code))
+    {
+      $run_no = mb_substr($code, ($run_digit*-1), NULL, 'UTF-8') + 1;
+      $new_code = $prefix . '-' . $Y . $M . sprintf('%0'.$run_digit.'d', $run_no);
+    }
+    else
+    {
+      $new_code = $prefix . '-' . $Y . $M . sprintf('%0'.$run_digit.'d', '001');
+    }
 
-				 foreach($ds as $line)
-				 {
-					 fputcsv($f, $line, $delimiter);
-				 }
+    return $new_code;
+  }
 
-				 fclose($f);
+} //--- end class
 
-				 return TRUE;
-			 }
-		 }
-
-		 return FALSE;
-	 }
-
-
-	 public function get_new_code($date)
-   {
-     $date = $date == '' ? date('Y-m-d') : $date;
-     $Y = date('y', strtotime($date));
-     $M = date('m', strtotime($date));
-     $prefix = getConfig('PREFIX_ORDER');
-     $run_digit = getConfig('RUN_DIGIT_ORDER');
-     $pre = $prefix .'-'.$Y.$M;
-     $code = $this->orders_model->get_max_code($pre);
-
-     if(! is_null($code))
-     {
-       $run_no = mb_substr($code, ($run_digit*-1), NULL, 'UTF-8') + 1;
-       $new_code = $prefix . '-' . $Y . $M . sprintf('%0'.$run_digit.'d', $run_no);
-     }
-     else
-     {
-       $new_code = $prefix . '-' . $Y . $M . sprintf('%0'.$run_digit.'d', '001');
-     }
-
-     return $new_code;
-   }
-
-
-	public function delete()
-	{
-		$sc = TRUE;
-		$fileName = $this->input->post('fileName');
-		$file_path = $this->config->item('upload_file_path')."agx/DO/".$fileName;
-
-		if(file_exists($file_path))
-		{
-			if( ! unlink($file_path))
-			{
-				$sc = FALSE;
-				$this->error = "Failed to delete file";
-			}
-		}
-		else
-		{
-			$sc = FALSE;
-			$this->error = "File not found !";
-		}
-
-		echo $sc === TRUE ? 'success' : $this->error;
-	}
-
-} //--- end classs
-?>
+ ?>
