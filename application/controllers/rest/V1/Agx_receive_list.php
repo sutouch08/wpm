@@ -355,17 +355,17 @@ class Agx_receive_list extends PS_Controller
 					 {
 						 $arr = array(
 							 'no' => $i,
-							 'ref_code' => $line['A'],
-							 'vendor_code' => $line['B'],
-							 'po_no' => $line['C'],
-							 'invoice_no' => $line['D'],
-							 'location' => $line['E'],
-							 'doc_date' => $line['F'],
-							 'sku' => $line['G'],
-							 'price' => $line['H'],
-							 'qty' => $line['I'],
-							 'amount' => $line['J'],
-							 'currency' => $line['K']
+							 'ref_code' => empty($line['A']) ? "" : $line['A'],
+							 'vendor_code' => empty($line['B']) ? "" : $line['B'],
+							 'po_no' => empty($line['C']) ? "" : $line['C'],
+							 'invoice_no' => empty($line['D']) ? "" : $line['D'],
+							 'location' => empty($line['E']) ? "" : $line['E'],
+							 'doc_date' => empty($line['F']) ? "" : $line['F'],
+							 'sku' => empty($line['G']) ? "" : $line['G'],
+							 'price' => empty($line['H']) ? "" : $line['H'],
+							 'qty' => empty($line['I']) ? "" : $line['I'],
+							 'amount' => empty($line['J']) ? "" : $line['J'],
+							 'currency' => empty($line['K']) ? "" : $line['K']
 						 );
 
 						 array_push($ds, $arr);

@@ -275,7 +275,7 @@ class Agx_delivery_error extends PS_Controller
 						} //---- skip no data row
 
 						//---- เตรียมข้อมูลสำหรับเพิมรายละเอียดออเดอร์
-						$item = $this->products_model->get(trim($rs['G']));
+						$item = ! empty($rs['G']) ? $this->products_model->get_with_old_code(trim($rs['G'])) : NULL;
 
 						if(empty($item))
 						{

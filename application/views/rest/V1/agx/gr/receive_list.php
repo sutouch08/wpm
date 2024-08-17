@@ -106,7 +106,7 @@
 <script id="detail-template" type="text/x-handlebarsTemplate">
 	{{#each this}}
 		<tr>
-		<td class="text-center">{{no}}</td>
+			<td class="text-center">{{no}}</td>
 			<td class="">{{ref_code}}</td>
 			<td class="">{{vendor_code}}</td>
 			<td class="">{{po_no}}</td>
