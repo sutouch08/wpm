@@ -85,7 +85,9 @@ class Agx_transfer_confirm extends PS_Controller
 		 $fileName = $this->input->post('fileName');
  		 $file_path = $this->config->item('upload_file_path')."agx/TR/Confirm/".$fileName;
 		 $completed_path = $this->config->item('upload_file_path')."agx/TR/Completed/".$fileName;
+		 $error_path = $this->config->item('upload_file_path')."agx/TR/Error/".$fileName;
 		 $file_size = 0; //-- file size in byte;
+		 $error = array('1' => "Error");
 
 		 if(file_exists($file_path))
 		 {
@@ -94,78 +96,81 @@ class Agx_transfer_confirm extends PS_Controller
 			 $excel = PHPExcel_IOFactory::load($file_path);
 			 $collection = $excel->getActiveSheet()->toArray(NULL, TRUE, TRUE, TRUE);
 
-			 if( ! empty($collection))
+			 if( ! empty($collection) && count($collection) > 1)
 			 {
-				 $i = 0;
+				 $i = 1;
 				 $code = NULL;
 				 $doc = NULL;
 				 $date_add = now();
 				 $valid = 1;
 
-				 $this->db->trans_begin();
+				 $row = $collection[2];
 
-				 foreach($collection as $line)
+				 if( ! empty($row))
 				 {
-					 if( ! empty($line) && $i > 0)
+					 $date = $row['A'];
+					 $code = $row['B'];
+					 $doc = $this->transfer_model->get($code);
+
+					 if( ! empty($doc))
 					 {
-						 if( empty($code) && empty($doc))
+						 $date_add = getConfig('ORDER_SOLD_DATE') == 'D' ? $doc->date_add : (empty($date) ? now() : date('Y-m-d H:i:s', strtotime($date)));
+					 }
+
+
+					 if( ! empty($doc))
+					 {
+						 if($doc->status == 3)
 						 {
-							 $date = $line['A'];
-							 $code = $line['B'];
-							 $doc = $this->transfer_model->get($code);
+							 $this->db->trans_begin();
 
-							 if( ! empty($doc))
+							 foreach($collection as $line)
 							 {
-								 $date_add = getConfig('ORDER_SOLD_DATE') == 'D' ? $doc->date_add : (empty($date) ? now() : date('Y-m-d H:i:s', strtotime($date)));
-							 }
-						 }
-
-						 if( ! empty($doc))
-						 {
-							 if($doc->status == 3)
-							 {
-								 $from_zone = $line['C'];
-								 $to_zone = $line['D'];
-								 $item_code = $line['E'];
-								 $request_qty = $line['F'];
-								 $receive_qty = $line['G'];
-
-								 $detail = $this->transfer_model->get_detail_by_product_and_zone($doc->code, $item_code, $from_zone, $to_zone);
-
-								 if( ! empty($detail))
+								 if( ! empty($line) && $i > 1)
 								 {
-									 $wms_qty = $receive_qty <= $detail->qty ? $receive_qty : $detail->qty;
+									 $from_zone = $line['C'];
+									 $to_zone = $line['D'];
+									 $item_code = $line['E'];
+									 $request_qty = $line['F'];
+									 $receive_qty = $line['G'];
 
-									 $arr = array(
-										 'wms_qty' => $wms_qty,
-										 'valid' => $wms_qty == $detail->qty ? 1 : 0
-									 );
+									 $detail = $this->transfer_model->get_detail_by_product_and_zone($doc->code, $item_code, $from_zone, $to_zone);
 
-									 if($detail->qty != $wms_qty)
+									 if( ! empty($detail))
 									 {
-										 $valid = 0;
-									 }
+										 $wms_qty = $receive_qty <= $detail->qty ? $receive_qty : $detail->qty;
 
-									 if( ! $this->transfer_model->update_detail($detail->id, $arr))
-									 {
-										 $sc = FALSE;
-										 $this->error = "Failed to update transfer qty at line {$i} : {$item_code}";
-									 }
-									 else
-									 {
-										 //--- add_movement
-										 //--- 2. update movement
-										 $move_out = array(
-											 'reference' => $doc->code,
-											 'warehouse_code' => $doc->from_warehouse,
-											 'zone_code' => $detail->from_zone,
-											 'product_code' => $detail->product_code,
-											 'move_in' => 0,
-											 'move_out' => $wms_qty,
-											 'date_add' => $date_add
+										 $arr = array(
+											 'wms_qty' => $wms_qty,
+											 'valid' => $wms_qty == $detail->qty ? 1 : 0
 										 );
 
-										 $move_in = array(
+										 if($detail->qty != $wms_qty)
+										 {
+											 $valid = 0;
+										 }
+
+										 if( ! $this->transfer_model->update_detail($detail->id, $arr))
+										 {
+											 $sc = FALSE;
+											 $this->error = "Failed to update transfer qty at line {$i} : {$item_code}";
+											 $error[$i] = $this->error;
+										 }
+										 else
+										 {
+											 //--- add_movement
+											 //--- 2. update movement
+											 $move_out = array(
+												 'reference' => $doc->code,
+												 'warehouse_code' => $doc->from_warehouse,
+												 'zone_code' => $detail->from_zone,
+												 'product_code' => $detail->product_code,
+												 'move_in' => 0,
+												 'move_out' => $wms_qty,
+												 'date_add' => $date_add
+											 );
+
+											 $move_in = array(
 											 'reference' => $doc->code,
 											 'warehouse_code' => $doc->to_warehouse,
 											 'zone_code' => $detail->to_zone,
@@ -173,76 +178,82 @@ class Agx_transfer_confirm extends PS_Controller
 											 'move_in' => $wms_qty,
 											 'move_out' => 0,
 											 'date_add' => $date_add
-										 );
+											 );
 
-										 //--- move out
-										 if(! $this->movement_model->add($move_out))
-										 {
-											 $sc = FALSE;
-											 $this->error = "Failed to create outgoing movement";
-											 break;
-										 }
+											 //--- move out
+											 if(! $this->movement_model->add($move_out))
+											 {
+												 $sc = FALSE;
+												 $this->error = "Failed to create outgoing movement";
+												 $error[$i] = $this->error;
+												 break;
+											 }
 
-										 //--- move in
-										 if(! $this->movement_model->add($move_in))
-										 {
-											 $sc = FALSE;
-											 $this->error = "Failed to create incoming movement";
-											 break;
+											 //--- move in
+											 if(! $this->movement_model->add($move_in))
+											 {
+												 $sc = FALSE;
+												 $this->error = "Failed to create incoming movement";
+												 $error[$i] = $this->error;
+												 break;
+											 }
 										 }
 									 }
+									 else
+									 {
+										 $sc = FALSE;
+										 $this->error = "Item not found at line {$i}";
+										 $error[$i] = $this->error;
+									 }
 								 }
-								 else
+
+								 $i++;
+							 } //--- end foreach
+
+							 if($sc === TRUE)
+							 {
+								 $arr = array(
+									 'shipped_date' => $date_add,
+									 'status' => 1,
+									 'valid' => $valid
+								 );
+
+								 if( ! $this->transfer_model->update($doc->code, $arr))
 								 {
 									 $sc = FALSE;
-									 $this->error = "Item not found at line {$i}";
+									 $this->error = "Fail to update document status";
 								 }
+							 }
+
+							 if($sc === TRUE)
+							 {
+								 $this->db->trans_commit();
 							 }
 							 else
 							 {
-								 $sc = FALSE;
-								 $this->error = "Invalid document status";
+								 $this->db->trans_rollback();
+							 }
+
+							 if($sc === TRUE)
+							 {
+								 $this->export_transfer($doc->code);
 							 }
 						 }
 						 else
 						 {
 							 $sc = FALSE;
-							 $this->error = "Invalid document number";
+							 $this->error = "Invalid document status";
+							 $error[2] = $this->error;
 						 }
 					 }
-
-					 $i++;
-				 } //--- end foreach
-			 } //-- if ! empty collection
-
-			 if($sc === TRUE)
-			 {
-				 $arr = array(
-					 'shipped_date' => $date_add,
-					 'status' => 1,
-					 'valid' => $valid
-				 );
-
-				 if( ! $this->transfer_model->update($doc->code, $arr))
-				 {
-					 $sc = FALSE;
-					 $this->error = "Fail to update document status";
+					 else
+					 {
+						 $sc = FALSE;
+						 $this->error = "Invalid document number";
+						 $error[2] = $this->error;
+					 }
 				 }
-			 }
-
-			 if($sc === TRUE)
-			 {
-				 $this->db->trans_commit();
-			 }
-			 else
-			 {
-				 $this->db->trans_rollback();
-			 }
-
-			 if($sc === TRUE)
-			 {
-				 $this->export_transfer($doc->code);
-			 }
+			 } //-- if ! empty collection
 
 			 if($sc === TRUE)
 			 {
@@ -261,6 +272,13 @@ class Agx_transfer_confirm extends PS_Controller
 					 $this->agx_logs_model->add($logs);
 				 }
 			 }
+			 else
+			 {
+				 if($this->create_error_file($collection, $error_path, $error))
+				 {
+					 unlink($file_path);
+				 }
+			 }
 		 }
 		 else
 		 {
@@ -269,6 +287,41 @@ class Agx_transfer_confirm extends PS_Controller
 		 }
 
 		echo $sc === TRUE ? 'success' : $this->error;
+	 }
+
+	 public function create_error_file(array $ds = array(), $error_file_path, $error)
+	 {
+		 if( ! empty($ds))
+		 {
+			 // Create a file pointer
+			 $f = fopen($error_file_path, 'w');
+
+			 if($f !== FALSE)
+			 {
+				 $delimiter = ",";
+				 fputs($f, $bom = ( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
+
+				 $i = 1;
+
+				 foreach($ds as $line)
+				 {
+					 if( ! empty($error[$i]))
+					 {
+						 $line[] = $error[$i];
+					 }
+
+					 fputcsv($f, $line, $delimiter);
+
+					 $i++;
+				 }
+
+				 fclose($f);
+
+				 return TRUE;
+			 }
+		 }
+
+		 return FALSE;
 	 }
 
 

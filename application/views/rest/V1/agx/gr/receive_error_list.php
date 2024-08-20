@@ -31,10 +31,7 @@
           <td class="middle">
 						<button type="button" class="btn btn-mini btn-info" onclick="viewDetail('<?php echo $file['name']; ?>')"><i class="fa fa-list"></i> View Details</button>
 						<button type="button" class="btn btn-mini btn-purple" onclick="getFile('<?php echo $file['name']; ?>')"><i class="fa fa-download"></i> Download</button>
-					<?php if($this->agx_api) : ?>
-						<button type="button" class="btn btn-mini btn-primary" onclick="process('<?php echo $file['name']; ?>')"><i class="fa fa-check-square-o"></i> Re-process</button>
-					<?php endif; ?>
-						<button type="button" class="btn btn-mini btn-primary" onclick="moveToList('<?php echo $file['name']; ?>', <?php echo $no; ?>)"><i class="fa fa-refresh"></i> Move to GR List</button>
+						<button type="button" class="btn btn-mini btn-primary" onclick="moveToList('<?php echo $file['name']; ?>', <?php echo $no; ?>)"><i class="fa fa-refresh"></i> Move to Pending</button>
 						<button type="button" class="btn btn-mini btn-danger" onclick="getDelete('<?php echo $file['name']; ?>', <?php echo $no; ?>)"><i class="fa fa-trash"></i> Delete</button>
 					</td>
         </tr>
