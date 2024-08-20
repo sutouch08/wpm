@@ -36,7 +36,7 @@
 					<button type="button" class="btn btn-xs btn-success top-btn" onclick="accept()"><i class="fa fa-check-circle"></i> Accept transfer</button>
 				<?php endif; ?>
 		    <?php if($doc->status == 1) : ?>
-					<?php if($doc->is_wms == 0) : ?>
+					<?php if($doc->is_wms == 0 OR $this->_SuperAdmin) : ?>
 					<button type="button" class="btn btn-xs btn-danger top-btn" onclick="unSave()"><i class="fa fa-exclamation-triangle"></i> Unsave</button>
 					<?php endif; ?>
 		      <button type="button" class="btn btn-xs btn-info top-btn" onclick="doExport()"><i class="fa fa-send"></i> Send to SAP</button>
