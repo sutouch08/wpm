@@ -52,7 +52,7 @@ function get_quotation()
 					var rs = $.trim(rs);
 					if( rs == 'success' ){
 						swal({
-							title:'Success',							
+							title:'Success',
 							type:'success',
 							timer:1000
 						});
@@ -567,31 +567,7 @@ function changeState(){
 		var id_address = $('#address_id').val();
 		var id_sender = $('#id_sender').val();
 		var cancle_reason = $.trim($('#cancle-reason').val());
-
-		if(is_wms) {
-			if(state == 3 && id_address == "") {
-				swal("Please specify shipping address");
-				return false;
-			}
-
-			if(state == 3 && id_sender == "") {
-				swal("Please specify shipper");
-				return false;
-			}
-
-			if($('#sender option:selected').data('tracking') == 1) {
-				if(trackingNo != tracking) {
-					swal("Please Save Tracking No");
-					return false;
-				}
-
-				if(trackingNo.length === 0) {
-					swal("Please specify Tracking No");
-					return false;
-				}
-			}
-		}
-
+		
 		if(state == 9 && cancle_reason == "") {
 			$('#cancle-modal').modal('show');
 			return false;

@@ -62,6 +62,7 @@ class Warehouse extends PS_Controller
   {
     if($this->pm->can_edit)
     {
+      $this->load->helper('zone');
       $ds['ds'] = $this->warehouse_model->get($code);
       $this->load->view('masters/warehouse/warehouse_edit', $ds);
     }
@@ -83,6 +84,7 @@ class Warehouse extends PS_Controller
         $code = $this->input->post('code');
         $arr = array(
           'role' => $this->input->post('role'),
+          'default_zone' => $this->input->post('default_zone'),
           'sell' => $this->input->post('sell'),
           'prepare' => $this->input->post('prepare'),
           'auz' => $this->input->post('auz'),

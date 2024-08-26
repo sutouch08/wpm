@@ -1,6 +1,6 @@
 <?php $this->load->view('include/header'); ?>
 <?php $can_upload = getConfig('ALLOW_UPLOAD_ORDER'); ?>
-<?php $instant_export = getConfig('WMS_INSTANT_EXPORT'); ?>
+<?php $instant_delivery = is_true(getConfig('INSTANT_DELIVERY')); ?>
 
 <div class="row">
 	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 padding-5">
@@ -14,6 +14,9 @@
 				<?php if($can_upload == 1) : ?>
 					<button type="button" class="btn btn-xs btn-purple btn-top" onclick="getUploadFile()">Import Orders</button>
 				<?php endif;?>
+				<?php if($instant_delivery) : ?>
+					<button type="button" class="btn btn-xs btn-primary btn-top" onclick="processToDelivery()">Process to Dellivery</button>
+				<?php endif; ?>
         <button type="button" class="btn btn-xs btn-success btn-100 btn-top" onclick="addNew()"><i class="fa fa-plus"></i> New</button>
       <?php endif; ?>
       </p>
@@ -163,6 +166,14 @@
 		<table class="table table-striped table-hover dataTable" style="min-width:1000px; border-collapse:inherit;">
 			<thead>
 				<tr>
+					<?php if($instant_delivery) : ?>
+						<th class="fix-width-40 middle text-center">
+							<label>
+								<input type="checkbox" class="ace" onchange="checkAll($(this))" />
+								<span class="lbl"></span>
+							</label>
+						</th>
+					<?php endif; ?>
 					<th class="width-5 middle text-center">#</th>
 					<th class="width-10 middle text-center sorting <?php echo $sort_date; ?>" id="sort_date_add" onclick="sort('date_add')">Date</th>
 					<th class="width-15 middle sorting <?php echo $sort_code; ?>" id="sort_code" onclick="sort('code')">Document No</th>
@@ -171,9 +182,6 @@
 					<th class="width-10 middle">Channels</th>
 					<th class="width-10 middle">Payments</th>
 					<th class="width-10 middle">Status</th>
-					<?php if($this->_SuperAdmin && $instant_export) : ?>
-						<th class="width-5 middle"></th>
-					<?php endif; ?>
 				</tr>
 			</thead>
 			<tbody>
@@ -183,6 +191,13 @@
 						<?php $ref = empty($rs->reference) ? '' :' ['.$rs->reference.']'; ?>
 						<?php $cus_ref = empty($rs->customer_ref) ? '' : ' ['.$rs->customer_ref.']'; ?>
             <tr id="row-<?php echo $rs->code; ?>" style="<?php echo state_color($rs->state, $rs->status, $rs->is_expired); ?>">
+							<?php if($instant_delivery) : ?>
+							<td class="middle text-center">
+								<?php if($rs->state == 3) : ?>
+								<label><input type="checkbox" class="ace int-chk" value="<?php echo $rs->code; ?>" /><span class="lbl"></span></label>
+								<?php endif; ?>
+							</td>
+							<?php endif; ?>
               <td class="middle text-center pointer" onclick="editOrder('<?php echo $rs->code; ?>')"><?php echo $no; ?></td>
               <td class="middle text-center pointer" onclick="editOrder('<?php echo $rs->code; ?>')"><?php echo thai_date($rs->date_add); ?></td>
               <td class="middle pointer" onclick="editOrder('<?php echo $rs->code; ?>')"><?php echo $rs->code.$ref; ?></td>
@@ -197,9 +212,6 @@
               <td class="middle pointer" onclick="editOrder('<?php echo $rs->code; ?>')"><?php echo $rs->channels_name; ?></td>
               <td class="middle pointer" onclick="editOrder('<?php echo $rs->code; ?>')"><?php echo $rs->payment_name; ?></td>
               <td class="middle pointer" onclick="editOrder('<?php echo $rs->code; ?>')"><?php echo $rs->state_name; ?></td>
-              <?php if($this->_SuperAdmin && $instant_export) : ?>
-							<td class="middle text-right"><button type="button" class="btn btn-minier btn-primary" onclick="sendToWms('<?php echo $rs->code; ?>')">Wms</button></td>
-							<?php endif; ?>
             </tr>
             <?php $no++; ?>
           <?php endforeach; ?>

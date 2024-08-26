@@ -54,6 +54,19 @@
   </div>
 
 	<div class="form-group">
+ 	 <label class="col-sm-3 control-label no-padding-right">Default Bin</label>
+ 	 <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+ 		 <select class="width-100" name="default_zone" id="default-zone">
+ 		 	<option value="">Select</option>
+			<?php echo select_warehouse_zone($ds->code, $ds->default_zone); ?>
+ 		 </select>
+ 	 </div>
+	 <div class="col-sm-offset-3 help-block col-xs-12 col-sm-reset inline" >
+		 Set default bin location for instant delivery product from this warehouse without pick pack process
+	 </div>
+  </div>
+
+	<div class="form-group">
     <label class="col-sm-3 control-label no-padding-right">Maximum Amount Allowed</label>
     <div class="col-xs-12 col-sm-3">
 			<input type="text" class="form-control input-sm" value="<?php echo number($ds->limit_amount, 2); ?>" disabled />
@@ -139,5 +152,8 @@
 	<input type="hidden" name="is_consignment" id="is_consignment" value="<?php echo $ds->is_consignment; ?>">
 </form>
 
+<script>
+	$('#default-zone').select2();
+</script>
 <script src="<?php echo base_url(); ?>scripts/masters/warehouse.js?v=<?php echo date('Ymd'); ?>"></script>
 <?php $this->load->view('include/footer'); ?>

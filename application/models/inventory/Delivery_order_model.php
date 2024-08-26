@@ -181,6 +181,29 @@ class Delivery_order_model extends CI_Model
   }
 
 
+  //--- for skip pick pack and process to delivery
+  public function get_order_details($code)
+  {
+    $qr  = "SELECT o.product_code, o.product_name, o.style_code, o.qty AS order_qty, ";
+    $qr .= "o.cost, o.price, o.currency, o.rate, o.discount1, o.discount2, o.discount3, ";
+    $qr .= "o.id_rule, ru.id_policy, o.is_count, ";
+    $qr .= "(o.discount_amount / o.qty) AS discount_amount, ";
+    $qr .= "(o.total_amount/o.qty) AS final_price ";
+    $qr .= "FROM order_details AS o ";
+    $qr .= "LEFT JOIN discount_rule AS ru ON ru.id = o.id_rule ";
+    $qr .= "WHERE o.order_code = '{$code}' ";
+
+    $rs = $this->db->query($qr);
+
+    if($rs->num_rows() > 0)
+    {
+      return $rs->result();
+    }
+
+    return NULL;
+  }
+
+
 
 
     //------------------ สำหรับแสดงยอดที่มีการบันทึกขายไปแล้ว -----------//

@@ -91,6 +91,48 @@ class Agx_delivery_list extends PS_Controller
 	}
 
 
+	function auto_process()
+	{
+		$sc = TRUE;
+
+		$list = array();
+    $limit = 10;
+		$path = $this->config->item('upload_path')."agx/DO/";
+		$file_path = $this->config->item('upload_file_path')."agx/DO/";
+
+		if($handle = opendir($path))
+		{
+      $i = 1;
+			while(FALSE !== ($entry = readdir($handle)) && $i <= $limit)
+			{
+				if($entry !== '.' && $entry !== '..')
+				{
+					$f = $file_path.$entry;
+
+					if(is_file($f))
+					{
+						$file = new stdClass();
+            $file->fileName = $entry;
+
+						$list[] = $file;
+            $i++;
+					}
+				}
+			}
+
+			closedir($handle);
+		}		
+
+    if( ! empty($list))
+    {
+      foreach($list as $rs)
+      {
+				$this->do_process($rs->fileName);
+      }
+    }
+	}
+
+
 	function process()
 	{
 		$sc = TRUE;

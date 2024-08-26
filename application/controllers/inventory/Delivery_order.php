@@ -420,6 +420,284 @@ class Delivery_order extends PS_Controller
   }
 
 
+  public function process_delivery()
+  {
+    $sc = TRUE;
+    $error = 0;
+    $err_msg = array();
+
+    $list = json_decode($this->input->post('data'));
+
+    $this->load->model('masters/products_model');
+    $this->load->model('masters/warehouse_model');
+    $this->load->model('masters/zone_model');
+    $this->load->model('inventory/prepare_model');
+    $this->load->model('inventory/buffer_model');
+    $this->load->model('inventory/qc_model');
+    $this->load->model('inventory/cancle_model');
+    $this->load->model('inventory/movement_model');
+    $this->load->helper('discount');
+
+    if( ! empty($list))
+    {
+      foreach($list as $code)
+      {
+        $sd = TRUE;
+
+        $order = $this->orders_model->get($code);
+
+        $date_add = getConfig('ORDER_SOLD_DATE') == 'D' ? $order->date_add : now();
+
+        if($order->state == 3)
+        {
+          $whs = $this->warehouse_model->get($order->warehouse_code);
+
+          if( ! empty($whs->default_zone))
+          {
+            $zone = $this->zone_model->get($whs->default_zone);
+
+            if( ! empty($zone))
+            {
+              $this->db->trans_start();
+
+              //--- change state
+              $arr = array(
+                'state' => 8,
+                'shipped_date' => empty($order->shipped_date) ? $date_add : $order->shipped_date
+              );
+
+              if( ! $this->orders_model->update($code, $arr))
+              {
+                $sd = FALSE;
+                $error++;
+                $err_msg[] = "{$code} : Failed to update order state";
+              }
+
+              if($sd === TRUE)
+              {
+                //--- add state event
+                $arr = array(
+                  'order_code' => $code,
+                  'state' => 8,
+                  'update_user' => $this->_user->uname
+                );
+
+                if( ! $this->order_state_model->add_state($arr))
+                {
+                  $sd = FALSE;
+                  $error++;
+                  $err_msg[] = "{$code} : Failed to create order state logs";
+                }
+              }
+
+              //---- รายการทีรอการเปิดบิล
+              $bill = $this->delivery_order_model->get_order_details($code);
+
+
+              if( ! empty($bill))
+              {
+                foreach($bill as $rs)
+                {
+                  //--- ถ้ามีรายการที่ไมสำเร็จ ออกจาก loop ทันที
+                  if($sd === FALSE)
+                  {
+                    break;
+                  }
+
+                  //--- ถ้ายอดตรวจ น้อยกว่า หรือ เท่ากับ ยอดสั่ง ใช้ยอดตรวจในการตัด buffer
+                  //--- ถ้ายอดตวจ มากกว่า ยอดสั่ง ให้ใช้ยอดสั่งในการตัด buffer (บางทีอาจมีการแก้ไขออเดอร์หลังจากมีการตรวจสินค้าแล้ว)
+                  $sell_qty = $rs->order_qty;
+
+                  if($sell_qty > 0)
+                  {
+                    //--- add prepare
+                    if($sd === TRUE)
+                    {
+                      if( ! $this->prepare_model->drop_prepare($order->code))
+                      {
+                        $sd = FALSE;
+                        $error++;
+                        $err_msg[] = "{$code} : Failed to drop previous picking logs";
+                      }
+                      else
+                      {
+                        $prepare = array(
+                          'order_code' => $order->code,
+                          'product_code' => $rs->product_code,
+                          'zone_code' => $zone->code,
+                          'qty' => $sell_qty,
+                          'user' => $this->_user->uname
+                        );
+
+                        if( ! $this->prepare_model->add($prepare))
+                        {
+                          $sd = FALSE;
+                          $error++;
+                          $err_msg[] = "{$code} : Failed to create picking logs";
+                        }
+                      }
+                    }
+
+                    //--- add qc
+                    if($sd === TRUE)
+                    {
+                      //--- drop current qc
+                  		if( ! $this->qc_model->drop_qc($order->code))
+                      {
+                        $sd = FALSE;
+                        $error++;
+                        $err_msg[] = "{$code} : Failed to drop previous packing logs";
+                      }
+                      else
+                      {
+                        $qc = array(
+                          'order_code' => $order->code,
+                          'product_code' => $rs->product_code,
+                          'qty' => $sell_qty,
+                          'box_id' => NULL,
+                          'user' => $this->_user->uname
+                        );
+
+                        if( ! $this->qc_model->add($qc))
+                        {
+                          $sd = FALSE;
+                          $error++;
+                          $err_msg[] = "{$code} : Failed to create packing logs";
+                        }
+                      }
+                    }
+
+                    //--- add movement
+                    if($sd === TRUE)
+                    {
+                      //--- 2. update movement
+                      $arr = array(
+                        'reference' => $order->code,
+                        'warehouse_code' => $zone->warehouse_code,
+                        'zone_code' => $zone->code,
+                        'product_code' => $rs->product_code,
+                        'move_in' => 0,
+                        'move_out' => $sell_qty,
+                        'date_add' => $date_add
+                      );
+
+                      if( ! $this->movement_model->add($arr))
+                      {
+                        $sd = FALSE;
+                        $error++;
+                        $err_msg[] = "{$code} : Failed to create movement logs";
+                      }
+                    }
+
+                    $item = $this->products_model->get($rs->product_code);
+                    //--- ข้อมูลสำหรับบันทึกยอดขาย
+                    $total_amount = $rs->final_price * $sell_qty;
+                    $totalFrgn = convertFC($total_amount, $rs->rate, 1);
+                    $total_cost = $rs->cost * $sell_qty;
+
+                    $arr = array(
+                      'reference' => $order->code,
+                      'role'   => 'S',
+                      'payment_code'   => $order->payment_code,
+                      'channels_code'  => $order->channels_code,
+                      'product_code'  => $rs->product_code,
+                      'product_name'  => $item->name,
+                      'product_style' => $item->style_code,
+                      'cost'  => $rs->cost,
+                      'price'  => $rs->price,
+                      'sell'  => $rs->final_price,
+                      'qty'   => $sell_qty,
+                      'currency' => $rs->currency,
+                      'rate' => $rs->rate,
+                      'discount_label'  => discountLabel($rs->discount1, $rs->discount2, $rs->discount3),
+                      'discount_amount' => ($rs->discount_amount * $sell_qty),
+                      'total_amount'   => $total_amount,
+                      'total_cost'   => $total_cost,
+                      'totalFrgn' => $totalFrgn,
+                      'margin'  =>  $totalFrgn > 0 ? $totalFrgn - $total_cost : $total_amount - $total_cost,
+                      'id_policy'   => $rs->id_policy,
+                      'id_rule'     => $rs->id_rule,
+                      'customer_code' => $order->customer_code,
+                      'customer_ref' => $order->customer_ref,
+                      'sale_code'   => $order->sale_code,
+                      'user' => $order->user,
+                      'date_add'  => $date_add, //---- เปลี่ยนไปตาม config ORDER_SOLD_DATE
+                      'zone_code' => $zone->code,
+                      'warehouse_code'  => $zone->warehouse_code,
+                      'update_user' => $this->_user->uname,
+                      'budget_code' => $order->budget_code,
+                      'empID' => $order->empID,
+                      'empName' => $order->empName,
+                      'approver' => $order->approver
+                    );
+
+                    //--- 3. บันทึกยอดขาย
+                    if( ! $this->delivery_order_model->sold($arr))
+                    {
+                      $sd = FALSE;
+                      $error++;
+                      $err_msg[] = "{$code} : Failed to create sales transection @ {$rs->product_code}";
+                    }
+                  }
+                } //--- end foreach $bill
+              } //--- end if empty($bill)
+
+              if($sd === TRUE)
+              {
+                $this->db->trans_commit();
+
+                if( ! $this->do_export($code))
+                {
+                  $this->orders_model->set_exported($code, 3, $this->error);
+                }
+              }
+              else
+              {
+                $this->db->trans_rollback();
+              }
+            }
+            else
+            {
+              $error++;
+              $err_msg[] = "Invalid Bin Code : {$whs->default_zone}";
+            }
+          }
+          else
+          {
+            $error++;
+            $err_msg[] = "{$code} : No Default bin location for warehouse {$order->warehouse_code}";
+          }
+        }
+        else
+        {
+          $error++;
+          $err_msg[] = "{$code} : Invalid order state. Orders state should be 'waiting to pick'";
+        }
+      } //--- end foreach list
+    } //-- end if ! empty list
+
+    $message = "";
+
+    if($error > 0)
+    {
+      if( ! empty($err_msg))
+      {
+        foreach($err_msg as $ems)
+        {
+          $message .= $ems."<br/>";
+        }
+      }
+    }
+
+    $arr = array(
+      'status' => $error == 0 ? 'success' : 'warning',
+      'message' => $error == 0 ? 'success' : $message
+    );
+
+    echo json_encode($arr);
+  }
+
+
   public function view_detail($code)
   {
     $this->title = "Ready to ship";

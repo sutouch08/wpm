@@ -442,7 +442,20 @@ class Zone_model extends CI_Model
 
 
 
+ public function get_warehouse_zone($warehouse_code)
+ {
+   if( ! empty($warehouse_code))
+   {
+     $rs = $this->db->where('warehouse_code', $warehouse_code)->get('zone');
 
+     if($rs->num_rows() > 0)
+     {
+       return $rs->result();
+     }
+   }
+
+   return NULL;
+ }
 
 
   public function get_name($code)
