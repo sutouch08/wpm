@@ -253,6 +253,15 @@ class Transfer_model extends CI_Model
     return FALSE;
   }
 
+  public function get_transfer($code)
+  {
+    $rs = $this->db->where('code', $code)->get('transfer');
+
+    if($rs->num_rows() === 1)
+    {
+      return $rs->row();
+    }
+  }
 
   public function get($code)
   {
@@ -551,6 +560,11 @@ class Transfer_model extends CI_Model
     return $this->db->where('id', $id)->delete('transfer_detail');
   }
 
+
+  public function delete_rows(array $ds = array())
+  {
+    return $this->db->where_in('id', $ds)->delete('transfer_detail');
+  }
 
 
   public function is_exists($code, $old_code = NULL)

@@ -17,6 +17,7 @@ class Agx_transfer_confirm extends PS_Controller
     $this->home = base_url().'rest/V1/agx_transfer_confirm';
 		$this->load->model('inventory/transfer_model');
 		$this->load->model('inventory/movement_model');
+		$this->load->model('masters/products_model');
 		$this->load->model('agx_logs_model');
 		$this->agx_api = is_true(getConfig('AGX_API'));
   }
@@ -188,75 +189,86 @@ class Agx_transfer_confirm extends PS_Controller
 									$request_qty = $line['F'];
 									$receive_qty = $line['G'];
 
-									$detail = $this->transfer_model->get_detail_by_product_and_zone($doc->code, $item_code, $from_zone, $to_zone);
+									$item = $this->products_model->get_with_old_code($item_code);
 
-									if( ! empty($detail))
+									if( ! empty($item))
 									{
-										$wms_qty = $receive_qty <= $detail->qty ? $receive_qty : $detail->qty;
+										$detail = $this->transfer_model->get_detail_by_product_and_zone($doc->code, $item->code, $from_zone, $to_zone);
 
-										$arr = array(
-											'wms_qty' => $wms_qty,
-											'valid' => $wms_qty == $detail->qty ? 1 : 0
-										);
-
-										if($detail->qty != $wms_qty)
+										if( ! empty($detail))
 										{
-											$valid = 0;
-										}
+											$wms_qty = $receive_qty <= $detail->qty ? $receive_qty : $detail->qty;
 
-										if( ! $this->transfer_model->update_detail($detail->id, $arr))
-										{
-											$sc = FALSE;
-											$this->error = "Failed to update transfer qty at line {$i} : {$item_code}";
-											$error[$i] = $this->error;
+											$arr = array(
+												'wms_qty' => $wms_qty,
+												'valid' => $wms_qty == $detail->qty ? 1 : 0
+											);
+
+											if($detail->qty != $wms_qty)
+											{
+												$valid = 0;
+											}
+
+											if( ! $this->transfer_model->update_detail($detail->id, $arr))
+											{
+												$sc = FALSE;
+												$this->error = "Failed to update transfer qty at line {$i} : {$item_code}";
+												$error[$i] = $this->error;
+											}
+											else
+											{
+												//--- add_movement
+												//--- 2. update movement
+												$move_out = array(
+													'reference' => $doc->code,
+													'warehouse_code' => $doc->from_warehouse,
+													'zone_code' => $detail->from_zone,
+													'product_code' => $detail->product_code,
+													'move_in' => 0,
+													'move_out' => $wms_qty,
+													'date_add' => $date_add
+												);
+
+												$move_in = array(
+													'reference' => $doc->code,
+													'warehouse_code' => $doc->to_warehouse,
+													'zone_code' => $detail->to_zone,
+													'product_code' => $detail->product_code,
+													'move_in' => $wms_qty,
+													'move_out' => 0,
+													'date_add' => $date_add
+												);
+
+												//--- move out
+												if(! $this->movement_model->add($move_out))
+												{
+													$sc = FALSE;
+													$this->error = "Failed to create outgoing movement";
+													$error[$i] = $this->error;
+													break;
+												}
+
+												//--- move in
+												if(! $this->movement_model->add($move_in))
+												{
+													$sc = FALSE;
+													$this->error = "Failed to create incoming movement";
+													$error[$i] = $this->error;
+													break;
+												}
+											}
 										}
 										else
 										{
-											//--- add_movement
-											//--- 2. update movement
-											$move_out = array(
-												'reference' => $doc->code,
-												'warehouse_code' => $doc->from_warehouse,
-												'zone_code' => $detail->from_zone,
-												'product_code' => $detail->product_code,
-												'move_in' => 0,
-												'move_out' => $wms_qty,
-												'date_add' => $date_add
-											);
-
-											$move_in = array(
-											'reference' => $doc->code,
-											'warehouse_code' => $doc->to_warehouse,
-											'zone_code' => $detail->to_zone,
-											'product_code' => $detail->product_code,
-											'move_in' => $wms_qty,
-											'move_out' => 0,
-											'date_add' => $date_add
-											);
-
-											//--- move out
-											if(! $this->movement_model->add($move_out))
-											{
-												$sc = FALSE;
-												$this->error = "Failed to create outgoing movement";
-												$error[$i] = $this->error;
-												break;
-											}
-
-											//--- move in
-											if(! $this->movement_model->add($move_in))
-											{
-												$sc = FALSE;
-												$this->error = "Failed to create incoming movement";
-												$error[$i] = $this->error;
-												break;
-											}
+											$sc = FALSE;
+											$this->error = "Item not found at line {$i}";
+											$error[$i] = $this->error;
 										}
 									}
 									else
 									{
 										$sc = FALSE;
-										$this->error = "Item not found at line {$i}";
+										$this->error = "Item not found at line {$i} : {$item_code}";
 										$error[$i] = $this->error;
 									}
 								}
@@ -342,7 +354,7 @@ class Agx_transfer_confirm extends PS_Controller
 
 	 return $sc;
 	}
-		 
+
 
 	 public function create_error_file(array $ds = array(), $error_file_path, $error)
 	 {

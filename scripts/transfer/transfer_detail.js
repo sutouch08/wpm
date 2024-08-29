@@ -120,6 +120,80 @@ function deleteMoveItem(id, item_code)
 	});
 }
 
+function checkAll(el) {
+	if(el.is(':checked')) {
+		$('.chk').prop('checked', true);
+	}
+	else {
+		$('.chk').prop('checked', false);
+	}
+}
+
+
+function removeChecked() {
+	let code = $('#transfer_code').val();
+	let ids = [];
+
+	if($('.chk:checked').length) {
+		$('.chk:checked').each(function() {
+			ids.push($(this).val());
+		});
+
+		if(ids.length > 0) {
+			swal({
+				title: 'คุณแน่ใจ ?',
+				text: 'ต้องการลบ '+ ids.length +' รายการที่เลือก หรือไม่ ?',
+				type: 'warning',
+				showCancelButton: true,
+				comfirmButtonColor: '#DD6855',
+				confirmButtonText: 'ใช่ ฉันต้องการ',
+				cancelButtonText: 'ไม่ใช่',
+				closeOnConfirm: true
+			},
+			function() {
+				load_in();
+
+				setTimeout(() => {
+					$.ajax({
+						url:HOME + 'delete_detail',
+						type:'POST',
+						cache:false,
+						data:{
+							'transfer_code' : code,
+							'ids' : JSON.stringify(ids)
+						},
+						success:function(rs) {
+							load_out();
+
+							if(rs == 'success') {
+								swal({
+									title:'Success',
+									type:'success',
+									timer:1000
+								});
+
+								$('.chk:checked').each(function() {
+									let id = $(this).val();
+									$('#row-'+id).remove();
+								});
+
+								reIndex();
+								reCal();
+							}
+							else {
+								swal({
+									title:'Error!',
+									text:rs,
+									type:'error'
+								});
+							}
+						}
+					})
+				}, 200);
+			});
+		}
+	}
+}
 
 function reCal(){
 	var total = 0;
@@ -250,6 +324,7 @@ function addToTransfer(){
 
 						setTimeout( function(){
 							showTransferTable();
+							recalZoneQty();
 						}, 1200);
 
 					}else{
@@ -267,6 +342,28 @@ function addToTransfer(){
 }
 
 
+function recalZoneQty() {
+	$('.input-qty').each(function() {
+		if($(this).val() != 0) {
+			let no = $(this).data('no');
+			let limit = parseDefault(parseFloat($(this).data('limit')), 0);
+			let qty = parseDefault(parseFloat($(this).val()), 0);
+
+			if(qty > 0 && limit > 0) {
+				let nQty = limit - qty;
+
+				$('#qty-label-'+no).text(addCommas(nQty));
+				$(this).data('limit', nQty);
+				$(this).val('');
+
+				if(nQty <= 0) {
+					$('#zone-row-'+no).remove();
+					reIndex('zone-no');
+				}
+			}
+		}
+	})
+}
 
 function selectAll(){
 	$('.input-qty').each(function(index, el){

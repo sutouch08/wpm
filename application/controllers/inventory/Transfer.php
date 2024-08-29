@@ -1589,7 +1589,8 @@ class Transfer extends PS_Controller
           'id' => $rs->id,
           'no' => $no,
           'barcode' => $rs->barcode,
-          'products' => $rs->product_code,
+          'product_code' => $rs->product_code,
+          'product_name' => $rs->product_name,
           'from_zone' => $this->zone_model->get_name($rs->from_zone),
           'to_zone' => $this->zone_model->get_name($rs->to_zone),
           'qty' => number($rs->qty),
@@ -1650,11 +1651,15 @@ class Transfer extends PS_Controller
 
       $zone_code = $this->input->get('zone_code');
       $transfer_code = $this->input->get('transfer_code');
-      $stock = $this->stock_model->get_all_stock_in_zone($zone_code);
+      $product_code = get_null(trim($this->input->get('item_code')));
+      $product_code = $product_code == '*' ? NULL : $product_code;
+
+      $stock = $this->stock_model->get_all_stock_in_zone($zone_code, $product_code);
 
       if( ! empty($stock))
       {
         $no = 1;
+
         foreach($stock as $rs)
         {
           //--- จำนวนที่อยู่ใน temp
@@ -1669,7 +1674,8 @@ class Transfer extends PS_Controller
             $arr = array(
               'no' => $no,
               'barcode' => $this->products_model->get_barcode($rs->product_code),
-              'products' => $rs->product_code,
+              'product_code' => $rs->product_code,
+              'product_name' => $rs->product_name,
               'qty' => $qty
             );
 
@@ -1720,49 +1726,47 @@ class Transfer extends PS_Controller
 
 
 
-
   public function delete_detail()
   {
     $sc = TRUE;
 
-    $code = $this->input->post('code');
-    $id = $this->input->post('id');
+    $code = $this->input->post('transfer_code');
+    $ids = json_decode($this->input->post('ids'));
 
-    $this->db->trans_begin();
-
-    if($this->transfer_model->drop_detail($id))
+    if( ! empty($ids))
     {
-      $must_accept = $this->transfer_model->must_accept($code) ? 1 : 0;
+      $doc = $this->transfer_model->get_transfer($code);
 
-      $arr = array(
-        'must_accept' => $must_accept
-      );
-
-      if( ! $this->transfer_model->update($code, $arr))
+      if( ! empty($doc))
+      {
+        if($doc->status < 1)
+        {
+          if( ! $this->transfer_model->delete_rows($ids))
+          {
+            $sc = FALSE;
+            $this->error = "Failed to delete items";
+          }
+        }
+        else
+        {
+          $sc = FALSE;
+          $this->error = "Invalid document status";
+        }
+      }
+      else
       {
         $sc = FALSE;
-        $this->error = "Update Acception Status Failed";
+        $this->error = "Invalid document number";
       }
     }
     else
     {
       $sc = FALSE;
-      $this->error = "Delete Failed";
-    }
-
-    if( $sc === TRUE)
-    {
-      $this->db->trans_commit();
-    }
-    else
-    {
-      $this->db->trans_rollback();
+      $this->error = "Missing required parameter";
     }
 
     $this->_response($sc);
   }
-
-
 
 
   public function delete_transfer($code)

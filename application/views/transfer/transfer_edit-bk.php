@@ -15,20 +15,41 @@
 						<button type="button" class="btn btn-sm btn-danger" onclick="unSave()"><i class="fa fa-exclamation-triangle"></i> Unsave</button>
 					<?php endif; ?>
 		    <?php endif; ?>
-				<?php if(($doc->status == -1 OR $doc->status == 0) && ($this->pm->can_add OR $this->pm->can_edit)) : ?>
-					<button type="button" class="btn btn-sm btn-success" onclick="save()"><i class="fa fa-save"></i> Save</button>
-				<?php endif; ?>
+		    <?php if(($doc->status == -1 OR $doc->status == 0) && $this->pm->can_add OR $this->pm->can_edit) : ?>
+
+		      <?php if(($doc->status == -1 OR $doc->status == 0) && $barcode === TRUE) : ?>
+		        <button type="button" class="btn btn-sm btn-primary" onclick="goUseKeyboard()">Manual key in</button>
+		      <?php endif; ?>
+
+
+		      <?php if(($doc->status == -1 OR $doc->status == 0) && $barcode === FALSE) : ?>
+		        <button type="button" class="btn btn-sm btn-primary" onclick="goUseBarcode()">Scan barcode</button>
+		      <?php endif; ?>
+
+					<?php if(($doc->status == -1 OR $doc->status == 0) && ($this->pm->can_add OR $this->pm->can_edit)) : ?>
+		      <button type="button" class="btn btn-sm btn-success" onclick="save()"><i class="fa fa-save"></i> Save</button>
+					<?php endif; ?>
+		    <?php endif; ?>
       </p>
     </div>
 </div><!-- End Row -->
 <hr/>
-	<?php
-		$this->load->view('transfer/transfer_edit_header');
+<?php
+	$this->load->view('transfer/transfer_edit_header');
+	if(($doc->status == -1 OR $doc->status == 0))
+	{
+		$this->load->view('transfer/transfer_control');
+	}
 
+	if($barcode === TRUE)
+	{
+		$this->load->view('transfer/transfer_detail_barcode');
+	}
+	else
+	{
 		$this->load->view('transfer/transfer_detail');
-	?>
-	<input type="hidden" name="from_zone_code" id="from_zone_code" value="" />
-	<input type="hidden" name="to_zone_code" id="to_zone_code" value="" />
+	}
+?>
 
 <?php else : ?>
 <?php $this->load->view('deny_page'); ?>

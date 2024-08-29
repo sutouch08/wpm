@@ -1,9 +1,27 @@
+window.addEventListener('load', () => {
+	from_zone_init();
+	to_zone_init();
+});
+
+$('#item-code').keyup((e) => {
+	if(e.keyCode == 13) {
+		getProductInZone();
+	}
+});
+
 
 //-------  ดึงรายการสินค้าในโซน
 function getProductInZone(){
-	var zone_code  = $("#from_zone_code").val();
-	var transfer_code = $('#transfer_code').val();
+	let zone_code  = $("#from_zone_code").val();
+	let transfer_code = $('#transfer_code').val();
+	let item_code = $.trim($('#item-code').val());
+
 	if( zone_code.length > 0 ) {
+			if(item_code.length == 0) {
+				swal("กรุณาระบุสินค้า หากต้องการทั้งหมดใส่ *");
+				return false;
+			}
+
 		load_in();
 		$.ajax({
 			url: HOME + 'get_product_in_zone',
@@ -11,7 +29,8 @@ function getProductInZone(){
       cache:"false",
       data:{
 				'transfer_code' : transfer_code,
-        'zone_code' : zone_code
+        'zone_code' : zone_code,
+				'item_code' : item_code
       },
 			success: function(rs){
 				load_out();
@@ -21,9 +40,9 @@ function getProductInZone(){
 					var data		= $.parseJSON(rs);
 					var output	= $("#zone-list");
 					render(source, data, output);
-					$("#transfer-table").addClass('hide');
-					$("#zone-table").removeClass('hide');
+
 					inputQtyInit();
+					$('#myTab a[href="#zone-table"]').tab('show');
 				}
 				else {
 					swal({
@@ -36,13 +55,6 @@ function getProductInZone(){
 		});
 	}
 }
-
-
-$(document).ready(function() {
-	from_zone_init();
-	to_zone_init();
-});
-
 
 
 function from_zone_init(){
@@ -75,7 +87,7 @@ function from_zone_init(){
 $("#from-zone").keyup(function(e) {
     if( e.keyCode == 13 ){
 		setTimeout(function(){
-			getProductInZone();
+			$('#item-code').focus();
 		}, 100);
 	}
 });
@@ -105,80 +117,16 @@ function to_zone_init(){
 
 
 //------- สลับไปแสดงหน้า transfer_detail
-function showTransferTable(){
-	getTransferTable();
-	hideZoneTable();
-	hideTempTable();
-	showControl();
-	hideMoveIn();
-	hideMoveOut();
-	$("#transfer-table").removeClass('hide');
+async function showTransferTable(){
+	await getTransferTable();
+	$('#myTab a[href="#transfer-table"]').tab('show');
 }
 
 
-
-function hideTransferTable(){
-	$("#transfer-table").addClass('hide');
+async function showTempTable(){
+	await getTempTable();
+	$('#myTab a[href="temp-table"]').tab('show');
 }
-
-
-function showMoveIn(){
-	$(".moveIn-zone").removeClass('hide');
-}
-
-
-function hideMoveIn(){
-	$(".moveIn-zone").addClass('hide');
-}
-
-
-function showMoveOut(){
-	$(".moveOut-zone").removeClass('hide');
-}
-
-
-
-function hideMoveOut(){
-	$(".moveOut-zone").addClass('hide');
-}
-
-
-
-function showControl(){
-	$(".control-btn").removeClass('hide');
-}
-
-
-function hideControl(){
-	$(".control-btn").addClass('hide');
-}
-
-
-function showTempTable(){
-	getTempTable();
-	hideTransferTable();
-	hideZoneTable();
-	$("#temp-table").removeClass('hide');
-}
-
-
-
-function hideTempTable(){
-	$("#temp-table").addClass('hide');
-}
-
-
-
-function showZoneTable(){
-	$("#zone-table").removeClass('hide');
-}
-
-
-
-function hideZoneTable(){
-	$("#zone-table").addClass('hide');
-}
-
 
 
 function inputQtyInit(){
@@ -195,39 +143,6 @@ function inputQtyInit(){
 		}
 	})
 }
-
-
-
-
-
-function getMoveIn(){
-	$(".moveIn-zone").removeClass('hide');
-	$('#barcode-hr').removeClass('hide');
-
-	$(".moveOut-zone").addClass('hide');
-	$(".control-btn").addClass('hide');
-
-	hideTransferTable();
-	getTempTable();
-	showTempTable();
-	$("#toZone-barcode").focus();
-}
-
-
-
-//---	เปลี่ยนโซนปลายทาง
-function newToZone(){
-	$('#toZone-barcode').removeAttr('disabled');
-	$('#btn-new-to-zone').attr('disabled','disabled');
-	$('#zoneName-label').text('');
-	$("#to_zone_code").val("");
-	$("#toZone-barcode").val("");
-	$("#zone-table").addClass('hide');
-	$("#toZone-barcode").focus();
-}
-
-
-
 
 
 //---	ดึงข้อมูลสินค้าในโซนต้นทาง
@@ -308,109 +223,6 @@ $("#toZone-barcode").keyup(function(e) {
 		setTimeout(function(){ $("#barcode-item-to").focus(); }, 500);
 	}
 });
-
-
-
-$("#barcode-item-to").keyup(function(e) {
-    if( e.keyCode == 13 ){
-
-		//---	บาร์โค้ดสินค้าที่ยิงมา
-		var barcode = $(this).val();
-
-		//---	ไอดีโซนปลายทาง
-		var zone_code	= $("#to_zone_code").val();
-
-		//---	ไอดีเอกสาร
-		var transfer_code = $("#transfer_code").val();
-
-		if( zone_code.length == 0 ){
-			swal("Please specify destination");
-			return false;
-		}
-
-		var qty = parseInt($("#qty-to").val());
-
-		var curQty	= parseInt($("#qty-"+barcode).val());
-
-		$(this).val('');
-
-		if( isNaN(curQty) ){
-			swal("Invalid product");
-			return false;
-		}
-
-
-
-		if( qty != '' && qty != 0 ){
-			if( qty <= curQty ){
-				$.ajax({
-					url: HOME + 'move_to_zone', //"controller/transferController.php?moveBarcodeToZone",
-					type:"POST",
-					cache:"false",
-					data:{
-						"transfer_code" : transfer_code,
-						"zone_code" : zone_code,
-						"qty" : qty,
-						"barcode" : barcode
-					},
-					success: function(rs){
-						var rs = $.trim(rs);
-						if( rs == 'success'){
-							curQty = curQty - qty;
-							if(curQty == 0 ){
-								getTempTable();
-							}else{
-								$("#qty-label-"+barcode).text(curQty);
-								$("#qty-"+barcode).val(curQty);
-							}
-							$("#qty-to").val(1);
-							$("#barcode-item-to").focus();
-						}else{
-							swal("Error", rs, "error");
-						}
-					}
-				});
-			}else{
-				swal("Insufficient balance in the location");
-			}
-		}
-	}
-});
-
-
-
-
-
-
-//-------	เปิดกล่องควบคุมสำหรับยิงบาร์โค้ดโซนต้นทาง
-function getMoveOut(){
-
-	$(".moveIn-zone").addClass('hide');
-	$(".control-btn").addClass('hide');
-	$("#moveIn-input").addClass('hide');
-	$("#transfer-table").addClass('hide');
-
-	$('#barcode-hr').removeClass('hide');
-	$(".moveOut-zone").removeClass('hide');
-	$("#zone-table").removeClass('hide');
-	$("#fromZone-barcode").focus();
-}
-
-
-
-//---	เปลี่ยนโซนต้นทาง
-function newFromZone(){
-	$("#from_zone_code").val("");
-	$("#fromZone-barcode").val("");
-	$("#zone-table").addClass('hide');
-	$('#fromZone-barcode').removeAttr('disabled');
-	$('#btn-new-zone').attr('disabled', 'disabled');
-	$('#qty-from').attr('disabled', 'disabled');
-	$('#barcode-item-from').attr('disabled', 'disabled');
-	$("#fromZone-barcode").focus();
-}
-
-
 
 
 //---	ดึงข้อมูลสินค้าในโซนต้นทาง

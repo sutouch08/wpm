@@ -182,17 +182,24 @@ class stock_model extends CI_Model
   }
 
 
-
   //---- สินค้าทั้งหมดที่อยู่ในโซน (ใช้โอนสินค้าระหว่างคลัง)
-  public function get_all_stock_in_zone($zone_code)
+  public function get_all_stock_in_zone($zone_code, $item_code = NULL)
   {
-    $rs = $this->ms
+    $this->ms
     ->select('OIBQ.ItemCode AS product_code, OIBQ.OnHandQty AS qty')
+    ->select('OITM.ItemName AS product_name')
     ->from('OIBQ')
     ->join('OBIN', 'OBIN.WhsCode = OIBQ.WhsCode AND OBIN.AbsEntry = OIBQ.BinAbs', 'left')
+    ->join('OITM', 'OIBQ.ItemCode = OITM.ItemCode', 'left')
     ->where('OBIN.BinCode', $zone_code)
-    ->where('OIBQ.OnHandQty !=', 0)
-    ->get();
+    ->where('OIBQ.OnHandQty !=', 0);
+
+    if( ! empty($item_code))
+    {
+      $this->ms->like('OIBQ.ItemCode', $item_code);
+    }
+
+    $rs = $this->ms->get();
 
     if($rs->num_rows() > 0)
     {

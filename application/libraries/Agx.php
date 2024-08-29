@@ -16,6 +16,7 @@ class Agx
   {
     $sc = TRUE;
     $this->ci->load->model('inventory/transfer_model');
+    $this->ci->load->model('masters/products_model');
 
     $doc = $this->ci->transfer_model->get($code);
 
@@ -56,12 +57,14 @@ class Agx
               {
                 foreach($details as $rs)
                 {
+                  $pd = $this->ci->products_model->get($rs->product_code);
+
                   $row = array(
                     now(),
                     $rs->transfer_code,
                     $rs->from_zone,
                     $rs->to_zone,
-                    $rs->product_code,
+                    (empty($pd->old_code) ? $rs->product_code : $pd->old_code),
                     $rs->qty
                   );
 
