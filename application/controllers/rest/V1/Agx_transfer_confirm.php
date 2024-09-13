@@ -391,6 +391,101 @@ class Agx_transfer_confirm extends PS_Controller
 		 return FALSE;
 	 }
 
+	 private function detectDelimiter($fh)
+	 {
+		 $delimiters = ["\t", ";", "|", ","];
+		 $data_1 =[]; $data_2 = [];
+		 $delimiter = $delimiters[0];
+
+		 foreach($delimiters as $d) {
+			 $data_1 = explode($fh, $d);
+			 if(sizeof($data_1) > sizeof($data_2)) {
+				 $delimiter = $d;
+				 $data_2 = $data_1;
+			 }
+		 }
+
+		 return $delimiter;
+	 }
+
+	 // public function get_detail()
+	 // {
+		//  $sc = TRUE;
+		//  $ds = array();
+	 //
+		//  $fileName = $this->input->post('fileName');
+ 		//  $file_path = $this->config->item('upload_file_path')."agx/TR/Confirm/".$fileName;
+		//  $code = "TR / Confirm / ".$fileName;
+	 //
+		//  if(file_exists($file_path))
+		// {
+		// 	$file = fopen($file_path, 'r');
+	 //
+		// 	if($file !== FALSE)
+		// 	{
+		// 		$first_row = fgetcsv($file, 2048);
+	 //
+		// 		if($first_row !== FALSE)
+		// 		{
+		// 			$delimiter = count($first_row) > 1 ? "," : "\t";
+	 //
+		// 			$i = 0;
+	 //
+		// 			while( ! feof($file))
+		// 			{
+		// 				if($i > 0)
+		// 				{
+		// 					$line = fgetcsv($file, 2048, $delimiter);
+	 //
+		// 					if($line !== FALSE)
+		// 					{
+		// 						$arr = array(
+		// 							'no' => $i,
+		// 							'date' => $line[0],
+		// 							'code' => $line[1],
+		// 							'from_location' => $line[2],
+		// 							'to_location' => $line[3],
+		// 							'item_code' => $line[4],
+		// 							'request_qty' => $line[5],
+		// 							'transfer_qty' => empty($line[6]) ? 0 : $line[6]
+		// 						);
+	 //
+		// 						array_push($ds, $arr);
+		// 					}
+		// 				}
+	 //
+		// 				$i++;
+		// 			}
+		// 		}
+		// 		else
+		// 		{
+		// 			$sc = FALSE;
+		// 			$this->error = "No content in first line";
+		// 		}
+	 //
+		// 		fclose($file);
+		// 	}
+		// 	else
+		// 	{
+		// 		$sc = FALSE;
+		// 		$this->error = "No content in this file";
+		// 	}
+		// }
+		// else
+		// {
+		// 	$sc = FALSE;
+		// 	$this->error = "File not found !";
+		// }
+	 //
+		// $arr = array(
+		// 	'status' => $sc === TRUE ? 'success' : 'failed',
+		// 	'message' => $sc === TRUE ? 'success' : $this->error,
+		// 	'data' => $sc === TRUE ? $ds : $this->error,
+		// 	'code' => $code
+		// );
+	 //
+		//  echo json_encode($arr);
+	 // }
 
 	 public function get_detail()
 	 {

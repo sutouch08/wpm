@@ -121,7 +121,7 @@ class Agx_delivery_list extends PS_Controller
 			}
 
 			closedir($handle);
-		}		
+		}
 
     if( ! empty($list))
     {
@@ -293,7 +293,7 @@ class Agx_delivery_list extends PS_Controller
 	              //---- กำหนดช่องทางการขายเป็นรหัส
 	              $ch = trim($rs['F']);
 
-								$ch = ($ch == 'LAZADA SPORTSAVER' OR $ch == 'LAZADA') ? '002' : (($ch == 'SHOPEE SPORTSAVER' OR $ch == 'SHOPEE') ? '001' : $dfChannels);
+								$ch = ($ch == 'LAZADA SPORTSAVER' OR $ch == 'LAZADA') ? '002' : (($ch == 'SHOPEE SPORTSAVER' OR $ch == 'SHOPEE') ? '003' : $dfChannels);
 
 								$channels = $this->channels_model->get($ch);
 

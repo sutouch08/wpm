@@ -75,6 +75,7 @@
 						<table class="table table-striped table-bordered" style="min-width:1000px;">
 							<thead>
 								<tr>
+									<th class="fix-width-40 text-center">#</th>
 									<th class="fix-width-150 text-center">date</th>
 									<th class="fix-width-150 text-center">code</th>
 									<th class="fix-width-150 text-center">from_location</th>
@@ -101,6 +102,7 @@
 <script id="detail-template" type="text/x-handlebarsTemplate">
 	{{#each this}}
 		<tr>
+			<td class="text-center">{{no}}</td>
 			<td class="">{{date}}</td>
 			<td class="">{{code}}</td>
 			<td class="">{{from_location}}</td>
