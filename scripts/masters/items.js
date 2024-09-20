@@ -1,5 +1,7 @@
 var HOME = BASE_URL + 'masters/items/';
 
+var click = 0;
+
 function addNew(){
   window.location.href = HOME + 'add_new';
 }
@@ -14,60 +16,75 @@ function goBack(){
 function getEdit(code){
 	$('#item-code').val(code);
 	$('#edit-form').submit();
-  //window.location.href = HOME + 'edit/'+code;
 }
 
 
 function update() {
-	let error = 0;
 
-	let data = {};
+  if(click != 0) {
+    return false;
+  }
 
-	data.code = $('#code').val().trim();
-	data.old_code = $('#old_code').val().trim();
-	data.name = $('#name').val().trim(); // required
-	data.style = $('#style').val().trim(); // required
-	data.old_style = $('#old_style').val().trim();
-	data.color = $('#color').val().trim(); // required
-	data.size = $('#size').val().trim(); // required
-	data.barcode = $('#barcode').val().trim();
-	data.cost = parseDefault(parseFloat($('#cost').val()), 0);
-	data.price = parseDefault(parseFloat($('#price').val()), 0);
-	data.unit_code = $('#unit_code').val(); // required
-	data.brand_code = $('#brand').val();
-	data.group_code = $('#group').val();
-	data.main_group_code = $('#mainGroup').val(); // required
-	data.sub_group_code = $('#subGroup').val();
-	data.category_code = $('#category').val();
-	data.kind_code = $('#kind').val();
-	data.type_code = $('#type').val();
-	data.year = $('#year').val();
-	data.count_stock = $('#count_stock').is(':checked') ? 1 : 0;
-	data.can_sell = $('#can_sell').is(':checked') ? 1 : 0;
-	data.is_api = $('#is_api').is(':checked') ? 1 : 0;
-	data.active = $('#active').is(':checked') ? 1 : 0;
+  click = 1;
 
-	if(data.name.length === 0) {
-		set_error($('#name'), $('#name-error'), "required");
-		error++;
-	}
-	else {
-		clear_error($('#name'), $('#name-error'));
-	}
+	let err = 0;
+
+  $('.r').removeClass('has-error');
+  $('.e').text('');
+
+  $('.r').each(function() {
+    let el = $(this);
+
+    if(el.val() == "") {
+      let la = el.attr('id');
+      $('#'+la+"-error").text('Required');
+      el.addClass('has-error');
+      err++;
+    }
+  });
 
 
+  let h = {
+    'code' : $('#code').val().trim(),
+    'old_code' : $('#old-code').val().trim(),
+    'name' :$('#name').val().trim(),
+    'style' : $('#style').val().trim(),
+    'old_style' : $('#old-style').val().trim(),
+    'color' : $('#color').val().trim(),
+    'size' : $('#size').val().trim(),
+    'barcode' : $('#barcode').val().trim(),
+    'cost' : parseDefault(parseFloat($('#cost').val()), 0),
+    'price' : parseDefault(parseFloat($('#price').val()), 0),
+    'unit' : $('#unit').val(),
+    'brand' : $('#brand').val(),
+    'group' : $('#group').val(),
+    'main_group' : $('#mainGroup').val(),
+    'sub_group' : $('#subGroup').val(),
+    'category' : $('#category').val(),
+    'kind' : $('#kind').val(),
+    'type' : $('#type').val(),
+    'year' : $('#year').val(),
+    'count_stock' : $('#count-stock').is(':checked') ? 1 : 0,
+    'can_sell' : $('#can-sell').is(':checked') ? 1 : 0,
+    'active' : $('#active').is(':checked') ? 1 : 0
+  };
 
-	if(data.unit_code.length === 0) {
-		set_error($('#unit_code'), $('#unit-error'), "required");
-		error++;
-	}
-	else {
-		clear_error($('#unit_code'), $('#unit-error'));
-	}
+  if(h.cost < 0) {
+    $('#cost').addClass('has-error');
+    $('#cost-error').text('Cost cannot be less than 0');
+    err++;
+  }
 
-	if(error > 0) {
-		return false;
-	}
+  if(h.price < 0) {
+    $('#price').addClass('has-error');
+    $('#price-error').text('Price cannot be less than 0');
+    err++
+  }
+
+  if(err > 0) {
+    click = 0;
+    return false;
+  }
 
 	load_in();
 
@@ -76,11 +93,11 @@ function update() {
 		type:'POST',
 		cache:false,
 		data:{
-			"data" : JSON.stringify(data)
+			"data" : JSON.stringify(h)
 		},
 		success:function(rs) {
 			load_out();
-			var rs = rs.trim();
+
 			if(rs == 'success') {
 				swal({
 					title:"Success",
@@ -93,8 +110,10 @@ function update() {
 					title:'Error!',
 					text:rs,
 					type:'error'
-				})
+				});
 			}
+
+      click = 0;
 		},
 		error:function(xhr) {
 			load_out();
@@ -103,12 +122,11 @@ function update() {
 				text:'Error : '+xhr.responseText,
 				type:'error',
 				html:true
-			})
+			});
+
+      click = 0;
 		}
 	})
-
-
-
 }
 
 function duplicate(code){
@@ -164,6 +182,7 @@ $('#size').autocomplete({
 
 function checkAdd(){
   var code = $('#code').val();
+
   if(code.length > 0){
     $.ajax({
       url:HOME + 'is_exists_code/'+code,
@@ -182,6 +201,121 @@ function checkAdd(){
   }
 }
 
+
+
+function add() {
+  if(click != 0) {
+    return false;
+  }
+
+  click = 1;
+  err = 0;
+
+  $('.r').removeClass('has-error');
+  $('.e').text('');
+
+  $('.r').each(function() {
+    let el = $(this);
+
+    if(el.val() == "") {
+      let la = el.attr('id');
+      $('#'+la+"-error").text('Required');
+      el.addClass('has-error');
+      err++;
+    }
+  });
+
+
+  let h = {
+    'code' : $.trim($('#code').val()),
+    'old_code' : $.trim($('#old-code').val()),
+    'name' : $.trim($('#name').val()),
+    'style' : $.trim($('#style').val()),
+    'old_style' : $.trim($('#old-style').val()),
+    'color' : $.trim($('#color').val()),
+    'size' : $.trim($('#size').val()),
+    'barcode' : $.trim($('#barcode').val()),
+    'cost' : parseDefault(parseFloat($('#cost').val()), 0),
+    'price' : parseDefault(parseFloat($('#price').val()), 0),
+    'unit' : $('#unit').val(),
+    'brand' : $('#brand').val(),
+    'group' : $('#group').val(),
+    'main_group' : $('#mainGroup').val(),
+    'sub_group' : $('#subGroup').val(),
+    'category' : $('#category').val(),
+    'kind' : $('#kind').val(),
+    'type' : $('#type').val(),
+    'year' : $('#year').val(),
+    'count_stock' : $('#count-stock').is(':checked') ? 1 : 0,
+    'can_sell' : $('#can-sell').is(':checked') ? 1 : 0,
+    'active' : $('#active').is(':checked') ? 1 : 0
+  };
+
+  if(h.cost < 0) {
+    $('#cost').addClass('has-error');
+    $('#cost-error').text('Cost cannot be less than 0');
+    err++;
+  }
+
+  if(h.price < 0) {
+    $('#price').addClass('has-error');
+    $('#price-error').text('Price cannot be less than 0');
+    err++
+  }
+
+  if(err > 0) {
+    click = 0;
+    return false;
+  }
+
+  load_in();
+
+  $.ajax({
+    url:HOME + 'add',
+    type:'POST',
+    cache:false,
+    data:{
+      'data' : JSON.stringify(h)
+    },
+    success:function(rs) {
+      load_out();
+
+      if(rs == 'success') {
+        swal({
+          title:'Success',
+          type:'success',
+          timer:1000
+        });
+
+        setTimeout(() => {
+          addNew();
+        }, 1200);
+      }
+      else {
+        swal({
+          title:'Error!',
+          text:rs,
+          type:'error',
+          html:true
+        });
+
+        click = 0;
+      }
+    },
+    error:function(rs) {
+      load_out();
+
+      swal({
+        title:'Error!',
+        text:rs.responseText,
+        type:'error',
+        html:true
+      });
+
+      click = 0;
+    }
+  })
+}
 
 
 function clearFilter(){
@@ -211,7 +345,7 @@ function getDelete(code){
       success:function(rs){
         if(rs === 'success'){
           swal({
-            title:'Deleted',            
+            title:'Deleted',
             type:'success',
             timer:1000
           });

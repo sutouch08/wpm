@@ -195,7 +195,7 @@ class Items extends PS_Controller
               $rs['D'] = str_replace(array("\n", "\r"), '', $rs['D']); //--- เอาตัวขึ้นบรรทัดใหม่ออก
 
               $style = preg_replace($code_pattern, '', get_null(trim($rs['D'])));
-              $old_style = NULL; //get_null(trim($rs['T'])) === NULL ? $style : trim($rs['T']);
+              $old_style = get_null(trim($rs['T'])) === NULL ? $style : trim($rs['T']);
               $color_code = get_null(trim($rs['E']));
               $size_code = get_null(trim($rs['F']));
               $group_code = get_null(trim($rs['G']));
@@ -292,7 +292,7 @@ class Items extends PS_Controller
 
               $rs['A'] = str_replace(array("\n", "\r"), '', $rs['A']); //--- เอาตัวขึ้นบรรทัดใหม่ออก
               $code = preg_replace($code_pattern, '', trim($rs['A']));
-              $old_code = NULL; //get_null(trim($rs['U'])) === NULL ? $code : trim($rs['U']);
+              $old_code = get_null(trim($rs['U'])) === NULL ? $code : trim($rs['U']);
               $arr = array(
                 'code' => $code,
                 'name' => trim($rs['B']),
@@ -352,69 +352,88 @@ class Items extends PS_Controller
     $this->load->view('masters/product_items/items_add_view');
   }
 
-
   public function add()
   {
-    if($this->input->post('code'))
+    $sc = TRUE;
+
+    if($this->pm->can_add)
     {
-      $code = $this->input->post('code');
-      if($this->products_model->is_exists($code))
-      {
-        set_error($code.' '.'already_exists');
-      }
-      else
-      {
-        $count = $this->input->post('count_stock');
-        $sell = $this->input->post('can_sell');
-        $api = $this->input->post('is_api');
-        $active = $this->input->post('active');
-        $user = $this->_user->uname;
+      $ds = json_decode($this->input->post('data'));
 
-        $arr = array(
-          'code' => trim($this->input->post('code')),
-          'name' => trim($this->input->post('name')),
-          'barcode' => get_null(trim($this->input->post('barcode'))),
-          'style_code' => trim($this->input->post('style')),
-          'color_code' => get_null($this->input->post('color')),
-          'size_code' => get_null($this->input->post('size')),
-          'group_code' => get_null($this->input->post('group_code')),
-					'main_group_code' => get_null($this->input->post('main_group_code')),
-          'sub_group_code' => get_null($this->input->post('sub_group_code')),
-          'category_code' => get_null($this->input->post('category_code')),
-          'kind_code' => get_null($this->input->post('kind_code')),
-          'type_code' => get_null($this->input->post('type_code')),
-          'brand_code' => get_null($this->input->post('brand_code')),
-          'year' => $this->input->post('year'),
-          'cost' => round($this->input->post('cost'), 2),
-          'price' => round($this->input->post('price'), 2),
-          'unit_code' => $this->input->post('unit_code'),
-          'count_stock' => empty($count) ? 0 : 1,
-          'can_sell' => empty($sell) ? 0 : 1,
-          'active' => empty($active) ? 0 : 1,
-          'is_api' => empty($api) ? 0 : 1,
-          'update_user' => $user
-          // 'old_style' => get_null($this->input->post('old_style')),
-          // 'old_code' => get_null($this->input->post('old_code'))
-        );
-
-        if($this->products_model->add($arr))
+      if( ! empty($ds))
+      {
+        if( ! $this->products_model->is_exists($ds->code))
         {
-          set_message('insert success');
-          $this->do_export($code);
+          $barcode = get_null($ds->barcode);
+          $barcode_exists = $barcode != NULL ? $this->products_model->is_exists_barcode($barcode) : FALSE;
+
+          if( ! $barcode_exists)
+          {
+            $arr = array(
+              'code' => $ds->code,
+              'name' => $ds->name,
+              'barcode' => $barcode,
+              'style_code' => get_null($ds->style),
+              'color_code' => get_null($ds->color),
+              'size_code' => get_null($ds->size),
+              'group_code' => get_null($ds->group),
+    					'main_group_code' => get_null($ds->main_group),
+              'sub_group_code' => get_null($ds->sub_group),
+              'category_code' => get_null($ds->category),
+              'kind_code' => get_null($ds->kind),
+              'type_code' => get_null($ds->type),
+              'brand_code' => get_null($ds->brand),
+              'year' => get_null($ds->year),
+              'cost' => round($ds->cost, 2),
+              'price' => round($ds->price, 2),
+              'unit_code' => $ds->unit,
+              'count_stock' => $ds->count_stock == 0 ? 0 : 1,
+              'can_sell' => $ds->can_sell == 0 ? 0 : 1,
+              'active' => $ds->active == 0 ? 0 : 1,
+              'is_api' => empty($api) ? 0 : 1,
+              'update_user' => $this->_user->uname,
+              'old_style' => get_null($ds->old_style),
+              'old_code' => get_null($ds->old_code)
+            );
+
+            if( ! $this->products_model->add($arr))
+            {
+              $sc = FALSE;
+              set_error('insert');
+            }
+
+            if($sc === TRUE)
+            {
+              $this->do_export($ds->code);
+            }
+          }
+          else
+          {
+            $sc = FALSE;
+            $this->error = "Barcode {$barcode} already exists";
+          }
         }
         else
         {
-          set_error('insert fail');
+          $sc = FALSE;
+          set_error('exists', $ds->code);
         }
+      }
+      else
+      {
+        $sc = FALSE;
+        set_error('required');
       }
     }
     else
     {
-      set_error('no data found');
+      $sc = FALSE;
+      set_error('permission');
     }
 
-    redirect($this->home.'/add_new');
+    $this->_response($sc);
   }
+
 
 
   public function add_duplicate()
@@ -520,56 +539,68 @@ class Items extends PS_Controller
 	public function update()
   {
 		$sc = TRUE;
+
 		$ds = json_decode($this->input->post('data'));
 
-		if(!empty($ds))
+		if( ! empty($ds))
 		{
 			$code = $ds->code;
+
+      $barcode = get_null($ds->barcode);
+      $barcode_exists = $barcode != NULL ? $this->products_model->is_exists_barcode($barcode, $code) : FALSE;
+
+      if( ! $barcode_exists)
+      {
+        $arr = array(
+          'name' => $ds->name,
+          'barcode' => $barcode,
+          'style_code' => get_null($ds->style),
+          'color_code' => get_null($ds->color),
+          'size_code' => get_null($ds->size),
+          'group_code' => get_null($ds->group),
+          'main_group_code' => get_null($ds->main_group),
+          'sub_group_code' => get_null($ds->sub_group),
+          'category_code' => get_null($ds->category),
+          'kind_code' => get_null($ds->kind),
+          'type_code' => get_null($ds->type),
+          'brand_code' => get_null($ds->brand),
+          'year' => get_null($ds->year),
+          'cost' => round($ds->cost, 2),
+          'price' => round($ds->price, 2),
+          'unit_code' => $ds->unit,
+          'count_stock' => $ds->count_stock == 0 ? 0 : 1,
+          'can_sell' => $ds->can_sell == 0 ? 0 : 1,
+          'active' => $ds->active == 0 ? 0 : 1,
+          'is_api' => empty($api) ? 0 : 1,
+          'update_user' => $this->_user->uname,
+          'old_style' => get_null($ds->old_style),
+          'old_code' => get_null($ds->old_code)
+        );
+
+        if( ! $this->products_model->update($code, $arr))
+        {
+          $sc = FALSE;
+          set_error('update');
+        }
+
+        if($sc === TRUE)
+    		{
+    			$this->do_export($code);
+    		}
+      }
+      else
+      {
+        $sc = FALSE;
+        $this->error = "Barcode {$barcode} already exists";
+      }
 		}
 		else
 		{
 			$sc = FALSE;
-			$this->error = "Missing form data";
+			set_error('required');
 		}
 
-    $arr = array(
-      'name' => $ds->name,
-      'barcode' => get_null(trim($ds->barcode)),
-      'style_code' => trim($ds->style),
-      'color_code' => get_null($ds->color),
-      'size_code' => get_null($ds->size),
-      'group_code' => get_null($ds->group_code),
-			'main_group_code' => get_null($ds->main_group_code),
-      'sub_group_code' => get_null($ds->sub_group_code),
-      'category_code' => get_null($ds->category_code),
-      'kind_code' => get_null($ds->kind_code),
-      'type_code' => get_null($ds->type_code),
-      'brand_code' => get_null($ds->brand_code),
-      'year' => $ds->year,
-      'cost' => round($ds->cost, 2),
-      'price' => round($ds->price, 2),
-      'unit_code' => $ds->unit_code,
-      'count_stock' => empty($ds->count_stock) ? 0 : 1,
-      'can_sell' => empty($ds->can_sell) ? 0 : 1,
-      'active' => empty($ds->active) ? 0 : 1,
-      'is_api' => empty($ds->is_api) ? 0 : 1,
-      'update_user' => $this->_user->uname
-      // 'old_style' => get_null($ds->old_style),
-      // 'old_code' => get_null($ds->old_code)
-    );
-
-    if(! $this->products_model->update($code, $arr))
-    {
-			$sc = FALSE;
-			$this->error = "Update failed";
-    }
-
-		if($sc === TRUE)
-		{
-			$this->do_export($code);
-		}
-
-		echo $sc === TRUE ? 'success' : $this->error;
+		$this->_response($sc);
   }
 
 

@@ -529,6 +529,19 @@ class Products_model extends CI_Model
   }
 
 
+  public function is_exists_barcode($barcode, $code = NULL)
+  {
+    if( ! empty($code))
+    {
+      $this->db->where('code !=', $code);
+    }
+
+    $count = $this->db->where('barcode', $barcode)->count_all_results('products');
+
+    return $count > 0 ? TRUE : FALSE;
+  }
+
+
 
   public function get_product_by_barcode($barcode)
   {
@@ -602,7 +615,7 @@ class Products_model extends CI_Model
 
 
   public function get_with_old_code($code)
-  {    
+  {
     $rs = $this->db->where('code', $code)->or_where('old_code', $code)->get('products');
     if($rs->num_rows() > 0)
     {
