@@ -30,10 +30,10 @@ class Agx_auto_delivery extends CI_Controller
 
   function index()
 	{
-		$sc = TRUE;
+    $sc = TRUE;
 
 		$list = array();
-    $limit = $this->limit;
+    $limit = 10;
 		$path = $this->config->item('upload_path')."agx/DO/";
 		$file_path = $this->config->item('upload_file_path')."agx/DO/";
 
@@ -60,21 +60,14 @@ class Agx_auto_delivery extends CI_Controller
 			closedir($handle);
 		}
 
-		$c = 0;
-
     if( ! empty($list))
     {
       foreach($list as $rs)
       {
-        $this->do_process($rs->filename);
+				$this->do_process($rs->fileName);
       }
-
-			$this->error = $message;
     }
-
-		echo $sc === TRUE ? 'success' : $this->error;
 	}
-
 
   public function do_process($fileName)
 	{
@@ -157,7 +150,7 @@ class Agx_auto_delivery extends CI_Controller
 	              //---- กำหนดช่องทางการขายเป็นรหัส
 	              $ch = trim($rs['F']);
 
-								$ch = ($ch == 'LAZADA SPORTSAVER' OR $ch == 'LAZADA') ? '002' : (($ch == 'SHOPEE SPORTSAVER' OR $ch == 'SHOPEE') ? '001' : $dfChannels);
+								$ch = ($ch == 'LAZADA SPORTSAVER' OR $ch == 'LAZADA') ? '002' : (($ch == 'SHOPEE SPORTSAVER' OR $ch == 'SHOPEE') ? '003' : $dfChannels);
 
 								$channels = $this->channels_model->get($ch);
 
@@ -289,7 +282,7 @@ class Agx_auto_delivery extends CI_Controller
 						} //---- skip no data row
 
 						//---- เตรียมข้อมูลสำหรับเพิมรายละเอียดออเดอร์
-						$item = $this->products_model->get(trim($rs['G']));
+						$item = ! empty($rs['G']) ? $this->products_model->get_with_old_code(trim($rs['G'])) : NULL;
 
 						if(empty($item))
 						{
@@ -308,7 +301,7 @@ class Agx_auto_delivery extends CI_Controller
 
 						//--- ราคา (เอาราคาที่ใส่มา / จำนวน + ส่วนลดต่อชิ้น)
 						$price = empty($rs['I']) ? 0.00 : str_replace(",", "", $rs['I']); //--- ราคารวมไม่หักส่วนลด
-						$price = $price > 0 ? ($price/$qty) : 0; //--- ราคาต่อชิ้น
+						// $price = $price > 0 ? ($price/$qty) : 0; //--- ราคาต่อชิ้น
 
 
 
@@ -325,36 +318,60 @@ class Agx_auto_delivery extends CI_Controller
 
 						//---- เช็คข้อมูล ว่ามีรายละเอียดนี้อยู่ในออเดอร์แล้วหรือยัง
 						//---- ถ้ามีข้อมูลอยู่แล้ว (TRUE)ให้ข้ามการนำเข้ารายการนี้ไป
-						if( ! empty($item) && $this->orders_model->is_exists_detail($order_code, $item->code) === FALSE)
+						if( ! empty($item) )//&& $this->orders_model->is_exists_detail($order_code, $item->code) === FALSE)
 						{
-							//--- ถ้ายังไม่มีรายการอยู่ เพิ่มใหม่
-							$arr = array(
-								"order_code"	=> $order_code,
-								"style_code"		=> $item->style_code,
-								"product_code"	=> $item->code,
-								"product_name"	=> $item->name,
-								"currency" => $DocCur,
-								"rate" => $DocRate,
-								"cost"  => $item->cost,
-								"price"	=> $price,
-								"qty"		=> $qty,
-								"discount1"	=> $discount,
-								"discount2" => 0,
-								"discount3" => 0,
-								"discount_amount" => $discount_amount,
-								"total_amount"	=> round($total_amount,2),
-								"totalFrgn" => round($total_amount, 2),
-								"id_rule"	=> NULL,
-								"is_count" => $item->count_stock,
-								"is_import" => 1
-							);
+							$row = $this->orders_model->get_order_detail($order_code, $item->code);
 
-							if( $this->orders_model->add_detail($arr) === FALSE )
+							if( ! empty($row))
 							{
-								$sc = FALSE;
-								$this->error = 'Add items failed : '.$ref_code;
-								$csv[$i]['L'] = $this->error;
+								$new_qty = $row->qty + $qty;
+								$total_amount = $row->price * $new_qty;
+
+								$arr = array(
+									'qty' => $new_qty,
+									'total_amount' => round($total_amount, 2),
+									'totalFrgn' => round($total_amount, 2)
+								);
+
+								if( ! $this->orders_model->update_detail($row->id, $arr))
+								{
+									$sc = FALSE;
+									$this->error = 'Add items failed : '.$ref_code;
+									$csv[$i]['L'] = $this->error;
+								}
 							}
+							else
+							{
+								//--- ถ้ายังไม่มีรายการอยู่ เพิ่มใหม่
+								$arr = array(
+									"order_code"	=> $order_code,
+									"style_code"		=> $item->style_code,
+									"product_code"	=> $item->code,
+									"product_name"	=> $item->name,
+									"currency" => $DocCur,
+									"rate" => $DocRate,
+									"cost"  => $item->cost,
+									"price"	=> $price,
+									"qty"		=> $qty,
+									"discount1"	=> $discount,
+									"discount2" => 0,
+									"discount3" => 0,
+									"discount_amount" => $discount_amount,
+									"total_amount"	=> round($total_amount,2),
+									"totalFrgn" => round($total_amount, 2),
+									"id_rule"	=> NULL,
+									"is_count" => $item->count_stock,
+									"is_import" => 1
+								);
+
+								if( $this->orders_model->add_detail($arr) === FALSE )
+								{
+									$sc = FALSE;
+									$this->error = 'Add items failed : '.$ref_code;
+									$csv[$i]['L'] = $this->error;
+								}
+							}
+
 						} //--- end if exists detail
 
 						$orderCode = $order_code;
@@ -408,7 +425,7 @@ class Agx_auto_delivery extends CI_Controller
 
 	 return $sc;
 	}
-
+  
 
   public function create_error_file(array $ds = array(), $error_file_path)
   {
