@@ -444,7 +444,7 @@ class Agx_delivery_list extends PS_Controller
 
 						//--- ราคา (เอาราคาที่ใส่มา / จำนวน + ส่วนลดต่อชิ้น)
 						$price = empty($rs['I']) ? 0.00 : str_replace(",", "", $rs['I']); //--- ราคารวมไม่หักส่วนลด
-						$price = $price > 0 ? ($price/$qty) : 0; //--- ราคาต่อชิ้น
+						// $price = $price > 0 ? ($price/$qty) : 0; //--- ราคาต่อชิ้น
 
 
 
