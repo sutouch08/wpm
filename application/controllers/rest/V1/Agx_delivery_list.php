@@ -461,8 +461,9 @@ class Agx_delivery_list extends PS_Controller
 
 						//---- เช็คข้อมูล ว่ามีรายละเอียดนี้อยู่ในออเดอร์แล้วหรือยัง
 						//---- ถ้ามีข้อมูลอยู่แล้ว (TRUE)ให้ข้ามการนำเข้ารายการนี้ไป
-						if( ! empty($item) && $this->orders_model->is_exists_detail($order_code, $item->code) === FALSE)
+						if( ! empty($item) )//&& $this->orders_model->is_exists_detail($order_code, $item->code) === FALSE)
 						{
+							$row = $this->orders_model->get_
 							//--- ถ้ายังไม่มีรายการอยู่ เพิ่มใหม่
 							$arr = array(
 								"order_code"	=> $order_code,
