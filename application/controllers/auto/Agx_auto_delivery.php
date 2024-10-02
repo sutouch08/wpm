@@ -29,9 +29,7 @@ class Agx_auto_delivery extends CI_Controller
   }
 
   function index()
-	{
-    $sc = TRUE;
-
+	{    
 		$list = array();
     $limit = 10;
 		$path = $this->config->item('upload_path')."agx/DO/";
@@ -425,7 +423,7 @@ class Agx_auto_delivery extends CI_Controller
 
 	 return $sc;
 	}
-  
+
 
   public function create_error_file(array $ds = array(), $error_file_path)
   {
