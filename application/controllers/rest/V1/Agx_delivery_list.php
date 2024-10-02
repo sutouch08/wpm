@@ -463,35 +463,58 @@ class Agx_delivery_list extends PS_Controller
 						//---- ถ้ามีข้อมูลอยู่แล้ว (TRUE)ให้ข้ามการนำเข้ารายการนี้ไป
 						if( ! empty($item) )//&& $this->orders_model->is_exists_detail($order_code, $item->code) === FALSE)
 						{
-							$row = $this->orders_model->get_
-							//--- ถ้ายังไม่มีรายการอยู่ เพิ่มใหม่
-							$arr = array(
-								"order_code"	=> $order_code,
-								"style_code"		=> $item->style_code,
-								"product_code"	=> $item->code,
-								"product_name"	=> $item->name,
-								"currency" => $DocCur,
-								"rate" => $DocRate,
-								"cost"  => $item->cost,
-								"price"	=> $price,
-								"qty"		=> $qty,
-								"discount1"	=> $discount,
-								"discount2" => 0,
-								"discount3" => 0,
-								"discount_amount" => $discount_amount,
-								"total_amount"	=> round($total_amount,2),
-								"totalFrgn" => round($total_amount, 2),
-								"id_rule"	=> NULL,
-								"is_count" => $item->count_stock,
-								"is_import" => 1
-							);
+							$row = $this->orders_model->get_order_detail($order_code, $item->code);
 
-							if( $this->orders_model->add_detail($arr) === FALSE )
+							if( ! empty($row))
 							{
-								$sc = FALSE;
-								$this->error = 'Add items failed : '.$ref_code;
-								$csv[$i]['L'] = $this->error;
+								$new_qty = $row->qty + $qty;
+								$total_amount = $row->price * $new_qty;
+
+								$arr = array(
+									'qty' => $new_qty,
+									'total_amount' => round($total_amount, 2),
+									'totalFrgn' => round($total_amount, 2)
+								);
+
+								if( ! $this->orders_model->update_detail($row->id, $arr))
+								{
+									$sc = FALSE;
+									$this->error = 'Add items failed : '.$ref_code;
+									$csv[$i]['L'] = $this->error;
+								}
 							}
+							else
+							{
+								//--- ถ้ายังไม่มีรายการอยู่ เพิ่มใหม่
+								$arr = array(
+									"order_code"	=> $order_code,
+									"style_code"		=> $item->style_code,
+									"product_code"	=> $item->code,
+									"product_name"	=> $item->name,
+									"currency" => $DocCur,
+									"rate" => $DocRate,
+									"cost"  => $item->cost,
+									"price"	=> $price,
+									"qty"		=> $qty,
+									"discount1"	=> $discount,
+									"discount2" => 0,
+									"discount3" => 0,
+									"discount_amount" => $discount_amount,
+									"total_amount"	=> round($total_amount,2),
+									"totalFrgn" => round($total_amount, 2),
+									"id_rule"	=> NULL,
+									"is_count" => $item->count_stock,
+									"is_import" => 1
+								);
+
+								if( $this->orders_model->add_detail($arr) === FALSE )
+								{
+									$sc = FALSE;
+									$this->error = 'Add items failed : '.$ref_code;
+									$csv[$i]['L'] = $this->error;
+								}
+							}
+
 						} //--- end if exists detail
 
 						$orderCode = $order_code;
