@@ -467,21 +467,21 @@ class Agx_delivery_list extends PS_Controller
 
 							if( ! empty($row))
 							{
-								$new_qty = $row->qty + $qty;
-								$total_amount = $row->price * $new_qty;
-
-								$arr = array(
-									'qty' => $new_qty,
-									'total_amount' => round($total_amount, 2),
-									'totalFrgn' => round($total_amount, 2)
-								);
-
-								if( ! $this->orders_model->update_detail($row->id, $arr))
-								{
-									$sc = FALSE;
-									$this->error = 'Add items failed : '.$ref_code;
-									$csv[$i]['L'] = $this->error;
-								}
+								// $new_qty = $row->qty + $qty;
+								// $total_amount = $row->price * $new_qty;
+								//
+								// $arr = array(
+								// 	'qty' => $new_qty,
+								// 	'total_amount' => round($total_amount, 2),
+								// 	'totalFrgn' => round($total_amount, 2)
+								// );
+								//
+								// if( ! $this->orders_model->update_detail($row->id, $arr))
+								// {
+								// 	$sc = FALSE;
+								// 	$this->error = 'Add items failed : '.$ref_code;
+								// 	$csv[$i]['L'] = $this->error;
+								// }
 							}
 							else
 							{
