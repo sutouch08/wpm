@@ -65,7 +65,7 @@ class Sync_data_new extends CI_Controller
 
 		//$this->syncConsignmentSoldInvCode();
 
-		$this->syncReturnConsignmentOrderCode();
+		//$this->syncReturnConsignmentOrderCode();
 
   }
 
@@ -337,14 +337,21 @@ class Sync_data_new extends CI_Controller
       foreach($ds as $rs)
       {
         $count++;
+
         $inv = $this->orders_model->get_sap_doc_num($rs->code);
+
         if(!empty($inv))
         {
-          if($this->orders_model->update_inv($rs->code, $inv))
+          if($this->orders_model->update($rs->code, ['inv_code' => $inv, 'last_sync' => now()]))
           {
             $this->orders_model->set_complete($rs->code);
           }
+
           $update++;
+        }
+        else
+        {
+          $this->orders_model->update($rs->code, ['last_sync' => now()]);
         }
       }
     }
