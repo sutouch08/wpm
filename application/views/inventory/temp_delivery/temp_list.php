@@ -5,7 +5,7 @@
       <?php echo $this->title; ?>
     </h4>
   </div>
-	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 padding-5 hide">
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 padding-5">
 		<p class="pull-right top-p">
 			<button type="button" class="btn btn-xs btn-success" onclick="export_diff()">Export differences</button>
 		</p>
