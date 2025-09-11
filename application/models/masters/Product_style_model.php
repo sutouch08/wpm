@@ -109,8 +109,6 @@ class Product_style_model extends CI_Model
 
   public function count_rows(array $ds = array())
   {
-    $this->db->select('active');
-
     if(!empty($ds))
     {
       if(!empty($ds['code']))
@@ -165,11 +163,14 @@ class Product_style_model extends CI_Model
       {
         $this->db->where('year', $ds['year']);
       }
+
+      if(isset($ds['active']) && $ds['active'] != 'all')
+      {
+        $this->db->where('active', $ds['active']);
+      }
     }
 
-    $rs = $this->db->get('product_style');
-
-    return $rs->num_rows();
+    return $this->db->count_all_results('product_style');    
   }
 
 
@@ -279,6 +280,11 @@ class Product_style_model extends CI_Model
       if(!empty($ds['year']))
       {
         $this->db->where('year', $ds['year']);
+      }
+
+      if(isset($ds['active']) && $ds['active'] != 'all')
+      {
+        $this->db->where('active', $ds['active']);
       }
     }
 

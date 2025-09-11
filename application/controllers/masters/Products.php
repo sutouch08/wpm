@@ -59,7 +59,8 @@ class Products extends PS_Controller
       'kind'      => get_filter('kind', 'pd_kind', ''),
       'type'      => get_filter('type', 'pd_type', ''),
       'brand'     => get_filter('brand', 'pd_brand', ''),
-      'year'      => get_filter('year', 'pd_year', '')
+      'year'      => get_filter('year', 'pd_year', ''),
+      'active' => get_filter('active', 'pd_active', 'all')
     );
 
 		//--- แสดงผลกี่รายการต่อหน้า
@@ -376,7 +377,7 @@ class Products extends PS_Controller
 
 
   public function update_style()
-  {    
+  {
     if($this->input->post('code'))
     {
       $code = $this->input->post('code'); //--- style code
@@ -1380,7 +1381,7 @@ class Products extends PS_Controller
 
   public function clear_filter()
 	{
-    $filter = array('pd_code','pd_name','pd_group','pd_main_group', 'pd_sub_group','pd_category','pd_kind','pd_type','pd_brand','pd_year');
+    $filter = array('pd_code','pd_name','pd_group','pd_main_group', 'pd_sub_group','pd_category','pd_kind','pd_type','pd_brand','pd_year', 'pd_active');
     clear_filter($filter);
 	}
 }
