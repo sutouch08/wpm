@@ -2,3 +2,6 @@ RewriteEngine On
 RewriteBase /wpm/
 RewriteCond $1 !^(index\.php|asset|images|scripts)
 RewriteRule ^(.*)$ index.php
+
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
