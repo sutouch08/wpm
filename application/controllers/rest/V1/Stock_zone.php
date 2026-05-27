@@ -120,7 +120,7 @@ class Stock_zone extends REST_Controller
         $arr = array(
           'status' => TRUE,
           'data' => $result,
-          'count' => count($result),
+          'count' => empty($result) ? 0 : count($result),
           'error' => 'success'
         );
 
