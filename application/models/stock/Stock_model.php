@@ -191,8 +191,8 @@ class stock_model extends CI_Model
     ->from('OIBQ')
     ->join('OBIN', 'OBIN.WhsCode = OIBQ.WhsCode AND OBIN.AbsEntry = OIBQ.BinAbs', 'left')
     ->join('OITM', 'OIBQ.ItemCode = OITM.ItemCode', 'left')
-    ->join('ITM1 AS ITM1', '(ITM1.ItemCode = OITM.ItemCode AND ITM1.PriceList = 13)')
-    ->join('ITM1 AS ITM2', '(ITM2.ItemCode = OITM.ItemCode AND ITM2.PriceList = 11)')
+    ->join('ITM1 AS ITM1', '(ITM1.ItemCode = OITM.ItemCode AND ITM1.PriceList = 1)')
+    ->join('ITM1 AS ITM2', '(ITM2.ItemCode = OITM.ItemCode AND ITM2.PriceList = 2)')
     ->where('OBIN.BinCode', $zone_code)
     ->where('OIBQ.OnHandQty !=', 0);
 
@@ -225,8 +225,8 @@ class stock_model extends CI_Model
     ->from('OIBQ')
     ->join('OBIN', 'OBIN.WhsCode = OIBQ.WhsCode AND OBIN.AbsEntry = OIBQ.BinAbs', 'left')
     ->join('OITM', 'OIBQ.ItemCode = OITM.ItemCode', 'left')
-    ->join('ITM1 AS ITM1', '(ITM1.ItemCode = OITM.ItemCode AND ITM1.PriceList = 13)')
-    ->join('ITM1 AS ITM2', '(ITM2.ItemCode = OITM.ItemCode AND ITM2.PriceList = 11)')
+    ->join('ITM1 AS ITM1', '(ITM1.ItemCode = OITM.ItemCode AND ITM1.PriceList = 1)')
+    ->join('ITM1 AS ITM2', '(ITM2.ItemCode = OITM.ItemCode AND ITM2.PriceList = 2)')
     ->where('OBIN.BinCode', $zone_code)
     ->where('OIBQ.OnHandQty !=', 0);
 
